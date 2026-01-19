@@ -13,7 +13,7 @@ This roadmap delivers a working async NMR prediction service in 6 phases. We sta
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Project structure, job queue, ISiCLE wrapper
-- [ ] **Phase 2: Input and API** - Molecule submission, validation, status polling
+- [x] **Phase 2: Input and API** - Molecule submission, validation, status polling
 - [ ] **Phase 3: NMR Calculations** - Chemical shift calculations and presets
 - [ ] **Phase 4: Results Delivery** - JSON results, file downloads, email notifications
 - [ ] **Phase 5: Visualization** - Spectrum plots and annotated structures
@@ -47,10 +47,12 @@ Plans:
   3. Invalid molecules return clear validation error (before queueing)
   4. User can GET job status (queued/running/complete/failed)
   5. OpenAPI/Swagger documentation is served at /docs
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: TBD
+- [x] 02-01-PLAN.md — FastAPI dependencies, molecule validation, API schemas
+- [x] 02-02-PLAN.md — Job submission and health check routers
+- [x] 02-03-PLAN.md — App assembly, startup script, integration tests
 
 ### Phase 3: NMR Calculations
 **Goal**: System produces accurate NMR chemical shifts with configurable quality levels
@@ -115,7 +117,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-01-19 |
-| 2. Input and API | 0/? | Not started | - |
+| 2. Input and API | 3/3 | Complete | 2026-01-19 |
 | 3. NMR Calculations | 0/? | Not started | - |
 | 4. Results Delivery | 0/? | Not started | - |
 | 5. Visualization | 0/? | Not started | - |
