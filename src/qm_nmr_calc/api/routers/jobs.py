@@ -118,6 +118,7 @@ async def submit_smiles(request: JobSubmitRequest):
         nwchem_version=versions.nwchem,
         name=request.name,
         preset=request.preset,
+        notification_email=request.notification_email,
     )
 
     # Queue the NMR calculation task
@@ -153,6 +154,9 @@ async def submit_file(
     preset: Annotated[
         str, Form(description="Calculation preset: draft or production")
     ] = "production",
+    notification_email: Annotated[
+        Optional[str], Form(description="Email for completion notification")
+    ] = None,
 ):
     """Submit molecule via MOL/SDF file upload for NMR calculation.
 
@@ -221,6 +225,7 @@ async def submit_file(
         nwchem_version=versions.nwchem,
         name=name or filename,
         preset=preset,
+        notification_email=notification_email,
     )
 
     # Queue NMR calculation
