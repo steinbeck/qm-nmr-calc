@@ -79,10 +79,11 @@ Plans:
   2. User can download optimized molecular geometry (XYZ or SDF format)
   3. User can download raw NWChem output files
   4. User can opt-in to email notification and receives email when job completes
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: TBD
+- [ ] 04-01-PLAN.md — Results endpoint and file download endpoints (XYZ, SDF, raw output ZIP)
+- [ ] 04-02-PLAN.md — Email notification system (opt-in field, notifications module, signal handlers)
 
 ### Phase 5: Visualization
 **Goal**: System generates visual representations of NMR results
@@ -121,6 +122,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Foundation | 3/3 | Complete | 2026-01-19 |
 | 2. Input and API | 3/3 | Complete | 2026-01-19 |
 | 3. NMR Calculations | 3/3 | Complete | 2026-01-19 |
-| 4. Results Delivery | 0/? | Not started | - |
+| 4. Results Delivery | 0/2 | Not started | - |
 | 5. Visualization | 0/? | Not started | - |
 | 6. Web UI | 0/? | Not started | - |
