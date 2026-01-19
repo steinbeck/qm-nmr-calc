@@ -1,0 +1,109 @@
+# Requirements: qm-nmr-calc
+
+**Defined:** 2026-01-19
+**Core Value:** Reliable async NMR predictions with full control over calculation parameters — submit a molecule, get back accurate ¹H/¹³C shifts without babysitting long-running calculations.
+
+## v1 Requirements
+
+Requirements for initial release. Each maps to roadmap phases.
+
+### Input
+
+- [ ] **INP-01**: User can submit molecule via SMILES string
+- [ ] **INP-02**: User can upload molecule as MOL/SDF file
+- [ ] **INP-03**: System validates molecule structure before queueing
+- [ ] **INP-04**: System returns job ID immediately on submission
+
+### Calculation
+
+- [ ] **CALC-01**: System runs geometry optimization via ISiCLE/NWChem
+- [ ] **CALC-02**: System calculates ¹H NMR chemical shifts
+- [ ] **CALC-03**: System calculates ¹³C NMR chemical shifts
+- [ ] **CALC-04**: Jobs queue for background processing
+- [ ] **CALC-05**: System handles calculation failures gracefully (status, error message)
+- [ ] **CALC-06**: User can select calculation preset (fast/standard/publication)
+
+### Results
+
+- [ ] **RES-01**: User can retrieve chemical shifts as JSON with atom assignments
+- [ ] **RES-02**: User can retrieve optimized molecular geometry
+- [ ] **RES-03**: User can download raw NWChem output files
+- [ ] **RES-04**: User can poll for job status
+- [ ] **RES-05**: System generates visual spectrum plot
+- [ ] **RES-06**: System generates annotated structure drawing with shifts on atoms
+
+### Notifications
+
+- [ ] **NOTF-01**: User can opt-in to email notification on job completion
+
+### Interface
+
+- [ ] **UI-01**: REST API with OpenAPI/Swagger documentation
+- [ ] **UI-02**: Web UI for submitting jobs
+- [ ] **UI-03**: Web UI for viewing job status and results
+
+## v2 Requirements
+
+Deferred to future release. Tracked but not in current roadmap.
+
+### Calculation
+
+- **CALC-ADV**: Advanced parameter control (custom basis sets, functionals, solvation models)
+- **CALC-CONF**: Conformer averaging for flexible molecules
+
+### Input
+
+- **INP-PREVIEW**: Molecule preview before submission
+
+### Results
+
+- **RES-SHARE**: Shareable result links
+
+## Out of Scope
+
+Explicitly excluded. Documented to prevent scope creep.
+
+| Feature | Reason |
+|---------|--------|
+| Multi-user authentication | Single user for v1, architecture ready for later |
+| Other nuclei (¹⁵N, ³¹P, ¹⁹F) | ¹H/¹³C only for v1 |
+| Batch submission UI | API could support later |
+| Real-time WebSocket updates | Polling sufficient for v1 |
+| Spectrum processing/editing | NMRium's domain, we display only |
+| Mobile interface | Web UI is desktop-focused |
+
+## Traceability
+
+Which phases cover which requirements. Updated during roadmap creation.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| INP-01 | TBD | Pending |
+| INP-02 | TBD | Pending |
+| INP-03 | TBD | Pending |
+| INP-04 | TBD | Pending |
+| CALC-01 | TBD | Pending |
+| CALC-02 | TBD | Pending |
+| CALC-03 | TBD | Pending |
+| CALC-04 | TBD | Pending |
+| CALC-05 | TBD | Pending |
+| CALC-06 | TBD | Pending |
+| RES-01 | TBD | Pending |
+| RES-02 | TBD | Pending |
+| RES-03 | TBD | Pending |
+| RES-04 | TBD | Pending |
+| RES-05 | TBD | Pending |
+| RES-06 | TBD | Pending |
+| NOTF-01 | TBD | Pending |
+| UI-01 | TBD | Pending |
+| UI-02 | TBD | Pending |
+| UI-03 | TBD | Pending |
+
+**Coverage:**
+- v1 requirements: 20 total
+- Mapped to phases: 0
+- Unmapped: 20
+
+---
+*Requirements defined: 2026-01-19*
+*Last updated: 2026-01-19 after initial definition*
