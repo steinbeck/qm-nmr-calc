@@ -30,10 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. ISiCLE/NWChem runs geometry optimization on a test molecule
   3. Failed calculations produce clear error status and message (not silent failure)
   4. Job state persists across process restarts (Huey/SQLite)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD
+- [ ] 01-01-PLAN.md — Project setup with uv, Pydantic models, job storage layer
+- [ ] 01-02-PLAN.md — ISiCLE wrapper and Huey task queue with signal handlers
+- [ ] 01-03-PLAN.md — Startup validation, recovery logic, and integration test
 
 ### Phase 2: Input and API
 **Goal**: Users can submit molecules and check job status via REST API
@@ -112,7 +114,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/? | Not started | - |
+| 1. Foundation | 0/3 | Planned | - |
 | 2. Input and API | 0/? | Not started | - |
 | 3. NMR Calculations | 0/? | Not started | - |
 | 4. Results Delivery | 0/? | Not started | - |
