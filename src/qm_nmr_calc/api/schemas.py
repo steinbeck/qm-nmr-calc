@@ -1,6 +1,6 @@
 """Pydantic models for API requests and responses."""
 
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -19,6 +19,37 @@ class JobSubmitRequest(BaseModel):
         examples=["Ethanol", "Benzene"],
         max_length=100,
     )
+    preset: Literal["draft", "production"] = Field(
+        default="production",
+        description="Calculation preset: draft (fast) or production (accurate)",
+    )
+    solvent: str = Field(
+        ...,
+        description="NMR solvent for COSMO solvation model (e.g., chcl3, dmso)",
+        examples=["chcl3", "dmso", "acetone"],
+    )
+
+
+class AtomShiftResponse(BaseModel):
+    """API response model for a single atom chemical shift."""
+
+    index: int = Field(..., description="Atom index (1-based)")
+    atom: str = Field(..., description="Element symbol (H or C)")
+    shift: float = Field(..., description="Chemical shift in ppm (TMS reference)")
+
+
+class NMRResultsResponse(BaseModel):
+    """API response model for NMR calculation results."""
+
+    h1_shifts: list[AtomShiftResponse] = Field(
+        ..., description="1H chemical shifts sorted by ppm descending"
+    )
+    c13_shifts: list[AtomShiftResponse] = Field(
+        ..., description="13C chemical shifts sorted by ppm descending"
+    )
+    functional: str = Field(..., description="DFT functional used")
+    basis_set: str = Field(..., description="Basis set used for NMR calculation")
+    solvent: str = Field(..., description="Solvent used for COSMO solvation")
 
 
 class JobStatusResponse(BaseModel):
@@ -33,7 +64,12 @@ class JobStatusResponse(BaseModel):
     completed_at: Optional[str] = Field(None, description="When job completed")
     input_smiles: str = Field(..., description="Original SMILES input")
     input_name: Optional[str] = Field(None, description="User-provided molecule name")
+    preset: str = Field(..., description="Calculation preset used")
+    solvent: str = Field(..., description="Solvent used for calculation")
     error_message: Optional[str] = Field(None, description="Error message if failed")
+    nmr_results: Optional[NMRResultsResponse] = Field(
+        None, description="NMR results (available when status is complete)"
+    )
 
 
 class ProblemDetail(BaseModel):
