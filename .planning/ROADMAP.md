@@ -61,12 +61,14 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Completed job includes 1H NMR chemical shifts for all hydrogen atoms
   2. Completed job includes 13C NMR chemical shifts for all carbon atoms
-  3. User can select calculation preset (fast/standard/publication) at submission time
+  3. User can select calculation preset (draft/production) at submission time
   4. Different presets produce different calculation parameters (basis set, functional)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: TBD
+- [ ] 03-01-PLAN.md — Presets module, shielding-to-shift conversion, solvent validation
+- [ ] 03-02-PLAN.md — Extended models with NMR results, API schemas for preset/solvent
+- [ ] 03-03-PLAN.md — NMR calculation pipeline (geometry opt + shielding), API updates
 
 ### Phase 4: Results Delivery
 **Goal**: Users can retrieve all calculation results in multiple formats
@@ -118,7 +120,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-01-19 |
 | 2. Input and API | 3/3 | Complete | 2026-01-19 |
-| 3. NMR Calculations | 0/? | Not started | - |
+| 3. NMR Calculations | 0/3 | Planned | - |
 | 4. Results Delivery | 0/? | Not started | - |
 | 5. Visualization | 0/? | Not started | - |
 | 6. Web UI | 0/? | Not started | - |
