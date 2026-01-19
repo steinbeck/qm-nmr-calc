@@ -5,33 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-01-19)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Phase 2 - Input and API
+**Current focus:** Phase 3 - Calculation Pipeline (Phase 2 complete)
 
 ## Current Position
 
-Phase: 2 of 6 (Input and API)
-Plan: 2 of 3 in phase (complete)
-Status: In progress
-Last activity: 2026-01-19 -- Completed 02-02-PLAN.md (Routers)
+Phase: 2 of 6 (Input and API) - COMPLETE
+Plan: 3 of 3 in phase (complete)
+Status: Phase 2 complete, ready for Phase 3
+Last activity: 2026-01-19 -- Completed 02-03-PLAN.md (Application Assembly)
 
-Progress: [█████░░░░░] ~25%
+Progress: [██████░░░░] ~30%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 3.0 min
-- Total execution time: 15 min
+- Total plans completed: 6
+- Average duration: 2.8 min
+- Total execution time: 17 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 9 min | 3.0 min |
-| 02-input-and-api | 2 | 6 min | 3.0 min |
+| 02-input-and-api | 3 | 8 min | 2.7 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (3 min), 01-03 (2 min), 02-01 (4 min), 02-02 (2 min)
+- Last 5 plans: 01-03 (2 min), 02-01 (4 min), 02-02 (2 min), 02-03 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -61,6 +61,9 @@ Recent decisions affecting current work:
 - Health liveness is minimal (just return alive status)
 - Readiness checks data directory writable and Huey importable
 - Use JSONResponse with explicit headers for 202 Accepted responses
+- OpenAPI JSON served at /api/v1/openapi.json (versioned)
+- Health endpoints at root (no /api/v1 prefix)
+- TestClient module-level client for test efficiency
 
 ### Pending Todos
 
@@ -72,6 +75,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-19T17:16:56Z
-Stopped at: Completed 02-02-PLAN.md (Routers)
+Last session: 2026-01-19T17:20:00Z
+Stopped at: Completed 02-03-PLAN.md (Application Assembly) - Phase 2 Complete
 Resume file: None
