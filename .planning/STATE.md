@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-19)
 ## Current Position
 
 Phase: 3 of 6 (NMR Calculations)
-Plan: 1 of 3 in phase (complete)
+Plan: 2 of 3 in phase (complete)
 Status: In progress
-Last activity: 2026-01-19 -- Completed 03-01-PLAN.md (Calculation Support Modules)
+Last activity: 2026-01-19 -- Completed 03-02-PLAN.md (Data Models for NMR)
 
-Progress: [███████░░░] ~39%
+Progress: [████████░░] ~44%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
-- Average duration: 2.7 min
-- Total execution time: 19 min
+- Total plans completed: 8
+- Average duration: 2.9 min
+- Total execution time: 23 min
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [███████░░░] ~39%
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 9 min | 3.0 min |
 | 02-input-and-api | 3 | 8 min | 2.7 min |
-| 03-nmr-calculations | 1 | 2 min | 2.0 min |
+| 03-nmr-calculations | 2 | 6 min | 3.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (4 min), 02-02 (2 min), 02-03 (2 min), 03-01 (2 min)
+- Last 5 plans: 02-02 (2 min), 02-03 (2 min), 03-01 (2 min), 03-02 (4 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -69,6 +69,9 @@ Recent decisions affecting current work:
 - TypedDict for preset config (not Pydantic - just config data)
 - TMS reference scaling factors from Pierens et al. for B3LYP/6-311+G(2d,p)
 - 11 common NMR solvents supported initially
+- Solvent is required field (no default) - users must explicitly choose
+- AtomShift stores both shielding and shift; API returns only shift
+- NMRResults includes calculation metadata (functional, basis_set, solvent)
 
 ### Pending Todos
 
@@ -80,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-19T18:55:00Z
-Stopped at: Completed 03-01-PLAN.md (Calculation Support Modules)
+Last session: 2026-01-19T19:00:16Z
+Stopped at: Completed 03-02-PLAN.md (Data Models for NMR)
 Resume file: None
