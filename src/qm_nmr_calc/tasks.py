@@ -1,9 +1,14 @@
 """Huey task definitions for calculations."""
 from pathlib import Path
 
+import orjson
+
 from .queue import huey
-from .storage import load_job_status, get_job_dir
-from .isicle_wrapper import run_geometry_optimization
+from .storage import load_job_status, get_job_dir, update_job_status
+from .isicle_wrapper import run_geometry_optimization, run_nmr_calculation
+from .presets import PRESETS, PresetName
+from .shifts import shielding_to_shift
+from .models import NMRResults, AtomShift
 
 
 @huey.task()
@@ -43,4 +48,109 @@ def run_optimization_task(job_id: str) -> dict:
         'success': True,
         'job_id': job_id,
         'output_file': str(output_file)
+    }
+
+
+@huey.task()
+def run_nmr_task(job_id: str) -> dict:
+    """
+    Execute NMR calculation (geometry optimization + shielding) for a queued job.
+
+    This is the main task for NMR calculations. It:
+    1. Loads job status and validates it's queued
+    2. Gets preset configuration based on job input
+    3. Runs two-step DFT: geometry optimization then NMR shielding
+    4. Converts shielding to chemical shifts
+    5. Saves NMR results to job output directory
+    6. Updates job status with NMR results
+
+    Args:
+        job_id: ID of the job to process
+
+    Returns:
+        dict with success status and output file paths
+
+    Note: Status updates (running/complete/failed) happen via signal handlers
+    in queue.py. Let exceptions propagate for SIGNAL_ERROR.
+    """
+    # Load job info
+    job_status = load_job_status(job_id)
+    if job_status is None:
+        raise ValueError(f"Job {job_id} not found")
+
+    if job_status.status != 'queued':
+        raise ValueError(f"Job {job_id} is not queued (status: {job_status.status})")
+
+    # Get preset configuration
+    preset_name = PresetName(job_status.input.preset)
+    preset = PRESETS[preset_name]
+
+    smiles = job_status.input.smiles
+    solvent = job_status.input.solvent
+    job_dir = get_job_dir(job_id)
+
+    # Run the NMR calculation (geometry opt + shielding)
+    result = run_nmr_calculation(
+        smiles=smiles,
+        job_dir=job_dir,
+        preset=preset,
+        solvent=solvent,
+        processes=preset['processes'],
+    )
+
+    # Convert shielding to chemical shifts
+    shifts = shielding_to_shift(result['shielding_data'])
+
+    # Build NMRResults object
+    h1_shifts = [
+        AtomShift(
+            index=s['index'],
+            atom=s['atom'],
+            shielding=s['shielding'],
+            shift=s['shift']
+        )
+        for s in shifts['1H']
+    ]
+    c13_shifts = [
+        AtomShift(
+            index=s['index'],
+            atom=s['atom'],
+            shielding=s['shielding'],
+            shift=s['shift']
+        )
+        for s in shifts['13C']
+    ]
+
+    nmr_results = NMRResults(
+        h1_shifts=h1_shifts,
+        c13_shifts=c13_shifts,
+        functional=preset['functional'],
+        basis_set=preset['nmr_basis_set'],
+        solvent=solvent,
+    )
+
+    # Save nmr_results.json to output directory
+    output_dir = job_dir / 'output'
+    results_file = output_dir / 'nmr_results.json'
+    results_file.write_bytes(
+        orjson.dumps(
+            nmr_results.model_dump(mode='json'),
+            option=orjson.OPT_INDENT_2
+        )
+    )
+
+    # Update job status with NMR results
+    update_job_status(
+        job_id,
+        nmr_results=nmr_results,
+        optimized_geometry_file=result['geometry_file'],
+    )
+
+    return {
+        'success': True,
+        'job_id': job_id,
+        'output_files': {
+            'geometry': result['geometry_file'],
+            'nmr_results': str(results_file),
+        }
     }
