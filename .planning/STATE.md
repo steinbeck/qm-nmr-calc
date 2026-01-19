@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-19)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Phase 3 - NMR Calculations (in progress)
+**Current focus:** Phase 3 - NMR Calculations (COMPLETE)
 
 ## Current Position
 
 Phase: 3 of 6 (NMR Calculations)
-Plan: 2 of 3 in phase (complete)
-Status: In progress
-Last activity: 2026-01-19 -- Completed 03-02-PLAN.md (Data Models for NMR)
+Plan: 3 of 3 in phase (complete)
+Status: Phase complete
+Last activity: 2026-01-19 -- Completed 03-03-PLAN.md (NMR Calculation Pipeline)
 
-Progress: [████████░░] ~44%
+Progress: [█████████░] ~50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: 2.9 min
-- Total execution time: 23 min
+- Total plans completed: 9
+- Average duration: 3.1 min
+- Total execution time: 28 min
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [████████░░] ~44%
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 9 min | 3.0 min |
 | 02-input-and-api | 3 | 8 min | 2.7 min |
-| 03-nmr-calculations | 2 | 6 min | 3.0 min |
+| 03-nmr-calculations | 3 | 11 min | 3.7 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (2 min), 02-03 (2 min), 03-01 (2 min), 03-02 (4 min)
+- Last 5 plans: 02-03 (2 min), 03-01 (2 min), 03-02 (4 min), 03-03 (5 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -72,6 +72,9 @@ Recent decisions affecting current work:
 - Solvent is required field (no default) - users must explicitly choose
 - AtomShift stores both shielding and shift; API returns only shift
 - NMRResults includes calculation metadata (functional, basis_set, solvent)
+- Two-step DFT: geometry optimization then NMR shielding
+- run_nmr_task updates job status with NMR results
+- Validate solvent at API level before job creation
 
 ### Pending Todos
 
@@ -83,6 +86,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-19T19:00:16Z
-Stopped at: Completed 03-02-PLAN.md (Data Models for NMR)
+Last session: 2026-01-19T19:06:33Z
+Stopped at: Completed 03-03-PLAN.md (NMR Calculation Pipeline) - Phase 3 COMPLETE
 Resume file: None
