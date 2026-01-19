@@ -1,0 +1,145 @@
+"""Integration tests for the QM NMR Calculator API."""
+import pytest
+from fastapi.testclient import TestClient
+
+from qm_nmr_calc.api.app import app
+
+client = TestClient(app)
+
+
+class TestHealth:
+    """Health endpoint tests."""
+
+    def test_liveness(self):
+        """GET /health returns alive status."""
+        response = client.get("/health")
+        assert response.status_code == 200
+        assert response.json()["status"] == "alive"
+
+    def test_readiness(self):
+        """GET /health/ready checks dependencies."""
+        response = client.get("/health/ready")
+        # May be 200 or 503 depending on environment
+        assert response.status_code in [200, 503]
+        assert "status" in response.json()
+
+
+class TestJobSubmission:
+    """Job submission endpoint tests."""
+
+    def test_submit_valid_smiles(self):
+        """POST /api/v1/jobs with valid SMILES returns 202."""
+        response = client.post(
+            "/api/v1/jobs",
+            json={"smiles": "CCO", "name": "Ethanol"}
+        )
+        assert response.status_code == 202
+        data = response.json()
+        assert "job_id" in data
+        assert data["status"] == "queued"
+        assert data["input_smiles"] == "CCO"
+        assert data["input_name"] == "Ethanol"
+        # Check headers
+        assert "Location" in response.headers
+        assert "Retry-After" in response.headers
+
+    def test_submit_invalid_smiles(self):
+        """POST /api/v1/jobs with invalid SMILES returns 422."""
+        response = client.post(
+            "/api/v1/jobs",
+            json={"smiles": "not-a-valid-smiles-string"}
+        )
+        assert response.status_code == 422
+        data = response.json()["detail"]
+        assert data["status"] == 422
+        assert "title" in data  # RFC 7807
+
+    def test_submit_smiles_without_name(self):
+        """POST /api/v1/jobs works without optional name."""
+        response = client.post(
+            "/api/v1/jobs",
+            json={"smiles": "c1ccccc1"}
+        )
+        assert response.status_code == 202
+        data = response.json()
+        assert data["input_name"] is None
+
+
+class TestJobStatus:
+    """Job status endpoint tests."""
+
+    def test_get_existing_job(self):
+        """GET /api/v1/jobs/{id} returns status for existing job."""
+        # First create a job
+        create_response = client.post(
+            "/api/v1/jobs",
+            json={"smiles": "CCO"}
+        )
+        job_id = create_response.json()["job_id"]
+
+        # Then get its status
+        response = client.get(f"/api/v1/jobs/{job_id}")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["job_id"] == job_id
+        assert data["status"] == "queued"
+
+    def test_get_nonexistent_job(self):
+        """GET /api/v1/jobs/{id} returns 404 for unknown job."""
+        response = client.get("/api/v1/jobs/nonexistent123")
+        assert response.status_code == 404
+        data = response.json()["detail"]
+        assert data["status"] == 404
+        assert "title" in data  # RFC 7807
+
+
+class TestFileUpload:
+    """File upload endpoint tests."""
+
+    def test_upload_mol_file(self):
+        """POST /api/v1/jobs/upload with MOL file returns 202."""
+        # Simple MOL file content for ethane
+        mol_content = """
+  ethane
+
+  2  1  0  0  0  0  0  0  0  0999 V2000
+    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.5400    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+M  END
+"""
+        response = client.post(
+            "/api/v1/jobs/upload",
+            files={"file": ("ethane.mol", mol_content, "chemical/x-mdl-molfile")},
+            data={"name": "Ethane"}
+        )
+        assert response.status_code == 202
+        data = response.json()
+        assert "job_id" in data
+        assert data["status"] == "queued"
+
+    def test_upload_invalid_file_type(self):
+        """POST /api/v1/jobs/upload with wrong extension returns 422."""
+        response = client.post(
+            "/api/v1/jobs/upload",
+            files={"file": ("test.txt", "not a molecule", "text/plain")}
+        )
+        assert response.status_code == 422
+
+
+class TestOpenAPI:
+    """OpenAPI documentation tests."""
+
+    def test_docs_available(self):
+        """GET /docs returns Swagger UI."""
+        response = client.get("/docs")
+        assert response.status_code == 200
+        assert "swagger" in response.text.lower()
+
+    def test_openapi_json(self):
+        """GET /api/v1/openapi.json returns OpenAPI spec."""
+        response = client.get("/api/v1/openapi.json")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["info"]["title"] == "QM NMR Calculator API"
+        assert "/api/v1/jobs" in str(data["paths"])
