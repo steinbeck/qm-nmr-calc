@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-19)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Phase 4 - Results Delivery (in progress)
+**Current focus:** Phase 4 - Results Delivery (complete)
 
 ## Current Position
 
 Phase: 4 of 6 (Results Delivery)
-Plan: 1 of 3 in phase (complete)
-Status: In progress
-Last activity: 2026-01-19 -- Completed 04-01-PLAN.md (Results and Download Endpoints)
+Plan: 2 of 2 in phase (complete)
+Status: Phase 4 complete, ready for Phase 5
+Last activity: 2026-01-19 -- Completed 04-02-PLAN.md (Email Notifications)
 
-Progress: [██████████░] ~55%
+Progress: [███████████░] ~60%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
+- Total plans completed: 11
 - Average duration: 3.1 min
-- Total execution time: 31 min
+- Total execution time: 35 min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [██████████░] ~55%
 | 01-foundation | 3 | 9 min | 3.0 min |
 | 02-input-and-api | 3 | 8 min | 2.7 min |
 | 03-nmr-calculations | 3 | 11 min | 3.7 min |
-| 04-results-delivery | 1 | 3 min | 3.0 min |
+| 04-results-delivery | 2 | 7 min | 3.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (2 min), 03-02 (4 min), 03-03 (5 min), 04-01 (3 min)
+- Last 5 plans: 03-02 (4 min), 03-03 (5 min), 04-01 (3 min), 04-02 (4 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -79,6 +79,10 @@ Recent decisions affecting current work:
 - Return 409 Conflict for incomplete jobs (vs 404 for missing)
 - SDF generated on-the-fly from SMILES + XYZ coordinates
 - Output ZIP includes only .out and .nw files from scratch directory
+- aiosmtplib for async SMTP, email-validator for Pydantic EmailStr
+- Best-effort email delivery (logs errors, never fails jobs)
+- Environment variables for all SMTP config (no hardcoded credentials)
+- Async/sync wrapper pattern for Huey signal handlers
 
 ### Pending Todos
 
@@ -90,6 +94,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-19T21:33:34Z
-Stopped at: Completed 04-01-PLAN.md (Results and Download Endpoints)
+Last session: 2026-01-19T21:34:54Z
+Stopped at: Completed 04-02-PLAN.md (Email Notifications) - Phase 4 COMPLETE
 Resume file: None
