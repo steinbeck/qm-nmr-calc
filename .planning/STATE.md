@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-19)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Phase 3 - Calculation Pipeline (Phase 2 complete)
+**Current focus:** Phase 3 - NMR Calculations (in progress)
 
 ## Current Position
 
-Phase: 2 of 6 (Input and API) - COMPLETE
-Plan: 3 of 3 in phase (complete)
-Status: Phase 2 complete, ready for Phase 3
-Last activity: 2026-01-19 -- Completed 02-03-PLAN.md (Application Assembly)
+Phase: 3 of 6 (NMR Calculations)
+Plan: 1 of 3 in phase (complete)
+Status: In progress
+Last activity: 2026-01-19 -- Completed 03-01-PLAN.md (Calculation Support Modules)
 
-Progress: [██████░░░░] ~30%
+Progress: [███████░░░] ~39%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: 2.8 min
-- Total execution time: 17 min
+- Total plans completed: 7
+- Average duration: 2.7 min
+- Total execution time: 19 min
 
 **By Phase:**
 
@@ -29,9 +29,10 @@ Progress: [██████░░░░] ~30%
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 9 min | 3.0 min |
 | 02-input-and-api | 3 | 8 min | 2.7 min |
+| 03-nmr-calculations | 1 | 2 min | 2.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (2 min), 02-01 (4 min), 02-02 (2 min), 02-03 (2 min)
+- Last 5 plans: 02-01 (4 min), 02-02 (2 min), 02-03 (2 min), 03-01 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -64,6 +65,10 @@ Recent decisions affecting current work:
 - OpenAPI JSON served at /api/v1/openapi.json (versioned)
 - Health endpoints at root (no /api/v1 prefix)
 - TestClient module-level client for test efficiency
+- Production preset as default (reliability over speed)
+- TypedDict for preset config (not Pydantic - just config data)
+- TMS reference scaling factors from Pierens et al. for B3LYP/6-311+G(2d,p)
+- 11 common NMR solvents supported initially
 
 ### Pending Todos
 
@@ -75,6 +80,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-19T17:20:00Z
-Stopped at: Completed 02-03-PLAN.md (Application Assembly) - Phase 2 Complete
+Last session: 2026-01-19T18:55:00Z
+Stopped at: Completed 03-01-PLAN.md (Calculation Support Modules)
 Resume file: None
