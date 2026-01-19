@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-19)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Phase 4 - Results Delivery (Phase 3 complete)
+**Current focus:** Phase 4 - Results Delivery (in progress)
 
 ## Current Position
 
-Phase: 3 of 6 (NMR Calculations)
-Plan: 3 of 3 in phase (complete)
-Status: Phase 3 complete, ready for Phase 4
-Last activity: 2026-01-19 -- Completed 03-03-PLAN.md (NMR Calculation Pipeline)
+Phase: 4 of 6 (Results Delivery)
+Plan: 1 of 3 in phase (complete)
+Status: In progress
+Last activity: 2026-01-19 -- Completed 04-01-PLAN.md (Results and Download Endpoints)
 
-Progress: [█████████░] ~50%
+Progress: [██████████░] ~55%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
+- Total plans completed: 10
 - Average duration: 3.1 min
-- Total execution time: 28 min
+- Total execution time: 31 min
 
 **By Phase:**
 
@@ -30,9 +30,10 @@ Progress: [█████████░] ~50%
 | 01-foundation | 3 | 9 min | 3.0 min |
 | 02-input-and-api | 3 | 8 min | 2.7 min |
 | 03-nmr-calculations | 3 | 11 min | 3.7 min |
+| 04-results-delivery | 1 | 3 min | 3.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (2 min), 03-01 (2 min), 03-02 (4 min), 03-03 (5 min)
+- Last 5 plans: 03-01 (2 min), 03-02 (4 min), 03-03 (5 min), 04-01 (3 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -75,6 +76,9 @@ Recent decisions affecting current work:
 - Two-step DFT: geometry optimization then NMR shielding
 - run_nmr_task updates job status with NMR results
 - Validate solvent at API level before job creation
+- Return 409 Conflict for incomplete jobs (vs 404 for missing)
+- SDF generated on-the-fly from SMILES + XYZ coordinates
+- Output ZIP includes only .out and .nw files from scratch directory
 
 ### Pending Todos
 
@@ -86,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-19T19:06:33Z
-Stopped at: Completed 03-03-PLAN.md (NMR Calculation Pipeline) - Phase 3 COMPLETE
+Last session: 2026-01-19T21:33:34Z
+Stopped at: Completed 04-01-PLAN.md (Results and Download Endpoints)
 Resume file: None
