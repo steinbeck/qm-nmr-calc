@@ -31,7 +31,7 @@ class TestJobSubmission:
         """POST /api/v1/jobs with valid SMILES returns 202."""
         response = client.post(
             "/api/v1/jobs",
-            json={"smiles": "CCO", "name": "Ethanol"}
+            json={"smiles": "CCO", "name": "Ethanol", "solvent": "chcl3"}
         )
         assert response.status_code == 202
         data = response.json()
@@ -39,6 +39,8 @@ class TestJobSubmission:
         assert data["status"] == "queued"
         assert data["input_smiles"] == "CCO"
         assert data["input_name"] == "Ethanol"
+        assert data["preset"] == "production"
+        assert data["solvent"] == "chcl3"
         # Check headers
         assert "Location" in response.headers
         assert "Retry-After" in response.headers
@@ -47,7 +49,7 @@ class TestJobSubmission:
         """POST /api/v1/jobs with invalid SMILES returns 422."""
         response = client.post(
             "/api/v1/jobs",
-            json={"smiles": "not-a-valid-smiles-string"}
+            json={"smiles": "not-a-valid-smiles-string", "solvent": "chcl3"}
         )
         assert response.status_code == 422
         data = response.json()["detail"]
@@ -58,7 +60,7 @@ class TestJobSubmission:
         """POST /api/v1/jobs works without optional name."""
         response = client.post(
             "/api/v1/jobs",
-            json={"smiles": "c1ccccc1"}
+            json={"smiles": "c1ccccc1", "solvent": "dmso"}
         )
         assert response.status_code == 202
         data = response.json()
@@ -73,7 +75,7 @@ class TestJobStatus:
         # First create a job
         create_response = client.post(
             "/api/v1/jobs",
-            json={"smiles": "CCO"}
+            json={"smiles": "CCO", "solvent": "chcl3"}
         )
         job_id = create_response.json()["job_id"]
 
@@ -111,7 +113,7 @@ M  END
         response = client.post(
             "/api/v1/jobs/upload",
             files={"file": ("ethane.mol", mol_content, "chemical/x-mdl-molfile")},
-            data={"name": "Ethane"}
+            data={"name": "Ethane", "solvent": "chcl3"}
         )
         assert response.status_code == 202
         data = response.json()

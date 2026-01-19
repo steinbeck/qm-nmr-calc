@@ -25,9 +25,11 @@ def get_job_dir(job_id: str) -> Path:
 
 def create_job_directory(
     smiles: str,
+    solvent: str,
     isicle_version: str,
     nwchem_version: str,
     name: Optional[str] = None,
+    preset: str = "production",
 ) -> JobStatus:
     """Create job directory with initial queued status.
 
@@ -47,7 +49,7 @@ def create_job_directory(
         job_id=job_id,
         status="queued",
         created_at=datetime.utcnow(),
-        input=JobInput(smiles=smiles, name=name),
+        input=JobInput(smiles=smiles, name=name, preset=preset, solvent=solvent),
         isicle_version=isicle_version,
         nwchem_version=nwchem_version,
     )

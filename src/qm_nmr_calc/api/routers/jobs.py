@@ -21,7 +21,25 @@ def job_status_to_response(job_status: JobStatus) -> dict:
 
     Flattens input.smiles -> input_smiles, input.name -> input_name.
     Converts datetime fields to ISO strings.
+    Converts NMR results if present.
     """
+    # Convert NMR results if present
+    nmr_results = None
+    if job_status.nmr_results is not None:
+        nmr_results = {
+            "h1_shifts": [
+                {"index": s.index, "atom": s.atom, "shift": s.shift}
+                for s in job_status.nmr_results.h1_shifts
+            ],
+            "c13_shifts": [
+                {"index": s.index, "atom": s.atom, "shift": s.shift}
+                for s in job_status.nmr_results.c13_shifts
+            ],
+            "functional": job_status.nmr_results.functional,
+            "basis_set": job_status.nmr_results.basis_set,
+            "solvent": job_status.nmr_results.solvent,
+        }
+
     return {
         "job_id": job_status.job_id,
         "status": job_status.status,
@@ -38,7 +56,10 @@ def job_status_to_response(job_status: JobStatus) -> dict:
         ),
         "input_smiles": job_status.input.smiles,
         "input_name": job_status.input.name,
+        "preset": job_status.input.preset,
+        "solvent": job_status.input.solvent,
         "error_message": job_status.error_message,
+        "nmr_results": nmr_results,
     }
 
 
@@ -75,9 +96,11 @@ async def submit_smiles(request: JobSubmitRequest):
     # Create job directory and initial status
     job_status = create_job_directory(
         smiles=request.smiles,
-        name=request.name,
+        solvent=request.solvent,
         isicle_version=versions.isicle,
         nwchem_version=versions.nwchem,
+        name=request.name,
+        preset=request.preset,
     )
 
     # Queue the calculation task
@@ -104,9 +127,15 @@ async def submit_smiles(request: JobSubmitRequest):
 )
 async def submit_file(
     file: UploadFile,
+    solvent: Annotated[
+        str, Form(description="NMR solvent for COSMO solvation model")
+    ],
     name: Annotated[
         Optional[str], Form(description="Optional molecule name")
     ] = None,
+    preset: Annotated[
+        str, Form(description="Calculation preset: draft or production")
+    ] = "production",
 ):
     """Submit molecule via MOL/SDF file upload for NMR calculation.
 
@@ -156,9 +185,11 @@ async def submit_file(
     # Create job (use filename as name if not provided)
     job_status = create_job_directory(
         smiles=smiles,
-        name=name or filename,
+        solvent=solvent,
         isicle_version=versions.isicle,
         nwchem_version=versions.nwchem,
+        name=name or filename,
+        preset=preset,
     )
 
     # Queue calculation
