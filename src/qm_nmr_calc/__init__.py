@@ -6,6 +6,7 @@ from .storage import create_job_directory, load_job_status, update_job_status
 from .isicle_wrapper import validate_nwchem, get_versions
 from .queue import huey
 from .tasks import run_optimization_task
+from .api.app import app
 
 __all__ = [
     'JobStatus',
@@ -17,4 +18,5 @@ __all__ = [
     'get_versions',
     'huey',
     'run_optimization_task',
+    'app',
 ]
