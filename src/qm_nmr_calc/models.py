@@ -38,6 +38,7 @@ class JobInput(BaseModel):
     name: Optional[str] = None  # User-provided molecule name/label
     preset: Literal["draft", "production"] = "production"
     solvent: str  # Required field - no default, user must specify
+    notification_email: Optional[str] = None  # Opt-in email for completion notification
 
 
 class JobStatus(BaseModel):

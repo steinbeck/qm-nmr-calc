@@ -2,7 +2,7 @@
 
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
 
 class JobSubmitRequest(BaseModel):
@@ -27,6 +27,11 @@ class JobSubmitRequest(BaseModel):
         ...,
         description="NMR solvent for COSMO solvation model (e.g., chcl3, dmso)",
         examples=["chcl3", "dmso", "acetone"],
+    )
+    notification_email: Optional[EmailStr] = Field(
+        None,
+        description="Email address for completion notification (opt-in)",
+        examples=["user@example.com"],
     )
 
 
