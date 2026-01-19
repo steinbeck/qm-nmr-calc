@@ -9,8 +9,9 @@ from rdkit import Chem
 from ..schemas import JobStatusResponse, JobSubmitRequest, ProblemDetail
 from ...isicle_wrapper import get_versions
 from ...models import JobStatus
+from ...solvents import validate_solvent, get_supported_solvents
 from ...storage import create_job_directory, load_job_status
-from ...tasks import run_optimization_task
+from ...tasks import run_nmr_task
 from ...validation import validate_mol_file, validate_smiles
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
@@ -90,21 +91,35 @@ async def submit_smiles(request: JobSubmitRequest):
             },
         )
 
+    # Validate solvent
+    normalized_solvent = validate_solvent(request.solvent)
+    if normalized_solvent is None:
+        supported = ", ".join(get_supported_solvents())
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/invalid-solvent",
+                "title": "Invalid Solvent",
+                "status": 422,
+                "detail": f"Unknown solvent '{request.solvent}'. Supported solvents: {supported}",
+            },
+        )
+
     # Get software versions for reproducibility
     versions = get_versions()
 
     # Create job directory and initial status
     job_status = create_job_directory(
         smiles=request.smiles,
-        solvent=request.solvent,
+        solvent=normalized_solvent,
         isicle_version=versions.isicle,
         nwchem_version=versions.nwchem,
         name=request.name,
         preset=request.preset,
     )
 
-    # Queue the calculation task
-    run_optimization_task(job_status.job_id)
+    # Queue the NMR calculation task
+    run_nmr_task(job_status.job_id)
 
     return JSONResponse(
         status_code=status.HTTP_202_ACCEPTED,
@@ -176,6 +191,20 @@ async def submit_file(
             },
         )
 
+    # Validate solvent
+    normalized_solvent = validate_solvent(solvent)
+    if normalized_solvent is None:
+        supported = ", ".join(get_supported_solvents())
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/invalid-solvent",
+                "title": "Invalid Solvent",
+                "status": 422,
+                "detail": f"Unknown solvent '{solvent}'. Supported solvents: {supported}",
+            },
+        )
+
     # Convert to SMILES for storage
     smiles = Chem.MolToSmiles(mol)
 
@@ -185,15 +214,15 @@ async def submit_file(
     # Create job (use filename as name if not provided)
     job_status = create_job_directory(
         smiles=smiles,
-        solvent=solvent,
+        solvent=normalized_solvent,
         isicle_version=versions.isicle,
         nwchem_version=versions.nwchem,
         name=name or filename,
         preset=preset,
     )
 
-    # Queue calculation
-    run_optimization_task(job_status.job_id)
+    # Queue NMR calculation
+    run_nmr_task(job_status.job_id)
 
     return JSONResponse(
         status_code=status.HTTP_202_ACCEPTED,
@@ -203,6 +232,22 @@ async def submit_file(
             "Retry-After": "30",
         },
     )
+
+
+@router.get(
+    "/solvents",
+    response_model=list[str],
+    responses={
+        200: {"description": "List of supported solvents"},
+    },
+)
+async def list_solvents():
+    """List supported NMR solvents for COSMO solvation model.
+
+    Returns list of NWChem COSMO solvent names that can be used
+    in job submission requests.
+    """
+    return get_supported_solvents()
 
 
 @router.get(
