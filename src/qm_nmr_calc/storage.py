@@ -27,6 +27,7 @@ def create_job_directory(
     smiles: str,
     isicle_version: str,
     nwchem_version: str,
+    name: Optional[str] = None,
 ) -> JobStatus:
     """Create job directory with initial queued status.
 
@@ -46,7 +47,7 @@ def create_job_directory(
         job_id=job_id,
         status="queued",
         created_at=datetime.utcnow(),
-        input=JobInput(smiles=smiles),
+        input=JobInput(smiles=smiles, name=name),
         isicle_version=isicle_version,
         nwchem_version=nwchem_version,
     )

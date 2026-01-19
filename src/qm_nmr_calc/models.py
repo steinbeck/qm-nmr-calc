@@ -12,7 +12,7 @@ class JobInput(BaseModel):
     model_config = ConfigDict(strict=True)
 
     smiles: str
-    # Future: mol_file, parameters
+    name: Optional[str] = None  # User-provided molecule name/label
 
 
 class JobStatus(BaseModel):
