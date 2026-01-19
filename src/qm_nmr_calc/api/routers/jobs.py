@@ -1,16 +1,18 @@
 """Job submission and status endpoints."""
 
+import io
+import zipfile
 from typing import Annotated, Optional
 
 from fastapi import APIRouter, Form, HTTPException, UploadFile, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from rdkit import Chem
 
-from ..schemas import JobStatusResponse, JobSubmitRequest, ProblemDetail
+from ..schemas import JobStatusResponse, JobSubmitRequest, NMRResultsResponse, ProblemDetail
 from ...isicle_wrapper import get_versions
 from ...models import JobStatus
 from ...solvents import validate_solvent, get_supported_solvents
-from ...storage import create_job_directory, load_job_status
+from ...storage import create_job_directory, get_geometry_file, get_output_files, load_job_status
 from ...tasks import run_nmr_task
 from ...validation import validate_mol_file, validate_smiles
 
@@ -275,3 +277,272 @@ async def get_job_status(job_id: str):
             },
         )
     return job_status_to_response(job_status)
+
+
+@router.get(
+    "/{job_id}/results",
+    response_model=NMRResultsResponse,
+    responses={
+        200: {"description": "NMR calculation results"},
+        404: {"model": ProblemDetail, "description": "Job or results not found"},
+        409: {"model": ProblemDetail, "description": "Job not complete"},
+    },
+)
+async def get_nmr_results(job_id: str):
+    """Get NMR chemical shifts for a completed job.
+
+    Returns 1H and 13C shifts with atom indices, plus calculation metadata.
+    """
+    job_status = load_job_status(job_id)
+    if job_status is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-found",
+                "title": "Job Not Found",
+                "status": 404,
+                "detail": f"No job exists with ID '{job_id}'",
+            },
+        )
+
+    if job_status.status != "complete":
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-complete",
+                "title": "Job Not Complete",
+                "status": 409,
+                "detail": f"Job '{job_id}' is in '{job_status.status}' state. Results available when complete.",
+            },
+        )
+
+    if job_status.nmr_results is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/results-not-found",
+                "title": "Results Not Found",
+                "status": 404,
+                "detail": f"Job '{job_id}' completed but no NMR results available.",
+            },
+        )
+
+    # Convert to response format (without shielding, only shift)
+    return NMRResultsResponse(
+        h1_shifts=[
+            {"index": s.index, "atom": s.atom, "shift": s.shift}
+            for s in job_status.nmr_results.h1_shifts
+        ],
+        c13_shifts=[
+            {"index": s.index, "atom": s.atom, "shift": s.shift}
+            for s in job_status.nmr_results.c13_shifts
+        ],
+        functional=job_status.nmr_results.functional,
+        basis_set=job_status.nmr_results.basis_set,
+        solvent=job_status.nmr_results.solvent,
+    )
+
+
+@router.get(
+    "/{job_id}/geometry",
+    response_class=FileResponse,
+    responses={
+        200: {"description": "Optimized molecular geometry (XYZ)", "content": {"chemical/x-xyz": {}}},
+        404: {"model": ProblemDetail, "description": "Job or geometry file not found"},
+        409: {"model": ProblemDetail, "description": "Job not complete"},
+    },
+)
+async def download_geometry(job_id: str):
+    """Download optimized molecular geometry as XYZ file."""
+    job_status = load_job_status(job_id)
+    if job_status is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-found",
+                "title": "Job Not Found",
+                "status": 404,
+                "detail": f"No job exists with ID '{job_id}'",
+            },
+        )
+
+    if job_status.status != "complete":
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-complete",
+                "title": "Job Not Complete",
+                "status": 409,
+                "detail": f"Job '{job_id}' is in '{job_status.status}' state. Geometry available when complete.",
+            },
+        )
+
+    geometry_file = get_geometry_file(job_id)
+    if geometry_file is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/geometry-not-found",
+                "title": "Geometry File Not Found",
+                "status": 404,
+                "detail": f"Optimized geometry file not found for job '{job_id}'.",
+            },
+        )
+
+    return FileResponse(
+        path=geometry_file,
+        media_type="chemical/x-xyz",
+        filename=f"{job_id}_optimized.xyz",
+    )
+
+
+@router.get(
+    "/{job_id}/geometry.sdf",
+    response_class=Response,
+    responses={
+        200: {"description": "Optimized molecular geometry (SDF)", "content": {"chemical/x-mdl-sdfile": {}}},
+        404: {"model": ProblemDetail, "description": "Job or geometry file not found"},
+        409: {"model": ProblemDetail, "description": "Job not complete"},
+    },
+)
+async def download_geometry_sdf(job_id: str):
+    """Download optimized molecular geometry as SDF file.
+
+    Generates SDF from original SMILES with optimized 3D coordinates.
+    """
+    job_status = load_job_status(job_id)
+    if job_status is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-found",
+                "title": "Job Not Found",
+                "status": 404,
+                "detail": f"No job exists with ID '{job_id}'",
+            },
+        )
+
+    if job_status.status != "complete":
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-complete",
+                "title": "Job Not Complete",
+                "status": 409,
+                "detail": f"Job '{job_id}' is in '{job_status.status}' state. Geometry available when complete.",
+            },
+        )
+
+    geometry_file = get_geometry_file(job_id)
+    if geometry_file is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/geometry-not-found",
+                "title": "Geometry File Not Found",
+                "status": 404,
+                "detail": f"Optimized geometry file not found for job '{job_id}'.",
+            },
+        )
+
+    # Read XYZ coordinates
+    xyz_content = geometry_file.read_text()
+    xyz_lines = xyz_content.strip().split("\n")
+
+    # Parse XYZ: first line is atom count, second is comment, rest are coords
+    coords = []
+    for line in xyz_lines[2:]:  # Skip count and comment lines
+        parts = line.split()
+        if len(parts) >= 4:
+            coords.append((float(parts[1]), float(parts[2]), float(parts[3])))
+
+    # Create mol from SMILES and set coordinates
+    mol = Chem.MolFromSmiles(job_status.input.smiles)
+    if mol is None:
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/sdf-generation-failed",
+                "title": "SDF Generation Failed",
+                "status": 500,
+                "detail": "Failed to parse original SMILES for SDF generation.",
+            },
+        )
+
+    mol = Chem.AddHs(mol)
+
+    # Create conformer with coordinates
+    from rdkit.Chem import AllChem
+    conf = Chem.Conformer(mol.GetNumAtoms())
+    for i, (x, y, z) in enumerate(coords):
+        if i < mol.GetNumAtoms():
+            conf.SetAtomPosition(i, (x, y, z))
+    mol.AddConformer(conf, assignId=True)
+
+    # Generate SDF content
+    sdf_content = Chem.MolToMolBlock(mol)
+
+    return Response(
+        content=sdf_content,
+        media_type="chemical/x-mdl-sdfile",
+        headers={"Content-Disposition": f'attachment; filename="{job_id}_optimized.sdf"'},
+    )
+
+
+@router.get(
+    "/{job_id}/output",
+    responses={
+        200: {"description": "Raw NWChem output files (ZIP)", "content": {"application/zip": {}}},
+        404: {"model": ProblemDetail, "description": "Job or output files not found"},
+        409: {"model": ProblemDetail, "description": "Job not complete"},
+    },
+)
+async def download_output(job_id: str):
+    """Download raw NWChem output files as ZIP archive."""
+    job_status = load_job_status(job_id)
+    if job_status is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-found",
+                "title": "Job Not Found",
+                "status": 404,
+                "detail": f"No job exists with ID '{job_id}'",
+            },
+        )
+
+    if job_status.status != "complete":
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-complete",
+                "title": "Job Not Complete",
+                "status": 409,
+                "detail": f"Job '{job_id}' is in '{job_status.status}' state. Output files available when complete.",
+            },
+        )
+
+    output_files = get_output_files(job_id)
+    if not output_files:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/output-not-found",
+                "title": "Output Files Not Found",
+                "status": 404,
+                "detail": f"No NWChem output files found for job '{job_id}'.",
+            },
+        )
+
+    # Create in-memory ZIP
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zf:
+        for filepath in output_files:
+            zf.write(filepath, filepath.name)
+    zip_buffer.seek(0)
+
+    return Response(
+        content=zip_buffer.getvalue(),
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="{job_id}_output.zip"'},
+    )
