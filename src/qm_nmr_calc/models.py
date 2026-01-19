@@ -6,6 +6,29 @@ from typing import Literal, Optional
 from pydantic import BaseModel, ConfigDict
 
 
+class AtomShift(BaseModel):
+    """NMR chemical shift for a single atom."""
+
+    model_config = ConfigDict(strict=True)
+
+    index: int  # NWChem 1-based atom index
+    atom: str  # Element symbol: 'H' or 'C'
+    shielding: float  # Raw isotropic shielding in ppm
+    shift: float  # Chemical shift relative to TMS in ppm
+
+
+class NMRResults(BaseModel):
+    """NMR calculation results."""
+
+    model_config = ConfigDict(strict=True)
+
+    h1_shifts: list[AtomShift]  # 1H chemical shifts, sorted by shift descending
+    c13_shifts: list[AtomShift]  # 13C chemical shifts, sorted by shift descending
+    functional: str  # DFT functional used
+    basis_set: str  # Basis set used for NMR
+    solvent: str  # COSMO solvent used
+
+
 class JobInput(BaseModel):
     """Input parameters for a calculation job."""
 
@@ -13,6 +36,8 @@ class JobInput(BaseModel):
 
     smiles: str
     name: Optional[str] = None  # User-provided molecule name/label
+    preset: Literal["draft", "production"] = "production"
+    solvent: str  # Required field - no default, user must specify
 
 
 class JobStatus(BaseModel):
@@ -43,3 +68,7 @@ class JobStatus(BaseModel):
     # Resource usage (filled on completion)
     cpu_time_seconds: Optional[float] = None
     memory_peak_mb: Optional[float] = None
+
+    # NMR results (populated on completion)
+    nmr_results: Optional[NMRResults] = None
+    optimized_geometry_file: Optional[str] = None  # Path to XYZ file
