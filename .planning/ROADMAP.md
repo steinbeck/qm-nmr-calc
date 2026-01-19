@@ -12,7 +12,7 @@ This roadmap delivers a working async NMR prediction service in 6 phases. We sta
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Project structure, job queue, ISiCLE wrapper
+- [x] **Phase 1: Foundation** - Project structure, job queue, ISiCLE wrapper
 - [ ] **Phase 2: Input and API** - Molecule submission, validation, status polling
 - [ ] **Phase 3: NMR Calculations** - Chemical shift calculations and presets
 - [ ] **Phase 4: Results Delivery** - JSON results, file downloads, email notifications
@@ -33,9 +33,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Project setup with uv, Pydantic models, job storage layer
-- [ ] 01-02-PLAN.md — ISiCLE wrapper and Huey task queue with signal handlers
-- [ ] 01-03-PLAN.md — Startup validation, recovery logic, and integration test
+- [x] 01-01-PLAN.md — Project setup with uv, Pydantic models, job storage layer
+- [x] 01-02-PLAN.md — ISiCLE wrapper and Huey task queue with signal handlers
+- [x] 01-03-PLAN.md — Startup validation, recovery logic, and integration test
 
 ### Phase 2: Input and API
 **Goal**: Users can submit molecules and check job status via REST API
@@ -114,7 +114,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/3 | Planned | - |
+| 1. Foundation | 3/3 | Complete | 2026-01-19 |
 | 2. Input and API | 0/? | Not started | - |
 | 3. NMR Calculations | 0/? | Not started | - |
 | 4. Results Delivery | 0/? | Not started | - |
