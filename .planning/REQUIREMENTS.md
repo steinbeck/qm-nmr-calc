@@ -78,24 +78,24 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INP-01 | Phase 2 | Pending |
-| INP-02 | Phase 2 | Pending |
-| INP-03 | Phase 2 | Pending |
-| INP-04 | Phase 2 | Pending |
+| INP-01 | Phase 2 | Complete |
+| INP-02 | Phase 2 | Complete |
+| INP-03 | Phase 2 | Complete |
+| INP-04 | Phase 2 | Complete |
 | CALC-01 | Phase 1 | Complete |
-| CALC-02 | Phase 3 | Pending |
-| CALC-03 | Phase 3 | Pending |
+| CALC-02 | Phase 3 | Complete |
+| CALC-03 | Phase 3 | Complete |
 | CALC-04 | Phase 1 | Complete |
 | CALC-05 | Phase 1 | Complete |
-| CALC-06 | Phase 3 | Pending |
+| CALC-06 | Phase 3 | Complete |
 | RES-01 | Phase 4 | Pending |
 | RES-02 | Phase 4 | Pending |
 | RES-03 | Phase 4 | Pending |
-| RES-04 | Phase 2 | Pending |
+| RES-04 | Phase 2 | Complete |
 | RES-05 | Phase 5 | Pending |
 | RES-06 | Phase 5 | Pending |
 | NOTF-01 | Phase 4 | Pending |
-| UI-01 | Phase 2 | Pending |
+| UI-01 | Phase 2 | Complete |
 | UI-02 | Phase 6 | Pending |
 | UI-03 | Phase 6 | Pending |
 

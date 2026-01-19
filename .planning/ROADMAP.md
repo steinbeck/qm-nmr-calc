@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Project structure, job queue, ISiCLE wrapper
 - [x] **Phase 2: Input and API** - Molecule submission, validation, status polling
-- [ ] **Phase 3: NMR Calculations** - Chemical shift calculations and presets
+- [x] **Phase 3: NMR Calculations** - Chemical shift calculations and presets
 - [ ] **Phase 4: Results Delivery** - JSON results, file downloads, email notifications
 - [ ] **Phase 5: Visualization** - Spectrum plots and annotated structures
 - [ ] **Phase 6: Web UI** - Browser interface for submission and results
@@ -66,9 +66,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Presets module, shielding-to-shift conversion, solvent validation
-- [ ] 03-02-PLAN.md — Extended models with NMR results, API schemas for preset/solvent
-- [ ] 03-03-PLAN.md — NMR calculation pipeline (geometry opt + shielding), API updates
+- [x] 03-01-PLAN.md — Presets module, shielding-to-shift conversion, solvent validation
+- [x] 03-02-PLAN.md — Extended models with NMR results, API schemas for preset/solvent
+- [x] 03-03-PLAN.md — NMR calculation pipeline (geometry opt + shielding), API updates
 
 ### Phase 4: Results Delivery
 **Goal**: Users can retrieve all calculation results in multiple formats
@@ -120,7 +120,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-01-19 |
 | 2. Input and API | 3/3 | Complete | 2026-01-19 |
-| 3. NMR Calculations | 0/3 | Planned | - |
+| 3. NMR Calculations | 3/3 | Complete | 2026-01-19 |
 | 4. Results Delivery | 0/? | Not started | - |
 | 5. Visualization | 0/? | Not started | - |
 | 6. Web UI | 0/? | Not started | - |
