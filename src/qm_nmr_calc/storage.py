@@ -106,3 +106,23 @@ def list_jobs_by_status(status_filter: str) -> list[str]:
         if status and status.status == status_filter:
             jobs.append(job_dir.name)
     return jobs
+
+
+def get_geometry_file(job_id: str) -> Optional[Path]:
+    """Get path to optimized geometry XYZ file if it exists."""
+    geometry_file = get_job_dir(job_id) / "output" / "optimized.xyz"
+    return geometry_file if geometry_file.exists() else None
+
+
+def get_output_files(job_id: str) -> list[Path]:
+    """Get list of raw NWChem output files in job scratch directory.
+
+    Returns .out and .nw files from the scratch directory.
+    """
+    scratch_dir = get_job_dir(job_id) / "scratch"
+    if not scratch_dir.exists():
+        return []
+    files = []
+    for pattern in ["*.out", "*.nw"]:
+        files.extend(scratch_dir.glob(pattern))
+    return files
