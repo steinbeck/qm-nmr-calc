@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Project structure, job queue, ISiCLE wrapper
 - [x] **Phase 2: Input and API** - Molecule submission, validation, status polling
 - [x] **Phase 3: NMR Calculations** - Chemical shift calculations and presets
-- [ ] **Phase 4: Results Delivery** - JSON results, file downloads, email notifications
+- [x] **Phase 4: Results Delivery** - JSON results, file downloads, email notifications
 - [ ] **Phase 5: Visualization** - Spectrum plots and annotated structures
 - [ ] **Phase 6: Web UI** - Browser interface for submission and results
 
@@ -82,8 +82,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Results endpoint and file download endpoints (XYZ, SDF, raw output ZIP)
-- [ ] 04-02-PLAN.md — Email notification system (opt-in field, notifications module, signal handlers)
+- [x] 04-01-PLAN.md — Results endpoint and file download endpoints (XYZ, SDF, raw output ZIP)
+- [x] 04-02-PLAN.md — Email notification system (opt-in field, notifications module, signal handlers)
 
 ### Phase 5: Visualization
 **Goal**: System generates visual representations of NMR results
@@ -122,6 +122,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Foundation | 3/3 | Complete | 2026-01-19 |
 | 2. Input and API | 3/3 | Complete | 2026-01-19 |
 | 3. NMR Calculations | 3/3 | Complete | 2026-01-19 |
-| 4. Results Delivery | 0/2 | Not started | - |
+| 4. Results Delivery | 2/2 | Complete | 2026-01-19 |
 | 5. Visualization | 0/? | Not started | - |
 | 6. Web UI | 0/? | Not started | - |

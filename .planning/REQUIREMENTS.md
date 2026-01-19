@@ -88,13 +88,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CALC-04 | Phase 1 | Complete |
 | CALC-05 | Phase 1 | Complete |
 | CALC-06 | Phase 3 | Complete |
-| RES-01 | Phase 4 | Pending |
-| RES-02 | Phase 4 | Pending |
-| RES-03 | Phase 4 | Pending |
+| RES-01 | Phase 4 | Complete |
+| RES-02 | Phase 4 | Complete |
+| RES-03 | Phase 4 | Complete |
 | RES-04 | Phase 2 | Complete |
 | RES-05 | Phase 5 | Pending |
 | RES-06 | Phase 5 | Pending |
-| NOTF-01 | Phase 4 | Pending |
+| NOTF-01 | Phase 4 | Complete |
 | UI-01 | Phase 2 | Complete |
 | UI-02 | Phase 6 | Pending |
 | UI-03 | Phase 6 | Pending |
