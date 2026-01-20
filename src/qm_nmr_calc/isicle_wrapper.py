@@ -1,4 +1,12 @@
-"""Thin wrapper around ISiCLE for geometry optimization and NMR calculations."""
+"""Thin wrapper around ISiCLE for geometry optimization and NMR calculations.
+
+TODO: Currently all calculations run in gas phase (cosmo=False) because we use
+CHESHIRE scaling factors which were derived from gas-phase calculations. The
+solvent parameter is accepted but NOT USED. To enable solvent effects:
+1. Set cosmo=True in the isicle.qm.dft() calls
+2. Use solvent-specific scaling factors (or compute new ones)
+3. The ~10 ppm error in chemical shifts may be related to this limitation
+"""
 import subprocess
 import sys
 from pathlib import Path
