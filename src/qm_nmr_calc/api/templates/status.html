@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Job Status | QM NMR Calculator{% endblock %}
+
+{% block content %}
+<article>
+    <header>
+        <h2>Job Status: {{ job.job_id }}</h2>
+    </header>
+
+    <div id="status-display">
+        <dl>
+            <dt>Status</dt>
+            <dd><span id="job-status" data-status="{{ job.status }}">{{ job.status }}</span></dd>
+
+            <dt>Elapsed Time</dt>
+            <dd><span id="elapsed-time">--</span></dd>
+
+            {% if job.input_name %}
+            <dt>Molecule Name</dt>
+            <dd>{{ job.input_name }}</dd>
+            {% endif %}
+
+            <dt>SMILES</dt>
+            <dd><code>{{ job.input_smiles }}</code></dd>
+
+            <dt>Solvent</dt>
+            <dd>{{ job.solvent }}</dd>
+
+            <dt>Preset</dt>
+            <dd>{{ job.preset }}</dd>
+        </dl>
+    </div>
+
+    <div id="error-display" style="display: none;" role="alert">
+        <p id="error-message"></p>
+    </div>
+
+    <footer>
+        <small id="polling-status">Page refreshes automatically while job is running</small>
+        <br>
+        <a href="/">Submit another job</a>
+    </footer>
+</article>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+    const JOB_ID = "{{ job.job_id }}";
+    const CREATED_AT = new Date("{{ job.created_at }}");
+    const POLL_INTERVAL = 3000; // 3 seconds
+
+    const statusSpan = document.getElementById('job-status');
+    const elapsedSpan = document.getElementById('elapsed-time');
+    const errorDisplay = document.getElementById('error-display');
+    const errorMessage = document.getElementById('error-message');
+    const pollingStatus = document.getElementById('polling-status');
+
+    function formatElapsed(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        if (mins > 0) {
+            return mins + 'm ' + secs + 's';
+        }
+        return secs + 's';
+    }
+
+    function updateElapsedTime() {
+        const now = new Date();
+        const elapsed = Math.floor((now - CREATED_AT) / 1000);
+        elapsedSpan.textContent = formatElapsed(elapsed);
+    }
+
+    async function checkStatus() {
+        try {
+            const response = await fetch('/api/v1/jobs/' + JOB_ID);
+            const data = await response.json();
+
+            // Update status display
+            statusSpan.textContent = data.status;
+            statusSpan.setAttribute('data-status', data.status);
+            updateElapsedTime();
+
+            if (data.status === 'complete') {
+                // Redirect to results page
+                pollingStatus.textContent = 'Job complete! Redirecting to results...';
+                window.location.href = '/results/' + JOB_ID;
+            } else if (data.status === 'failed') {
+                // Show error message
+                errorDisplay.style.display = 'block';
+                errorMessage.textContent = data.error_message || 'An unknown error occurred';
+                pollingStatus.textContent = 'Job failed. No automatic refresh.';
+            } else {
+                // Continue polling
+                setTimeout(checkStatus, POLL_INTERVAL);
+            }
+        } catch (error) {
+            console.error('Error checking job status:', error);
+            // Retry with longer interval on error
+            setTimeout(checkStatus, POLL_INTERVAL * 2);
+        }
+    }
+
+    // Start polling and elapsed time updates when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        checkStatus();
+        setInterval(updateElapsedTime, 1000);
+    });
+})();
+</script>
+{% endblock %}
