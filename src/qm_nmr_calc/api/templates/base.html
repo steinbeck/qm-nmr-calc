@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>{% block title %}QM NMR Calculator{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/custom.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header class="container">
+        <nav>
+            <ul>
+                <li><a href="/"><strong>QM NMR Calculator</strong></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="container">
+        <small>Powered by ISiCLE and NWChem</small>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

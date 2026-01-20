@@ -1,0 +1,104 @@
+/* Custom styles for QM NMR Calculator */
+
+/* Article max-width for better readability */
+article {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Clickable images */
+img.clickable {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+img.clickable:hover {
+    opacity: 0.9;
+}
+
+/* Modal styles for enlarged images */
+.modal-image {
+    max-height: 80vh;
+    max-width: 90vw;
+    object-fit: contain;
+}
+
+/* Form improvements */
+form fieldset {
+    margin-bottom: 1rem;
+}
+
+/* Status indicator styling */
+.status-indicator {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.status-pending {
+    background-color: #ffc107;
+}
+
+.status-running {
+    background-color: #17a2b8;
+    animation: pulse 1.5s infinite;
+}
+
+.status-complete {
+    background-color: #28a745;
+}
+
+.status-failed {
+    background-color: #dc3545;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Results grid for side-by-side images */
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.results-grid figure {
+    margin: 0;
+    text-align: center;
+}
+
+.results-grid img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 0.25rem;
+}
+
+/* Download section styling */
+.download-section {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--pico-muted-border-color);
+}
+
+/* Metadata display */
+.metadata-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+}
+
+.metadata-grid dt {
+    font-weight: 600;
+    color: var(--pico-muted-color);
+}
+
+.metadata-grid dd {
+    margin: 0;
+}
