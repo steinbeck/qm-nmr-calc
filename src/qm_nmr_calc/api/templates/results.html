@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Results: {{ job.input_name or job.job_id }} | QM NMR Calculator{% endblock %}
+
+{% block content %}
+<h2>NMR Calculation Results</h2>
+<p class="muted">{{ job.input_name or job.job_id }}</p>
+
+<article>
+    <header>
+        <h3>Calculation Details</h3>
+    </header>
+    <dl class="metadata-grid">
+        <dt>Preset</dt>
+        <dd>{{ job.preset }}</dd>
+        <dt>Solvent</dt>
+        <dd>{{ job.solvent }}</dd>
+        <dt>Functional</dt>
+        <dd>{{ results.functional }}</dd>
+        <dt>Basis Set</dt>
+        <dd>{{ results.basis_set }}</dd>
+    </dl>
+    <details>
+        <summary>SMILES</summary>
+        <code>{{ job.input_smiles }}</code>
+    </details>
+</article>
+
+<article>
+    <header>
+        <h3>Visualizations</h3>
+        <small>Click any image to enlarge</small>
+    </header>
+    <div class="results-grid">
+        <figure>
+            <img src="/api/v1/jobs/{{ job.job_id }}/structure.png"
+                 alt="Annotated molecular structure"
+                 class="clickable"
+                 onclick="openModal(this.src)">
+            <figcaption>Annotated Structure</figcaption>
+        </figure>
+        <figure>
+            <img src="/api/v1/jobs/{{ job.job_id }}/spectrum/1h.png"
+                 alt="1H NMR spectrum"
+                 class="clickable"
+                 onclick="openModal(this.src)">
+            <figcaption>1H NMR Spectrum</figcaption>
+        </figure>
+        <figure>
+            <img src="/api/v1/jobs/{{ job.job_id }}/spectrum/13c.png"
+                 alt="13C NMR spectrum"
+                 class="clickable"
+                 onclick="openModal(this.src)">
+            <figcaption>13C NMR Spectrum</figcaption>
+        </figure>
+    </div>
+</article>
+
+<article>
+    <header>
+        <h3>Downloads</h3>
+    </header>
+    <div class="download-grid">
+        <a href="/api/v1/jobs/{{ job.job_id }}/geometry" role="button" class="secondary">Geometry (XYZ)</a>
+        <a href="/api/v1/jobs/{{ job.job_id }}/geometry.sdf" role="button" class="secondary">Geometry (SDF)</a>
+        <a href="/api/v1/jobs/{{ job.job_id }}/output" role="button" class="secondary">Raw Output (ZIP)</a>
+        <a href="/api/v1/jobs/{{ job.job_id }}/spectrum/1h.png" role="button" class="secondary" download>1H Spectrum (PNG)</a>
+        <a href="/api/v1/jobs/{{ job.job_id }}/spectrum/13c.png" role="button" class="secondary" download>13C Spectrum (PNG)</a>
+        <a href="/api/v1/jobs/{{ job.job_id }}/structure.png" role="button" class="secondary" download>Structure (PNG)</a>
+    </div>
+</article>
+
+<p><a href="/">Submit another job</a></p>
+
+<dialog id="image-modal">
+    <article>
+        <header>
+            <button aria-label="Close" rel="prev" onclick="closeModal()"></button>
+        </header>
+        <img id="modal-image" class="modal-image" alt="Enlarged view">
+    </article>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const modal = document.getElementById('image-modal');
+const modalImage = document.getElementById('modal-image');
+
+function openModal(src) {
+    modalImage.src = src;
+    modal.showModal();
+    document.body.classList.add('modal-is-open');
+}
+
+function closeModal() {
+    modal.close();
+    document.body.classList.remove('modal-is-open');
+}
+
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+});
+
+modal.addEventListener('cancel', closeModal);
+</script>
+{% endblock %}
