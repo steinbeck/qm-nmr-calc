@@ -1,14 +1,19 @@
 """Web UI router for browser-based interface."""
 
 from pathlib import Path
+from typing import Annotated, Optional
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from rdkit import Chem
 
+from ...isicle_wrapper import get_versions
 from ...presets import PRESETS
-from ...solvents import SUPPORTED_SOLVENTS
-from ...storage import load_job_status
+from ...solvents import SUPPORTED_SOLVENTS, get_supported_solvents, validate_solvent
+from ...storage import create_job_directory, load_job_status
+from ...tasks import run_nmr_task
+from ...validation import validate_mol_file, validate_smiles
 
 # Template engine setup
 templates = Jinja2Templates(
@@ -18,9 +23,8 @@ templates = Jinja2Templates(
 router = APIRouter(tags=["web"])
 
 
-@router.get("/", response_class=HTMLResponse)
-async def home(request: Request) -> HTMLResponse:
-    """Render the submission form page."""
+def _get_form_context() -> dict:
+    """Build common form context with solvents and presets."""
     # Build solvent options with descriptions
     solvents = [
         {"value": key, "label": desc}
@@ -33,37 +37,171 @@ async def home(request: Request) -> HTMLResponse:
         for preset, config in PRESETS.items()
     ]
 
+    return {"solvents": solvents, "presets": presets}
+
+
+@router.get("/", response_class=HTMLResponse)
+async def home(request: Request) -> HTMLResponse:
+    """Render the submission form page."""
+    context = _get_form_context()
+    context["form_data"] = {}  # Empty form data for fresh submission
     return templates.TemplateResponse(
         request=request,
         name="submit.html",
-        context={
-            "solvents": solvents,
-            "presets": presets,
-        },
+        context=context,
+    )
+
+
+@router.post("/submit", response_class=HTMLResponse)
+async def submit_job(
+    request: Request,
+    smiles: Annotated[Optional[str], Form()] = None,
+    file: Optional[UploadFile] = None,
+    solvent: Annotated[str, Form()] = "",
+    preset: Annotated[str, Form()] = "production",
+    name: Annotated[Optional[str], Form()] = None,
+    notification_email: Annotated[Optional[str], Form()] = None,
+):
+    """Process job submission from web form."""
+    # Preserve form data for re-render on error
+    form_data = {
+        "smiles": smiles or "",
+        "solvent": solvent,
+        "preset": preset,
+        "name": name or "",
+        "notification_email": notification_email or "",
+    }
+
+    def render_error(error: str) -> HTMLResponse:
+        """Helper to render form with error message."""
+        context = _get_form_context()
+        context["error"] = error
+        context["form_data"] = form_data
+        return templates.TemplateResponse(
+            request=request,
+            name="submit.html",
+            context=context,
+        )
+
+    # Validate that at least one input is provided
+    smiles_provided = smiles and smiles.strip()
+    file_provided = file and file.filename
+
+    if not smiles_provided and not file_provided:
+        return render_error("Please provide either a SMILES string or upload a MOL/SDF file.")
+
+    # Process input and get molecule
+    final_smiles = None
+    final_name = name
+
+    if smiles_provided:
+        # Validate SMILES
+        mol, error = validate_smiles(smiles.strip())
+        if mol is None:
+            return render_error(f"Invalid SMILES: {error}")
+        final_smiles = smiles.strip()
+
+    elif file_provided:
+        # Read and validate file
+        filename = file.filename or "uploaded.mol"
+        if not (filename.endswith(".mol") or filename.endswith(".sdf")):
+            return render_error("File must be a .mol or .sdf file.")
+
+        content = await file.read()
+        mol, error = validate_mol_file(content, filename)
+        if mol is None:
+            return render_error(f"Invalid molecule file: {error}")
+
+        # Convert to SMILES for storage
+        final_smiles = Chem.MolToSmiles(mol)
+
+        # Use filename as name if not provided
+        if not final_name:
+            final_name = filename
+
+    # Validate solvent
+    if not solvent:
+        return render_error("Please select a solvent.")
+
+    normalized_solvent = validate_solvent(solvent)
+    if normalized_solvent is None:
+        supported = ", ".join(get_supported_solvents())
+        return render_error(f"Unknown solvent '{solvent}'. Supported: {supported}")
+
+    # Get software versions
+    versions = get_versions()
+
+    # Create job directory and initial status
+    job_status = create_job_directory(
+        smiles=final_smiles,
+        solvent=normalized_solvent,
+        isicle_version=versions.isicle,
+        nwchem_version=versions.nwchem,
+        name=final_name,
+        preset=preset,
+        notification_email=notification_email,
+    )
+
+    # Queue the NMR calculation task
+    run_nmr_task(job_status.job_id)
+
+    # Redirect to status page with 303 See Other
+    return RedirectResponse(
+        url=f"/status/{job_status.job_id}",
+        status_code=303,
+    )
+
+
+@router.get("/status/{job_id}", response_class=HTMLResponse)
+async def job_status_page(request: Request, job_id: str) -> HTMLResponse:
+    """Render the job status page."""
+    job_status = load_job_status(job_id)
+
+    if job_status is None:
+        # Redirect to home with error
+        context = _get_form_context()
+        context["error"] = f"Job '{job_id}' not found."
+        context["form_data"] = {}
+        return templates.TemplateResponse(
+            request=request,
+            name="submit.html",
+            context=context,
+            status_code=404,
+        )
+
+    # Convert job status to template-friendly dict
+    job_data = {
+        "job_id": job_status.job_id,
+        "status": job_status.status,
+        "created_at": job_status.created_at.isoformat() + "Z",
+        "input_smiles": job_status.input.smiles,
+        "input_name": job_status.input.name,
+        "solvent": job_status.input.solvent,
+        "preset": job_status.input.preset,
+        "error_message": job_status.error_message,
+    }
+
+    return templates.TemplateResponse(
+        request=request,
+        name="status.html",
+        context={"job": job_data},
     )
 
 
 @router.get("/results/{job_id}", response_class=HTMLResponse)
-async def results(request: Request, job_id: str) -> HTMLResponse:
+async def results_page(request: Request, job_id: str) -> HTMLResponse:
     """Render the results page for a completed job."""
     job_status = load_job_status(job_id)
 
     # Job not found
     if job_status is None:
+        context = _get_form_context()
+        context["error"] = f"Job '{job_id}' not found."
+        context["form_data"] = {}
         return templates.TemplateResponse(
             request=request,
             name="submit.html",
-            context={
-                "solvents": [
-                    {"value": key, "label": desc}
-                    for key, desc in sorted(SUPPORTED_SOLVENTS.items(), key=lambda x: x[1])
-                ],
-                "presets": [
-                    {"value": preset.name, "label": config["description"]}
-                    for preset, config in PRESETS.items()
-                ],
-                "error": f"Job '{job_id}' not found.",
-            },
+            context=context,
             status_code=404,
         )
 
@@ -73,20 +211,13 @@ async def results(request: Request, job_id: str) -> HTMLResponse:
 
     # Job complete but no results
     if job_status.nmr_results is None:
+        context = _get_form_context()
+        context["error"] = "Job completed but no results available."
+        context["form_data"] = {}
         return templates.TemplateResponse(
             request=request,
             name="submit.html",
-            context={
-                "solvents": [
-                    {"value": key, "label": desc}
-                    for key, desc in sorted(SUPPORTED_SOLVENTS.items(), key=lambda x: x[1])
-                ],
-                "presets": [
-                    {"value": preset.name, "label": config["description"]}
-                    for preset, config in PRESETS.items()
-                ],
-                "error": "Job completed but no results available.",
-            },
+            context=context,
             status_code=500,
         )
 
