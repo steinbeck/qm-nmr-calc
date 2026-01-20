@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-01-19)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Phase 5 - Visualization (Complete)
+**Current focus:** Phase 6 - Web UI (Phase 5 complete)
 
 ## Current Position
 
 Phase: 5 of 6 (Visualization)
-Plan: 2 of 2 in phase (05-02-PLAN.md complete)
-Status: Phase complete
-Last activity: 2026-01-20 -- Completed 05-02-PLAN.md (Visualization Integration)
+Plan: 2 of 2 in phase (complete)
+Status: Phase 5 verified complete, ready for Phase 6
+Last activity: 2026-01-20 -- Verified Phase 5 (Visualization)
 
-Progress: [██████████████░] ~79%
+Progress: [███████████████░] ~83%
 
 ## Performance Metrics
 

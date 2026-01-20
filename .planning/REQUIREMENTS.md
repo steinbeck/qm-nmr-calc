@@ -92,8 +92,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RES-02 | Phase 4 | Complete |
 | RES-03 | Phase 4 | Complete |
 | RES-04 | Phase 2 | Complete |
-| RES-05 | Phase 5 | Pending |
-| RES-06 | Phase 5 | Pending |
+| RES-05 | Phase 5 | Complete |
+| RES-06 | Phase 5 | Complete |
 | NOTF-01 | Phase 4 | Complete |
 | UI-01 | Phase 2 | Complete |
 | UI-02 | Phase 6 | Pending |
@@ -106,4 +106,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-19*
-*Last updated: 2026-01-19 after roadmap creation*
+*Last updated: 2026-01-20 after Phase 5 completion*

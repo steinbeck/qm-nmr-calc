@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Input and API** - Molecule submission, validation, status polling
 - [x] **Phase 3: NMR Calculations** - Chemical shift calculations and presets
 - [x] **Phase 4: Results Delivery** - JSON results, file downloads, email notifications
-- [ ] **Phase 5: Visualization** - Spectrum plots and annotated structures
+- [x] **Phase 5: Visualization** - Spectrum plots and annotated structures
 - [ ] **Phase 6: Web UI** - Browser interface for submission and results
 
 ## Phase Details
@@ -96,8 +96,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Visualization module (matplotlib spectrum plots, RDKit structure annotation)
-- [ ] 05-02-PLAN.md — Integration with tasks and API download endpoints
+- [x] 05-01-PLAN.md — Visualization module (matplotlib spectrum plots, RDKit structure annotation)
+- [x] 05-02-PLAN.md — Integration with tasks and API download endpoints
 
 ### Phase 6: Web UI
 **Goal**: Users can interact with the service through a browser without API calls
@@ -124,5 +124,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Input and API | 3/3 | Complete | 2026-01-19 |
 | 3. NMR Calculations | 3/3 | Complete | 2026-01-19 |
 | 4. Results Delivery | 2/2 | Complete | 2026-01-19 |
-| 5. Visualization | 0/2 | Planned | - |
+| 5. Visualization | 2/2 | Complete | 2026-01-20 |
 | 6. Web UI | 0/? | Not started | - |
