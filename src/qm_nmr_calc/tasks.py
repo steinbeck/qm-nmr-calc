@@ -9,6 +9,7 @@ from .isicle_wrapper import run_geometry_optimization, run_nmr_calculation
 from .presets import PRESETS, PresetName
 from .shifts import shielding_to_shift
 from .models import NMRResults, AtomShift
+from .visualization import generate_spectrum_plot, generate_annotated_structure
 
 
 @huey.task()
@@ -137,6 +138,29 @@ def run_nmr_task(job_id: str) -> dict:
             nmr_results.model_dump(mode='json'),
             option=orjson.OPT_INDENT_2
         )
+    )
+
+    # Generate visualizations
+    # 1H spectrum
+    generate_spectrum_plot(
+        shifts=[s.shift for s in h1_shifts],
+        nucleus="1H",
+        output_dir=output_dir,
+    )
+
+    # 13C spectrum
+    generate_spectrum_plot(
+        shifts=[s.shift for s in c13_shifts],
+        nucleus="13C",
+        output_dir=output_dir,
+    )
+
+    # Annotated structure (both 1H and 13C on one image)
+    generate_annotated_structure(
+        smiles=smiles,
+        h1_shifts=[{"index": s.index, "shift": s.shift} for s in h1_shifts],
+        c13_shifts=[{"index": s.index, "shift": s.shift} for s in c13_shifts],
+        output_dir=output_dir,
     )
 
     # Update job status with NMR results
