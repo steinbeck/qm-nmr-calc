@@ -12,7 +12,7 @@ from ..schemas import JobStatusResponse, JobSubmitRequest, NMRResultsResponse, P
 from ...isicle_wrapper import get_versions
 from ...models import JobStatus
 from ...solvents import validate_solvent, get_supported_solvents
-from ...storage import create_job_directory, get_geometry_file, get_output_files, load_job_status
+from ...storage import create_job_directory, get_geometry_file, get_output_files, get_visualization_file, load_job_status
 from ...tasks import run_nmr_task
 from ...validation import validate_mol_file, validate_smiles
 
@@ -551,3 +551,131 @@ async def download_output(job_id: str):
         media_type="application/zip",
         headers={"Content-Disposition": f'attachment; filename="{job_id}_output.zip"'},
     )
+
+
+async def _get_visualization(job_id: str, filename: str, media_type: str, download_name: str):
+    """Common logic for visualization download endpoints."""
+    job_status = load_job_status(job_id)
+    if job_status is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-found",
+                "title": "Job Not Found",
+                "status": 404,
+                "detail": f"No job exists with ID '{job_id}'",
+            },
+        )
+
+    if job_status.status != "complete":
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-complete",
+                "title": "Job Not Complete",
+                "status": 409,
+                "detail": f"Job '{job_id}' is in '{job_status.status}' state. Visualizations available when complete.",
+            },
+        )
+
+    viz_file = get_visualization_file(job_id, filename)
+    if viz_file is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/visualization-not-found",
+                "title": "Visualization Not Found",
+                "status": 404,
+                "detail": f"Visualization file '{filename}' not found for job '{job_id}'.",
+            },
+        )
+
+    return FileResponse(
+        path=viz_file,
+        media_type=media_type,
+        filename=download_name,
+    )
+
+
+@router.get(
+    "/{job_id}/spectrum/1h.png",
+    response_class=FileResponse,
+    responses={
+        200: {"description": "1H NMR spectrum plot (PNG)", "content": {"image/png": {}}},
+        404: {"model": ProblemDetail, "description": "Job or file not found"},
+        409: {"model": ProblemDetail, "description": "Job not complete"},
+    },
+)
+async def download_h1_spectrum_png(job_id: str):
+    """Download 1H NMR spectrum plot as PNG (300 DPI)."""
+    return await _get_visualization(job_id, "spectrum_1H.png", "image/png", f"{job_id}_1H_spectrum.png")
+
+
+@router.get(
+    "/{job_id}/spectrum/1h.svg",
+    response_class=FileResponse,
+    responses={
+        200: {"description": "1H NMR spectrum plot (SVG)", "content": {"image/svg+xml": {}}},
+        404: {"model": ProblemDetail, "description": "Job or file not found"},
+        409: {"model": ProblemDetail, "description": "Job not complete"},
+    },
+)
+async def download_h1_spectrum_svg(job_id: str):
+    """Download 1H NMR spectrum plot as SVG."""
+    return await _get_visualization(job_id, "spectrum_1H.svg", "image/svg+xml", f"{job_id}_1H_spectrum.svg")
+
+
+@router.get(
+    "/{job_id}/spectrum/13c.png",
+    response_class=FileResponse,
+    responses={
+        200: {"description": "13C NMR spectrum plot (PNG)", "content": {"image/png": {}}},
+        404: {"model": ProblemDetail, "description": "Job or file not found"},
+        409: {"model": ProblemDetail, "description": "Job not complete"},
+    },
+)
+async def download_c13_spectrum_png(job_id: str):
+    """Download 13C NMR spectrum plot as PNG (300 DPI)."""
+    return await _get_visualization(job_id, "spectrum_13C.png", "image/png", f"{job_id}_13C_spectrum.png")
+
+
+@router.get(
+    "/{job_id}/spectrum/13c.svg",
+    response_class=FileResponse,
+    responses={
+        200: {"description": "13C NMR spectrum plot (SVG)", "content": {"image/svg+xml": {}}},
+        404: {"model": ProblemDetail, "description": "Job or file not found"},
+        409: {"model": ProblemDetail, "description": "Job not complete"},
+    },
+)
+async def download_c13_spectrum_svg(job_id: str):
+    """Download 13C NMR spectrum plot as SVG."""
+    return await _get_visualization(job_id, "spectrum_13C.svg", "image/svg+xml", f"{job_id}_13C_spectrum.svg")
+
+
+@router.get(
+    "/{job_id}/structure.png",
+    response_class=FileResponse,
+    responses={
+        200: {"description": "Annotated structure image (PNG)", "content": {"image/png": {}}},
+        404: {"model": ProblemDetail, "description": "Job or file not found"},
+        409: {"model": ProblemDetail, "description": "Job not complete"},
+    },
+)
+async def download_structure_png(job_id: str):
+    """Download annotated molecular structure as PNG (300 DPI equivalent)."""
+    return await _get_visualization(job_id, "structure_annotated.png", "image/png", f"{job_id}_structure.png")
+
+
+@router.get(
+    "/{job_id}/structure.svg",
+    response_class=FileResponse,
+    responses={
+        200: {"description": "Annotated structure image (SVG)", "content": {"image/svg+xml": {}}},
+        404: {"model": ProblemDetail, "description": "Job or file not found"},
+        409: {"model": ProblemDetail, "description": "Job not complete"},
+    },
+)
+async def download_structure_svg(job_id: str):
+    """Download annotated molecular structure as SVG."""
+    return await _get_visualization(job_id, "structure_annotated.svg", "image/svg+xml", f"{job_id}_structure.svg")
