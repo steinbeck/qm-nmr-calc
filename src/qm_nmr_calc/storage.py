@@ -133,3 +133,18 @@ def get_output_files(job_id: str) -> list[Path]:
     for pattern in ["*.out", "*.nw"]:
         files.extend(scratch_dir.glob(pattern))
     return files
+
+
+def get_visualization_file(job_id: str, filename: str) -> Optional[Path]:
+    """Get path to a visualization file if it exists.
+
+    Args:
+        job_id: Job identifier
+        filename: One of: spectrum_1H.svg, spectrum_1H.png, spectrum_13C.svg,
+                  spectrum_13C.png, structure_annotated.svg, structure_annotated.png
+
+    Returns:
+        Path to file if exists, None otherwise
+    """
+    viz_file = get_job_dir(job_id) / "output" / filename
+    return viz_file if viz_file.exists() else None
