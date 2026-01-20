@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-19)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Phase 5 - Visualization (Plan 1 complete, Plan 2 remaining)
+**Current focus:** Phase 5 - Visualization (Complete)
 
 ## Current Position
 
 Phase: 5 of 6 (Visualization)
-Plan: 1 of 2 in phase (05-01-PLAN.md complete)
-Status: In progress
-Last activity: 2026-01-20 -- Completed 05-01-PLAN.md (Visualization Module)
+Plan: 2 of 2 in phase (05-02-PLAN.md complete)
+Status: Phase complete
+Last activity: 2026-01-20 -- Completed 05-02-PLAN.md (Visualization Integration)
 
-Progress: [█████████████░░] ~71%
+Progress: [██████████████░] ~79%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
-- Average duration: 3.0 min
-- Total execution time: 37 min
+- Total plans completed: 13
+- Average duration: 3.1 min
+- Total execution time: 40 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [█████████████░░] ~71%
 | 02-input-and-api | 3 | 8 min | 2.7 min |
 | 03-nmr-calculations | 3 | 11 min | 3.7 min |
 | 04-results-delivery | 2 | 7 min | 3.5 min |
-| 05-visualization | 1 | 2 min | 2.0 min |
+| 05-visualization | 2 | 5 min | 2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-03 (5 min), 04-01 (3 min), 04-02 (4 min), 05-01 (2 min)
+- Last 5 plans: 04-01 (3 min), 04-02 (4 min), 05-01 (2 min), 05-02 (3 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -89,6 +89,8 @@ Recent decisions affecting current work:
 - 2400x1800 PNG for 300 DPI equivalent at 8x6 inches
 - atomNote set before PrepareMolForDrawing()
 - plt.close(fig) after savefig to prevent memory leaks
+- Visualizations generated before job status update (ready when complete)
+- Helper function _get_visualization() for common endpoint logic
 
 ### Pending Todos
 
@@ -100,6 +102,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-20T10:29:17Z
-Stopped at: Completed 05-01-PLAN.md (Visualization Module)
+Last session: 2026-01-20T10:38:00Z
+Stopped at: Completed 05-02-PLAN.md (Visualization Integration)
 Resume file: None
