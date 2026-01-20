@@ -76,8 +76,22 @@ form fieldset {
 .results-grid img {
     max-width: 100%;
     height: auto;
+    max-height: 300px;
+    object-fit: contain;
     border: 1px solid var(--pico-muted-border-color);
     border-radius: 0.25rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.results-grid img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.results-grid figcaption {
+    font-size: 0.875rem;
+    color: var(--pico-muted-color);
+    margin-top: 0.5rem;
 }
 
 /* Download section styling */
@@ -101,4 +115,58 @@ form fieldset {
 
 .metadata-grid dd {
     margin: 0;
+}
+
+/* Download button grid */
+.download-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.download-grid a[role="button"] {
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+/* Modal dialog improvements */
+dialog#image-modal {
+    max-width: 95vw;
+    max-height: 95vh;
+    padding: 0;
+    border: none;
+    border-radius: 0.5rem;
+    background: transparent;
+}
+
+dialog#image-modal::backdrop {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+dialog#image-modal article {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
+dialog#image-modal article header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.5rem;
+    background: transparent;
+}
+
+dialog#image-modal article header button {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+/* Muted text helper */
+.muted {
+    color: var(--pico-muted-color);
 }
