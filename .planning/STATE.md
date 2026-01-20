@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-19)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Phase 5 - Visualization (Phase 4 complete)
+**Current focus:** Phase 5 - Visualization (Plan 1 complete, Plan 2 remaining)
 
 ## Current Position
 
-Phase: 4 of 6 (Results Delivery)
-Plan: 2 of 2 in phase (complete)
-Status: Phase 4 verified complete, ready for Phase 5
-Last activity: 2026-01-19 -- Verified Phase 4 (Results Delivery)
+Phase: 5 of 6 (Visualization)
+Plan: 1 of 2 in phase (05-01-PLAN.md complete)
+Status: In progress
+Last activity: 2026-01-20 -- Completed 05-01-PLAN.md (Visualization Module)
 
-Progress: [████████████░] ~67%
+Progress: [█████████████░░] ~71%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
-- Average duration: 3.1 min
-- Total execution time: 35 min
+- Total plans completed: 12
+- Average duration: 3.0 min
+- Total execution time: 37 min
 
 **By Phase:**
 
@@ -31,9 +31,10 @@ Progress: [████████████░] ~67%
 | 02-input-and-api | 3 | 8 min | 2.7 min |
 | 03-nmr-calculations | 3 | 11 min | 3.7 min |
 | 04-results-delivery | 2 | 7 min | 3.5 min |
+| 05-visualization | 1 | 2 min | 2.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (4 min), 03-03 (5 min), 04-01 (3 min), 04-02 (4 min)
+- Last 5 plans: 03-03 (5 min), 04-01 (3 min), 04-02 (4 min), 05-01 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -83,6 +84,11 @@ Recent decisions affecting current work:
 - Best-effort email delivery (logs errors, never fails jobs)
 - Environment variables for all SMTP config (no hardcoded credentials)
 - Async/sync wrapper pattern for Huey signal handlers
+- Agg backend set before pyplot import for headless rendering
+- NWChem 1-based to RDKit 0-based index conversion for atomNote
+- 2400x1800 PNG for 300 DPI equivalent at 8x6 inches
+- atomNote set before PrepareMolForDrawing()
+- plt.close(fig) after savefig to prevent memory leaks
 
 ### Pending Todos
 
@@ -94,6 +100,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-19T21:34:54Z
-Stopped at: Completed 04-02-PLAN.md (Email Notifications) - Phase 4 COMPLETE
+Last session: 2026-01-20T10:29:17Z
+Stopped at: Completed 05-01-PLAN.md (Visualization Module)
 Resume file: None
