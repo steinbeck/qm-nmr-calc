@@ -1,28 +1,113 @@
 {% extends "base.html" %}
 
-{% block title %}Submit Calculation - QM NMR Calculator{% endblock %}
+{% block title %}Submit Job | QM NMR Calculator{% endblock %}
 
 {% block content %}
 <article>
     <header>
-        <h1>NMR Calculation</h1>
+        <h2>NMR Calculation</h2>
         <p>Submit a molecule for quantum mechanical NMR prediction.</p>
     </header>
 
-    <p><em>Submission form coming in Plan 06-02...</em></p>
+    {% if error %}
+    <div role="alert">{{ error }}</div>
+    {% endif %}
 
-    <h3>Available Solvents</h3>
-    <ul>
-        {% for solvent in solvents %}
-        <li><strong>{{ solvent.value }}</strong>: {{ solvent.label }}</li>
-        {% endfor %}
-    </ul>
+    <form action="/submit" method="post" enctype="multipart/form-data">
+        <fieldset>
+            <legend>Molecule Input</legend>
 
-    <h3>Calculation Presets</h3>
-    <ul>
-        {% for preset in presets %}
-        <li><strong>{{ preset.value }}</strong>: {{ preset.label }}</li>
-        {% endfor %}
-    </ul>
+            <label for="smiles">SMILES String</label>
+            <input type="text" id="smiles" name="smiles" placeholder="e.g., CCO for ethanol" value="{{ form_data.smiles or '' }}">
+            <small>Enter the SMILES representation of your molecule</small>
+
+            <label for="file">Or Upload MOL/SDF File</label>
+            <input type="file" id="file" name="file" accept=".mol,.sdf">
+            <small>Upload a .mol or .sdf file (single molecule)</small>
+        </fieldset>
+
+        <fieldset>
+            <legend>Calculation Settings</legend>
+
+            <label for="solvent">
+                Solvent
+                <span aria-label="Required field" style="color: var(--pico-del-color);">*</span>
+            </label>
+            <select id="solvent" name="solvent" required>
+                <option value="" disabled {% if not form_data.solvent %}selected{% endif %}>Select a solvent...</option>
+                {% for solvent in solvents %}
+                <option value="{{ solvent.value }}" {% if form_data.solvent == solvent.value %}selected{% endif %}>{{ solvent.label }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="preset">Calculation Preset</label>
+            <select id="preset" name="preset">
+                {% for preset in presets %}
+                <option value="{{ preset.value }}" {% if (form_data.preset == preset.value) or (not form_data.preset and preset.value == 'production') %}selected{% endif %}>{{ preset.label }}</option>
+                {% endfor %}
+            </select>
+        </fieldset>
+
+        <fieldset>
+            <legend>Optional Details</legend>
+
+            <label for="name">Molecule Name (optional)</label>
+            <input type="text" id="name" name="name" placeholder="e.g., Caffeine" value="{{ form_data.name or '' }}">
+
+            <label for="notification_email">Email Notification (optional)</label>
+            <input type="email" id="notification_email" name="notification_email" placeholder="your@email.com" value="{{ form_data.notification_email or '' }}">
+            <small>Leave blank if you don't want email notification</small>
+        </fieldset>
+
+        <button type="submit">Calculate NMR</button>
+    </form>
 </article>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const smilesInput = document.getElementById('smiles');
+    const fileInput = document.getElementById('file');
+
+    // Visual feedback for active input mode
+    function updateInputStates() {
+        const smilesHasValue = smilesInput.value.trim().length > 0;
+        const fileHasValue = fileInput.files && fileInput.files.length > 0;
+
+        if (smilesHasValue) {
+            fileInput.disabled = true;
+            fileInput.style.opacity = '0.5';
+        } else if (fileHasValue) {
+            smilesInput.disabled = true;
+            smilesInput.style.opacity = '0.5';
+        } else {
+            // Both empty - enable both
+            smilesInput.disabled = false;
+            fileInput.disabled = false;
+            smilesInput.style.opacity = '1';
+            fileInput.style.opacity = '1';
+        }
+    }
+
+    // When SMILES input changes
+    smilesInput.addEventListener('input', function() {
+        if (this.value.trim().length > 0) {
+            // Clear file selection when typing SMILES
+            fileInput.value = '';
+        }
+        updateInputStates();
+    });
+
+    // When file selection changes
+    fileInput.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+            // Clear SMILES when selecting file
+            smilesInput.value = '';
+        }
+        updateInputStates();
+    });
+
+    // Initial state check
+    updateInputStates();
+});
+</script>
 {% endblock %}
