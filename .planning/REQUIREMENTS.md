@@ -96,8 +96,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RES-06 | Phase 5 | Complete |
 | NOTF-01 | Phase 4 | Complete |
 | UI-01 | Phase 2 | Complete |
-| UI-02 | Phase 6 | Pending |
-| UI-03 | Phase 6 | Pending |
+| UI-02 | Phase 6 | Complete |
+| UI-03 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 20 total
@@ -106,4 +106,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-19*
-*Last updated: 2026-01-20 after Phase 5 completion*
+*Last updated: 2026-01-20 after Phase 6 completion*

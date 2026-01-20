@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: NMR Calculations** - Chemical shift calculations and presets
 - [x] **Phase 4: Results Delivery** - JSON results, file downloads, email notifications
 - [x] **Phase 5: Visualization** - Spectrum plots and annotated structures
-- [ ] **Phase 6: Web UI** - Browser interface for submission and results
+- [x] **Phase 6: Web UI** - Browser interface for submission and results
 
 ## Phase Details
 
@@ -111,9 +111,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Template infrastructure, base layout, static files, web router setup
-- [ ] 06-02-PLAN.md — Submission form and status page with polling
-- [ ] 06-03-PLAN.md — Results page with image grid, downloads, and lightbox modal
+- [x] 06-01-PLAN.md — Template infrastructure, base layout, static files, web router setup
+- [x] 06-02-PLAN.md — Submission form and status page with polling
+- [x] 06-03-PLAN.md — Results page with image grid, downloads, and lightbox modal
 
 ## Progress
 
@@ -127,4 +127,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. NMR Calculations | 3/3 | Complete | 2026-01-19 |
 | 4. Results Delivery | 2/2 | Complete | 2026-01-19 |
 | 5. Visualization | 2/2 | Complete | 2026-01-20 |
-| 6. Web UI | 0/3 | Planned | - |
+| 6. Web UI | 3/3 | Complete | 2026-01-20 |
