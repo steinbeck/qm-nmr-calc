@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Calculation - QM NMR Calculator{% endblock %}
+
+{% block content %}
+<article>
+    <header>
+        <h1>NMR Calculation</h1>
+        <p>Submit a molecule for quantum mechanical NMR prediction.</p>
+    </header>
+
+    <p><em>Submission form coming in Plan 06-02...</em></p>
+
+    <h3>Available Solvents</h3>
+    <ul>
+        {% for solvent in solvents %}
+        <li><strong>{{ solvent.value }}</strong>: {{ solvent.label }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Calculation Presets</h3>
+    <ul>
+        {% for preset in presets %}
+        <li><strong>{{ preset.value }}</strong>: {{ preset.label }}</li>
+        {% endfor %}
+    </ul>
+</article>
+{% endblock %}
