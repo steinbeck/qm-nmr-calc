@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-19)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Phase 6 - Web UI (Plan 1 complete)
+**Current focus:** Phase 6 - Web UI (Plan 3 complete)
 
 ## Current Position
 
 Phase: 6 of 6 (Web UI)
-Plan: 1 of 4 in phase
+Plan: 3 of 4 in phase
 Status: In progress
-Last activity: 2026-01-20 -- Completed 06-01-PLAN.md (Template Infrastructure)
+Last activity: 2026-01-20 -- Completed 06-03-PLAN.md (Results Page)
 
-Progress: [████████████████░░] ~88%
+Progress: [█████████████████░] ~94%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
-- Average duration: 2.9 min
-- Total execution time: 42 min
+- Total plans completed: 16
+- Average duration: 2.8 min
+- Total execution time: 46 min
 
 **By Phase:**
 
@@ -32,10 +32,10 @@ Progress: [████████████████░░] ~88%
 | 03-nmr-calculations | 3 | 11 min | 3.7 min |
 | 04-results-delivery | 2 | 7 min | 3.5 min |
 | 05-visualization | 2 | 5 min | 2.5 min |
-| 06-web-ui | 1 | 2 min | 2.0 min |
+| 06-web-ui | 3 | 6 min | 2.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-02 (4 min), 05-01 (2 min), 05-02 (3 min), 06-01 (2 min)
+- Last 5 plans: 05-01 (2 min), 05-02 (3 min), 06-01 (2 min), 06-03 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -95,6 +95,9 @@ Recent decisions affecting current work:
 - Pico CSS blue theme via CDN for minimal/clean scientific aesthetic
 - Static files mounted at /static before routers to avoid route conflicts
 - Web router at root (no /api prefix) for browser-friendly URLs
+- Native HTML dialog over JavaScript modal library (zero dependencies)
+- 303 See Other redirect for incomplete jobs to status page
+- Re-use submit.html template for error display (404, 500)
 
 ### Pending Todos
 
@@ -106,6 +109,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-20T12:11:43Z
-Stopped at: Completed 06-01-PLAN.md (Template Infrastructure)
+Last session: 2026-01-20T12:15:06Z
+Stopped at: Completed 06-03-PLAN.md (Results Page)
 Resume file: None
