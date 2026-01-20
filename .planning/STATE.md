@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-19)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Phase 6 - Web UI (Phase 5 complete)
+**Current focus:** Phase 6 - Web UI (Plan 1 complete)
 
 ## Current Position
 
-Phase: 5 of 6 (Visualization)
-Plan: 2 of 2 in phase (complete)
-Status: Phase 5 verified complete, ready for Phase 6
-Last activity: 2026-01-20 -- Verified Phase 5 (Visualization)
+Phase: 6 of 6 (Web UI)
+Plan: 1 of 4 in phase
+Status: In progress
+Last activity: 2026-01-20 -- Completed 06-01-PLAN.md (Template Infrastructure)
 
-Progress: [███████████████░] ~83%
+Progress: [████████████████░░] ~88%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
-- Average duration: 3.1 min
-- Total execution time: 40 min
+- Total plans completed: 14
+- Average duration: 2.9 min
+- Total execution time: 42 min
 
 **By Phase:**
 
@@ -32,9 +32,10 @@ Progress: [███████████████░] ~83%
 | 03-nmr-calculations | 3 | 11 min | 3.7 min |
 | 04-results-delivery | 2 | 7 min | 3.5 min |
 | 05-visualization | 2 | 5 min | 2.5 min |
+| 06-web-ui | 1 | 2 min | 2.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (3 min), 04-02 (4 min), 05-01 (2 min), 05-02 (3 min)
+- Last 5 plans: 04-02 (4 min), 05-01 (2 min), 05-02 (3 min), 06-01 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -91,6 +92,9 @@ Recent decisions affecting current work:
 - plt.close(fig) after savefig to prevent memory leaks
 - Visualizations generated before job status update (ready when complete)
 - Helper function _get_visualization() for common endpoint logic
+- Pico CSS blue theme via CDN for minimal/clean scientific aesthetic
+- Static files mounted at /static before routers to avoid route conflicts
+- Web router at root (no /api prefix) for browser-friendly URLs
 
 ### Pending Todos
 
@@ -102,6 +106,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-20T10:38:00Z
-Stopped at: Completed 05-02-PLAN.md (Visualization Integration)
+Last session: 2026-01-20T12:11:43Z
+Stopped at: Completed 06-01-PLAN.md (Template Infrastructure)
 Resume file: None
