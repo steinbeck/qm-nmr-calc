@@ -108,10 +108,12 @@ Plans:
   2. User can view job status page with auto-refresh while waiting
   3. User can view results page with spectrum plot, structure image, and download links
   4. Web UI is clean and presentable (not raw unstyled HTML)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 06-01: TBD
+- [ ] 06-01-PLAN.md — Template infrastructure, base layout, static files, web router setup
+- [ ] 06-02-PLAN.md — Submission form and status page with polling
+- [ ] 06-03-PLAN.md — Results page with image grid, downloads, and lightbox modal
 
 ## Progress
 
@@ -125,4 +127,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. NMR Calculations | 3/3 | Complete | 2026-01-19 |
 | 4. Results Delivery | 2/2 | Complete | 2026-01-19 |
 | 5. Visualization | 2/2 | Complete | 2026-01-20 |
-| 6. Web UI | 0/? | Not started | - |
+| 6. Web UI | 0/3 | Planned | - |
