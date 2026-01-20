@@ -1,0 +1,60 @@
+{
+  "draft": {
+    "preset": "draft",
+    "functional": "b3lyp",
+    "geometry_basis": "6-31G*",
+    "nmr_basis": "6-31G*",
+    "solvent": "chcl3",
+    "h1_shieldings": [
+      32.1528,
+      32.1564,
+      32.157,
+      32.1561,
+      32.1518,
+      32.1553,
+      32.1527,
+      32.1532,
+      32.1566,
+      32.1552,
+      32.1563,
+      32.153
+    ],
+    "h1_reference": 32.15,
+    "c13_shieldings": [
+      190.3347,
+      190.3327,
+      190.345,
+      190.3477
+    ],
+    "c13_reference": 190.34
+  },
+  "production": {
+    "preset": "production",
+    "functional": "b3lyp",
+    "geometry_basis": "6-31G*",
+    "nmr_basis": "6-311+G(2d,p)",
+    "solvent": "chcl3",
+    "h1_shieldings": [
+      31.7912,
+      31.8072,
+      31.8072,
+      31.8083,
+      31.7992,
+      31.7897,
+      31.8024,
+      31.7968,
+      31.806,
+      31.7986,
+      31.8069,
+      31.7966
+    ],
+    "h1_reference": 31.8,
+    "c13_shieldings": [
+      183.0852,
+      183.0527,
+      183.0702,
+      183.0551
+    ],
+    "c13_reference": 183.07
+  }
+}

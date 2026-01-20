@@ -40,7 +40,7 @@ PRESETS: dict[PresetName, CalculationPreset] = {
         "functional": "b3lyp",
         "basis_set": "6-31G*",
         "nmr_basis_set": "6-31G*",
-        "processes": 4,
+        "processes": 40,
         "max_iter": 100,
     },
     PresetName.PRODUCTION: {
@@ -49,7 +49,7 @@ PRESETS: dict[PresetName, CalculationPreset] = {
         "functional": "b3lyp",
         "basis_set": "6-31G*",
         "nmr_basis_set": "6-311+G(2d,p)",
-        "processes": 4,
+        "processes": 40,
         "max_iter": 150,
     },
 }

@@ -43,6 +43,18 @@ def job_status_to_response(job_status: JobStatus) -> dict:
             "solvent": job_status.nmr_results.solvent,
         }
 
+    # Convert completed steps to response format
+    steps_completed = [
+        {
+            "step": step.step,
+            "label": step.label,
+            "started_at": step.started_at.isoformat() + "Z",
+            "completed_at": step.completed_at.isoformat() + "Z",
+            "duration_seconds": step.duration_seconds,
+        }
+        for step in job_status.steps_completed
+    ]
+
     return {
         "job_id": job_status.job_id,
         "status": job_status.status,
@@ -61,6 +73,14 @@ def job_status_to_response(job_status: JobStatus) -> dict:
         "input_name": job_status.input.name,
         "preset": job_status.input.preset,
         "solvent": job_status.input.solvent,
+        "current_step": job_status.current_step,
+        "current_step_label": job_status.current_step_label,
+        "step_started_at": (
+            job_status.step_started_at.isoformat() + "Z"
+            if job_status.step_started_at
+            else None
+        ),
+        "steps_completed": steps_completed,
         "error_message": job_status.error_message,
         "nmr_results": nmr_results,
     }

@@ -40,3 +40,21 @@ def get_supported_solvents() -> list[str]:
         Sorted list of supported solvent names.
     """
     return sorted(SUPPORTED_SOLVENTS.keys())
+
+
+def get_solvent_display_name(solvent: str) -> str:
+    """Get display name for a solvent (deuterated NMR form).
+
+    Args:
+        solvent: NWChem solvent name (e.g., 'chcl3').
+
+    Returns:
+        Deuterated display name (e.g., 'CDCl3'), or original if not found.
+    """
+    desc = SUPPORTED_SOLVENTS.get(solvent.lower(), "")
+    # Extract text in parentheses: "Chloroform (CDCl3)" -> "CDCl3"
+    if "(" in desc and ")" in desc:
+        start = desc.index("(") + 1
+        end = desc.index(")")
+        return desc[start:end]
+    return solvent

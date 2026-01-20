@@ -9,15 +9,15 @@
     </header>
 
     <div id="status-display">
-        <dl>
+        <dl class="metadata-grid">
             <dt>Status</dt>
             <dd><span id="job-status" data-status="{{ job.status }}">{{ job.status }}</span></dd>
 
-            <dt>Elapsed Time</dt>
+            <dt>Total Elapsed</dt>
             <dd><span id="elapsed-time">--</span></dd>
 
             {% if job.input_name %}
-            <dt>Molecule Name</dt>
+            <dt>Molecule</dt>
             <dd>{{ job.input_name }}</dd>
             {% endif %}
 
@@ -30,6 +30,34 @@
             <dt>Preset</dt>
             <dd>{{ job.preset }}</dd>
         </dl>
+    </div>
+
+    <!-- Step Progress Section -->
+    <div id="progress-section" style="display: none; margin-top: 1.5rem;">
+        <h4>Progress</h4>
+
+        <!-- Current Step -->
+        <div id="current-step-display" style="display: none; margin-bottom: 1rem;">
+            <div class="step-indicator">
+                <span class="status-indicator status-running"></span>
+                <strong id="current-step-label">--</strong>
+                <span class="muted"> - <span id="step-elapsed">--</span></span>
+            </div>
+        </div>
+
+        <!-- Completed Steps -->
+        <div id="completed-steps" style="display: none;">
+            <table role="grid" class="steps-table">
+                <thead>
+                    <tr>
+                        <th>Step</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody id="steps-tbody">
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div id="error-display" style="display: none;" role="alert">
@@ -57,19 +85,72 @@
     const errorMessage = document.getElementById('error-message');
     const pollingStatus = document.getElementById('polling-status');
 
+    // Step progress elements
+    const progressSection = document.getElementById('progress-section');
+    const currentStepDisplay = document.getElementById('current-step-display');
+    const currentStepLabel = document.getElementById('current-step-label');
+    const stepElapsed = document.getElementById('step-elapsed');
+    const completedStepsDiv = document.getElementById('completed-steps');
+    const stepsTbody = document.getElementById('steps-tbody');
+
+    let currentStepStartedAt = null;
+
     function formatElapsed(seconds) {
         const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
+        const secs = Math.floor(seconds % 60);
         if (mins > 0) {
             return mins + 'm ' + secs + 's';
         }
         return secs + 's';
     }
 
+    function formatDuration(seconds) {
+        if (seconds < 60) {
+            return seconds.toFixed(1) + 's';
+        }
+        const mins = Math.floor(seconds / 60);
+        const secs = (seconds % 60).toFixed(0);
+        return mins + 'm ' + secs + 's';
+    }
+
     function updateElapsedTime() {
         const now = new Date();
         const elapsed = Math.floor((now - CREATED_AT) / 1000);
         elapsedSpan.textContent = formatElapsed(elapsed);
+
+        // Update current step elapsed time
+        if (currentStepStartedAt) {
+            const stepSecs = (now - currentStepStartedAt) / 1000;
+            stepElapsed.textContent = formatElapsed(stepSecs);
+        }
+    }
+
+    function updateStepProgress(data) {
+        // Show progress section if there's any step info
+        if (data.current_step || data.steps_completed.length > 0) {
+            progressSection.style.display = 'block';
+        }
+
+        // Update current step
+        if (data.current_step_label) {
+            currentStepDisplay.style.display = 'block';
+            currentStepLabel.textContent = data.current_step_label;
+            currentStepStartedAt = data.step_started_at ? new Date(data.step_started_at) : null;
+        } else {
+            currentStepDisplay.style.display = 'none';
+            currentStepStartedAt = null;
+        }
+
+        // Update completed steps table
+        if (data.steps_completed && data.steps_completed.length > 0) {
+            completedStepsDiv.style.display = 'block';
+            stepsTbody.innerHTML = data.steps_completed.map(step =>
+                `<tr>
+                    <td><span class="status-indicator status-complete"></span>${step.label}</td>
+                    <td>${formatDuration(step.duration_seconds)}</td>
+                </tr>`
+            ).join('');
+        }
     }
 
     async function checkStatus() {
@@ -81,6 +162,9 @@
             statusSpan.textContent = data.status;
             statusSpan.setAttribute('data-status', data.status);
             updateElapsedTime();
+
+            // Update step progress
+            updateStepProgress(data);
 
             if (data.status === 'complete') {
                 // Redirect to results page

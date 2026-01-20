@@ -1,26 +1,58 @@
 """Shielding-to-shift conversion for NMR calculations."""
 
-# Scaling factors for B3LYP/6-311+G(2d,p) with TMS reference.
-# Reference: Pierens, J. Comput. Chem. 2014, 35, 1388-1394
-# Linear regression: shift = m * shielding + b
-SCALING_FACTORS: dict[str, dict[str, float]] = {
-    "H": {"m": -1.0, "b": 31.8},  # TMS reference ~31.8 ppm shielding for 1H
-    "C": {"m": -1.0, "b": 182.5},  # TMS reference ~182.5 ppm shielding for 13C
+# Empirical scaling factors from CHESHIRE Chemical Shift Repository
+# Source: http://cheshirenmr.info/ScalingFactors.htm (Pierens 2014)
+# Table #1b: Chloroform DFT methods (G09 - SMD solvation model)
+#
+# Formula: shift = slope * shielding + intercept
+#
+# Note: These are empirical linear regression parameters fitted to experimental
+# data, NOT simple TMS referencing. The slope accounts for systematic errors
+# in the DFT method.
+
+SCALING_FACTORS: dict[str, dict[str, dict[str, float]]] = {
+    "draft": {
+        # B3LYP/6-31G(d)//B3LYP/6-31G(d) gas-phase
+        # Using same basis for geometry and NMR
+        "H": {"m": -1.0157, "b": 32.2109},
+        "C": {"m": -0.9449, "b": 188.4418},
+    },
+    "production": {
+        # B3LYP/6-31+G(d,p)//B3LYP/6-311+G(2d,p) gas-phase (CHESHIRE Table #1a)
+        # Closest match to our setup: 6-31G* geometry, 6-311+G(2d,p) NMR
+        "H": {"m": -1.0592, "b": 31.9654},
+        "C": {"m": -1.0311, "b": 180.7713},
+    },
 }
 
 
+def get_scaling_factors(preset: str = "production") -> dict[str, dict[str, float]]:
+    """Get empirical scaling factors for a given preset.
+
+    Args:
+        preset: Preset name ('draft' or 'production')
+
+    Returns:
+        Dict mapping atom type to {'m': slope, 'b': intercept}
+    """
+    return SCALING_FACTORS.get(preset, SCALING_FACTORS["production"])
+
+
 def shielding_to_shift(
-    shielding_data: dict, scaling: dict[str, dict[str, float]] = SCALING_FACTORS
+    shielding_data: dict,
+    scaling: dict[str, dict[str, float]] = None,
+    preset: str = "production",
 ) -> dict[str, list[dict]]:
     """Convert shielding values to chemical shifts.
 
-    Uses linear regression (shift = m * shielding + b) with TMS as reference.
+    Uses empirical linear regression: shift = m * shielding + b
+    Scaling factors are from CHESHIRE (Pierens 2014), fitted to experimental data.
 
     Args:
         shielding_data: Dict with keys 'index', 'atom', 'shielding' from NWChemParser.
             Format: {'index': [1,2,3...], 'atom': ['H','C'...], 'shielding': [29.1, 156.2...]}
-        scaling: Dict mapping atom type to {'m': slope, 'b': intercept}.
-            Defaults to SCALING_FACTORS for B3LYP/6-311+G(2d,p).
+        scaling: Optional custom scaling factors. If None, uses preset-specific values.
+        preset: Preset name ('draft' or 'production') to select scaling factors.
 
     Returns:
         Dict with '1H' and '13C' keys, each containing a list of shift dicts
@@ -30,6 +62,10 @@ def shielding_to_shift(
     Raises:
         ValueError: If shielding_data is missing required keys.
     """
+    # Use preset-specific empirical scaling factors if no custom scaling provided
+    if scaling is None:
+        scaling = get_scaling_factors(preset)
+
     # Validate input
     required_keys = {"index", "atom", "shielding"}
     missing_keys = required_keys - set(shielding_data.keys())

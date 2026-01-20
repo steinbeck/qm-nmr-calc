@@ -4,8 +4,8 @@ from pathlib import Path
 import orjson
 
 from .queue import huey
-from .storage import load_job_status, get_job_dir, update_job_status
-from .isicle_wrapper import run_geometry_optimization, run_nmr_calculation
+from .storage import load_job_status, get_job_dir, update_job_status, start_step, complete_current_step
+from .isicle_wrapper import run_geometry_optimization, run_geometry_opt_dft, run_nmr_shielding
 from .presets import PRESETS, PresetName
 from .shifts import shielding_to_shift
 from .models import NMRResults, AtomShift
@@ -31,8 +31,9 @@ def run_optimization_task(job_id: str) -> dict:
     if job_status is None:
         raise ValueError(f"Job {job_id} not found")
 
-    if job_status.status != 'queued':
-        raise ValueError(f"Job {job_id} is not queued (status: {job_status.status})")
+    # Accept both 'queued' and 'running' - signal handler sets 'running' before task body
+    if job_status.status not in ('queued', 'running'):
+        raise ValueError(f"Job {job_id} is not ready to run (status: {job_status.status})")
 
     smiles = job_status.input.smiles
     job_dir = get_job_dir(job_id)
@@ -65,6 +66,8 @@ def run_nmr_task(job_id: str) -> dict:
     5. Saves NMR results to job output directory
     6. Updates job status with NMR results
 
+    Step progress is tracked and updated throughout.
+
     Args:
         job_id: ID of the job to process
 
@@ -79,8 +82,9 @@ def run_nmr_task(job_id: str) -> dict:
     if job_status is None:
         raise ValueError(f"Job {job_id} not found")
 
-    if job_status.status != 'queued':
-        raise ValueError(f"Job {job_id} is not queued (status: {job_status.status})")
+    # Accept both 'queued' and 'running' - signal handler sets 'running' before task body
+    if job_status.status not in ('queued', 'running'):
+        raise ValueError(f"Job {job_id} is not ready to run (status: {job_status.status})")
 
     # Get preset configuration
     preset_name = PresetName(job_status.input.preset)
@@ -90,8 +94,9 @@ def run_nmr_task(job_id: str) -> dict:
     solvent = job_status.input.solvent
     job_dir = get_job_dir(job_id)
 
-    # Run the NMR calculation (geometry opt + shielding)
-    result = run_nmr_calculation(
+    # Step 1: Geometry optimization
+    start_step(job_id, "geometry_optimization", "Optimizing geometry")
+    geometry_file, optimized_geom = run_geometry_opt_dft(
         smiles=smiles,
         job_dir=job_dir,
         preset=preset,
@@ -99,8 +104,21 @@ def run_nmr_task(job_id: str) -> dict:
         processes=preset['processes'],
     )
 
-    # Convert shielding to chemical shifts
-    shifts = shielding_to_shift(result['shielding_data'])
+    # Step 2: NMR shielding calculation
+    start_step(job_id, "nmr_shielding", "Computing NMR shielding")
+    nmr_result = run_nmr_shielding(
+        optimized_geom=optimized_geom,
+        job_dir=job_dir,
+        preset=preset,
+        solvent=solvent,
+        processes=preset['processes'],
+    )
+
+    # Step 3: Post-processing
+    start_step(job_id, "post_processing", "Generating results")
+
+    # Convert shielding to chemical shifts using preset-specific TMS reference
+    shifts = shielding_to_shift(nmr_result['shielding_data'], preset=job_status.input.preset)
 
     # Build NMRResults object
     h1_shifts = [
@@ -163,18 +181,21 @@ def run_nmr_task(job_id: str) -> dict:
         output_dir=output_dir,
     )
 
+    # Complete final step
+    complete_current_step(job_id)
+
     # Update job status with NMR results
     update_job_status(
         job_id,
         nmr_results=nmr_results,
-        optimized_geometry_file=result['geometry_file'],
+        optimized_geometry_file=str(geometry_file),
     )
 
     return {
         'success': True,
         'job_id': job_id,
         'output_files': {
-            'geometry': result['geometry_file'],
+            'geometry': str(geometry_file),
             'nmr_results': str(results_file),
         }
     }

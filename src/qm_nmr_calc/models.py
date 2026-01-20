@@ -29,6 +29,19 @@ class NMRResults(BaseModel):
     solvent: str  # COSMO solvent used
 
 
+class StepTiming(BaseModel):
+    """Timing information for a completed calculation step."""
+
+    # Note: strict=False to allow datetime string coercion from JSON
+    model_config = ConfigDict(strict=False)
+
+    step: str  # Step identifier
+    label: str  # Human-readable label
+    started_at: datetime
+    completed_at: datetime
+    duration_seconds: float
+
+
 class JobInput(BaseModel):
     """Input parameters for a calculation job."""
 
@@ -61,6 +74,12 @@ class JobStatus(BaseModel):
     # Versions (for reproducibility)
     isicle_version: str
     nwchem_version: str
+
+    # Step progress tracking
+    current_step: Optional[str] = None  # Current step identifier
+    current_step_label: Optional[str] = None  # Human-readable label
+    step_started_at: Optional[datetime] = None  # When current step started
+    steps_completed: list[StepTiming] = []  # Completed steps with timings
 
     # Error info (if failed)
     error_message: Optional[str] = None

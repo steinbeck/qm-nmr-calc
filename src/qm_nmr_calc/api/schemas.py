@@ -57,6 +57,16 @@ class NMRResultsResponse(BaseModel):
     solvent: str = Field(..., description="Solvent used for COSMO solvation")
 
 
+class StepTimingResponse(BaseModel):
+    """API response model for a completed calculation step."""
+
+    step: str = Field(..., description="Step identifier")
+    label: str = Field(..., description="Human-readable step label")
+    started_at: str = Field(..., description="ISO 8601 timestamp when step started")
+    completed_at: str = Field(..., description="ISO 8601 timestamp when step completed")
+    duration_seconds: float = Field(..., description="Step duration in seconds")
+
+
 class JobStatusResponse(BaseModel):
     """Response for job status queries."""
 
@@ -71,6 +81,13 @@ class JobStatusResponse(BaseModel):
     input_name: Optional[str] = Field(None, description="User-provided molecule name")
     preset: str = Field(..., description="Calculation preset used")
     solvent: str = Field(..., description="Solvent used for calculation")
+    # Step progress tracking
+    current_step: Optional[str] = Field(None, description="Current step identifier")
+    current_step_label: Optional[str] = Field(None, description="Current step label")
+    step_started_at: Optional[str] = Field(None, description="When current step started")
+    steps_completed: list[StepTimingResponse] = Field(
+        default_factory=list, description="Completed steps with timings"
+    )
     error_message: Optional[str] = Field(None, description="Error message if failed")
     nmr_results: Optional[NMRResultsResponse] = Field(
         None, description="NMR results (available when status is complete)"

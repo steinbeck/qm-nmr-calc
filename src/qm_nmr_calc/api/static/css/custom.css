@@ -2,8 +2,13 @@
 
 /* Article max-width for better readability */
 article {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
+}
+
+/* Wider container for results page */
+article.results-container {
+    max-width: 1200px;
 }
 
 /* Clickable images */
@@ -60,35 +65,74 @@ form fieldset {
     100% { opacity: 1; }
 }
 
-/* Results grid for side-by-side images */
-.results-grid {
+/* Structure image - full width, prominent */
+.structure-container {
+    margin: 1rem 0 2rem 0;
+    text-align: center;
+}
+
+.structure-container figure {
+    margin: 0;
+}
+
+.structure-container img {
+    max-width: 100%;
+    height: auto;
+    max-height: 600px;
+    object-fit: contain;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.structure-container img:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.structure-container figcaption {
+    font-size: 0.875rem;
+    color: var(--pico-muted-color);
+    margin-top: 0.5rem;
+}
+
+/* Spectra grid - two side by side */
+.spectra-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
     margin: 1rem 0;
 }
 
-.results-grid figure {
+@media (max-width: 768px) {
+    .spectra-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.spectra-grid figure {
     margin: 0;
     text-align: center;
 }
 
-.results-grid img {
+.spectra-grid img {
     max-width: 100%;
     height: auto;
-    max-height: 300px;
+    max-height: 400px;
     object-fit: contain;
     border: 1px solid var(--pico-muted-border-color);
     border-radius: 0.25rem;
+    cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.results-grid img:hover {
+.spectra-grid img:hover {
     transform: scale(1.02);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.results-grid figcaption {
+.spectra-grid figcaption {
     font-size: 0.875rem;
     color: var(--pico-muted-color);
     margin-top: 0.5rem;
@@ -169,4 +213,31 @@ dialog#image-modal article header button {
 /* Muted text helper */
 .muted {
     color: var(--pico-muted-color);
+}
+
+/* Step progress styling */
+.step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.steps-table {
+    margin-top: 0.5rem;
+}
+
+.steps-table th,
+.steps-table td {
+    padding: 0.5rem 0.75rem;
+}
+
+.steps-table td:first-child {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.steps-table td:last-child {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
 }

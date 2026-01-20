@@ -100,7 +100,7 @@ def generate_annotated_structure(
 
     # Generate SVG
     d_svg = rdMolDraw2D.MolDraw2DSVG(800, 600)
-    d_svg.drawOptions().annotationFontScale = 0.6
+    d_svg.drawOptions().annotationFontScale = 0.9
     d_svg.DrawMolecule(mol)
     d_svg.FinishDrawing()
 
@@ -109,7 +109,7 @@ def generate_annotated_structure(
 
     # Generate PNG (300 DPI equivalent: 800x600 * 3 = 2400x1800)
     d_png = rdMolDraw2D.MolDraw2DCairo(2400, 1800)
-    d_png.drawOptions().annotationFontScale = 0.6
+    d_png.drawOptions().annotationFontScale = 0.9
     d_png.DrawMolecule(mol)
     d_png.FinishDrawing()
 

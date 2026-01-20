@@ -10,7 +10,12 @@ from rdkit import Chem
 
 from ...isicle_wrapper import get_versions
 from ...presets import PRESETS
-from ...solvents import SUPPORTED_SOLVENTS, get_supported_solvents, validate_solvent
+from ...solvents import (
+    SUPPORTED_SOLVENTS,
+    get_solvent_display_name,
+    get_supported_solvents,
+    validate_solvent,
+)
 from ...storage import create_job_directory, load_job_status
 from ...tasks import run_nmr_task
 from ...validation import validate_mol_file, validate_smiles
@@ -33,7 +38,7 @@ def _get_form_context() -> dict:
 
     # Build preset options with descriptions
     presets = [
-        {"value": preset.name, "label": config["description"]}
+        {"value": preset.value, "label": config["description"]}
         for preset, config in PRESETS.items()
     ]
 
@@ -176,7 +181,7 @@ async def job_status_page(request: Request, job_id: str) -> HTMLResponse:
         "created_at": job_status.created_at.isoformat() + "Z",
         "input_smiles": job_status.input.smiles,
         "input_name": job_status.input.name,
-        "solvent": job_status.input.solvent,
+        "solvent": get_solvent_display_name(job_status.input.solvent),
         "preset": job_status.input.preset,
         "error_message": job_status.error_message,
     }
@@ -227,14 +232,14 @@ async def results_page(request: Request, job_id: str) -> HTMLResponse:
         "input_smiles": job_status.input.smiles,
         "input_name": job_status.input.name,
         "preset": job_status.input.preset,
-        "solvent": job_status.input.solvent,
+        "solvent": get_solvent_display_name(job_status.input.solvent),
         "status": job_status.status,
     }
 
     results_context = {
         "functional": job_status.nmr_results.functional,
         "basis_set": job_status.nmr_results.basis_set,
-        "solvent": job_status.nmr_results.solvent,
+        "solvent": get_solvent_display_name(job_status.nmr_results.solvent),
     }
 
     return templates.TemplateResponse(

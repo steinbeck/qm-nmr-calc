@@ -26,37 +26,38 @@
     </details>
 </article>
 
-<article>
+<article class="results-container">
     <header>
         <h3>Visualizations</h3>
         <small>Click any image to enlarge</small>
     </header>
-    <div class="results-grid">
+
+    <div class="structure-container">
         <figure>
             <img src="/api/v1/jobs/{{ job.job_id }}/structure.png"
                  alt="Annotated molecular structure"
-                 class="clickable"
                  onclick="openModal(this.src)">
-            <figcaption>Annotated Structure</figcaption>
+            <figcaption>Annotated Structure with Chemical Shifts (ppm)</figcaption>
         </figure>
+    </div>
+
+    <div class="spectra-grid">
         <figure>
             <img src="/api/v1/jobs/{{ job.job_id }}/spectrum/1h.png"
                  alt="1H NMR spectrum"
-                 class="clickable"
                  onclick="openModal(this.src)">
             <figcaption>1H NMR Spectrum</figcaption>
         </figure>
         <figure>
             <img src="/api/v1/jobs/{{ job.job_id }}/spectrum/13c.png"
                  alt="13C NMR spectrum"
-                 class="clickable"
                  onclick="openModal(this.src)">
             <figcaption>13C NMR Spectrum</figcaption>
         </figure>
     </div>
 </article>
 
-<article>
+<article class="results-container">
     <header>
         <h3>Downloads</h3>
     </header>

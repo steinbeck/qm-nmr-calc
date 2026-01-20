@@ -7,7 +7,7 @@ from typing import Optional
 
 import orjson
 
-from .models import JobInput, JobStatus
+from .models import JobInput, JobStatus, StepTiming
 
 # Default data directory - relative to working directory
 DATA_DIR = Path("./data/jobs")
@@ -86,6 +86,86 @@ def update_job_status(job_id: str, **updates) -> JobStatus:
     if status is None:
         raise ValueError(f"Job {job_id} not found")
     updated = status.model_copy(update=updates)
+    _write_status(job_id, updated)
+    return updated
+
+
+def start_step(job_id: str, step: str, label: str) -> JobStatus:
+    """Start a new calculation step, completing the previous one if any.
+
+    Args:
+        job_id: Job identifier
+        step: Step identifier (e.g., 'geometry_optimization')
+        label: Human-readable label (e.g., 'Optimizing geometry')
+
+    Returns:
+        Updated JobStatus
+    """
+    status = load_job_status(job_id)
+    if status is None:
+        raise ValueError(f"Job {job_id} not found")
+
+    now = datetime.utcnow()
+    steps_completed = list(status.steps_completed)
+
+    # Complete the previous step if one was in progress
+    if status.current_step and status.step_started_at:
+        duration = (now - status.step_started_at).total_seconds()
+        steps_completed.append(
+            StepTiming(
+                step=status.current_step,
+                label=status.current_step_label or status.current_step,
+                started_at=status.step_started_at,
+                completed_at=now,
+                duration_seconds=round(duration, 1),
+            )
+        )
+
+    updated = status.model_copy(
+        update={
+            "current_step": step,
+            "current_step_label": label,
+            "step_started_at": now,
+            "steps_completed": steps_completed,
+        }
+    )
+    _write_status(job_id, updated)
+    return updated
+
+
+def complete_current_step(job_id: str) -> JobStatus:
+    """Complete the current step without starting a new one.
+
+    Call this when the job is finishing.
+    """
+    status = load_job_status(job_id)
+    if status is None:
+        raise ValueError(f"Job {job_id} not found")
+
+    now = datetime.utcnow()
+    steps_completed = list(status.steps_completed)
+
+    # Complete the current step if one was in progress
+    if status.current_step and status.step_started_at:
+        duration = (now - status.step_started_at).total_seconds()
+        steps_completed.append(
+            StepTiming(
+                step=status.current_step,
+                label=status.current_step_label or status.current_step,
+                started_at=status.step_started_at,
+                completed_at=now,
+                duration_seconds=round(duration, 1),
+            )
+        )
+
+    updated = status.model_copy(
+        update={
+            "current_step": None,
+            "current_step_label": None,
+            "step_started_at": None,
+            "steps_completed": steps_completed,
+        }
+    )
     _write_status(job_id, updated)
     return updated
 

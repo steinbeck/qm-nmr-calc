@@ -109,32 +109,30 @@ def run_geometry_optimization(
     return output_file
 
 
-def run_nmr_calculation(
+def run_geometry_opt_dft(
     smiles: str,
     job_dir: Path,
     preset: CalculationPreset,
     solvent: str,
     processes: int = 4,
-) -> dict:
+) -> tuple[Path, object]:
     """
-    Run geometry optimization + NMR shielding calculation via ISiCLE/NWChem.
+    Run geometry optimization via ISiCLE/NWChem.
 
-    This is a two-step DFT workflow:
-    1. Geometry optimization with the preset's basis_set
-    2. NMR shielding calculation with the preset's nmr_basis_set
+    This performs:
+    1. SMILES loading and 3D embedding
+    2. UFF force-field pre-optimization
+    3. DFT geometry optimization with COSMO solvation
 
     Args:
         smiles: SMILES string of molecule
         job_dir: Job directory for outputs and scratch
-        preset: Calculation preset dict with functional, basis_set, nmr_basis_set
+        preset: Calculation preset dict with functional, basis_set
         solvent: NWChem COSMO solvent name
         processes: Number of MPI processes
 
     Returns:
-        dict with 'geometry_file', 'shielding_data', 'energy'
-
-    Raises:
-        RuntimeError: If calculation fails or doesn't produce shielding data
+        Tuple of (geometry_file_path, optimized_geometry_object)
     """
     # 1. Load molecule from SMILES
     geom = isicle.load(smiles)
@@ -146,15 +144,14 @@ def run_nmr_calculation(
     scratch_dir = job_dir / 'scratch'
     scratch_dir.mkdir(exist_ok=True)
 
-    # 4. DFT geometry optimization
+    # 4. DFT geometry optimization (gas-phase for CHESHIRE scaling factors)
     opt_wrapper = isicle.qm.dft(
         geom,
         backend='NWChem',
         tasks=['optimize'],
         functional=preset['functional'],
         basis_set=preset['basis_set'],
-        cosmo=True,
-        solvent=solvent,
+        cosmo=False,
         max_iter=preset['max_iter'],
         scratch_dir=str(scratch_dir),
         processes=processes,
@@ -168,27 +165,93 @@ def run_nmr_calculation(
     output_file = output_dir / 'optimized.xyz'
     isicle.save(str(output_file), optimized_geom)
 
-    # 6. DFT NMR shielding calculation on optimized geometry
+    return output_file, optimized_geom
+
+
+def run_nmr_shielding(
+    optimized_geom: object,
+    job_dir: Path,
+    preset: CalculationPreset,
+    solvent: str,
+    processes: int = 4,
+) -> dict:
+    """
+    Run NMR shielding calculation on an optimized geometry.
+
+    Args:
+        optimized_geom: ISiCLE geometry object from run_geometry_opt_dft
+        job_dir: Job directory for scratch
+        preset: Calculation preset dict with functional, nmr_basis_set
+        solvent: NWChem COSMO solvent name
+        processes: Number of MPI processes
+
+    Returns:
+        dict with 'shielding_data', 'energy'
+
+    Raises:
+        RuntimeError: If calculation doesn't produce shielding data
+    """
+    scratch_dir = job_dir / 'scratch'
+    scratch_dir.mkdir(exist_ok=True)
+
+    # DFT NMR shielding calculation on optimized geometry (gas-phase for CHESHIRE scaling factors)
     nmr_wrapper = isicle.qm.dft(
         optimized_geom,
         backend='NWChem',
         tasks=['shielding'],
         functional=preset['functional'],
         basis_set=preset['nmr_basis_set'],
-        cosmo=True,
-        solvent=solvent,
+        cosmo=False,
         scratch_dir=str(scratch_dir),
         processes=processes,
     )
     nmr_result = nmr_wrapper.parse()
 
-    # 7. Extract and validate shielding data
+    # Extract and validate shielding data
     shielding_data = nmr_result.get('shielding')
     if shielding_data is None:
         raise RuntimeError("NMR calculation did not produce shielding data")
 
     return {
-        'geometry_file': str(output_file),
         'shielding_data': shielding_data,
         'energy': nmr_result.get('energy'),
+    }
+
+
+def run_nmr_calculation(
+    smiles: str,
+    job_dir: Path,
+    preset: CalculationPreset,
+    solvent: str,
+    processes: int = 4,
+) -> dict:
+    """
+    Run geometry optimization + NMR shielding calculation via ISiCLE/NWChem.
+
+    This is a convenience wrapper that calls run_geometry_opt_dft followed
+    by run_nmr_shielding. For step-by-step progress tracking, use the
+    individual functions instead.
+
+    Args:
+        smiles: SMILES string of molecule
+        job_dir: Job directory for outputs and scratch
+        preset: Calculation preset dict with functional, basis_set, nmr_basis_set
+        solvent: NWChem COSMO solvent name
+        processes: Number of MPI processes
+
+    Returns:
+        dict with 'geometry_file', 'shielding_data', 'energy'
+    """
+    output_file, optimized_geom = run_geometry_opt_dft(
+        smiles, job_dir, preset, solvent, processes
+    )
+
+    nmr_result = run_nmr_shielding(
+        optimized_geom, job_dir, preset, solvent, processes
+    )
+
+    return {
+        'geometry_file': str(output_file),
+        'shielding_data': nmr_result['shielding_data'],
+        'energy': nmr_result['energy'],
     }
