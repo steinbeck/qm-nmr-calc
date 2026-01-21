@@ -8,48 +8,60 @@ An asynchronous web service for running NMR quantum mechanical calculations on o
 
 Reliable async NMR predictions with full control over calculation parameters — submit a molecule, get back accurate ¹H/¹³C shifts without babysitting long-running calculations.
 
-## Current Milestone: v1.0 Core NMR Service
+## Current Milestone: v1.1 Accurate Chemical Shifts
 
-**Goal:** Build a working async NMR prediction service with REST API and clean web UI.
+**Goal:** Replace ISiCLE dependency and derive NWChem-specific scaling factors from DELTA50 benchmark, enabling accurate solvated NMR predictions.
 
 **Target features:**
+- Custom NWChem wrapper (no ISiCLE runtime dependency)
+- Working COSMO solvation (currently broken - solvent param ignored)
+- NWChem-derived scaling factors for CHCl3 and DMSO solvents
+- B3LYP (general) + WP04 (optimized ¹H) functionals
+- Publication-quality benchmark data from DELTA50 dataset
+
+## Previous Milestone: v1.0 Core NMR Service ✓
+
+**Delivered:** Working async NMR prediction service with REST API and web UI.
 - Submit molecules (SMILES/MOL) via API or web UI
 - ISiCLE/NWChem calculation pipeline
 - Results: raw files, JSON with atom-assigned shifts, spectrum plot, annotated structure drawing
-- Calculation presets + advanced parameter control
+- Calculation presets (draft/production)
 - Job status polling + email notifications
-- Clean, presentable web interface
+- Clean web interface with Pico CSS
 
 ## Requirements
 
-### Validated
+### Validated (v1.0)
 
-(None yet — ship to validate)
+- ✓ Submit molecules via SMILES string or structure file (SDF/MOL)
+- ✓ Queue calculations for background processing
+- ✓ Check job status and retrieve results via API
+- ✓ Return predicted ¹H and ¹³C NMR chemical shifts with atom assignments
+- ✓ Return optimized molecular geometry
+- ✓ Return raw NWChem output files
+- ✓ Visual spectrum plot generation
+- ✓ Annotated structure drawing showing shifts on atoms
+- ✓ Calculation presets (draft/production)
+- ✓ Email notification when calculation completes
+- ✓ Clean, usable web UI for submitting jobs and viewing results
+- ✓ REST API for programmatic access
 
-### Active
+### Active (v1.1)
 
-- [ ] Submit molecules via SMILES string or structure file (SDF/MOL)
-- [ ] Queue calculations for background processing
-- [ ] Check job status and retrieve results via API
-- [ ] Return predicted ¹H and ¹³C NMR chemical shifts with atom assignments
-- [ ] Return optimized molecular geometry
-- [ ] Return raw NWChem output files
-- [ ] Visual spectrum plot generation
-- [ ] Annotated structure drawing showing shifts on atoms
-- [ ] Calculation presets (fast/draft, publication quality, solvation options)
-- [ ] Advanced parameter control (basis sets, functionals, solvation models)
-- [ ] Email notification when calculation completes
-- [ ] Clean, usable web UI for submitting jobs and viewing results
-- [ ] REST API for programmatic access
-- [ ] Job ownership model (ready for multi-user extension)
+- [ ] Custom NWChem input/output handling (no ISiCLE runtime dependency)
+- [ ] Working COSMO solvation for CHCl3 and DMSO
+- [ ] NWChem-derived scaling factors from DELTA50 benchmark
+- [ ] WP04 functional option for improved ¹H accuracy
+- [ ] Accept pre-optimized XYZ/SDF geometries (skip geometry opt)
 
 ### Out of Scope
 
-- Multi-user authentication — single user for v1, architecture supports adding later
-- Other nuclei (¹⁵N, ³¹P, ¹⁹F) — ¹H/¹³C only for v1
+- Multi-user authentication — single user for now, architecture supports adding later
+- Other nuclei (¹⁵N, ³¹P, ¹⁹F) — ¹H/¹³C only for now
 - Batch submission UI — can be added later, API could support
 - Mobile interface — web UI is desktop-focused
 - Real-time calculation streaming — poll for completion
+- Public benchmark API — benchmark tooling is internal only
 
 ## Context
 
@@ -81,4 +93,4 @@ Reliable async NMR predictions with full control over calculation parameters —
 | ISiCLE as dependency | Minimal fork, wrap rather than modify | — Pending |
 
 ---
-*Last updated: 2026-01-19 after v1.0 milestone definition*
+*Last updated: 2026-01-21 after v1.1 milestone definition*

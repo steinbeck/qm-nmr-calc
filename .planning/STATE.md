@@ -2,19 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-01-19)
+See: .planning/PROJECT.md (updated 2026-01-21)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Milestone v1.0 complete!
+**Current focus:** Milestone v1.1 — Accurate Chemical Shifts
 
 ## Current Position
 
-Phase: 6 of 6 (Web UI)
-Plan: 3 of 3 in phase (complete)
-Status: Phase 6 verified complete, milestone v1.0 complete
-Last activity: 2026-01-20 -- Verified Phase 6 (Web UI)
+Phase: 7 of 11 (NWChem Integration)
+Plan: 0 of ? in phase (not yet planned)
+Status: Defining roadmap
+Last activity: 2026-01-21 — Started milestone v1.1
 
-Progress: [████████████████████] 100%
+Progress: [░░░░░░░░░░░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -110,5 +110,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-21
-Stopped at: Mid-milestone planning for v1.1 (researching DELTA50 paper for scaling factors)
-Resume file: .planning/.continue-here.md
+Stopped at: Creating roadmap for v1.1 (Accurate Chemical Shifts)
+Resume file: None

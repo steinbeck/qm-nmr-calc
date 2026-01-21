@@ -2,7 +2,7 @@
 
 ## Overview
 
-This roadmap delivers a working async NMR prediction service in 6 phases. We start with the calculation foundation (ISiCLE/NWChem integration and job queue), then build the API layer for input and status, add NMR calculations and presets, deliver results with notifications, generate visualizations, and finally wrap it in a web UI. Each phase delivers a coherent capability that builds on the previous.
+This roadmap delivers a working async NMR prediction service across two milestones. Milestone v1.0 (phases 1-6) established the core service with ISiCLE/NWChem integration, REST API, job queue, and web UI. Milestone v1.1 (phases 7-11) replaces ISiCLE dependency, derives NWChem-specific scaling factors from DELTA50 benchmark data, and delivers accurate solvated NMR predictions with publication-quality results.
 
 ## Phases
 
@@ -12,12 +12,22 @@ This roadmap delivers a working async NMR prediction service in 6 phases. We sta
 
 Decimal phases appear between their surrounding integers in numeric order.
 
+### Milestone v1.0: Core NMR Service (Complete)
+
 - [x] **Phase 1: Foundation** - Project structure, job queue, ISiCLE wrapper
 - [x] **Phase 2: Input and API** - Molecule submission, validation, status polling
 - [x] **Phase 3: NMR Calculations** - Chemical shift calculations and presets
 - [x] **Phase 4: Results Delivery** - JSON results, file downloads, email notifications
 - [x] **Phase 5: Visualization** - Spectrum plots and annotated structures
 - [x] **Phase 6: Web UI** - Browser interface for submission and results
+
+### Milestone v1.1: Accurate Chemical Shifts (Active)
+
+- [ ] **Phase 7: NWChem Integration** - Direct NWChem I/O handling and COSMO solvation
+- [ ] **Phase 8: DELTA50 Setup** - Benchmark dataset infrastructure
+- [ ] **Phase 9: Benchmark Calculations** - Execute DELTA50 calculation matrix
+- [ ] **Phase 10: Scaling Factors** - Derive and validate NWChem-specific scaling factors
+- [ ] **Phase 11: Production Integration** - Apply scaling factors and new functional to production
 
 ## Phase Details
 
@@ -115,10 +125,71 @@ Plans:
 - [x] 06-02-PLAN.md — Submission form and status page with polling
 - [x] 06-03-PLAN.md — Results page with image grid, downloads, and lightbox modal
 
+### Phase 7: NWChem Integration
+**Goal**: System directly handles NWChem I/O and enables accurate solvated calculations
+**Depends on**: Phase 6
+**Requirements**: NW-01, NW-02, NW-03, NW-04, NW-05, NW-06
+**Success Criteria** (what must be TRUE):
+  1. System generates valid NWChem input files for geometry optimization without ISiCLE runtime
+  2. System generates valid NWChem input files for NMR shielding with COSMO solvation
+  3. System parses NWChem output files to extract shielding tensors for H and C atoms
+  4. User can submit pre-optimized geometry and system skips geometry optimization step
+  5. ISiCLE attribution is visible in code comments and documentation where code adapted
+**Plans**: 3-4 plans
+
+### Phase 8: DELTA50 Setup
+**Goal**: DELTA50 benchmark infrastructure ready to execute calculation matrix
+**Depends on**: Phase 7
+**Requirements**: BENCH-01, BENCH-02, BENCH-03
+**Success Criteria** (what must be TRUE):
+  1. All 50 DELTA50 molecule structures are available in SDF or XYZ format
+  2. Experimental 1H and 13C shift values are stored with molecule ID associations
+  3. Benchmark runner can execute calculations for all combinations: 50 molecules x 2 functionals x 2 solvents
+  4. Benchmark runner outputs raw calculation results in organized directory structure
+**Plans**: 2-3 plans
+
+### Phase 9: Benchmark Calculations
+**Goal**: Complete DELTA50 calculation matrix for scaling factor derivation
+**Depends on**: Phase 8
+**Requirements**: None (execution phase using Phase 8 infrastructure)
+**Success Criteria** (what must be TRUE):
+  1. All 50 DELTA50 molecules calculated with B3LYP in CHCl3 (50 calculations)
+  2. All 50 DELTA50 molecules calculated with B3LYP in DMSO (50 calculations)
+  3. All 50 DELTA50 molecules calculated with WP04 in CHCl3 (50 calculations for 1H)
+  4. All 50 DELTA50 molecules calculated with WP04 in DMSO (50 calculations for 1H)
+  5. Failed calculations documented with error analysis (if any)
+**Plans**: 2 plans
+
+### Phase 10: Scaling Factors
+**Goal**: Derive and validate NWChem-specific scaling factors from benchmark data
+**Depends on**: Phase 9
+**Requirements**: SCALE-01, SCALE-02, SCALE-03, SCALE-04
+**Success Criteria** (what must be TRUE):
+  1. Scaling factors (slope, intercept) derived via linear regression for B3LYP/CHCl3
+  2. Scaling factors derived for B3LYP/DMSO, WP04/CHCl3, WP04/DMSO
+  3. Each scaling factor set validated with MAE and RMSD statistics vs experimental shifts
+  4. Scaling factors stored in code-accessible format (JSON, Python constants, or config file)
+  5. Validation report shows accuracy improvement over current CHESHIRE factors
+**Plans**: 2-3 plans
+
+### Phase 11: Production Integration
+**Goal**: Production calculations use NWChem-derived factors and enable WP04 functional
+**Depends on**: Phase 10
+**Requirements**: PROD-01, PROD-02, PROD-03, PROD-04
+**Success Criteria** (what must be TRUE):
+  1. Production calculations apply COSMO solvation when solvent is specified (bug fixed)
+  2. Production calculations use NWChem-derived scaling factors instead of CHESHIRE
+  3. User can select WP04 functional at submission time (new preset or parameter)
+  4. ISiCLE is no longer a runtime dependency (removed from production imports and dependencies)
+  5. Production calculation with WP04/CHCl3 produces more accurate 1H shifts than B3LYP/gas
+**Plans**: 2-3 plans
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11
+
+### Milestone v1.0: Core NMR Service
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -128,3 +199,13 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 4. Results Delivery | 2/2 | Complete | 2026-01-19 |
 | 5. Visualization | 2/2 | Complete | 2026-01-20 |
 | 6. Web UI | 3/3 | Complete | 2026-01-20 |
+
+### Milestone v1.1: Accurate Chemical Shifts
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 7. NWChem Integration | 0/3-4 | Pending | — |
+| 8. DELTA50 Setup | 0/2-3 | Pending | — |
+| 9. Benchmark Calculations | 0/2 | Pending | — |
+| 10. Scaling Factors | 0/2-3 | Pending | — |
+| 11. Production Integration | 0/2-3 | Pending | — |
