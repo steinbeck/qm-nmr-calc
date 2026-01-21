@@ -1,0 +1,117 @@
+Northwest Computational Chemistry Package (NWChem) 7.2.2
+-------------------------------------------------------
+
+                 Northwest Computational Chemistry Package (NWChem) 7.2.2
+               --------------------------------------------------------
+
+                        Environmental Molecular Sciences Laboratory
+                                   Pacific Northwest National Laboratory
+                                             Richland, WA 99352
+
+         Job information
+         ---------------
+
+                        hostname = compute-node-01
+                          system = Linux
+                         release = 5.4.0-generic
+                         version = #1 SMP
+                         machine = x86_64
+
+         Memory information
+         ------------------
+                 Total physical memory = 128GB
+
+ NWChem Input Module
+ -------------------
+
+
+                               NWChem Input Module
+                               -------------------
+
+
+                             Geometry Optimization
+                             ---------------------
+
+          --------
+          methane
+          --------
+
+
+            internuclear distances
+            ----------------------
+
+                       internuclear distance matrix
+
+         ----------------------------------------------------------------
+
+                        1 C      2 H      3 H      4 H      5 H
+         ----------------------------------------------------------------
+
+    1 C       0.00000
+    2 H       1.09000  0.00000
+    3 H       1.09000  1.78000  0.00000
+    4 H       1.09000  1.78000  1.78000  0.00000
+    5 H       1.09000  1.78000  1.78000  1.78000  0.00000
+
+         ----------------------------------------------------------------
+
+
+                         DFT Energy Minimization
+                         -----------------------
+
+    Step       Energy        Delta E         Gmax        Grms
+    ---- -------------- -------------- ----------- -----------
+      0    -40.51853412                    0.01234   0.00456
+
+                         Geometry Optimization
+                         ---------------------
+
+    Step       Energy        Delta E         Gmax        Grms
+    ---- -------------- -------------- ----------- -----------
+      1    -40.51863254    -0.00009842    0.00123   0.00045
+      2    -40.51864123    -0.00000869    0.00012   0.00004
+      3    -40.51864189    -0.00000066    0.00001   0.00000
+
+         ----------------------
+         Optimization converged
+         ----------------------
+
+
+         *******************************************
+         *                                         *
+         *         OPTIMIZATION CONVERGED!         *
+         *                                         *
+         *******************************************
+
+
+ Output coordinates in angstroms (scale by  1.889725989 to convert to a.u.)
+
+  No.       Tag         Charge          X              Y              Z
+ ---- ---------------- ---------- -------------- -------------- --------------
+    1 C                    6.0000     0.00000000     0.00000000     0.00000000
+    2 H                    1.0000     0.62918000     0.62918000     0.62918000
+    3 H                    1.0000    -0.62918000    -0.62918000     0.62918000
+    4 H                    1.0000    -0.62918000     0.62918000    -0.62918000
+    5 H                    1.0000     0.62918000    -0.62918000    -0.62918000
+
+      atomic coordinates
+
+                         ----- TASK COMPLETED -----
+
+                               NWChem SCF Module
+                               -----------------
+
+
+ ------------------------------------------------------------------------------
+       DFT Properties
+ ------------------------------------------------------------------------------
+
+ Total DFT energy:      -40.51864189
+
+ Task  times  cpu:        123.4s     wall:        45.6s
+
+ Summary of allocated global arrays
+ -----------------------------------
+  No active global arrays
+
+                    NWChem Output File Generated
