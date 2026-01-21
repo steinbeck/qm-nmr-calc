@@ -28,7 +28,7 @@ Asynchronous web service for predicting NMR chemical shifts using quantum mechan
                                                          │
                                                          v
                                                 ┌─────────────────┐
-                                                │  ISiCLE/NWChem  │
+                                                │  RDKit/NWChem  │
                                                 │  DFT Calcs      │
                                                 └─────────────────┘
 ```
@@ -76,33 +76,21 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 source ~/.bashrc  # or restart shell
 ```
 
-### 3. Clone and Setup ISiCLE (Required Dependency)
-
-ISiCLE must be installed as an editable package in a sibling directory:
-
-```bash
-cd ~/develop  # or your preferred location
-git clone https://github.com/pnnl/isicle.git
-cd isicle
-# Use our fork if available:
-# git clone https://github.com/steinbeck/isicle.git
-```
-
-### 4. Clone and Setup QM NMR Calculator
+### 3. Clone and Setup QM NMR Calculator
 
 ```bash
 cd ~/develop
 git clone https://github.com/steinbeck/qm-nmr-calc.git
 cd qm-nmr-calc
 
-# Install dependencies (includes ISiCLE from sibling directory)
+# Install dependencies
 uv sync
 
 # Verify installation
 uv run python -c "import qm_nmr_calc; print('OK')"
 ```
 
-### 5. Verify Environment
+### 4. Verify Environment
 
 ```bash
 # Quick validation
@@ -116,7 +104,7 @@ Expected output:
 ```
 Validating environment...
   [OK] NWChem found
-  [OK] ISiCLE/RDKit working
+  [OK] RDKit working
   [OK] Data directory writable: data/jobs
 Environment validation passed
 ```
@@ -133,7 +121,7 @@ uv run python scripts/run_consumer.py
 ```
 
 This will:
-1. Validate the environment (NWChem, ISiCLE, directories)
+1. Validate the environment (NWChem, RDKit, directories)
 2. Recover any interrupted jobs from previous runs
 3. Start processing queued calculations
 
@@ -200,17 +188,8 @@ curl http://localhost:8000/api/v1/jobs/{job_id}/structure.svg -o structure.svg
 |------|---------|
 | `chcl3` | Chloroform (CDCl3) |
 | `dmso` | DMSO (DMSO-d6) |
-| `methanol` | Methanol (CD3OD) |
-| `acetone` | Acetone (acetone-d6) |
-| `benzene` | Benzene (C6D6) |
-| `h2o` | Water (D2O) |
-| `acetntrl` | Acetonitrile (CD3CN) |
-| `dcm` | Dichloromethane (CD2Cl2) |
-| `thf` | THF (THF-d8) |
-| `pyridine` | Pyridine (pyridine-d5) |
-| `toluene` | Toluene (toluene-d8) |
 
-**Note**: Solvent is currently stored but calculations run in gas phase. See Known Limitations.
+Solvent effects are applied via the COSMO solvation model to both geometry optimization and NMR shielding calculations.
 
 ### Calculation Presets
 
@@ -291,7 +270,11 @@ qm-nmr-calc/
 │   │   │   └── web.py       # Web UI routes
 │   │   ├── static/          # CSS, JS
 │   │   └── templates/       # Jinja2 templates
-│   ├── isicle_wrapper.py    # ISiCLE/NWChem interface
+│   ├── nwchem/              # NWChem integration module
+│   │   ├── geometry.py      # SMILES to 3D, XYZ/SDF loading
+│   │   ├── input_gen.py     # NWChem input file generation
+│   │   ├── output_parser.py # Parse NWChem output files
+│   │   └── runner.py        # Execute NWChem calculations
 │   ├── models.py            # Data models
 │   ├── notifications.py     # Email notifications
 │   ├── presets.py           # Calculation presets
@@ -335,9 +318,9 @@ PRESETS: dict[PresetName, CalculationPreset] = {
 
 ## Known Limitations
 
-1. **Gas Phase Calculations**: Currently all calculations run in gas phase (`cosmo=False`) because we use CHESHIRE scaling factors derived from gas-phase data. The solvent parameter is accepted by the API but not applied to calculations.
+1. **Limited Solvents**: Only CHCl3 and DMSO are currently supported for COSMO solvation. Additional solvents can be added by specifying dielectric constants in `input_gen.py`.
 
-2. **Chemical Shift Accuracy**: Predicted shifts are approximately 10 ppm off from experimental values. This is under investigation.
+2. **Chemical Shift Accuracy**: Predicted shifts may deviate from experimental values. Accuracy depends on basis set quality, conformational sampling, and reference compound calibration.
 
 3. **Single Worker**: The Huey consumer runs with 1 worker because QM calculations are CPU-bound. Jobs are processed sequentially.
 
@@ -353,12 +336,11 @@ sudo apt-get install nwchem
 which nwchem  # Should return path
 ```
 
-### "FATAL: ISiCLE/RDKit initialization failed"
+### "FATAL: RDKit initialization failed"
 
-ISiCLE is not installed correctly. Ensure it's in a sibling directory:
+RDKit is not installed correctly:
 ```bash
-ls ../isicle/  # Should exist
-uv sync        # Reinstall dependencies
+uv sync  # Reinstall dependencies
 ```
 
 ### Job stuck in "queued" status
@@ -378,6 +360,9 @@ MIT
 
 ## Acknowledgments
 
-- [ISiCLE](https://github.com/pnnl/isicle) - Pacific Northwest National Laboratory
+This project's NWChem integration approach was informed by [ISiCLE](https://github.com/pnnl/isicle),
+a Python package for high-throughput NMR chemical shift calculations developed at
+Pacific Northwest National Laboratory.
+
 - [NWChem](https://nwchemgit.github.io/) - Quantum chemistry package
 - [RDKit](https://www.rdkit.org/) - Cheminformatics toolkit
