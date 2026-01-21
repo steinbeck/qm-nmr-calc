@@ -3,9 +3,10 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-import isicle
+from rdkit import Chem
+from rdkit.Chem import AllChem
 
-from .isicle_wrapper import validate_nwchem
+from .nwchem import validate_nwchem
 from .storage import DATA_DIR, list_jobs_by_status, update_job_status
 
 
@@ -15,7 +16,7 @@ def validate_environment() -> None:
 
     Checks:
     1. NWChem is available and callable
-    2. ISiCLE can initialize (RDKit works)
+    2. RDKit can initialize and generate 3D coordinates
     3. Data directory is writable
     """
     print("Validating environment...")
@@ -24,13 +25,14 @@ def validate_environment() -> None:
     validate_nwchem()
     print("  [OK] NWChem found")
 
-    # 2. Check ISiCLE/RDKit
+    # 2. Check RDKit
     try:
-        geom = isicle.load("C")  # Simplest molecule
-        geom.initial_optimize(embed=True)
-        print("  [OK] ISiCLE/RDKit working")
+        mol = Chem.MolFromSmiles("C")  # Simplest molecule
+        mol = Chem.AddHs(mol)
+        AllChem.EmbedMolecule(mol)
+        print("  [OK] RDKit working")
     except Exception as e:
-        sys.exit(f"FATAL: ISiCLE/RDKit initialization failed: {e}")
+        sys.exit(f"FATAL: RDKit initialization failed: {e}")
 
     # 3. Check data directory writable
     DATA_DIR.mkdir(parents=True, exist_ok=True)
