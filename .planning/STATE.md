@@ -110,5 +110,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-21
-Stopped at: Mid-discussion for Phase 7 (COSMO solvation details)
-Resume file: .planning/phases/07-nwchem-integration/.continue-here.md
+Stopped at: Phase 7 context gathered, ready to plan
+Resume file: None
