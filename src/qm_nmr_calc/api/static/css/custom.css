@@ -241,3 +241,137 @@ dialog#image-modal article header button {
     text-align: right;
     font-variant-numeric: tabular-nums;
 }
+
+/* Benchmark viewer layout */
+.benchmark-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 1rem;
+    min-height: 70vh;
+}
+
+.benchmark-sidebar {
+    background: var(--pico-card-background-color);
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 0.25rem;
+    overflow-y: auto;
+    max-height: 80vh;
+}
+
+.benchmark-sidebar h3 {
+    padding: 1rem;
+    margin: 0;
+    border-bottom: 1px solid var(--pico-muted-border-color);
+    font-size: 1rem;
+}
+
+.benchmark-sidebar nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.benchmark-sidebar nav ul li {
+    margin: 0;
+    padding: 0;
+}
+
+.benchmark-sidebar nav a {
+    display: block;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    font-size: 0.875rem;
+    border-left: 3px solid transparent;
+}
+
+.benchmark-sidebar nav a:hover {
+    background: var(--pico-secondary-hover-background);
+}
+
+.benchmark-sidebar nav a[aria-current="page"] {
+    background: var(--pico-primary-background);
+    border-left-color: var(--pico-primary);
+    font-weight: 600;
+}
+
+/* Viewer container */
+#viewer-container {
+    min-height: 500px;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 0.25rem;
+    background: white;
+}
+
+/* Metadata panel */
+.molecule-metadata {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--pico-card-background-color);
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 0.25rem;
+}
+
+.molecule-metadata h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+}
+
+.molecule-metadata h5 {
+    margin: 1rem 0 0.5rem 0;
+    font-size: 0.875rem;
+    color: var(--pico-muted-color);
+}
+
+.shifts-display {
+    margin-top: 1rem;
+}
+
+.shift-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    margin: 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-family: monospace;
+}
+
+.shift-badge.h1 {
+    background: #3498db;
+    color: white;
+}
+
+.shift-badge.c13 {
+    background: #27ae60;
+    color: white;
+}
+
+.legend {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.legend-color {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.25rem;
+}
+
+.legend-color.h1 { background: #3498db; }
+.legend-color.c13 { background: #27ae60; }
+
+@media (max-width: 768px) {
+    .benchmark-layout {
+        grid-template-columns: 1fr;
+    }
+    .benchmark-sidebar {
+        max-height: 200px;
+    }
+}

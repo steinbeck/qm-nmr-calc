@@ -85,17 +85,23 @@ async def get_molecule_data(compound_id: str):
         compound_number = 0
 
     # Count atoms from XYZ block (H and C atoms)
+    # Note: xyz_block from load_geometry_file has no header lines, just coordinates
     lines = xyz_block.strip().split("\n")
     num_h_atoms = 0
     num_c_atoms = 0
-    for line in lines[2:]:  # Skip atom count and comment lines
+    total_atoms = 0
+    for line in lines:
         parts = line.split()
         if parts:
+            total_atoms += 1
             element = parts[0]
             if element == "H":
                 num_h_atoms += 1
             elif element == "C":
                 num_c_atoms += 1
+
+    # Reconstruct full XYZ format with header for 3Dmol.js
+    full_xyz = f"{total_atoms}\n{mol_data.name}\n{xyz_block}"
 
     # Build assignments dict with string keys (for JSON compatibility)
     h1_assignments = {}
@@ -110,7 +116,7 @@ async def get_molecule_data(compound_id: str):
         "compound_id": compound_id,
         "name": mol_data.name,
         "compound_number": compound_number,
-        "xyz": xyz_block,
+        "xyz": full_xyz,
         "h1_shifts": mol_data.h1_shifts,
         "c13_shifts": mol_data.c13_shifts,
         "h1_assignments": h1_assignments,

@@ -5,7 +5,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from .routers import health, jobs, web
+from .routers import benchmark, health, jobs, web
 
 # Base directory for static files and templates
 BASE_DIR = Path(__file__).resolve().parent
@@ -27,6 +27,9 @@ app.include_router(health.router)
 
 # Web UI routes at root (no version prefix)
 app.include_router(web.router)
+
+# Benchmark viewer routes at root (no version prefix)
+app.include_router(benchmark.router)
 
 # API v1 endpoints
 app.include_router(jobs.router, prefix="/api/v1")
