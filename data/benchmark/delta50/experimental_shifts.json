@@ -1,0 +1,32 @@
+{
+  "source": {
+    "paper": "Grimblat et al., Molecules 2023, 28(6), 2449",
+    "doi": "10.3390/molecules28062449",
+    "conditions": "CDCl3, 298K",
+    "note": "This template requires manual data entry from publication SI"
+  },
+  "molecules": {
+    "_template": {
+      "name": "Human-readable molecule name from paper",
+      "h1_shifts": [],
+      "c13_shifts": [],
+      "h1_assignments": {},
+      "c13_assignments": {},
+      "note": "Copy this structure for molecule_01 through molecule_50"
+    },
+    "example": {
+      "name": "Acetic acid (example format only)",
+      "h1_shifts": [2.1, 11.5],
+      "c13_shifts": [20.8, 178.1],
+      "h1_assignments": {
+        "4": 2.1,
+        "7": 11.5
+      },
+      "c13_assignments": {
+        "0": 20.8,
+        "1": 178.1
+      },
+      "note": "Example only - not actual DELTA50 data"
+    }
+  }
+}
