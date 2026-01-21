@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-21)
 ## Current Position
 
 Phase: 8 of 11 (DELTA50 Setup)
-Plan: 1 of 3 in phase
+Plan: 2 of 3 in phase
 Status: In progress
-Last activity: 2026-01-21 — Completed 08-01-PLAN.md (DELTA50 data acquired)
+Last activity: 2026-01-21 — Completed 08-02-PLAN.md (Benchmark runner with CLI)
 
-Progress: [██████████████████████████░░░░░░░░░░░░░░░] 53% (21/40 plans)
+Progress: [███████████████████████████░░░░░░░░░░░░░░] 55% (22/40 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 21
+- Total plans completed: 22
 - Average duration: 3.3 min
-- Total execution time: 70 min
+- Total execution time: 73 min
 
 **By Phase:**
 
@@ -34,11 +34,11 @@ Progress: [███████████████████████
 | 05-visualization | 2 | 5 min | 2.5 min |
 | 06-web-ui | 3 | 6 min | 2.0 min |
 | 07-nwchem-integration | 4 | 15 min | 3.75 min |
-| 08-delta50-setup | 1 | 9 min | 9.0 min |
+| 08-delta50-setup | 2 | 12 min | 6.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-02 (4 min), 07-03 (3 min), 07-04 (6 min), 08-01 (9 min)
-- Trend: Stable (08-01 longer due to PDF parsing)
+- Last 5 plans: 07-03 (3 min), 07-04 (6 min), 08-01 (9 min), 08-02 (3 min)
+- Trend: Stable
 
 *Updated after each plan completion*
 
@@ -113,6 +113,8 @@ Recent decisions affecting current work:
 - Keep isicle_version field in models with "N/A" for backwards compatibility
 - DELTA50: compound_XX.xyz naming convention for benchmark molecules
 - DELTA50: Both unique shift lists and atom-index mappings in JSON
+- DELTA50: Separate BENCHMARK_PRESETS with WP04 for 1H-optimized calculations
+- DELTA50: Resume via shifts.json marker file existence check
 
 ### Pending Todos
 
@@ -124,6 +126,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-21T20:12:00Z
-Stopped at: Completed 08-01-PLAN.md (DELTA50 data acquired)
+Last session: 2026-01-21T20:17:00Z
+Stopped at: Completed 08-02-PLAN.md (Benchmark runner with CLI)
 Resume file: None
