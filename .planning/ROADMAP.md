@@ -135,7 +135,13 @@ Plans:
   3. System parses NWChem output files to extract shielding tensors for H and C atoms
   4. User can submit pre-optimized geometry and system skips geometry optimization step
   5. ISiCLE attribution is visible in code comments and documentation where code adapted
-**Plans**: 3-4 plans
+**Plans**: 4 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — NWChem input generation module (geometry opt + NMR shielding with COSMO)
+- [ ] 07-02-PLAN.md — NWChem output parsing module (geometry extraction + shielding tensors)
+- [ ] 07-03-PLAN.md — Geometry handling (SMILES-to-3D via RDKit, XYZ/SDF loading)
+- [ ] 07-04-PLAN.md — Integration (replace isicle_wrapper, update tasks.py, add attribution)
 
 ### Phase 8: DELTA50 Setup
 **Goal**: DELTA50 benchmark infrastructure ready to execute calculation matrix
@@ -204,7 +210,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 7. NWChem Integration | 0/3-4 | Pending | — |
+| 7. NWChem Integration | 0/4 | Planned | — |
 | 8. DELTA50 Setup | 0/2-3 | Pending | — |
 | 9. Benchmark Calculations | 0/2 | Pending | — |
 | 10. Scaling Factors | 0/2-3 | Pending | — |
