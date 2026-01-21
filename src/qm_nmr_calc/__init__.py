@@ -3,7 +3,7 @@ __version__ = "0.1.0"
 
 from .models import JobStatus, JobInput
 from .storage import create_job_directory, load_job_status, update_job_status
-from .isicle_wrapper import validate_nwchem, get_versions
+from .nwchem import validate_nwchem, get_nwchem_version
 from .queue import huey
 from .tasks import run_optimization_task
 from .api.app import app
@@ -15,7 +15,7 @@ __all__ = [
     'load_job_status',
     'update_job_status',
     'validate_nwchem',
-    'get_versions',
+    'get_nwchem_version',
     'huey',
     'run_optimization_task',
     'app',

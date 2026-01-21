@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse, JSONResponse, Response
 from rdkit import Chem
 
 from ..schemas import JobStatusResponse, JobSubmitRequest, NMRResultsResponse, ProblemDetail
-from ...isicle_wrapper import get_versions
+from ...nwchem import get_nwchem_version
 from ...models import JobStatus
 from ...solvents import validate_solvent, get_supported_solvents
 from ...storage import create_job_directory, get_geometry_file, get_output_files, get_visualization_file, load_job_status
@@ -128,14 +128,14 @@ async def submit_smiles(request: JobSubmitRequest):
         )
 
     # Get software versions for reproducibility
-    versions = get_versions()
+    nwchem_version = get_nwchem_version()
 
     # Create job directory and initial status
     job_status = create_job_directory(
         smiles=request.smiles,
         solvent=normalized_solvent,
-        isicle_version=versions.isicle,
-        nwchem_version=versions.nwchem,
+        isicle_version="N/A",  # ISiCLE removed, using direct NWChem integration
+        nwchem_version=nwchem_version,
         name=request.name,
         preset=request.preset,
         notification_email=request.notification_email,
@@ -235,14 +235,14 @@ async def submit_file(
     smiles = Chem.MolToSmiles(mol)
 
     # Get software versions
-    versions = get_versions()
+    nwchem_version = get_nwchem_version()
 
     # Create job (use filename as name if not provided)
     job_status = create_job_directory(
         smiles=smiles,
         solvent=normalized_solvent,
-        isicle_version=versions.isicle,
-        nwchem_version=versions.nwchem,
+        isicle_version="N/A",  # ISiCLE removed, using direct NWChem integration
+        nwchem_version=nwchem_version,
         name=name or filename,
         preset=preset,
         notification_email=notification_email,

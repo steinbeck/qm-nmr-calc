@@ -8,7 +8,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from rdkit import Chem
 
-from ...isicle_wrapper import get_versions
+from ...nwchem import get_nwchem_version
 from ...presets import PRESETS
 from ...solvents import (
     SUPPORTED_SOLVENTS,
@@ -134,14 +134,14 @@ async def submit_job(
         return render_error(f"Unknown solvent '{solvent}'. Supported: {supported}")
 
     # Get software versions
-    versions = get_versions()
+    nwchem_version = get_nwchem_version()
 
     # Create job directory and initial status
     job_status = create_job_directory(
         smiles=final_smiles,
         solvent=normalized_solvent,
-        isicle_version=versions.isicle,
-        nwchem_version=versions.nwchem,
+        isicle_version="N/A",  # ISiCLE removed, using direct NWChem integration
+        nwchem_version=nwchem_version,
         name=final_name,
         preset=preset,
         notification_email=notification_email,

@@ -1,0 +1,148 @@
+Northwest Computational Chemistry Package (NWChem) 7.2.2
+-------------------------------------------------------
+
+                 Northwest Computational Chemistry Package (NWChem) 7.2.2
+               --------------------------------------------------------
+
+                        Environmental Molecular Sciences Laboratory
+                                   Pacific Northwest National Laboratory
+                                             Richland, WA 99352
+
+         Job information
+         ---------------
+
+                        hostname = compute-node-01
+                          system = Linux
+                         release = 5.4.0-generic
+                         version = #1 SMP
+                         machine = x86_64
+
+ NWChem Input Module
+ -------------------
+
+
+                             NMR Shielding Calculation
+                             -------------------------
+
+          --------
+          methane
+          --------
+
+                               NWChem SCF Module
+                               -----------------
+
+
+  convergence    = 1.00E-07
+  max iterations = 150
+
+
+                                DFT Properties
+                                --------------
+
+
+ Total DFT energy:      -40.51864189
+
+
+ ------------------------------------------------
+    GIAO Chemical Shielding Tensors
+ ------------------------------------------------
+
+    Atom:    1  C
+       isotropic  =     195.9423
+       anisotropy =       0.0012
+
+          195.9420    0.0001    0.0002
+            0.0001  195.9425    0.0001
+            0.0002    0.0001  195.9424
+
+       principal components and samples axis system
+       (0,0,0 denotes symmetry axis)
+
+        1          2          3          D
+       195.9420   195.9424   195.9425
+
+       d   1.00000  0.00000  0.00000
+       d   0.00000  1.00000  0.00000
+       d   0.00000  0.00000  1.00000
+
+    Atom:    2  H
+       isotropic  =      31.2145
+       anisotropy =       0.0089
+
+          31.2134    0.0012    0.0012
+            0.0012   31.2148    0.0012
+            0.0012    0.0012   31.2153
+
+       principal components and samples axis system
+       (0,0,0 denotes symmetry axis)
+
+        1          2          3          D
+        31.2134    31.2148    31.2153
+
+       d   1.00000  0.00000  0.00000
+       d   0.00000  1.00000  0.00000
+       d   0.00000  0.00000  1.00000
+
+    Atom:    3  H
+       isotropic  =      31.2089
+       anisotropy =       0.0092
+
+          31.2078    0.0014    0.0011
+            0.0014   31.2092    0.0013
+            0.0011    0.0013   31.2097
+
+       principal components and samples axis system
+       (0,0,0 denotes symmetry axis)
+
+        1          2          3          D
+        31.2078    31.2092    31.2097
+
+       d   1.00000  0.00000  0.00000
+       d   0.00000  1.00000  0.00000
+       d   0.00000  0.00000  1.00000
+
+    Atom:    4  H
+       isotropic  =      31.2201
+       anisotropy =       0.0087
+
+          31.2190    0.0010    0.0013
+            0.0010   31.2204    0.0011
+            0.0013    0.0011   31.2209
+
+       principal components and samples axis system
+       (0,0,0 denotes symmetry axis)
+
+        1          2          3          D
+        31.2190    31.2204    31.2209
+
+       d   1.00000  0.00000  0.00000
+       d   0.00000  1.00000  0.00000
+       d   0.00000  0.00000  1.00000
+
+    Atom:    5  H
+       isotropic  =      31.2178
+       anisotropy =       0.0091
+
+          31.2167    0.0012    0.0012
+            0.0012   31.2181    0.0012
+            0.0012    0.0012   31.2186
+
+       principal components and samples axis system
+       (0,0,0 denotes symmetry axis)
+
+        1          2          3          D
+        31.2167    31.2181    31.2186
+
+       d   1.00000  0.00000  0.00000
+       d   0.00000  1.00000  0.00000
+       d   0.00000  0.00000  1.00000
+
+ ------------------------------------------------
+
+ Task  times  cpu:        245.8s     wall:        89.2s
+
+ Summary of allocated global arrays
+ -----------------------------------
+  No active global arrays
+
+                    NWChem Output File Generated

@@ -1,20 +1,11 @@
 """NWChem COSMO solvent validation for NMR calculations."""
 
-# Common NMR solvents supported by NWChem COSMO.
-# Keys are NWChem solvent names (lowercase), values are descriptions.
-# Source: NWChem documentation - Solvation-Models.html
+# Supported NMR solvents for COSMO solvation model.
+# Keys are NWChem-compatible names (lowercase), values are descriptions.
+# Limited to solvents with known dielectric constants in input_gen.py.
 SUPPORTED_SOLVENTS: dict[str, str] = {
     "chcl3": "Chloroform (CDCl3)",
     "dmso": "Dimethylsulfoxide (DMSO-d6)",
-    "methanol": "Methanol (CD3OD)",
-    "acetone": "Acetone (acetone-d6)",
-    "benzene": "Benzene (C6D6)",
-    "h2o": "Water (D2O)",
-    "acetntrl": "Acetonitrile (CD3CN)",
-    "dcm": "Dichloromethane (CD2Cl2)",
-    "thf": "Tetrahydrofuran (THF-d8)",
-    "pyridine": "Pyridine (pyridine-d5)",
-    "toluene": "Toluene (toluene-d8)",
 }
 
 

@@ -5,7 +5,7 @@ import orjson
 
 from .queue import huey
 from .storage import load_job_status, get_job_dir, update_job_status, start_step, complete_current_step
-from .isicle_wrapper import run_geometry_optimization, run_geometry_opt_dft, run_nmr_shielding
+from .nwchem import run_calculation
 from .presets import PRESETS, PresetName
 from .shifts import shielding_to_shift
 from .models import NMRResults, AtomShift
@@ -61,7 +61,7 @@ def run_nmr_task(job_id: str) -> dict:
     This is the main task for NMR calculations. It:
     1. Loads job status and validates it's queued
     2. Gets preset configuration based on job input
-    3. Runs two-step DFT: geometry optimization then NMR shielding
+    3. Runs two-step DFT: geometry optimization then NMR shielding (both with COSMO)
     4. Converts shielding to chemical shifts
     5. Saves NMR results to job output directory
     6. Updates job status with NMR results
@@ -96,7 +96,13 @@ def run_nmr_task(job_id: str) -> dict:
 
     # Step 1: Geometry optimization
     start_step(job_id, "geometry_optimization", "Optimizing geometry")
-    geometry_file, optimized_geom = run_geometry_opt_dft(
+
+    # Step 2: NMR shielding calculation (tracked within run_calculation)
+    start_step(job_id, "nmr_shielding", "Computing NMR shielding")
+
+    # Run complete calculation (geometry optimization + NMR shielding)
+    # Both steps use COSMO solvation - this fixes the gas-phase bug
+    result = run_calculation(
         smiles=smiles,
         job_dir=job_dir,
         preset=preset,
@@ -104,21 +110,13 @@ def run_nmr_task(job_id: str) -> dict:
         processes=preset['processes'],
     )
 
-    # Step 2: NMR shielding calculation
-    start_step(job_id, "nmr_shielding", "Computing NMR shielding")
-    nmr_result = run_nmr_shielding(
-        optimized_geom=optimized_geom,
-        job_dir=job_dir,
-        preset=preset,
-        solvent=solvent,
-        processes=preset['processes'],
-    )
+    geometry_file = result['geometry_file']
 
     # Step 3: Post-processing
     start_step(job_id, "post_processing", "Generating results")
 
     # Convert shielding to chemical shifts using preset-specific TMS reference
-    shifts = shielding_to_shift(nmr_result['shielding_data'], preset=job_status.input.preset)
+    shifts = shielding_to_shift(result['shielding_data'], preset=job_status.input.preset)
 
     # Build NMRResults object
     h1_shifts = [
