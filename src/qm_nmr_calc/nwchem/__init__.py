@@ -19,6 +19,12 @@ from qm_nmr_calc.nwchem.output_parser import (
     extract_optimized_geometry,
     parse_shielding_output,
 )
+from qm_nmr_calc.nwchem.runner import (
+    get_nwchem_version,
+    run_calculation,
+    run_nwchem,
+    validate_nwchem,
+)
 
 __all__ = [
     # Geometry handling
@@ -32,4 +38,9 @@ __all__ = [
     # Output parsing
     "extract_optimized_geometry",
     "parse_shielding_output",
+    # Runner
+    "run_nwchem",
+    "run_calculation",
+    "validate_nwchem",
+    "get_nwchem_version",
 ]
