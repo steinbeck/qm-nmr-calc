@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-21)
 ## Current Position
 
 Phase: 7 of 11 (NWChem Integration)
-Plan: 3 of 4 in phase (Wave 1 complete)
-Status: In progress
-Last activity: 2026-01-21 — Completed 07-03-PLAN.md (Wave 1: 01, 02, 03 all complete)
+Plan: 4 of 4 in phase (Phase complete)
+Status: Phase complete
+Last activity: 2026-01-21 — Completed 07-04-PLAN.md (Phase 7 complete: ISiCLE removed, pipeline integrated)
 
-Progress: [███████████████████████░░░░░░░░░░░░░░░░░░] 47.5% (19/40 plans)
+Progress: [█████████████████████████░░░░░░░░░░░░░░░░] 50% (20/40 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
-- Average duration: 2.8 min
-- Total execution time: 55 min
+- Total plans completed: 20
+- Average duration: 3.0 min
+- Total execution time: 61 min
 
 **By Phase:**
 
@@ -33,10 +33,10 @@ Progress: [███████████████████████
 | 04-results-delivery | 2 | 7 min | 3.5 min |
 | 05-visualization | 2 | 5 min | 2.5 min |
 | 06-web-ui | 3 | 6 min | 2.0 min |
-| 07-nwchem-integration | 3 | 9 min | 3.0 min |
+| 07-nwchem-integration | 4 | 15 min | 3.75 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-03 (2 min), 07-01 (2 min), 07-02 (4 min), 07-03 (3 min)
+- Last 5 plans: 07-01 (2 min), 07-02 (4 min), 07-03 (3 min), 07-04 (6 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -51,7 +51,7 @@ Recent decisions affecting current work:
 - Use hatchling build system for src layout (uv compatible)
 - 12-character hex job IDs from uuid4 for URL-safe identifiers
 - orjson with OPT_INDENT_2 for human-readable status.json files
-- ISiCLE installed as editable from local fork
+- ISiCLE removed, direct NWChem integration via nwchem module
 - SqliteHuey with fsync=True for crash-safe job queue
 - Job ID as first argument convention for all tasks (signal handler extraction)
 - Scratch directory inside job directory for cleanup
@@ -72,7 +72,7 @@ Recent decisions affecting current work:
 - Production preset as default (reliability over speed)
 - TypedDict for preset config (not Pydantic - just config data)
 - TMS reference scaling factors from Pierens et al. for B3LYP/6-311+G(2d,p)
-- 11 common NMR solvents supported initially
+- CHCl3 and DMSO solvents supported (those with COSMO dielectric values)
 - Solvent is required field (no default) - users must explicitly choose
 - AtomShift stores both shielding and shift; API returns only shift
 - NMRResults includes calculation metadata (functional, basis_set, solvent)
@@ -107,6 +107,9 @@ Recent decisions affecting current work:
 - Descriptive RuntimeError messages with expected NWChem section headers
 - ETKDGv3 as default conformer generation method with deterministic seeding (0xF00D)
 - XYZ bond determination requires explicit charge parameter (default=0)
+- run_calculation() as single entry point for NMR calculations
+- COSMO solvation applied to BOTH geometry optimization and NMR shielding
+- Keep isicle_version field in models with "N/A" for backwards compatibility
 
 ### Pending Todos
 
@@ -118,6 +121,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-21T14:20:00Z
-Stopped at: Completed 07-03-PLAN.md
+Last session: 2026-01-21T13:31:00Z
+Stopped at: Completed 07-04-PLAN.md (Phase 7 complete)
 Resume file: None
