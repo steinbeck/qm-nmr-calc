@@ -138,10 +138,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — NWChem input generation module (geometry opt + NMR shielding with COSMO)
-- [ ] 07-02-PLAN.md — NWChem output parsing module (geometry extraction + shielding tensors)
-- [ ] 07-03-PLAN.md — Geometry handling (SMILES-to-3D via RDKit, XYZ/SDF loading)
-- [ ] 07-04-PLAN.md — Integration (replace isicle_wrapper, update tasks.py, add attribution)
+- [x] 07-01-PLAN.md — NWChem input generation module (geometry opt + NMR shielding with COSMO)
+- [x] 07-02-PLAN.md — NWChem output parsing module (geometry extraction + shielding tensors)
+- [x] 07-03-PLAN.md — Geometry handling (SMILES-to-3D via RDKit, XYZ/SDF loading)
+- [x] 07-04-PLAN.md — Integration (replace isicle_wrapper, update tasks.py, add attribution)
 
 ### Phase 8: DELTA50 Setup
 **Goal**: DELTA50 benchmark infrastructure ready to execute calculation matrix
@@ -152,7 +152,11 @@ Plans:
   2. Experimental 1H and 13C shift values are stored with molecule ID associations
   3. Benchmark runner can execute calculations for all combinations: 50 molecules x 2 functionals x 2 solvents
   4. Benchmark runner outputs raw calculation results in organized directory structure
-**Plans**: 2-3 plans
+**Plans**: 2 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — DELTA50 data acquisition and benchmark data loader module
+- [ ] 08-02-PLAN.md — Benchmark runner with CLI, resume support, and summary generation
 
 ### Phase 9: Benchmark Calculations
 **Goal**: Complete DELTA50 calculation matrix for scaling factor derivation
@@ -211,7 +215,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 7. NWChem Integration | 4/4 | Complete | 2026-01-21 |
-| 8. DELTA50 Setup | 0/2-3 | Pending | — |
+| 8. DELTA50 Setup | 0/2 | Pending | — |
 | 9. Benchmark Calculations | 0/2 | Pending | — |
 | 10. Scaling Factors | 0/2-3 | Pending | — |
 | 11. Production Integration | 0/2-3 | Pending | — |
