@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-01-21)
 
 ## Current Position
 
-Phase: 9 of 11 (Benchmark Calculations)
-Plan: 0 of 2 in phase
-Status: Ready to plan
-Last activity: 2026-01-21 — Completed Phase 8 (DELTA50 Setup)
+Phase: 8.1 of 11 (DELTA50 Data Viewer)
+Plan: 1 of 1 in phase (COMPLETE)
+Status: Phase complete
+Last activity: 2026-01-21 — Completed 08.1-01-PLAN.md
 
-Progress: [███████████████████████████████░░░░░░░░░░] 58% (23/40 plans)
+Progress: [████████████████████████████████░░░░░░░░░] 59% (24/41 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 23
+- Total plans completed: 24
 - Average duration: 3.3 min
-- Total execution time: 76 min
+- Total execution time: 80 min
 
 **By Phase:**
 
@@ -35,9 +35,10 @@ Progress: [███████████████████████
 | 06-web-ui | 3 | 6 min | 2.0 min |
 | 07-nwchem-integration | 4 | 15 min | 3.75 min |
 | 08-delta50-setup | 2 | 12 min | 6.0 min |
+| 08.1-delta50-viewer | 1 | 4 min | 4.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-03 (3 min), 07-04 (6 min), 08-01 (9 min), 08-02 (3 min)
+- Last 5 plans: 07-04 (6 min), 08-01 (9 min), 08-02 (3 min), 08.1-01 (4 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -115,6 +116,12 @@ Recent decisions affecting current work:
 - DELTA50: Both unique shift lists and atom-index mappings in JSON
 - DELTA50: Separate BENCHMARK_PRESETS with WP04 for 1H-optimized calculations
 - DELTA50: Resume via shifts.json marker file existence check
+- 3Dmol.js from CDN for minimal build complexity
+- Full XYZ format reconstruction for 3Dmol.js compatibility
+
+### Roadmap Evolution
+
+- Phase 8.1 inserted after Phase 8: DELTA50 Data Viewer - verify extracted structures and experimental shifts before benchmark execution (user request)
 
 ### Pending Todos
 
@@ -126,6 +133,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-21T21:00:00Z
-Stopped at: Completed Phase 8 (DELTA50 Setup)
+Last session: 2026-01-21T20:52:02Z
+Stopped at: Completed Phase 8.1 (DELTA50 Data Viewer)
 Resume file: None
