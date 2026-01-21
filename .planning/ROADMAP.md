@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 ### Milestone v1.1: Accurate Chemical Shifts (Active)
 
-- [ ] **Phase 7: NWChem Integration** - Direct NWChem I/O handling and COSMO solvation
+- [x] **Phase 7: NWChem Integration** - Direct NWChem I/O handling and COSMO solvation
 - [ ] **Phase 8: DELTA50 Setup** - Benchmark dataset infrastructure
 - [ ] **Phase 9: Benchmark Calculations** - Execute DELTA50 calculation matrix
 - [ ] **Phase 10: Scaling Factors** - Derive and validate NWChem-specific scaling factors
@@ -210,7 +210,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 7. NWChem Integration | 0/4 | Planned | — |
+| 7. NWChem Integration | 4/4 | Complete | 2026-01-21 |
 | 8. DELTA50 Setup | 0/2-3 | Pending | — |
 | 9. Benchmark Calculations | 0/2 | Pending | — |
 | 10. Scaling Factors | 0/2-3 | Pending | — |
