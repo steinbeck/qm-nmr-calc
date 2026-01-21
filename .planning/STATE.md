@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-21)
 ## Current Position
 
 Phase: 7 of 11 (NWChem Integration)
-Plan: 2 of 4 in phase
+Plan: 3 of 4 in phase (Wave 1 complete)
 Status: In progress
-Last activity: 2026-01-21 — Completed 07-02-PLAN.md
+Last activity: 2026-01-21 — Completed 07-03-PLAN.md (Wave 1: 01, 02, 03 all complete)
 
-Progress: [████████████████████░░░░░░░░░░░░░░░░░░░░] 45% (18/40 plans)
+Progress: [███████████████████████░░░░░░░░░░░░░░░░░░] 47.5% (19/40 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 18
+- Total plans completed: 19
 - Average duration: 2.8 min
-- Total execution time: 52 min
+- Total execution time: 55 min
 
 **By Phase:**
 
@@ -33,10 +33,10 @@ Progress: [████████████████████░░░
 | 04-results-delivery | 2 | 7 min | 3.5 min |
 | 05-visualization | 2 | 5 min | 2.5 min |
 | 06-web-ui | 3 | 6 min | 2.0 min |
-| 07-nwchem-integration | 2 | 6 min | 3.0 min |
+| 07-nwchem-integration | 3 | 9 min | 3.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-01 (2 min), 06-03 (2 min), 07-01 (2 min), 07-02 (4 min)
+- Last 5 plans: 06-03 (2 min), 07-01 (2 min), 07-02 (4 min), 07-03 (3 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -105,6 +105,8 @@ Recent decisions affecting current work:
 - Flexible regex patterns with fallbacks for NWChem version variations
 - Shielding data format: {index: [], atom: [], shielding: []} for shifts.py compatibility
 - Descriptive RuntimeError messages with expected NWChem section headers
+- ETKDGv3 as default conformer generation method with deterministic seeding (0xF00D)
+- XYZ bond determination requires explicit charge parameter (default=0)
 
 ### Pending Todos
 
@@ -116,6 +118,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-21T13:21:00Z
-Stopped at: Completed 07-02-PLAN.md
+Last session: 2026-01-21T14:20:00Z
+Stopped at: Completed 07-03-PLAN.md
 Resume file: None
