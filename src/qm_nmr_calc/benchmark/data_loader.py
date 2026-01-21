@@ -70,12 +70,12 @@ def load_delta50_molecules() -> dict[str, tuple]:
         )
 
     molecules = {}
-    xyz_files = sorted(xyz_dir.glob("molecule_*.xyz"))
+    xyz_files = sorted(xyz_dir.glob("compound_*.xyz"))
 
     if not xyz_files:
         raise RuntimeError(
-            f"No molecule_*.xyz files found in {xyz_dir}\n"
-            "Expected: molecule_01.xyz through molecule_50.xyz\n"
+            f"No compound_*.xyz files found in {xyz_dir}\n"
+            "Expected: compound_01.xyz through compound_50.xyz\n"
             "See data/benchmark/delta50/README.md for setup instructions"
         )
 
