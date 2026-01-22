@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-21)
 ## Current Position
 
 Phase: 9 of 11 (Benchmark Calculations)
-Plan: 0 of 2 in phase
-Status: Ready to plan
-Last activity: 2026-01-22 — Completed Phase 8.1 (human verification passed)
+Plan: 1 of 2 in phase
+Status: In progress
+Last activity: 2026-01-22 — Completed 09-01-PLAN.md
 
-Progress: [█████████████████████████████████░░░░░░░░] 61% (25/41 plans)
+Progress: [██████████████████████████████████░░░░░░░] 63% (26/41 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 24
-- Average duration: 3.3 min
-- Total execution time: 80 min
+- Total plans completed: 25
+- Average duration: 3.4 min
+- Total execution time: 84 min
 
 **By Phase:**
 
@@ -36,11 +36,12 @@ Progress: [███████████████████████
 | 07-nwchem-integration | 4 | 15 min | 3.75 min |
 | 08-delta50-setup | 2 | 12 min | 6.0 min |
 | 08.1-delta50-viewer | 1 | 4 min | 4.0 min |
+| 09-benchmark-calculations | 1 | 4 min | 4.0 min |
 
 *Note: Phase 8.1 required additional human verification session (not counted in execution time)*
 
 **Recent Trend:**
-- Last 5 plans: 07-04 (6 min), 08-01 (9 min), 08-02 (3 min), 08.1-01 (4 min)
+- Last 5 plans: 08-01 (9 min), 08-02 (3 min), 08.1-01 (4 min), 09-01 (4 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -120,6 +121,10 @@ Recent decisions affecting current work:
 - DELTA50: Resume via shifts.json marker file existence check
 - 3Dmol.js from CDN for minimal build complexity
 - Full XYZ format reconstruction for 3Dmol.js compatibility
+- Rolling average of last 10 calculations for ETA (not overall average)
+- FAILURE_THRESHOLD = 5 unique molecules (10% of 50)
+- Clear STOP file on run start to avoid stale markers
+- Tuple return (results, state) from run_benchmark for multi-outcome handling
 
 ### Roadmap Evolution
 
@@ -136,5 +141,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-22
-Stopped at: Phase 8.1 complete, ready to plan Phase 9
+Stopped at: Completed 09-01-PLAN.md
 Resume file: None
