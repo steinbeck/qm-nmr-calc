@@ -274,24 +274,66 @@ dialog#image-modal article header button {
 .benchmark-sidebar nav ul li {
     margin: 0;
     padding: 0;
+    list-style: none;
+}
+
+.verification-progress {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    color: var(--pico-muted-color);
+    border-bottom: 1px solid var(--pico-muted-border-color);
+    background: var(--pico-secondary-background);
+}
+
+.verification-progress #verified-count {
+    font-weight: 600;
+    color: var(--pico-primary);
+}
+
+.molecule-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+}
+
+.molecule-item:hover {
+    background: var(--pico-secondary-hover-background);
+}
+
+.molecule-item.verified {
+    background: rgba(39, 174, 96, 0.1);
+}
+
+.molecule-item .verify-checkbox {
+    margin: 0;
+    flex-shrink: 0;
 }
 
 .benchmark-sidebar nav a {
     display: block;
-    padding: 0.5rem 1rem;
     text-decoration: none;
     font-size: 0.875rem;
-    border-left: 3px solid transparent;
+    flex-grow: 1;
 }
 
 .benchmark-sidebar nav a:hover {
-    background: var(--pico-secondary-hover-background);
+    /* Hover handled by .molecule-item */
 }
 
 .benchmark-sidebar nav a[aria-current="page"] {
+    font-weight: 600;
+}
+
+.molecule-item:has(a[aria-current="page"]) {
     background: var(--pico-primary-background);
     border-left-color: var(--pico-primary);
-    font-weight: 600;
+}
+
+.molecule-item.verified:has(a[aria-current="page"]) {
+    background: linear-gradient(90deg, rgba(39, 174, 96, 0.15) 0%, var(--pico-primary-background) 100%);
 }
 
 /* Viewer container */

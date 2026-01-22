@@ -14,13 +14,19 @@
     <!-- Sidebar with molecule list -->
     <aside class="benchmark-sidebar">
         <h3>DELTA50 Molecules</h3>
+        <div class="verification-progress">
+            <span id="verified-count">0</span> of 50 verified
+        </div>
         <nav>
             <ul>
                 {% for mol in molecule_list %}
                 <li>
-                    <a href="#" data-compound-id="{{ mol.id }}">
-                        {{ mol.compound_number }}. {{ mol.name }}
-                    </a>
+                    <label class="molecule-item">
+                        <input type="checkbox" class="verify-checkbox" data-compound-id="{{ mol.id }}">
+                        <a href="#" data-compound-id="{{ mol.id }}">
+                            {{ mol.compound_number }}. {{ mol.name }}
+                        </a>
+                    </label>
                 </li>
                 {% endfor %}
             </ul>
@@ -78,12 +84,59 @@
 <script>
     let viewer = null;
 
+    const STORAGE_KEY = 'delta50_verified';
+
+    function loadVerificationState() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        return stored ? JSON.parse(stored) : {};
+    }
+
+    function saveVerificationState(state) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function updateVerifiedCount() {
+        const state = loadVerificationState();
+        const count = Object.values(state).filter(v => v).length;
+        document.getElementById('verified-count').textContent = count;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize 3Dmol viewer once
         const viewerContainer = document.getElementById('viewer-container');
         viewer = $3Dmol.createViewer(viewerContainer, {
             backgroundColor: 'white'
         });
+
+        // Restore checkbox states from localStorage
+        const state = loadVerificationState();
+        const checkboxes = document.querySelectorAll('.verify-checkbox');
+        checkboxes.forEach(cb => {
+            const compoundId = cb.dataset.compoundId;
+            cb.checked = state[compoundId] || false;
+
+            // Update visual state of parent
+            if (cb.checked) {
+                cb.closest('.molecule-item').classList.add('verified');
+            }
+
+            // Handle checkbox changes
+            cb.addEventListener('change', function(e) {
+                e.stopPropagation();
+                const currentState = loadVerificationState();
+                currentState[compoundId] = this.checked;
+                saveVerificationState(currentState);
+                updateVerifiedCount();
+
+                // Update visual state
+                if (this.checked) {
+                    this.closest('.molecule-item').classList.add('verified');
+                } else {
+                    this.closest('.molecule-item').classList.remove('verified');
+                }
+            });
+        });
+        updateVerifiedCount();
 
         // Set up sidebar click handlers
         const sidebarLinks = document.querySelectorAll('.benchmark-sidebar nav a');
@@ -169,7 +222,7 @@
             // Check for 13C shift assignment (carbon atoms)
             if (atom.elem === 'C' && c13Assignments && c13Assignments[atomIndex]) {
                 const shift = c13Assignments[atomIndex];
-                viewer.addLabel(shift.toFixed(1), {
+                viewer.addLabel(shift.toFixed(2), {
                     position: {x: atom.x, y: atom.y, z: atom.z},
                     fontSize: 11,
                     fontColor: 'white',
@@ -214,7 +267,7 @@
         const c13Container = document.getElementById('c13-shifts-container');
         if (data.c13_shifts && data.c13_shifts.length > 0) {
             c13Container.innerHTML = data.c13_shifts
-                .map(s => `<span class="shift-badge c13">${s.toFixed(1)}</span>`)
+                .map(s => `<span class="shift-badge c13">${s.toFixed(2)}</span>`)
                 .join('');
         } else {
             c13Container.innerHTML = '<em class="muted">No 13C shifts available</em>';
