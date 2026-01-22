@@ -150,11 +150,12 @@
         const atoms = model.selectedAtoms({});
 
         atoms.forEach(atom => {
-            const serial = String(atom.serial);
+            // 3Dmol.js uses 0-based serial, but our assignments use 1-based atom indices
+            const atomIndex = String(atom.serial + 1);
 
             // Check for 1H shift assignment (hydrogen atoms)
-            if (atom.elem === 'H' && h1Assignments && h1Assignments[serial]) {
-                const shift = h1Assignments[serial];
+            if (atom.elem === 'H' && h1Assignments && h1Assignments[atomIndex]) {
+                const shift = h1Assignments[atomIndex];
                 viewer.addLabel(shift.toFixed(2), {
                     position: {x: atom.x, y: atom.y, z: atom.z},
                     fontSize: 11,
@@ -166,8 +167,8 @@
             }
 
             // Check for 13C shift assignment (carbon atoms)
-            if (atom.elem === 'C' && c13Assignments && c13Assignments[serial]) {
-                const shift = c13Assignments[serial];
+            if (atom.elem === 'C' && c13Assignments && c13Assignments[atomIndex]) {
+                const shift = c13Assignments[atomIndex];
                 viewer.addLabel(shift.toFixed(1), {
                     position: {x: atom.x, y: atom.y, z: atom.z},
                     fontSize: 11,
