@@ -25,7 +25,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 7: NWChem Integration** - Direct NWChem I/O handling and COSMO solvation
 - [x] **Phase 8: DELTA50 Setup** - Benchmark dataset infrastructure
-- [ ] **Phase 8.1: DELTA50 Data Viewer** - Verify extracted structures and shifts (INSERTED)
+- [x] **Phase 8.1: DELTA50 Data Viewer** - Verify extracted structures and shifts (INSERTED)
 - [ ] **Phase 9: Benchmark Calculations** - Execute DELTA50 calculation matrix
 - [ ] **Phase 10: Scaling Factors** - Derive and validate NWChem-specific scaling factors
 - [ ] **Phase 11: Production Integration** - Apply scaling factors and new functional to production
@@ -171,7 +171,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 08.1-01-PLAN.md — Benchmark viewer with 3Dmol.js, sidebar, and shift labels
+- [x] 08.1-01-PLAN.md — Benchmark viewer with 3Dmol.js, sidebar, and shift labels
 
 ### Phase 9: Benchmark Calculations
 **Goal**: Complete DELTA50 calculation matrix for scaling factor derivation
@@ -231,7 +231,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 8.1 -> 
 |-------|----------------|--------|-----------|
 | 7. NWChem Integration | 4/4 | Complete | 2026-01-21 |
 | 8. DELTA50 Setup | 2/2 | Complete | 2026-01-21 |
-| 8.1. DELTA50 Data Viewer | 0/1 | Planned | — |
+| 8.1. DELTA50 Data Viewer | 1/1 | Complete | 2026-01-22 |
 | 9. Benchmark Calculations | 0/2 | Pending | — |
 | 10. Scaling Factors | 0/2-3 | Pending | — |
 | 11. Production Integration | 0/2-3 | Pending | — |
