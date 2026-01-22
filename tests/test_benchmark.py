@@ -1,18 +1,24 @@
 """Tests for DELTA50 benchmark infrastructure."""
 
-import json
+from collections import deque
+from datetime import datetime, timezone
 from pathlib import Path
 
+import orjson
 import pytest
 
 from qm_nmr_calc.benchmark import (
+    FAILURE_THRESHOLD,
     BenchmarkResult,
     ExperimentalShifts,
     MoleculeData,
     build_task_matrix,
+    check_stop_requested,
+    clear_stop_file,
     get_data_dir,
     load_delta50_molecules,
     load_experimental_shifts,
+    update_status,
 )
 from qm_nmr_calc.benchmark.runner import (
     BENCHMARK_PRESETS,
@@ -153,3 +159,147 @@ class TestRunner:
         output_dir.mkdir(parents=True)
         (output_dir / "shifts.json").write_text("{}")
         assert is_task_complete(tmp_path, task)
+
+
+class TestStatusTracking:
+    """Tests for status file tracking and control mechanisms."""
+
+    def test_failure_threshold_defined(self):
+        """Failure threshold should be 5 (10% of 50 molecules)."""
+        assert FAILURE_THRESHOLD == 5
+
+    def test_check_stop_requested_false_when_no_file(self, tmp_path):
+        """Should return False when STOP file doesn't exist."""
+        assert not check_stop_requested(tmp_path)
+
+    def test_check_stop_requested_true_when_file_exists(self, tmp_path):
+        """Should return True when STOP file exists."""
+        (tmp_path / "STOP").touch()
+        assert check_stop_requested(tmp_path)
+
+    def test_clear_stop_file_removes_file(self, tmp_path):
+        """Should remove STOP file if it exists."""
+        stop_file = tmp_path / "STOP"
+        stop_file.touch()
+        assert stop_file.exists()
+        clear_stop_file(tmp_path)
+        assert not stop_file.exists()
+
+    def test_clear_stop_file_no_error_if_missing(self, tmp_path):
+        """Should not raise error if STOP file doesn't exist."""
+        clear_stop_file(tmp_path)  # Should not raise
+
+    def test_update_status_creates_file(self, tmp_path):
+        """update_status should create status.json file."""
+        started = datetime.now(timezone.utc)
+        update_status(
+            results_dir=tmp_path,
+            state="running",
+            total_tasks=200,
+            completed=10,
+            failed=2,
+            current_task=None,
+            failures=[],
+            started_at=started,
+            calc_times=deque([]),
+        )
+        status_file = tmp_path / "status.json"
+        assert status_file.exists()
+
+    def test_update_status_has_required_fields(self, tmp_path):
+        """Status file should contain all required fields."""
+        started = datetime.now(timezone.utc)
+        update_status(
+            results_dir=tmp_path,
+            state="running",
+            total_tasks=200,
+            completed=10,
+            failed=2,
+            current_task={"molecule_id": "compound_01", "functional": "B3LYP", "solvent": "CHCl3"},
+            failures=[{"molecule_id": "compound_02", "error": "test error"}],
+            started_at=started,
+            calc_times=deque([120.5, 130.2, 140.8]),
+        )
+        status_file = tmp_path / "status.json"
+        data = orjson.loads(status_file.read_bytes())
+
+        # Required fields
+        assert "run_id" in data
+        assert "started_at" in data
+        assert "updated_at" in data
+        assert data["state"] == "running"
+        assert data["total_tasks"] == 200
+        assert data["completed"] == 10
+        assert data["failed"] == 2
+        assert data["current_task"] is not None
+        assert "failures" in data
+        assert "estimated_remaining_hours" in data
+        assert "avg_calc_time_seconds" in data
+
+    def test_update_status_calculates_eta_from_rolling_average(self, tmp_path):
+        """ETA should be calculated from rolling average of recent calc times."""
+        started = datetime.now(timezone.utc)
+        # 3 calculations averaging 120 seconds
+        calc_times = deque([100.0, 120.0, 140.0])
+        update_status(
+            results_dir=tmp_path,
+            state="running",
+            total_tasks=200,
+            completed=3,
+            failed=0,
+            current_task=None,
+            failures=[],
+            started_at=started,
+            calc_times=calc_times,
+        )
+        status_file = tmp_path / "status.json"
+        data = orjson.loads(status_file.read_bytes())
+
+        # Average is 120s, 197 remaining, so 197 * 120 / 3600 = 6.57 hours
+        assert data["avg_calc_time_seconds"] == 120.0
+        assert data["estimated_remaining_hours"] is not None
+        assert data["estimated_remaining_hours"] > 6.0
+
+    def test_update_status_keeps_last_10_failures(self, tmp_path):
+        """Should only keep last 10 failures."""
+        started = datetime.now(timezone.utc)
+        failures = [{"molecule_id": f"mol_{i}", "error": "test"} for i in range(15)]
+        update_status(
+            results_dir=tmp_path,
+            state="running",
+            total_tasks=200,
+            completed=10,
+            failed=15,
+            current_task=None,
+            failures=failures,
+            started_at=started,
+            calc_times=deque([]),
+        )
+        status_file = tmp_path / "status.json"
+        data = orjson.loads(status_file.read_bytes())
+
+        assert len(data["failures"]) == 10
+        # Should be last 10 (mol_5 through mol_14)
+        assert data["failures"][0]["molecule_id"] == "mol_5"
+
+    def test_update_status_atomic_write(self, tmp_path):
+        """Status file should not have .tmp suffix after write."""
+        started = datetime.now(timezone.utc)
+        update_status(
+            results_dir=tmp_path,
+            state="running",
+            total_tasks=200,
+            completed=0,
+            failed=0,
+            current_task=None,
+            failures=[],
+            started_at=started,
+            calc_times=deque([]),
+        )
+        # No temp file should remain
+        temp_file = tmp_path / "status.json.tmp"
+        assert not temp_file.exists()
+        # Final file should exist and be valid JSON
+        status_file = tmp_path / "status.json"
+        assert status_file.exists()
+        orjson.loads(status_file.read_bytes())  # Should not raise

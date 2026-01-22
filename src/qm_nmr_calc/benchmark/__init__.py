@@ -2,7 +2,17 @@
 
 from .data_loader import get_data_dir, load_delta50_molecules, load_experimental_shifts
 from .models import BenchmarkResult, ExperimentalShifts, MoleculeData
-from .runner import aggregate_results, build_task_matrix, run_benchmark, show_status
+from .runner import (
+    FAILURE_THRESHOLD,
+    aggregate_results,
+    build_task_matrix,
+    check_stop_requested,
+    clear_stop_file,
+    get_results_dir,
+    run_benchmark,
+    show_status,
+    update_status,
+)
 
 __all__ = [
     # Models
@@ -18,4 +28,10 @@ __all__ = [
     "build_task_matrix",
     "show_status",
     "aggregate_results",
+    "get_results_dir",
+    # Status and control
+    "update_status",
+    "check_stop_requested",
+    "clear_stop_file",
+    "FAILURE_THRESHOLD",
 ]
