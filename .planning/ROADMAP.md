@@ -185,6 +185,10 @@ Plans:
   5. Failed calculations documented with error analysis (if any)
 **Plans**: 2 plans
 
+Plans:
+- [ ] 09-01-PLAN.md — Runner enhancement (status.json, graceful stop, headless mode)
+- [ ] 09-02-PLAN.md — Execute pilot (5 molecules) then full headless run (200 calculations)
+
 ### Phase 10: Scaling Factors
 **Goal**: Derive and validate NWChem-specific scaling factors from benchmark data
 **Depends on**: Phase 9
@@ -232,6 +236,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 8.1 -> 
 | 7. NWChem Integration | 4/4 | Complete | 2026-01-21 |
 | 8. DELTA50 Setup | 2/2 | Complete | 2026-01-21 |
 | 8.1. DELTA50 Data Viewer | 1/1 | Complete | 2026-01-22 |
-| 9. Benchmark Calculations | 0/2 | Pending | — |
+| 9. Benchmark Calculations | 0/2 | Planned | — |
 | 10. Scaling Factors | 0/2-3 | Pending | — |
 | 11. Production Integration | 0/2-3 | Pending | — |
