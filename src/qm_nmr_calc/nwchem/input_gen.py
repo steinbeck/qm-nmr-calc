@@ -36,6 +36,7 @@ def generate_optimization_input(
     basis_set: str,
     solvent: str,
     max_iter: int = 150,
+    noautoz: bool = False,
 ) -> str:
     """Generate NWChem input file for geometry optimization with COSMO.
 
@@ -45,6 +46,8 @@ def generate_optimization_input(
         basis_set: Basis set name (e.g., '6-31G*')
         solvent: Solvent name for COSMO (chcl3 or dmso)
         max_iter: Maximum optimization iterations
+        noautoz: If True, disable AUTOZ (use for linear molecules that fail
+            with "insufficient internal variables" error). Default False.
 
     Returns:
         Complete NWChem input file as string
@@ -53,11 +56,12 @@ def generate_optimization_input(
         ValueError: If solvent is not supported
     """
     dielec = _validate_solvent(solvent)
+    geom_opts = "noautosym noautoz" if noautoz else "noautosym"
 
     return f"""start molecule
 title "Geometry Optimization"
 
-geometry units angstrom noautosym
+geometry units angstrom {geom_opts}
 {geometry_xyz}
 end
 
@@ -85,6 +89,7 @@ def generate_shielding_input(
     functional: str,
     basis_set: str,
     solvent: str,
+    noautoz: bool = False,
 ) -> str:
     """Generate NWChem input file for NMR shielding calculation with COSMO.
 
@@ -93,6 +98,8 @@ def generate_shielding_input(
         functional: DFT functional (e.g., 'b3lyp')
         basis_set: Basis set name (e.g., '6-311+G(2d,p)')
         solvent: Solvent name for COSMO (chcl3 or dmso)
+        noautoz: If True, disable AUTOZ (use for linear molecules that fail
+            with "insufficient internal variables" error). Default False.
 
     Returns:
         Complete NWChem input file as string
@@ -101,11 +108,12 @@ def generate_shielding_input(
         ValueError: If solvent is not supported
     """
     dielec = _validate_solvent(solvent)
+    geom_opts = "noautosym noautoz" if noautoz else "noautosym"
 
     return f"""start molecule
 title "NMR Shielding Calculation"
 
-geometry units angstrom noautosym
+geometry units angstrom {geom_opts}
 {geometry_xyz}
 end
 
