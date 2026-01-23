@@ -140,7 +140,6 @@ async def submit_job(
     job_status = create_job_directory(
         smiles=final_smiles,
         solvent=normalized_solvent,
-        isicle_version="N/A",  # ISiCLE removed, using direct NWChem integration
         nwchem_version=nwchem_version,
         name=final_name,
         preset=preset,

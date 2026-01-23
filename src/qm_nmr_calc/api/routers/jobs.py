@@ -134,7 +134,6 @@ async def submit_smiles(request: JobSubmitRequest):
     job_status = create_job_directory(
         smiles=request.smiles,
         solvent=normalized_solvent,
-        isicle_version="N/A",  # ISiCLE removed, using direct NWChem integration
         nwchem_version=nwchem_version,
         name=request.name,
         preset=request.preset,
@@ -241,7 +240,6 @@ async def submit_file(
     job_status = create_job_directory(
         smiles=smiles,
         solvent=normalized_solvent,
-        isicle_version="N/A",  # ISiCLE removed, using direct NWChem integration
         nwchem_version=nwchem_version,
         name=name or filename,
         preset=preset,

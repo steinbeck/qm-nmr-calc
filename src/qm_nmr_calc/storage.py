@@ -26,7 +26,6 @@ def get_job_dir(job_id: str) -> Path:
 def create_job_directory(
     smiles: str,
     solvent: str,
-    isicle_version: str,
     nwchem_version: str,
     name: Optional[str] = None,
     preset: str = "production",
@@ -57,7 +56,6 @@ def create_job_directory(
             solvent=solvent,
             notification_email=notification_email,
         ),
-        isicle_version=isicle_version,
         nwchem_version=nwchem_version,
     )
 
