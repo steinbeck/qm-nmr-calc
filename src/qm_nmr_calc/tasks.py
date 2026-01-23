@@ -115,8 +115,13 @@ def run_nmr_task(job_id: str) -> dict:
     # Step 3: Post-processing
     start_step(job_id, "post_processing", "Generating results")
 
-    # Convert shielding to chemical shifts using preset-specific TMS reference
-    shifts = shielding_to_shift(result['shielding_data'], preset=job_status.input.preset)
+    # Convert shielding to chemical shifts using DELTA50 regression factors
+    shifts = shielding_to_shift(
+        result['shielding_data'],
+        functional=preset['functional'].upper(),  # 'b3lyp' -> 'B3LYP'
+        basis_set=preset['nmr_basis_set'],
+        solvent=solvent,
+    )
 
     # Build NMRResults object
     h1_shifts = [

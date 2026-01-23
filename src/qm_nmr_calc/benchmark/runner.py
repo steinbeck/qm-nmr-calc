@@ -234,9 +234,13 @@ def run_single_calculation(
             geometry_file=xyz_file,
         )
 
-        # Convert shielding to shifts
-        # Use production scaling for now (will derive benchmark-specific later)
-        shifts_data = shielding_to_shift(result["shielding_data"], preset="production")
+        # Convert shielding to shifts using DELTA50 regression factors
+        shifts_data = shielding_to_shift(
+            result["shielding_data"],
+            functional=functional.upper(),  # Already have functional from task params
+            basis_set=BENCHMARK_PRESETS[functional]["nmr_basis_set"],
+            solvent=solvent,  # Already have solvent from task params
+        )
 
         # Extract shift values
         h1_shifts = [s["shift"] for s in shifts_data["1H"]]
