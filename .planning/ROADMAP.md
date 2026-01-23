@@ -208,7 +208,8 @@ Plans:
 ### Phase 11: Production Integration
 **Goal**: Production calculations use NWChem-derived DELTA50 factors; ISiCLE dependency removed
 **Depends on**: Phase 10
-**Requirements**: PROD-01, PROD-02, PROD-04 (PROD-03 deferred - WP04 not supported by NWChem)
+**Requirements**: PROD-02, PROD-04 (PROD-01 satisfied in Phase 7, PROD-03 deferred - WP04 not supported by NWChem)
+**Note**: PROD-01 (COSMO solvation bug) was fixed in Phase 7, Plan 07-04. COSMO is now applied to both geometry optimization and NMR shielding calculations.
 **Success Criteria** (what must be TRUE):
   1. Production calculations use NWChem-derived scaling factors instead of CHESHIRE
   2. ISiCLE is no longer a runtime dependency (removed from pyproject.toml)
