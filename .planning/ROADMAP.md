@@ -28,7 +28,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 8.1: DELTA50 Data Viewer** - Verify extracted structures and shifts (INSERTED)
 - [x] **Phase 9: Benchmark Calculations** - Execute DELTA50 calculation matrix
 - [x] **Phase 10: Scaling Factors** - Derive and validate NWChem-specific scaling factors
-- [ ] **Phase 11: Production Integration** - Apply scaling factors and new functional to production
+- [ ] **Phase 11: Production Integration** - Apply scaling factors and remove ISiCLE dependency
 
 ## Phase Details
 
@@ -206,16 +206,20 @@ Plans:
 - [x] 10-02-PLAN.md — Report generation with plots, SCALING-FACTORS.md, CLI analyze command
 
 ### Phase 11: Production Integration
-**Goal**: Production calculations use NWChem-derived factors and enable WP04 functional
+**Goal**: Production calculations use NWChem-derived DELTA50 factors; ISiCLE dependency removed
 **Depends on**: Phase 10
-**Requirements**: PROD-01, PROD-02, PROD-03, PROD-04
+**Requirements**: PROD-01, PROD-02, PROD-04 (PROD-03 deferred - WP04 not supported by NWChem)
 **Success Criteria** (what must be TRUE):
-  1. Production calculations apply COSMO solvation when solvent is specified (bug fixed)
-  2. Production calculations use NWChem-derived scaling factors instead of CHESHIRE
-  3. User can select WP04 functional at submission time (new preset or parameter)
-  4. ISiCLE is no longer a runtime dependency (removed from production imports and dependencies)
-  5. Production calculation with WP04/CHCl3 produces more accurate 1H shifts than B3LYP/gas
-**Plans**: 2-3 plans
+  1. Production calculations use NWChem-derived scaling factors instead of CHESHIRE
+  2. ISiCLE is no longer a runtime dependency (removed from pyproject.toml)
+  3. API responses include scaling factor metadata (source, expected MAE)
+  4. UI and API branding references NWChem only (not ISiCLE)
+**Plans**: 3 plans
+
+Plans:
+- [ ] 11-01-PLAN.md — Scaling factors infrastructure and pyproject.toml cleanup
+- [ ] 11-02-PLAN.md — ISiCLE model removal from JobStatus and storage
+- [ ] 11-03-PLAN.md — API metadata enhancement and UI branding update
 
 ## Progress
 
@@ -242,4 +246,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 8.1 -> 
 | 8.1. DELTA50 Data Viewer | 1/1 | Complete | 2026-01-22 |
 | 9. Benchmark Calculations | 2/2 | Complete | 2026-01-22 |
 | 10. Scaling Factors | 2/2 | Complete | 2026-01-23 |
-| 11. Production Integration | 0/2-3 | Pending | — |
+| 11. Production Integration | 0/3 | Pending | — |
