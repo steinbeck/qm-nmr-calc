@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-01-21)
 
 ## Current Position
 
-Phase: 10 of 11 (Scaling Factors)
-Plan: 2 of 2 in phase (COMPLETE)
-Status: Phase complete
-Last activity: 2026-01-23 — Completed 10-02-PLAN.md (report generation)
+Phase: 11 of 11 (Production Integration)
+Plan: 1 of 2 in phase
+Status: In progress
+Last activity: 2026-01-23 — Completed 11-01-PLAN.md (integrate DELTA50 factors)
 
-Progress: [███████████████████████████████████████░░] 71% (29/41 plans)
+Progress: [████████████████████████████████████████░] 73% (30/41 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 29
-- Average duration: 8.6 min
-- Total execution time: 248 min
+- Total plans completed: 30
+- Average duration: 8.4 min
+- Total execution time: 253 min
 
 **By Phase:**
 
@@ -38,11 +38,12 @@ Progress: [███████████████████████
 | 08.1-delta50-viewer | 1 | 4 min | 4.0 min |
 | 09-benchmark-calculations | 2 | 154 min | 77 min |
 | 10-scaling-factors | 2 | 7 min | 3.5 min |
+| 11-production-integration | 1 | 5 min | 5.0 min |
 
 *Note: Phase 8.1 required additional human verification session (not counted in execution time)*
 
 **Recent Trend:**
-- Last 5 plans: 09-01 (4 min), 09-02 (150 min), 10-01 (3 min), 10-02 (4 min)
+- Last 5 plans: 09-02 (150 min), 10-01 (3 min), 10-02 (4 min), 11-01 (5 min)
 - Note: 09-02 included ~2.5 hours of NWChem calculations
 
 *Updated after each plan completion*
@@ -131,6 +132,10 @@ Recent decisions affecting current work:
 - Composite factor keys: functional/basis_set/nucleus/solvent
 - 2-panel regression plots: scatter + residual side-by-side
 - Flag compounds with mean error > 2x MAE as high-error
+- Production calculations use DELTA50 regression factors (not CHESHIRE TMS references)
+- Scaling factors loaded lazily via @cache decorator and importlib.resources
+- Explicit ValueError when solvent/functional combination not supported (no fallback)
+- hatchling force-include for bundling data files in package
 
 ### Roadmap Evolution
 
@@ -146,7 +151,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-23
-Stopped at: Completed 10-02-PLAN.md (Phase 10 complete)
+Last session: 2026-01-23T15:54:41Z
+Stopped at: Completed 11-01-PLAN.md
 Resume file: None
-Next: Phase 11 - Production Integration
+Next: Phase 11 Plan 02
