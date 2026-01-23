@@ -11,6 +11,7 @@ from rdkit import Chem
 from ..schemas import JobStatusResponse, JobSubmitRequest, NMRResultsResponse, ProblemDetail
 from ...nwchem import get_nwchem_version
 from ...models import JobStatus
+from ...shifts import get_scaling_factor
 from ...solvents import validate_solvent, get_supported_solvents
 from ...storage import create_job_directory, get_geometry_file, get_output_files, get_visualization_file, load_job_status
 from ...tasks import run_nmr_task
@@ -29,6 +30,21 @@ def job_status_to_response(job_status: JobStatus) -> dict:
     # Convert NMR results if present
     nmr_results = None
     if job_status.nmr_results is not None:
+        # Get factor metadata for MAE display
+        # Note: functional stored lowercase, get_scaling_factor expects uppercase
+        h1_factor = get_scaling_factor(
+            job_status.nmr_results.functional.upper(),
+            job_status.nmr_results.basis_set,
+            "1H",
+            job_status.nmr_results.solvent
+        )
+        c13_factor = get_scaling_factor(
+            job_status.nmr_results.functional.upper(),
+            job_status.nmr_results.basis_set,
+            "13C",
+            job_status.nmr_results.solvent
+        )
+
         nmr_results = {
             "h1_shifts": [
                 {"index": s.index, "atom": s.atom, "shift": s.shift}
@@ -41,6 +57,9 @@ def job_status_to_response(job_status: JobStatus) -> dict:
             "functional": job_status.nmr_results.functional,
             "basis_set": job_status.nmr_results.basis_set,
             "solvent": job_status.nmr_results.solvent,
+            "scaling_factor_source": "DELTA50",
+            "h1_expected_mae": f"+/- {h1_factor['mae']:.2f} ppm",
+            "c13_expected_mae": f"+/- {c13_factor['mae']:.2f} ppm",
         }
 
     # Convert completed steps to response format
@@ -350,6 +369,21 @@ async def get_nmr_results(job_id: str):
             },
         )
 
+    # Get factor metadata for MAE display
+    # Note: functional stored lowercase, get_scaling_factor expects uppercase
+    h1_factor = get_scaling_factor(
+        job_status.nmr_results.functional.upper(),
+        job_status.nmr_results.basis_set,
+        "1H",
+        job_status.nmr_results.solvent
+    )
+    c13_factor = get_scaling_factor(
+        job_status.nmr_results.functional.upper(),
+        job_status.nmr_results.basis_set,
+        "13C",
+        job_status.nmr_results.solvent
+    )
+
     # Convert to response format (without shielding, only shift)
     return NMRResultsResponse(
         h1_shifts=[
@@ -363,6 +397,9 @@ async def get_nmr_results(job_id: str):
         functional=job_status.nmr_results.functional,
         basis_set=job_status.nmr_results.basis_set,
         solvent=job_status.nmr_results.solvent,
+        scaling_factor_source="DELTA50",
+        h1_expected_mae=f"+/- {h1_factor['mae']:.2f} ppm",
+        c13_expected_mae=f"+/- {c13_factor['mae']:.2f} ppm",
     )
 
 
