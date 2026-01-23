@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 app = FastAPI(
     title="QM NMR Calculator API",
-    description="Asynchronous NMR quantum mechanical calculations via ISiCLE/NWChem",
+    description="Asynchronous NMR quantum mechanical calculations via NWChem",
     version="0.1.0",
     docs_url="/docs",
     redoc_url="/redoc",
