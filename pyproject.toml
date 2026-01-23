@@ -9,7 +9,6 @@ dependencies = [
     "email-validator>=2.3.0",
     "fastapi>=0.128.0",
     "huey>=2.6.0",
-    "isicle",
     "matplotlib>=3.10.0",
     "orjson>=3.11.5",
     "pandas>=2.3.3",
@@ -27,8 +26,8 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/qm_nmr_calc"]
 
-[tool.uv.sources]
-isicle = { path = "../isicle", editable = true }
+[tool.hatch.build.targets.wheel.force-include]
+"src/qm_nmr_calc/data" = "qm_nmr_calc/data"
 
 [dependency-groups]
 dev = [
