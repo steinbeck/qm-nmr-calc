@@ -1,5 +1,11 @@
 """DELTA50 benchmark infrastructure for NMR shift validation."""
 
+from .analysis import (
+    aggregate_regression_data,
+    derive_all_factors,
+    fit_scaling_factors,
+    get_factor_key,
+)
 from .data_loader import get_data_dir, load_delta50_molecules, load_experimental_shifts
 from .models import BenchmarkResult, ExperimentalShifts, MoleculeData, RegressionData, ScalingFactor
 from .runner import (
@@ -36,4 +42,9 @@ __all__ = [
     "check_stop_requested",
     "clear_stop_file",
     "FAILURE_THRESHOLD",
+    # Analysis
+    "derive_all_factors",
+    "fit_scaling_factors",
+    "aggregate_regression_data",
+    "get_factor_key",
 ]
