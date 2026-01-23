@@ -55,6 +55,21 @@ class NMRResultsResponse(BaseModel):
     functional: str = Field(..., description="DFT functional used")
     basis_set: str = Field(..., description="Basis set used for NMR calculation")
     solvent: str = Field(..., description="Solvent used for COSMO solvation")
+    # Scaling factor metadata
+    scaling_factor_source: str = Field(
+        default="DELTA50",
+        description="Source of scaling factors used for shift calculation"
+    )
+    h1_expected_mae: str = Field(
+        ...,
+        description="Expected mean absolute error for 1H shifts (e.g., '+/- 0.12 ppm')",
+        examples=["+/- 0.12 ppm"]
+    )
+    c13_expected_mae: str = Field(
+        ...,
+        description="Expected mean absolute error for 13C shifts (e.g., '+/- 1.95 ppm')",
+        examples=["+/- 1.95 ppm"]
+    )
 
 
 class StepTimingResponse(BaseModel):
