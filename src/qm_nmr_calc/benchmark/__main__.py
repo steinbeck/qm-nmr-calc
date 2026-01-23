@@ -5,6 +5,7 @@ Usage:
     python -m qm_nmr_calc.benchmark status
     python -m qm_nmr_calc.benchmark stop
     python -m qm_nmr_calc.benchmark summary [--output FILE]
+    python -m qm_nmr_calc.benchmark analyze [--output-dir DIR] [--factors-only]
 
 Headless execution (for long-running benchmarks):
     nohup python -m qm_nmr_calc.benchmark run --headless > /dev/null 2>&1 &
@@ -197,6 +198,29 @@ def cmd_summary(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_analyze(args: argparse.Namespace) -> int:
+    """Derive scaling factors and generate report."""
+    setup_logging(args.verbose)
+
+    from .analysis import derive_all_factors, generate_report
+
+    if args.factors_only:
+        factors = derive_all_factors()
+        for key, factor in factors.items():
+            print(f"{key}:")
+            print(f"  slope={factor.slope:.4f}, intercept={factor.intercept:.2f}")
+            print(f"  R^2={factor.r_squared:.4f}, MAE={factor.mae:.3f}, RMSD={factor.rmsd:.3f}")
+            print(f"  n={factor.n_points}, outliers_removed={factor.outliers_removed}")
+        return 0
+
+    output_dir = Path(args.output_dir)
+    generate_report(output_dir)
+    print(f"Report generated: {output_dir / 'SCALING-FACTORS.md'}")
+    print(f"Plots: {output_dir / 'plots'}")
+    print(f"JSON export: {output_dir / 'scaling_factors.json'}")
+    return 0
+
+
 def main() -> int:
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -295,6 +319,28 @@ def main() -> int:
         help="Output CSV file path (default: data/benchmark/results/summary.csv)",
     )
     summary_parser.set_defaults(func=cmd_summary)
+
+    # analyze subcommand
+    analyze_parser = subparsers.add_parser(
+        "analyze",
+        help="Derive scaling factors and generate report",
+        description=(
+            "Derive NMR scaling factors from benchmark data using linear regression. "
+            "Generates SCALING-FACTORS.md with tables, statistics, and plots."
+        ),
+    )
+    analyze_parser.add_argument(
+        "--output-dir",
+        type=str,
+        default="data/benchmark/delta50",
+        help="Output directory for report and plots (default: data/benchmark/delta50)",
+    )
+    analyze_parser.add_argument(
+        "--factors-only",
+        action="store_true",
+        help="Print scaling factors only (skip report/plot generation)",
+    )
+    analyze_parser.set_defaults(func=cmd_analyze)
 
     args = parser.parse_args()
     return args.func(args)
