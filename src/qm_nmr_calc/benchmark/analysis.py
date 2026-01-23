@@ -396,3 +396,291 @@ def plot_residual_histogram(
     plt.tight_layout()
     plt.savefig(output_path, dpi=150, bbox_inches="tight")
     plt.close(fig)  # CRITICAL: Prevent memory leaks
+
+
+def calculate_per_compound_stats(
+    df: pd.DataFrame,
+    factor: ScalingFactor,
+    nucleus: str,
+) -> pd.DataFrame:
+    """Calculate per-compound prediction statistics.
+
+    For each compound, calculates predicted shifts, residuals, and error metrics.
+
+    Args:
+        df: DataFrame with columns compound, shielding, exp_shift, nucleus
+        factor: ScalingFactor with regression parameters
+        nucleus: "1H" or "13C" to filter data
+
+    Returns:
+        DataFrame with columns: compound, mean_error, max_error, num_atoms
+    """
+    # Filter to specified nucleus
+    data = df[df["nucleus"] == nucleus].copy()
+    if data.empty:
+        return pd.DataFrame(columns=["compound", "mean_error", "max_error", "num_atoms"])
+
+    # Calculate predicted shift and residuals
+    data["predicted"] = factor.slope * data["shielding"] + factor.intercept
+    data["residual"] = data["exp_shift"] - data["predicted"]
+    data["abs_error"] = data["residual"].abs()
+
+    # Group by compound and aggregate
+    stats = data.groupby("compound").agg(
+        mean_error=("abs_error", "mean"),
+        max_error=("abs_error", "max"),
+        num_atoms=("atom_idx", "count"),
+    ).reset_index()
+
+    return stats.sort_values("mean_error", ascending=False)
+
+
+def save_factors_json(
+    factors: dict[str, ScalingFactor],
+    output_path: Path,
+) -> None:
+    """Export scaling factors to JSON for external tools.
+
+    Args:
+        factors: Dict mapping factor keys to ScalingFactor objects
+        output_path: Path to write JSON file
+    """
+    # Convert to serializable format
+    export_data = {}
+    for key, factor in factors.items():
+        export_data[key] = {
+            "slope": factor.slope,
+            "intercept": factor.intercept,
+            "r_squared": factor.r_squared,
+            "mae": factor.mae,
+            "rmsd": factor.rmsd,
+            "n_points": factor.n_points,
+            "ci_slope": list(factor.ci_slope),
+            "ci_intercept": list(factor.ci_intercept),
+            "outliers_removed": factor.outliers_removed,
+        }
+
+    output_path.write_bytes(
+        orjson.dumps(export_data, option=orjson.OPT_INDENT_2)
+    )
+    logger.info(f"Exported {len(factors)} factors to {output_path}")
+
+
+def generate_report(output_dir: Path) -> None:
+    """Generate publication-quality scaling factor report.
+
+    Creates SCALING-FACTORS.md with methodology, tables, and plot references.
+    Generates regression and residual plots for each factor set.
+
+    Args:
+        output_dir: Directory to write report and plots
+    """
+    output_dir.mkdir(parents=True, exist_ok=True)
+    plots_dir = output_dir / "plots"
+    plots_dir.mkdir(exist_ok=True)
+
+    # Derive all factors
+    factors = derive_all_factors()
+
+    if not factors:
+        logger.error("No scaling factors derived, cannot generate report")
+        return
+
+    # Save factors as JSON
+    save_factors_json(factors, output_dir / "scaling_factors.json")
+
+    # Group factors by functional/solvent for iteration
+    factor_groups: dict[tuple[str, str], dict[str, ScalingFactor]] = {}
+    for key, factor in factors.items():
+        parts = key.split("/")
+        functional, basis_set, nucleus, solvent = parts
+        group_key = (functional, solvent)
+        if group_key not in factor_groups:
+            factor_groups[group_key] = {}
+        factor_groups[group_key][nucleus] = factor
+
+    # Generate plots and collect residuals for each factor
+    all_residuals: dict[str, np.ndarray] = {}
+
+    for (functional, solvent), nucleus_factors in factor_groups.items():
+        df = aggregate_regression_data(functional, solvent)
+
+        for nucleus, factor in nucleus_factors.items():
+            # Calculate residuals for this factor
+            data = df[df["nucleus"] == nucleus]
+            shielding = data["shielding"].values
+            exp_shift = data["exp_shift"].values
+            predicted = factor.slope * shielding + factor.intercept
+            residuals = exp_shift - predicted
+            key = f"{functional}_{solvent}_{nucleus}"
+            all_residuals[key] = residuals
+
+            # Generate regression plot
+            title = f"{nucleus} {functional} ({solvent})"
+            reg_path = plots_dir / f"{functional}_{solvent}_{nucleus}_regression.png"
+            plot_regression(df, factor, nucleus, title, reg_path)
+            logger.info(f"Generated {reg_path}")
+
+            # Generate residual histogram
+            hist_title = f"{nucleus} {functional} ({solvent}) - Residual Distribution"
+            hist_path = plots_dir / f"{functional}_{solvent}_{nucleus}_residuals.png"
+            plot_residual_histogram(residuals, hist_title, hist_path, factor.mae, factor.rmsd)
+            logger.info(f"Generated {hist_path}")
+
+    # Build markdown report
+    lines = [
+        "# DELTA50 NMR Scaling Factors",
+        "",
+        "Derived from DELTA50 benchmark data using B3LYP/6-311+G(2d,p) calculations.",
+        "",
+        "## Methodology",
+        "",
+        "Scaling factors convert calculated NMR shielding values (sigma) to predicted",
+        "chemical shifts (delta) using linear regression:",
+        "",
+        "```",
+        "delta = slope * sigma + intercept",
+        "```",
+        "",
+        "**Fitting procedure:**",
+        "1. Aggregate shielding-shift pairs across all DELTA50 compounds",
+        "2. Fit ordinary least squares (OLS) regression",
+        "3. Identify outliers with residuals > 3 standard deviations",
+        "4. Refit without outliers",
+        "5. Report final statistics with 95% confidence intervals",
+        "",
+        "**Training data:** DELTA50 benchmark set (50 small organic molecules with",
+        "experimentally assigned NMR spectra in CDCl3).",
+        "",
+        "## Scaling Factors",
+        "",
+        "| Nucleus | Solvent | Slope | Intercept | R^2 | MAE (ppm) | RMSD (ppm) | n |",
+        "|---------|---------|-------|-----------|-----|-----------|------------|---|",
+    ]
+
+    # Add factor table rows
+    for key, factor in sorted(factors.items()):
+        parts = key.split("/")
+        functional, basis_set, nucleus, solvent = parts
+        slope_ci = f"{factor.slope:.4f} ({factor.ci_slope[0]:.4f}, {factor.ci_slope[1]:.4f})"
+        int_ci = f"{factor.intercept:.2f} ({factor.ci_intercept[0]:.2f}, {factor.ci_intercept[1]:.2f})"
+        lines.append(
+            f"| {nucleus} | {solvent} | {slope_ci} | {int_ci} | "
+            f"{factor.r_squared:.4f} | {factor.mae:.3f} | {factor.rmsd:.3f} | {factor.n_points} |"
+        )
+
+    lines.extend([
+        "",
+        "*Values in parentheses are 95% confidence intervals.*",
+        "",
+        "## Statistical Summary",
+        "",
+    ])
+
+    # Per-compound statistics for each factor
+    for (functional, solvent), nucleus_factors in factor_groups.items():
+        df = aggregate_regression_data(functional, solvent)
+
+        for nucleus, factor in nucleus_factors.items():
+            stats = calculate_per_compound_stats(df, factor, nucleus)
+            key = f"{functional}_{solvent}_{nucleus}"
+
+            lines.extend([
+                f"### {nucleus} {functional} ({solvent})",
+                "",
+                "| Compound | Mean Error (ppm) | Max Error (ppm) | Atoms |",
+                "|----------|------------------|-----------------|-------|",
+            ])
+
+            for _, row in stats.iterrows():
+                lines.append(
+                    f"| {row['compound']} | {row['mean_error']:.3f} | "
+                    f"{row['max_error']:.3f} | {int(row['num_atoms'])} |"
+                )
+
+            # Flag high-error compounds (>2x MAE)
+            high_error = stats[stats["mean_error"] > 2 * factor.mae]
+            if not high_error.empty:
+                lines.extend([
+                    "",
+                    f"**Note:** Compounds with mean error > 2x MAE ({2*factor.mae:.3f} ppm):",
+                    ", ".join(high_error["compound"].tolist()),
+                ])
+
+            lines.append("")
+
+    # Add plot references
+    lines.extend([
+        "## Plots",
+        "",
+        "### Regression Analysis",
+        "",
+    ])
+
+    for (functional, solvent), nucleus_factors in factor_groups.items():
+        for nucleus in nucleus_factors:
+            reg_file = f"{functional}_{solvent}_{nucleus}_regression.png"
+            lines.append(f"![{nucleus} {functional} ({solvent}) Regression](plots/{reg_file})")
+            lines.append("")
+
+    lines.extend([
+        "### Residual Distributions",
+        "",
+    ])
+
+    for (functional, solvent), nucleus_factors in factor_groups.items():
+        for nucleus in nucleus_factors:
+            hist_file = f"{functional}_{solvent}_{nucleus}_residuals.png"
+            lines.append(f"![{nucleus} {functional} ({solvent}) Residuals](plots/{hist_file})")
+            lines.append("")
+
+    # Usage section
+    lines.extend([
+        "## Usage",
+        "",
+        "Apply scaling factors to convert calculated shielding to predicted shift:",
+        "",
+        "```python",
+        "from qm_nmr_calc.benchmark.analysis import derive_all_factors, get_factor_key",
+        "",
+        "# Get all factors",
+        "factors = derive_all_factors()",
+        "",
+        "# Look up specific factor",
+        "key = get_factor_key('B3LYP', '6-311+G(2d,p)', '1H', 'CHCl3')",
+        "factor = factors[key]",
+        "",
+        "# Convert shielding to shift",
+        "shielding = 30.5  # ppm (calculated)",
+        "shift = factor.slope * shielding + factor.intercept",
+        "print(f'Predicted shift: {shift:.2f} ppm')",
+        "```",
+        "",
+        "Or load from JSON:",
+        "",
+        "```python",
+        "import json",
+        "",
+        "with open('scaling_factors.json') as f:",
+        "    factors = json.load(f)",
+        "",
+        "factor = factors['B3LYP/6-311+G(2d,p)/1H/CHCl3']",
+        "shift = factor['slope'] * shielding + factor['intercept']",
+        "```",
+        "",
+        "## Notes",
+        "",
+        "- **WP04 factors:** Not yet available (benchmark calculations incomplete)",
+        "- **DMSO solvent:** Uses same experimental data as CHCl3 (from DELTA50 paper)",
+        "  with COSMO solvent model applied during calculation",
+        "- **Outlier removal:** Applied 3-sigma threshold; number removed varies by factor set",
+        "",
+        "---",
+        "",
+        "*Generated by qm_nmr_calc.benchmark.analysis*",
+    ])
+
+    # Write report
+    report_path = output_dir / "SCALING-FACTORS.md"
+    report_path.write_text("\n".join(lines))
+    logger.info(f"Generated report: {report_path}")

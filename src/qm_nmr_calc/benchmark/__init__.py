@@ -2,9 +2,14 @@
 
 from .analysis import (
     aggregate_regression_data,
+    calculate_per_compound_stats,
     derive_all_factors,
     fit_scaling_factors,
+    generate_report,
     get_factor_key,
+    plot_regression,
+    plot_residual_histogram,
+    save_factors_json,
 )
 from .data_loader import get_data_dir, load_delta50_molecules, load_experimental_shifts
 from .models import BenchmarkResult, ExperimentalShifts, MoleculeData, RegressionData, ScalingFactor
@@ -47,4 +52,9 @@ __all__ = [
     "fit_scaling_factors",
     "aggregate_regression_data",
     "get_factor_key",
+    "generate_report",
+    "calculate_per_compound_stats",
+    "plot_regression",
+    "plot_residual_histogram",
+    "save_factors_json",
 ]
