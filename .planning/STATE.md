@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-21)
 ## Current Position
 
 Phase: 11 of 11 (Production Integration)
-Plan: 1 of 2 in phase
+Plan: 2 of 5 in phase
 Status: In progress
-Last activity: 2026-01-23 — Completed 11-01-PLAN.md (integrate DELTA50 factors)
+Last activity: 2026-01-23 — Completed 11-02-PLAN.md (ISiCLE version removal)
 
-Progress: [████████████████████████████████████████░] 73% (30/41 plans)
+Progress: [████████████████████████████████████████░] 76% (31/41 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 30
+- Total plans completed: 31
 - Average duration: 8.4 min
-- Total execution time: 253 min
+- Total execution time: 259 min
 
 **By Phase:**
 
@@ -38,12 +38,12 @@ Progress: [███████████████████████
 | 08.1-delta50-viewer | 1 | 4 min | 4.0 min |
 | 09-benchmark-calculations | 2 | 154 min | 77 min |
 | 10-scaling-factors | 2 | 7 min | 3.5 min |
-| 11-production-integration | 1 | 5 min | 5.0 min |
+| 11-production-integration | 2 | 11 min | 5.5 min |
 
 *Note: Phase 8.1 required additional human verification session (not counted in execution time)*
 
 **Recent Trend:**
-- Last 5 plans: 09-02 (150 min), 10-01 (3 min), 10-02 (4 min), 11-01 (5 min)
+- Last 5 plans: 10-01 (3 min), 10-02 (4 min), 11-01 (5 min), 11-02 (6 min)
 - Note: 09-02 included ~2.5 hours of NWChem calculations
 
 *Updated after each plan completion*
@@ -116,7 +116,6 @@ Recent decisions affecting current work:
 - XYZ bond determination requires explicit charge parameter (default=0)
 - run_calculation() as single entry point for NMR calculations
 - COSMO solvation applied to BOTH geometry optimization and NMR shielding
-- Keep isicle_version field in models with "N/A" for backwards compatibility
 - DELTA50: compound_XX.xyz naming convention for benchmark molecules
 - DELTA50: Both unique shift lists and atom-index mappings in JSON
 - DELTA50: Separate BENCHMARK_PRESETS with WP04 for 1H-optimized calculations
@@ -136,6 +135,8 @@ Recent decisions affecting current work:
 - Scaling factors loaded lazily via @cache decorator and importlib.resources
 - Explicit ValueError when solvent/functional combination not supported (no fallback)
 - hatchling force-include for bundling data files in package
+- Pydantic extra='ignore' for backwards-compatible field removal from models
+- JobStatus model no longer includes isicle_version field (removed in phase 11)
 
 ### Roadmap Evolution
 
@@ -151,7 +152,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-23T15:54:41Z
-Stopped at: Completed 11-01-PLAN.md
+Last session: 2026-01-23T14:56:01Z
+Stopped at: Completed 11-02-PLAN.md
 Resume file: None
-Next: Phase 11 Plan 02
+Next: Phase 11 Plan 03
