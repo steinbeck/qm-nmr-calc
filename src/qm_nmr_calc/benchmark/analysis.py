@@ -13,6 +13,10 @@ Usage:
 import logging
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")  # Headless backend - MUST be before pyplot import
+import matplotlib.pyplot as plt
 import numpy as np
 import orjson
 import pandas as pd
@@ -237,3 +241,158 @@ def derive_all_factors(
                     logger.warning(f"Could not derive {functional}/{nucleus}/{solvent}: {e}")
 
     return factors
+
+
+def plot_regression(
+    df: pd.DataFrame,
+    factor: ScalingFactor,
+    nucleus: str,
+    title: str,
+    output_path: Path,
+) -> None:
+    """Create regression scatter plot with residual subplot.
+
+    Left subplot: scatter of shielding vs experimental shift with regression line.
+    Right subplot: residual plot showing fitted values vs residuals.
+
+    Args:
+        df: DataFrame with columns shielding and exp_shift (pre-filtered by nucleus)
+        factor: ScalingFactor with regression parameters
+        nucleus: "1H" or "13C" for filtering
+        title: Plot title
+        output_path: Path to save PNG file
+    """
+    # Filter to specified nucleus
+    data = df[df["nucleus"] == nucleus].copy()
+    if data.empty:
+        logger.warning(f"No data for {nucleus} in plot_regression")
+        return
+
+    shielding = data["shielding"].values
+    exp_shift = data["exp_shift"].values
+
+    # Calculate fitted values and residuals
+    fitted = factor.slope * shielding + factor.intercept
+    residuals = exp_shift - fitted
+
+    # Identify outliers for coloring (using stored outlier count as hint)
+    # Re-compute outlier mask for visualization
+    std_resid = np.std(residuals)
+    outlier_mask = np.abs(residuals) > 3.0 * std_resid
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+    # Left subplot: Scatter plot with regression line
+    ax1.scatter(
+        shielding[~outlier_mask],
+        exp_shift[~outlier_mask],
+        alpha=0.6,
+        label="Data",
+        color="C0",
+    )
+    if np.any(outlier_mask):
+        ax1.scatter(
+            shielding[outlier_mask],
+            exp_shift[outlier_mask],
+            alpha=0.8,
+            label="Outliers",
+            color="red",
+            marker="x",
+        )
+
+    # Regression line
+    sort_idx = np.argsort(shielding)
+    ax1.plot(
+        shielding[sort_idx], fitted[sort_idx], "r-", linewidth=2, label="Fit"
+    )
+
+    # Equation annotation
+    eq_text = (
+        f"shift = {factor.slope:.4f} * shielding + {factor.intercept:.2f}\n"
+        f"R$^2$ = {factor.r_squared:.4f}"
+    )
+    ax1.annotate(
+        eq_text,
+        xy=(0.05, 0.95),
+        xycoords="axes fraction",
+        fontsize=10,
+        verticalalignment="top",
+        bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.5),
+    )
+
+    ax1.set_xlabel("Calculated Shielding (ppm)")
+    ax1.set_ylabel("Experimental Shift (ppm)")
+    ax1.set_title(f"{title} - Regression")
+    ax1.legend()
+
+    # Right subplot: Residual plot
+    ax2.scatter(fitted[~outlier_mask], residuals[~outlier_mask], alpha=0.6, color="C0")
+    if np.any(outlier_mask):
+        ax2.scatter(
+            fitted[outlier_mask],
+            residuals[outlier_mask],
+            alpha=0.8,
+            color="red",
+            marker="x",
+        )
+
+    ax2.axhline(y=0, color="r", linestyle="--", linewidth=1)
+    # Add +/- 3*std lines
+    ax2.axhline(y=3 * std_resid, color="gray", linestyle="--", alpha=0.5)
+    ax2.axhline(y=-3 * std_resid, color="gray", linestyle="--", alpha=0.5)
+
+    ax2.set_xlabel("Fitted Values (ppm)")
+    ax2.set_ylabel("Residuals (ppm)")
+    ax2.set_title(f"{title} - Residuals")
+
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches="tight")
+    plt.close(fig)  # CRITICAL: Prevent memory leaks
+
+
+def plot_residual_histogram(
+    residuals: np.ndarray,
+    title: str,
+    output_path: Path,
+    mae: float | None = None,
+    rmsd: float | None = None,
+) -> None:
+    """Create histogram of residual distribution.
+
+    Args:
+        residuals: Array of residual values
+        title: Plot title
+        output_path: Path to save PNG file
+        mae: Mean absolute error (optional, computed if not provided)
+        rmsd: Root mean square deviation (optional, computed if not provided)
+    """
+    if mae is None:
+        mae = float(np.mean(np.abs(residuals)))
+    if rmsd is None:
+        rmsd = float(np.sqrt(np.mean(residuals**2)))
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+
+    ax.hist(residuals, bins=30, alpha=0.7, edgecolor="black")
+    ax.axvline(x=np.mean(residuals), color="red", linestyle="--", label="Mean")
+
+    # Add MAE/RMSD text box
+    stats_text = f"MAE = {mae:.3f} ppm\nRMSD = {rmsd:.3f} ppm"
+    ax.annotate(
+        stats_text,
+        xy=(0.95, 0.95),
+        xycoords="axes fraction",
+        fontsize=10,
+        verticalalignment="top",
+        horizontalalignment="right",
+        bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.5),
+    )
+
+    ax.set_xlabel("Residual (ppm)")
+    ax.set_ylabel("Frequency")
+    ax.set_title(title)
+    ax.legend()
+
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches="tight")
+    plt.close(fig)  # CRITICAL: Prevent memory leaks
