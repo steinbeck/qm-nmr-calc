@@ -171,7 +171,7 @@ def fit_scaling_factors(
 
     # Extract parameters: [intercept, slope]
     intercept, slope = results.params
-    ci = results.conf_int(alpha=0.05)  # 95% CI
+    ci = results.conf_int(alpha=0.05)  # 95% CI, shape (2, 2)
 
     # Calculate error metrics
     mae = float(np.mean(np.abs(residuals)))
@@ -184,8 +184,8 @@ def fit_scaling_factors(
         mae=mae,
         rmsd=rmsd,
         n_points=len(residuals),
-        ci_slope=(float(ci.iloc[1, 0]), float(ci.iloc[1, 1])),
-        ci_intercept=(float(ci.iloc[0, 0]), float(ci.iloc[0, 1])),
+        ci_slope=(float(ci[1, 0]), float(ci[1, 1])),  # Row 1 is slope
+        ci_intercept=(float(ci[0, 0]), float(ci[0, 1])),  # Row 0 is intercept
         outliers_removed=n_outliers,
     )
 
