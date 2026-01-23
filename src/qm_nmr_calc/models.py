@@ -60,6 +60,7 @@ class JobStatus(BaseModel):
     model_config = ConfigDict(
         # Use 'iso8601' serialization for datetime fields
         ser_json_timedelta="iso8601",
+        extra="ignore",  # Allow old files with isicle_version to load
     )
 
     job_id: str
@@ -71,8 +72,7 @@ class JobStatus(BaseModel):
     # Input
     input: JobInput
 
-    # Versions (for reproducibility)
-    isicle_version: str
+    # Version (for reproducibility)
     nwchem_version: str
 
     # Step progress tracking
