@@ -2,6 +2,39 @@
 from pydantic import BaseModel
 
 
+class ScalingFactor(BaseModel):
+    """NMR scaling factor with regression metadata.
+
+    Derived from linear regression of calculated shielding values
+    against experimental chemical shifts: shift = slope * shielding + intercept
+    """
+
+    slope: float
+    intercept: float
+    r_squared: float
+    mae: float  # Mean absolute error (ppm)
+    rmsd: float  # Root mean square deviation (ppm)
+    n_points: int  # Number of data points used in regression
+    ci_slope: tuple[float, float]  # 95% confidence interval for slope
+    ci_intercept: tuple[float, float]  # 95% confidence interval for intercept
+    mae_ci: tuple[float, float] | None = None  # Bootstrap CI for MAE
+    rmsd_ci: tuple[float, float] | None = None  # Bootstrap CI for RMSD
+    outliers_removed: int = 0
+
+
+class RegressionData(BaseModel):
+    """Single data point for regression fitting.
+
+    Pairs a calculated shielding value with its experimental shift.
+    """
+
+    compound: str  # e.g., "compound_01"
+    atom_idx: int  # Atom index in molecule
+    nucleus: str  # "1H" or "13C"
+    shielding: float  # Calculated isotropic shielding (ppm)
+    exp_shift: float  # Experimental chemical shift (ppm)
+
+
 class MoleculeData(BaseModel):
     """DELTA50 molecule with experimental shifts."""
 

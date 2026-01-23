@@ -1,7 +1,7 @@
 """DELTA50 benchmark infrastructure for NMR shift validation."""
 
 from .data_loader import get_data_dir, load_delta50_molecules, load_experimental_shifts
-from .models import BenchmarkResult, ExperimentalShifts, MoleculeData
+from .models import BenchmarkResult, ExperimentalShifts, MoleculeData, RegressionData, ScalingFactor
 from .runner import (
     FAILURE_THRESHOLD,
     aggregate_results,
@@ -19,6 +19,8 @@ __all__ = [
     "MoleculeData",
     "ExperimentalShifts",
     "BenchmarkResult",
+    "ScalingFactor",
+    "RegressionData",
     # Data loading
     "load_delta50_molecules",
     "load_experimental_shifts",
