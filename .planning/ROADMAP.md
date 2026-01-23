@@ -192,14 +192,18 @@ Plans:
 ### Phase 10: Scaling Factors
 **Goal**: Derive and validate NWChem-specific scaling factors from benchmark data
 **Depends on**: Phase 9
-**Requirements**: SCALE-01, SCALE-02, SCALE-03, SCALE-04
+**Requirements**: SCALE-01, SCALE-02, SCALE-03 (SCALE-04 deferred - no WP04 data)
 **Success Criteria** (what must be TRUE):
   1. Scaling factors (slope, intercept) derived via linear regression for B3LYP/CHCl3
-  2. Scaling factors derived for B3LYP/DMSO, WP04/CHCl3, WP04/DMSO
+  2. Scaling factors derived for B3LYP/DMSO (WP04 deferred - no benchmark data)
   3. Each scaling factor set validated with MAE and RMSD statistics vs experimental shifts
   4. Scaling factors stored in code-accessible format (JSON, Python constants, or config file)
   5. Validation report shows accuracy improvement over current CHESHIRE factors
-**Plans**: 2-3 plans
+**Plans**: 2 plans
+
+Plans:
+- [ ] 10-01-PLAN.md — Analysis module with data aggregation, OLS regression, ScalingFactor model
+- [ ] 10-02-PLAN.md — Report generation with plots, SCALING-FACTORS.md, CLI analyze command
 
 ### Phase 11: Production Integration
 **Goal**: Production calculations use NWChem-derived factors and enable WP04 functional
@@ -237,5 +241,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 8.1 -> 
 | 8. DELTA50 Setup | 2/2 | Complete | 2026-01-21 |
 | 8.1. DELTA50 Data Viewer | 1/1 | Complete | 2026-01-22 |
 | 9. Benchmark Calculations | 2/2 | Complete | 2026-01-22 |
-| 10. Scaling Factors | 0/2-3 | Pending | — |
+| 10. Scaling Factors | 0/2 | Planned | — |
 | 11. Production Integration | 0/2-3 | Pending | — |
