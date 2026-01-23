@@ -42,38 +42,38 @@ All v1.0 requirements delivered 2026-01-20.
 - [x] **UI-02**: Web UI for submitting jobs
 - [x] **UI-03**: Web UI for viewing job status and results
 
-## v1.1 Requirements (Active)
+## v1.1 Requirements ✓ (Complete)
 
-Requirements for accurate chemical shift predictions with NWChem-derived scaling factors.
+All v1.1 requirements delivered 2026-01-23.
 
-### NWChem Integration
+### NWChem Integration ✓
 
-- [ ] **NW-01**: System generates NWChem input files for geometry optimization (adapted from ISiCLE)
-- [ ] **NW-02**: System generates NWChem input files for NMR shielding calculation (adapted from ISiCLE)
-- [ ] **NW-03**: System parses NWChem output to extract shielding tensors (adapted from ISiCLE)
-- [ ] **NW-04**: System supports COSMO solvation model with CHCl3 and DMSO
-- [ ] **NW-05**: System accepts pre-optimized XYZ/SDF geometries (skip geometry optimization)
-- [ ] **NW-06**: ISiCLE attribution included in code/docs where code adapted
+- [x] **NW-01**: System generates NWChem input files for geometry optimization (adapted from ISiCLE)
+- [x] **NW-02**: System generates NWChem input files for NMR shielding calculation (adapted from ISiCLE)
+- [x] **NW-03**: System parses NWChem output to extract shielding tensors (adapted from ISiCLE)
+- [x] **NW-04**: System supports COSMO solvation model with CHCl3 and DMSO
+- [x] **NW-05**: System accepts pre-optimized XYZ/SDF geometries (skip geometry optimization)
+- [x] **NW-06**: ISiCLE attribution included in code/docs where code adapted
 
-### Benchmark Infrastructure
+### Benchmark Infrastructure ✓
 
-- [ ] **BENCH-01**: DELTA50 dataset structures available in standard format
-- [ ] **BENCH-02**: DELTA50 experimental shifts stored with molecule associations
-- [ ] **BENCH-03**: Benchmark runner can execute calculations for dataset × method × solvent
+- [x] **BENCH-01**: DELTA50 dataset structures available in standard format
+- [x] **BENCH-02**: DELTA50 experimental shifts stored with molecule associations
+- [x] **BENCH-03**: Benchmark runner can execute calculations for dataset × method × solvent
 
-### Scaling Factors
+### Scaling Factors ✓
 
-- [ ] **SCALE-01**: System derives scaling factors via linear regression from benchmark data
-- [ ] **SCALE-02**: Scaling factors validated with MAE/RMSD statistics
-- [ ] **SCALE-03**: Scaling factors stored for B3LYP in CHCl3 and DMSO
-- [ ] **SCALE-04**: Scaling factors stored for WP04 (¹H) in CHCl3 and DMSO
+- [x] **SCALE-01**: System derives scaling factors via linear regression from benchmark data
+- [x] **SCALE-02**: Scaling factors validated with MAE/RMSD statistics
+- [x] **SCALE-03**: Scaling factors stored for B3LYP in CHCl3 and DMSO
+- [ ] **SCALE-04**: ~~Scaling factors stored for WP04 (¹H) in CHCl3 and DMSO~~ (Deferred - NWChem doesn't support WP04)
 
-### Production Integration
+### Production Integration ✓
 
-- [ ] **PROD-01**: Production calculations use COSMO solvation (fix current bug)
-- [ ] **PROD-02**: Production calculations use NWChem-derived scaling factors
-- [ ] **PROD-03**: User can select WP04 functional for improved ¹H accuracy
-- [ ] **PROD-04**: ISiCLE dependency removed from production code
+- [x] **PROD-01**: Production calculations use COSMO solvation (fixed in Phase 7)
+- [x] **PROD-02**: Production calculations use NWChem-derived scaling factors
+- [ ] **PROD-03**: ~~User can select WP04 functional for improved ¹H accuracy~~ (Deferred - NWChem doesn't support WP04)
+- [x] **PROD-04**: ISiCLE dependency removed from production code
 
 ## v2 Requirements
 
@@ -117,29 +117,30 @@ Which phases cover which requirements.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NW-01 | Phase 7 | Pending |
-| NW-02 | Phase 7 | Pending |
-| NW-03 | Phase 7 | Pending |
-| NW-04 | Phase 7 | Pending |
-| NW-05 | Phase 7 | Pending |
-| NW-06 | Phase 7 | Pending |
-| BENCH-01 | Phase 8 | Pending |
-| BENCH-02 | Phase 8 | Pending |
-| BENCH-03 | Phase 8 | Pending |
-| SCALE-01 | Phase 10 | Pending |
-| SCALE-02 | Phase 10 | Pending |
-| SCALE-03 | Phase 10 | Pending |
-| SCALE-04 | Phase 10 | Pending |
-| PROD-01 | Phase 11 | Pending |
-| PROD-02 | Phase 11 | Pending |
-| PROD-03 | Phase 11 | Pending |
-| PROD-04 | Phase 11 | Pending |
+| NW-01 | Phase 7 | Complete |
+| NW-02 | Phase 7 | Complete |
+| NW-03 | Phase 7 | Complete |
+| NW-04 | Phase 7 | Complete |
+| NW-05 | Phase 7 | Complete |
+| NW-06 | Phase 7 | Complete |
+| BENCH-01 | Phase 8 | Complete |
+| BENCH-02 | Phase 8 | Complete |
+| BENCH-03 | Phase 8 | Complete |
+| SCALE-01 | Phase 10 | Complete |
+| SCALE-02 | Phase 10 | Complete |
+| SCALE-03 | Phase 10 | Complete |
+| SCALE-04 | Phase 10 | Deferred |
+| PROD-01 | Phase 7 | Complete |
+| PROD-02 | Phase 11 | Complete |
+| PROD-03 | Phase 11 | Deferred |
+| PROD-04 | Phase 11 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 17 total
-- Mapped to phases: 17
+- Complete: 15
+- Deferred: 2 (SCALE-04, PROD-03 - WP04 not supported by NWChem)
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-01-19 (v1.0), 2026-01-21 (v1.1)*
-*Last updated: 2026-01-21 after v1.1 milestone definition*
+*Last updated: 2026-01-23 after v1.1 milestone completion*
