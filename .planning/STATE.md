@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-21)
 ## Current Position
 
 Phase: 10 of 11 (Scaling Factors)
-Plan: 1 of 2 in phase
-Status: In progress
-Last activity: 2026-01-23 — Completed 10-01-PLAN.md (analysis module)
+Plan: 2 of 2 in phase (COMPLETE)
+Status: Phase complete
+Last activity: 2026-01-23 — Completed 10-02-PLAN.md (report generation)
 
-Progress: [█████████████████████████████████████░░░░] 68% (28/41 plans)
+Progress: [███████████████████████████████████████░░] 71% (29/41 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 27
-- Average duration: 8.9 min
-- Total execution time: 241 min
+- Total plans completed: 29
+- Average duration: 8.6 min
+- Total execution time: 248 min
 
 **By Phase:**
 
@@ -37,12 +37,12 @@ Progress: [███████████████████████
 | 08-delta50-setup | 2 | 12 min | 6.0 min |
 | 08.1-delta50-viewer | 1 | 4 min | 4.0 min |
 | 09-benchmark-calculations | 2 | 154 min | 77 min |
-| 10-scaling-factors | 1 | 3 min | 3.0 min |
+| 10-scaling-factors | 2 | 7 min | 3.5 min |
 
 *Note: Phase 8.1 required additional human verification session (not counted in execution time)*
 
 **Recent Trend:**
-- Last 5 plans: 08.1-01 (4 min), 09-01 (4 min), 09-02 (150 min), 10-01 (3 min)
+- Last 5 plans: 09-01 (4 min), 09-02 (150 min), 10-01 (3 min), 10-02 (4 min)
 - Note: 09-02 included ~2.5 hours of NWChem calculations
 
 *Updated after each plan completion*
@@ -129,6 +129,8 @@ Recent decisions affecting current work:
 - noautoz as optional parameter (not default) for AUTOZ failure recovery on linear molecules
 - OLS regression with 3-sigma residual-based outlier removal for scaling factors
 - Composite factor keys: functional/basis_set/nucleus/solvent
+- 2-panel regression plots: scatter + residual side-by-side
+- Flag compounds with mean error > 2x MAE as high-error
 
 ### Roadmap Evolution
 
@@ -145,6 +147,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-23
-Stopped at: Completed 10-01-PLAN.md
+Stopped at: Completed 10-02-PLAN.md (Phase 10 complete)
 Resume file: None
-Next: Execute 10-02-PLAN.md (report generation)
+Next: Phase 11 - Production Integration
