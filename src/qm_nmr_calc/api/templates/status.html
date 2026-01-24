@@ -2,6 +2,10 @@
 
 {% block title %}Job Status | QM NMR Calculator{% endblock %}
 
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.5.3/3Dmol-min.js"></script>
+{% endblock %}
+
 {% block content %}
 <article>
     <header>
@@ -30,6 +34,13 @@
             <dt>Preset</dt>
             <dd>{{ job.preset }}</dd>
         </dl>
+    </div>
+
+    <!-- 3D Molecule Viewer -->
+    <div id="viewer-section" style="margin-top: 1.5rem;">
+        <h4>Molecular Structure</h4>
+        <div id="viewer-container-3d"></div>
+        <small class="muted">RDKit-generated geometry. Final optimized structure available when complete.</small>
     </div>
 
     <!-- Step Progress Section -->
@@ -94,6 +105,45 @@
     const stepsTbody = document.getElementById('steps-tbody');
 
     let currentStepStartedAt = null;
+
+    // 3D Viewer
+    let viewer = null;
+
+    function initViewer() {
+        const container = document.getElementById('viewer-container-3d');
+        if (!container) return;
+
+        viewer = $3Dmol.createViewer(container, {
+            backgroundColor: 'white'
+        });
+        loadGeometry(false);  // No labels for running job
+    }
+
+    async function loadGeometry(showLabels) {
+        if (!viewer) return;
+
+        try {
+            const response = await fetch('/api/v1/jobs/' + JOB_ID + '/geometry.json');
+            if (!response.ok) return;
+
+            const data = await response.json();
+
+            viewer.removeAllModels();
+            viewer.removeAllLabels();
+
+            const model = viewer.addModel(data.xyz, 'xyz', {assignBonds: true});
+
+            viewer.setStyle({}, {
+                stick: {radius: 0.12, colorscheme: 'Jmol'},
+                sphere: {scale: 0.25, colorscheme: 'Jmol'}
+            });
+
+            viewer.zoomTo();
+            viewer.render();
+        } catch (error) {
+            console.error('Error loading geometry:', error);
+        }
+    }
 
     function formatElapsed(seconds) {
         const mins = Math.floor(seconds / 60);
@@ -188,6 +238,7 @@
 
     // Start polling and elapsed time updates when DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
+        initViewer();
         checkStatus();
         setInterval(updateElapsedTime, 1000);
     });
