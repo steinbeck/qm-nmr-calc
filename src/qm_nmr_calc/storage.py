@@ -199,6 +199,12 @@ def get_geometry_file(job_id: str) -> Optional[Path]:
     return geometry_file if geometry_file.exists() else None
 
 
+def get_initial_geometry_file(job_id: str) -> Optional[Path]:
+    """Get path to initial RDKit geometry XYZ file if it exists."""
+    geometry_file = get_job_dir(job_id) / "output" / "initial.xyz"
+    return geometry_file if geometry_file.exists() else None
+
+
 def get_output_files(job_id: str) -> list[Path]:
     """Get list of raw NWChem output files in job scratch directory.
 
