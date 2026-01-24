@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-01-21)
 
 ## Current Position
 
-Phase: 11 of 11 (Production Integration) — COMPLETE
-Plan: 3 of 3 in phase (COMPLETE)
-Status: Milestone v1.1 complete
-Last activity: 2026-01-23 — Completed Phase 11 (production integration)
+Phase: 11.1 of 12 (3D Molecule Visualization)
+Plan: 1 of 2 in phase
+Status: In progress
+Last activity: 2026-01-24 — Completed 11.1-01-PLAN.md
 
-Progress: [██████████████████████████████████████████] 100% (32/32 plans)
+Progress: [█████████████████████████████████████████░] 97% (33/34 plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 32
-- Average duration: 8.3 min
-- Total execution time: 264 min
+- Total plans completed: 33
+- Average duration: 8.2 min
+- Total execution time: 270 min
 
 **By Phase:**
 
@@ -39,11 +39,12 @@ Progress: [███████████████████████
 | 09-benchmark-calculations | 2 | 154 min | 77 min |
 | 10-scaling-factors | 2 | 7 min | 3.5 min |
 | 11-production-integration | 3 | 16 min | 5.3 min |
+| 11.1-3d-molecule-visualization | 1 | 6 min | 6.0 min |
 
 *Note: Phase 8.1 required additional human verification session (not counted in execution time)*
 
 **Recent Trend:**
-- Last 5 plans: 10-02 (4 min), 11-01 (5 min), 11-02 (6 min), 11-03 (5 min)
+- Last 5 plans: 11-01 (5 min), 11-02 (6 min), 11-03 (5 min), 11.1-01 (6 min)
 - Note: 09-02 included ~2.5 hours of NWChem calculations
 
 *Updated after each plan completion*
@@ -140,10 +141,14 @@ Recent decisions affecting current work:
 - API metadata includes scaling factor source and expected MAE
 - Expected accuracy formatted as "+/- X.XX ppm" string (not raw float)
 - Factor lookup requires uppercase functional (stored lowercase in job status)
+- Initial geometry generated immediately after job validation, before first calculation step
+- geometry.json endpoint returns initial.xyz for running jobs, optimized.xyz for complete jobs
+- Shift assignments (h1_assignments, c13_assignments) returned as null for running jobs
 
 ### Roadmap Evolution
 
 - Phase 8.1 inserted after Phase 8: DELTA50 Data Viewer - verify extracted structures and experimental shifts before benchmark execution (user request)
+- Phase 11.1 inserted after Phase 11: 3D Molecule Visualization - port 3Dmol.js viewer from DELTA50 viewer to job status page for testing new scaling factors (user request)
 
 ### Pending Todos
 
@@ -155,7 +160,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-23
-Stopped at: Completed Phase 11 (Milestone v1.1 complete)
+Last session: 2026-01-24
+Stopped at: Completed 11.1-01-PLAN.md
 Resume file: None
-Next: /gsd:audit-milestone or /gsd:complete-milestone
+Next: Continue phase 11.1 planning and execution
