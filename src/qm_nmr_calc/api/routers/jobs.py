@@ -13,7 +13,7 @@ from ...nwchem import get_nwchem_version
 from ...models import JobStatus
 from ...shifts import get_scaling_factor
 from ...solvents import validate_solvent, get_supported_solvents
-from ...storage import create_job_directory, get_geometry_file, get_output_files, get_visualization_file, load_job_status
+from ...storage import create_job_directory, get_geometry_file, get_initial_geometry_file, get_output_files, get_visualization_file, load_job_status
 from ...tasks import run_nmr_task
 from ...validation import validate_mol_file, validate_smiles
 
@@ -734,3 +734,66 @@ async def download_structure_png(job_id: str):
 async def download_structure_svg(job_id: str):
     """Download annotated molecular structure as SVG."""
     return await _get_visualization(job_id, "structure_annotated.svg", "image/svg+xml", f"{job_id}_structure.svg")
+
+
+@router.get(
+    "/{job_id}/geometry.json",
+    responses={
+        200: {"description": "Geometry and shift data for 3D visualization"},
+        404: {"model": ProblemDetail, "description": "Job not found"},
+    },
+)
+async def get_geometry_data(job_id: str):
+    """Get geometry and shift data for 3D visualization.
+
+    Returns initial RDKit geometry for running jobs,
+    optimized NWChem geometry for complete jobs.
+    Shift assignments included only when job is complete.
+    """
+    job_status = load_job_status(job_id)
+    if job_status is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-found",
+                "title": "Job Not Found",
+                "status": 404,
+                "detail": f"No job exists with ID '{job_id}'",
+            },
+        )
+
+    # Determine which geometry to return
+    if job_status.status == "complete":
+        geometry_file = get_geometry_file(job_id)  # optimized.xyz
+    else:
+        geometry_file = get_initial_geometry_file(job_id)  # initial.xyz
+
+    if geometry_file is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/geometry-not-found",
+                "title": "Geometry Not Found",
+                "status": 404,
+                "detail": f"Geometry file not available for job '{job_id}'",
+            },
+        )
+
+    xyz_content = geometry_file.read_text()
+
+    # Build shift assignments only for complete jobs
+    h1_assignments = {}
+    c13_assignments = {}
+    if job_status.status == "complete" and job_status.nmr_results:
+        for s in job_status.nmr_results.h1_shifts:
+            h1_assignments[str(s.index)] = s.shift
+        for s in job_status.nmr_results.c13_shifts:
+            c13_assignments[str(s.index)] = s.shift
+
+    return {
+        "job_id": job_id,
+        "status": job_status.status,
+        "xyz": xyz_content,
+        "h1_assignments": h1_assignments if h1_assignments else None,
+        "c13_assignments": c13_assignments if c13_assignments else None,
+    }
