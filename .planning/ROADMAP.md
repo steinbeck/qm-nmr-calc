@@ -29,6 +29,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 9: Benchmark Calculations** - Execute DELTA50 calculation matrix
 - [x] **Phase 10: Scaling Factors** - Derive and validate NWChem-specific scaling factors
 - [x] **Phase 11: Production Integration** - Apply scaling factors and remove ISiCLE dependency
+- [ ] **Phase 11.1: 3D Molecule Visualization** - Interactive 3Dmol.js viewer on job status page (INSERTED)
 
 ## Phase Details
 
@@ -222,10 +223,25 @@ Plans:
 - [x] 11-02-PLAN.md — ISiCLE model removal from JobStatus and storage
 - [x] 11-03-PLAN.md — API metadata enhancement and UI branding update
 
+### Phase 11.1: 3D Molecule Visualization (INSERTED)
+**Goal**: Add interactive 3D molecule visualization to job status/results page using 3Dmol.js (porting from DELTA50 viewer)
+**Depends on**: Phase 11
+**Requirements**: None (UX enhancement for testing new scaling factors)
+**Success Criteria** (what must be TRUE):
+  1. Job results page displays interactive 3D molecule structure
+  2. Calculated chemical shifts are annotated on atoms in 3D view
+  3. 3Dmol.js viewer allows rotation/zoom of molecule
+  4. Visualization uses optimized geometry from NWChem calculation
+**Plans**: 2 plans
+
+Plans:
+- [ ] 11.1-01-PLAN.md — Backend: initial geometry storage and geometry.json API endpoint
+- [ ] 11.1-02-PLAN.md — Frontend: 3Dmol.js viewer on status and results pages
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 8.1 -> 9 -> 10 -> 11
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 8.1 -> 9 -> 10 -> 11 -> 11.1
 
 ### Milestone v1.0: Core NMR Service
 
@@ -248,3 +264,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 8.1 -> 
 | 9. Benchmark Calculations | 2/2 | Complete | 2026-01-22 |
 | 10. Scaling Factors | 2/2 | Complete | 2026-01-23 |
 | 11. Production Integration | 3/3 | Complete | 2026-01-23 |
+| 11.1. 3D Molecule Visualization | 0/2 | Planned | — |
