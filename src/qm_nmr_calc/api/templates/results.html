@@ -2,6 +2,10 @@
 
 {% block title %}Results: {{ job.input_name or job.job_id }} | QM NMR Calculator{% endblock %}
 
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.5.3/3Dmol-min.js"></script>
+{% endblock %}
+
 {% block content %}
 <h2>NMR Calculation Results</h2>
 <p class="muted">{{ job.input_name or job.job_id }}</p>
@@ -39,6 +43,23 @@
                  onclick="openModal(this.src)">
             <figcaption>Annotated Structure with Chemical Shifts (ppm)</figcaption>
         </figure>
+    </div>
+
+    <!-- Interactive 3D Structure -->
+    <div class="structure-3d-container">
+        <h4>Interactive 3D Structure</h4>
+        <div id="viewer-container-3d"></div>
+        <div class="viewer-legend">
+            <div class="viewer-legend-item">
+                <span class="viewer-legend-color h1"></span>
+                <span><sup>1</sup>H shifts (ppm)</span>
+            </div>
+            <div class="viewer-legend-item">
+                <span class="viewer-legend-color c13"></span>
+                <span><sup>13</sup>C shifts (ppm)</span>
+            </div>
+        </div>
+        <small class="muted">Click and drag to rotate. Scroll to zoom.</small>
     </div>
 
     <div class="spectra-grid">
@@ -104,5 +125,88 @@ modal.addEventListener('click', (e) => {
 });
 
 modal.addEventListener('cancel', closeModal);
+
+// 3D Viewer with shift labels
+const JOB_ID = "{{ job.job_id }}";
+let viewer = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    initViewer();
+});
+
+function initViewer() {
+    const container = document.getElementById('viewer-container-3d');
+    if (!container) return;
+
+    viewer = $3Dmol.createViewer(container, {
+        backgroundColor: 'white'
+    });
+    loadGeometry();
+}
+
+async function loadGeometry() {
+    if (!viewer) return;
+
+    try {
+        const response = await fetch('/api/v1/jobs/' + JOB_ID + '/geometry.json');
+        if (!response.ok) {
+            console.error('Failed to load geometry');
+            return;
+        }
+
+        const data = await response.json();
+
+        viewer.removeAllModels();
+        viewer.removeAllLabels();
+
+        const model = viewer.addModel(data.xyz, 'xyz', {assignBonds: true});
+
+        viewer.setStyle({}, {
+            stick: {radius: 0.12, colorscheme: 'Jmol'},
+            sphere: {scale: 0.25, colorscheme: 'Jmol'}
+        });
+
+        // Add shift labels for complete jobs
+        if (data.h1_assignments || data.c13_assignments) {
+            addShiftLabels(model, data.h1_assignments, data.c13_assignments);
+        }
+
+        viewer.zoomTo();
+        viewer.render();
+    } catch (error) {
+        console.error('Error loading geometry:', error);
+    }
+}
+
+function addShiftLabels(model, h1Assignments, c13Assignments) {
+    const atoms = model.selectedAtoms({});
+
+    atoms.forEach(atom => {
+        // CRITICAL: 3Dmol.js uses 0-based serial, NWChem uses 1-based indices
+        const atomIndex = String(atom.serial + 1);
+
+        if (atom.elem === 'H' && h1Assignments && h1Assignments[atomIndex]) {
+            viewer.addLabel(h1Assignments[atomIndex].toFixed(2), {
+                position: {x: atom.x, y: atom.y, z: atom.z},
+                fontSize: 11,
+                fontColor: 'white',
+                backgroundColor: '#3498db',  // Blue for 1H
+                backgroundOpacity: 0.85,
+                inFront: true
+            });
+        }
+
+        if (atom.elem === 'C' && c13Assignments && c13Assignments[atomIndex]) {
+            viewer.addLabel(c13Assignments[atomIndex].toFixed(2), {
+                position: {x: atom.x, y: atom.y, z: atom.z},
+                fontSize: 11,
+                fontColor: 'white',
+                backgroundColor: '#e67e22',  // Orange for 13C
+                backgroundOpacity: 0.85,
+                inFront: true
+            });
+        }
+    });
+}
 </script>
 {% endblock %}
