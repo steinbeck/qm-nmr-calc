@@ -27,8 +27,10 @@ experimentally assigned NMR spectra in CDCl3).
 |---------|---------|-------|-----------|-----|-----------|------------|---|
 | 13C | CHCl3 | -0.9497 (-0.9557, -0.9438) | 172.69 (172.02, 173.36) | 0.9978 | 1.949 | 2.691 | 219 |
 | 13C | DMSO | -0.9429 (-0.9494, -0.9365) | 171.77 (171.05, 172.49) | 0.9974 | 2.152 | 2.916 | 219 |
+| 13C | vacuum | -0.9726 (-0.9784, -0.9668) | 175.71 (175.06, 176.36) | 0.9980 | 1.739 | 2.567 | 219 |
 | 1H | CHCl3 | -0.9375 (-0.9445, -0.9305) | 29.92 (29.72, 30.12) | 0.9952 | 0.124 | 0.163 | 335 |
 | 1H | DMSO | -0.9323 (-0.9394, -0.9253) | 29.73 (29.53, 29.94) | 0.9951 | 0.126 | 0.166 | 335 |
+| 1H | vacuum | -0.9554 (-0.9627, -0.9481) | 30.54 (30.33, 30.75) | 0.9934 | 0.148 | 0.195 | 336 |
 
 *Values in parentheses are 95% confidence intervals.*
 
@@ -266,6 +268,122 @@ compound_17, compound_10, compound_07, compound_30
 **Note:** Compounds with mean error > 2x MAE (4.304 ppm):
 compound_48, compound_10
 
+### 1H B3LYP (vacuum)
+
+| Compound | Mean Error (ppm) | Max Error (ppm) | Atoms |
+|----------|------------------|-----------------|-------|
+| compound_10 | 0.567 | 1.502 | 7 |
+| compound_17 | 0.509 | 1.820 | 9 |
+| compound_15 | 0.358 | 0.555 | 9 |
+| compound_49 | 0.314 | 0.314 | 2 |
+| compound_30 | 0.298 | 0.568 | 11 |
+| compound_40 | 0.217 | 0.461 | 13 |
+| compound_27 | 0.213 | 0.716 | 10 |
+| compound_37 | 0.213 | 0.327 | 12 |
+| compound_32 | 0.208 | 0.373 | 9 |
+| compound_02 | 0.204 | 0.538 | 5 |
+| compound_38 | 0.204 | 0.348 | 10 |
+| compound_26 | 0.201 | 0.332 | 10 |
+| compound_01 | 0.191 | 0.252 | 3 |
+| compound_22 | 0.188 | 0.424 | 4 |
+| compound_19 | 0.185 | 0.286 | 6 |
+| compound_25 | 0.183 | 0.349 | 4 |
+| compound_29 | 0.182 | 0.287 | 10 |
+| compound_28 | 0.181 | 0.436 | 12 |
+| compound_05 | 0.180 | 0.180 | 3 |
+| compound_20 | 0.175 | 0.238 | 7 |
+| compound_12 | 0.167 | 0.217 | 3 |
+| compound_45 | 0.164 | 0.165 | 4 |
+| compound_47 | 0.152 | 0.255 | 8 |
+| compound_04 | 0.152 | 0.152 | 4 |
+| compound_50 | 0.150 | 0.214 | 6 |
+| compound_44 | 0.140 | 0.266 | 5 |
+| compound_09 | 0.128 | 0.302 | 6 |
+| compound_13 | 0.122 | 0.207 | 8 |
+| compound_07 | 0.116 | 0.236 | 6 |
+| compound_03 | 0.113 | 0.237 | 4 |
+| compound_31 | 0.112 | 0.153 | 8 |
+| compound_41 | 0.106 | 0.240 | 10 |
+| compound_11 | 0.105 | 0.170 | 5 |
+| compound_14 | 0.101 | 0.101 | 6 |
+| compound_48 | 0.100 | 0.200 | 8 |
+| compound_35 | 0.099 | 0.119 | 5 |
+| compound_23 | 0.097 | 0.217 | 4 |
+| compound_36 | 0.096 | 0.177 | 12 |
+| compound_16 | 0.090 | 0.246 | 8 |
+| compound_34 | 0.087 | 0.122 | 7 |
+| compound_46 | 0.080 | 0.285 | 8 |
+| compound_06 | 0.063 | 0.064 | 6 |
+| compound_33 | 0.051 | 0.106 | 6 |
+| compound_42 | 0.043 | 0.107 | 8 |
+| compound_39 | 0.039 | 0.060 | 6 |
+| compound_18 | 0.039 | 0.041 | 6 |
+| compound_08 | 0.039 | 0.063 | 6 |
+| compound_21 | 0.035 | 0.052 | 4 |
+| compound_24 | 0.030 | 0.030 | 4 |
+| compound_43 | 0.012 | 0.016 | 5 |
+
+**Note:** Compounds with mean error > 2x MAE (0.296 ppm):
+compound_10, compound_17, compound_15, compound_49, compound_30
+
+### 13C B3LYP (vacuum)
+
+| Compound | Mean Error (ppm) | Max Error (ppm) | Atoms |
+|----------|------------------|-----------------|-------|
+| compound_48 | 21.205 | 52.277 | 7 |
+| compound_10 | 5.120 | 8.956 | 3 |
+| compound_17 | 3.586 | 5.019 | 4 |
+| compound_47 | 3.370 | 3.565 | 7 |
+| compound_28 | 2.961 | 4.618 | 5 |
+| compound_07 | 2.495 | 2.496 | 3 |
+| compound_05 | 2.466 | 2.886 | 2 |
+| compound_26 | 2.320 | 3.783 | 5 |
+| compound_36 | 2.300 | 5.707 | 6 |
+| compound_41 | 2.026 | 3.003 | 6 |
+| compound_25 | 1.883 | 3.660 | 4 |
+| compound_42 | 1.860 | 3.449 | 6 |
+| compound_01 | 1.856 | 1.856 | 1 |
+| compound_13 | 1.801 | 5.393 | 4 |
+| compound_38 | 1.727 | 3.069 | 6 |
+| compound_33 | 1.726 | 4.594 | 5 |
+| compound_50 | 1.724 | 1.817 | 4 |
+| compound_27 | 1.718 | 3.604 | 5 |
+| compound_19 | 1.702 | 2.564 | 4 |
+| compound_04 | 1.636 | 1.636 | 2 |
+| compound_16 | 1.621 | 2.677 | 4 |
+| compound_02 | 1.573 | 2.186 | 2 |
+| compound_37 | 1.539 | 1.539 | 6 |
+| compound_15 | 1.535 | 3.332 | 4 |
+| compound_34 | 1.528 | 2.199 | 5 |
+| compound_35 | 1.506 | 1.687 | 5 |
+| compound_40 | 1.457 | 1.869 | 6 |
+| compound_31 | 1.456 | 2.351 | 5 |
+| compound_32 | 1.432 | 2.801 | 5 |
+| compound_49 | 1.407 | 2.787 | 4 |
+| compound_03 | 1.407 | 2.611 | 2 |
+| compound_45 | 1.383 | 2.292 | 6 |
+| compound_20 | 1.181 | 2.743 | 4 |
+| compound_09 | 1.131 | 1.673 | 3 |
+| compound_29 | 1.108 | 1.922 | 5 |
+| compound_12 | 1.085 | 2.214 | 3 |
+| compound_23 | 1.071 | 2.627 | 4 |
+| compound_22 | 1.057 | 2.062 | 4 |
+| compound_11 | 1.036 | 1.658 | 3 |
+| compound_30 | 0.997 | 2.600 | 5 |
+| compound_44 | 0.986 | 1.253 | 6 |
+| compound_43 | 0.958 | 3.779 | 6 |
+| compound_08 | 0.742 | 0.750 | 3 |
+| compound_14 | 0.673 | 1.318 | 4 |
+| compound_24 | 0.662 | 0.662 | 4 |
+| compound_46 | 0.584 | 1.569 | 7 |
+| compound_18 | 0.383 | 0.642 | 4 |
+| compound_06 | 0.321 | 0.323 | 3 |
+| compound_39 | 0.276 | 0.418 | 6 |
+| compound_21 | 0.157 | 0.285 | 4 |
+
+**Note:** Compounds with mean error > 2x MAE (3.478 ppm):
+compound_48, compound_10, compound_17
+
 ## Plots
 
 ### Regression Analysis
@@ -278,6 +396,10 @@ compound_48, compound_10
 
 ![13C B3LYP (DMSO) Regression](plots/B3LYP_DMSO_13C_regression.png)
 
+![1H B3LYP (vacuum) Regression](plots/B3LYP_vacuum_1H_regression.png)
+
+![13C B3LYP (vacuum) Regression](plots/B3LYP_vacuum_13C_regression.png)
+
 ### Residual Distributions
 
 ![1H B3LYP (CHCl3) Residuals](plots/B3LYP_CHCl3_1H_residuals.png)
@@ -287,6 +409,10 @@ compound_48, compound_10
 ![1H B3LYP (DMSO) Residuals](plots/B3LYP_DMSO_1H_residuals.png)
 
 ![13C B3LYP (DMSO) Residuals](plots/B3LYP_DMSO_13C_residuals.png)
+
+![1H B3LYP (vacuum) Residuals](plots/B3LYP_vacuum_1H_residuals.png)
+
+![13C B3LYP (vacuum) Residuals](plots/B3LYP_vacuum_13C_residuals.png)
 
 ## Usage
 
@@ -325,6 +451,9 @@ shift = factor['slope'] * shielding + factor['intercept']
 - **WP04 factors:** Not yet available (benchmark calculations incomplete)
 - **DMSO solvent:** Uses same experimental data as CHCl3 (from DELTA50 paper)
   with COSMO solvent model applied during calculation
+- **Vacuum (gas-phase):** Uses same experimental data as CHCl3 with no COSMO
+  solvent model (gas-phase DFT calculations). Slightly higher MAE than solvated,
+  but still excellent R^2 > 0.99.
 - **Outlier removal:** Applied 3-sigma threshold; number removed varies by factor set
 
 ---
