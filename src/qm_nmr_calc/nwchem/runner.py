@@ -108,14 +108,16 @@ def run_calculation(
 
     This is the main entry point replacing isicle_wrapper functions.
     Runs a two-step DFT calculation:
-    1. Geometry optimization with COSMO solvation
-    2. NMR shielding calculation with COSMO solvation
+    1. Geometry optimization (with COSMO solvation if solvent specified)
+    2. NMR shielding calculation (with COSMO solvation if solvent specified)
+
+    For vacuum/gas-phase calculations, pass solvent="vacuum" to run without COSMO.
 
     Args:
         smiles: SMILES string of molecule
         job_dir: Job directory for outputs and scratch
         preset: Calculation preset dict with functional, basis_set, nmr_basis_set, max_iter
-        solvent: Solvent name for COSMO (chcl3 or dmso)
+        solvent: Solvent name for COSMO (chcl3, dmso) or "vacuum" for gas-phase
         processes: Number of MPI processes
         skip_optimization: If True, skip geometry optimization and use geometry_file
         geometry_file: Path to pre-optimized geometry file (required if skip_optimization=True)
