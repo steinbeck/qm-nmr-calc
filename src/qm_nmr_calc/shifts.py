@@ -46,7 +46,11 @@ def get_scaling_factor(
     Raises:
         ValueError: If no factor exists for this combination
     """
-    key = f"{functional}/{basis_set}/{nucleus}/{solvent}"
+    # Normalize solvent name to match scaling factors format
+    solvent_map = {"chcl3": "CHCl3", "dmso": "DMSO"}
+    normalized_solvent = solvent_map.get(solvent.lower(), solvent)
+
+    key = f"{functional}/{basis_set}/{nucleus}/{normalized_solvent}"
     factors = load_scaling_factors()
 
     if key not in factors:

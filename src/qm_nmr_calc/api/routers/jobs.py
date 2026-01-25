@@ -13,8 +13,8 @@ from ...nwchem import get_nwchem_version
 from ...models import JobStatus
 from ...shifts import get_scaling_factor
 from ...solvents import validate_solvent, get_supported_solvents
-from ...storage import create_job_directory, get_geometry_file, get_initial_geometry_file, get_output_files, get_visualization_file, load_job_status
-from ...tasks import run_nmr_task
+from ...storage import create_job_directory, get_job_dir, get_geometry_file, get_initial_geometry_file, get_output_files, get_visualization_file, load_job_status
+from ...tasks import run_nmr_task, _generate_initial_xyz
 from ...validation import validate_mol_file, validate_smiles
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
@@ -159,6 +159,11 @@ async def submit_smiles(request: JobSubmitRequest):
         notification_email=request.notification_email,
     )
 
+    # Generate initial 3D geometry for immediate visualization
+    job_dir = get_job_dir(job_status.job_id)
+    initial_xyz_path = job_dir / "output" / "initial.xyz"
+    _generate_initial_xyz(request.smiles, initial_xyz_path)
+
     # Queue the NMR calculation task
     run_nmr_task(job_status.job_id)
 
@@ -264,6 +269,11 @@ async def submit_file(
         preset=preset,
         notification_email=notification_email,
     )
+
+    # Generate initial 3D geometry for immediate visualization
+    job_dir = get_job_dir(job_status.job_id)
+    initial_xyz_path = job_dir / "output" / "initial.xyz"
+    _generate_initial_xyz(smiles, initial_xyz_path)
 
     # Queue NMR calculation
     run_nmr_task(job_status.job_id)
@@ -763,10 +773,10 @@ async def get_geometry_data(job_id: str):
         )
 
     # Determine which geometry to return
-    if job_status.status == "complete":
-        geometry_file = get_geometry_file(job_id)  # optimized.xyz
-    else:
-        geometry_file = get_initial_geometry_file(job_id)  # initial.xyz
+    # Prefer optimized geometry if available (even during NMR shielding step)
+    geometry_file = get_geometry_file(job_id)  # optimized.xyz
+    if geometry_file is None:
+        geometry_file = get_initial_geometry_file(job_id)  # initial.xyz fallback
 
     if geometry_file is None:
         raise HTTPException(

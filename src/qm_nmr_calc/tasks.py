@@ -124,8 +124,9 @@ def run_nmr_task(job_id: str) -> dict:
     # Step 1: Geometry optimization
     start_step(job_id, "geometry_optimization", "Optimizing geometry")
 
-    # Step 2: NMR shielding calculation (tracked within run_calculation)
-    start_step(job_id, "nmr_shielding", "Computing NMR shielding")
+    # Callback to switch step tracking when optimization completes
+    def on_opt_complete():
+        start_step(job_id, "nmr_shielding", "Computing NMR shielding")
 
     # Run complete calculation (geometry optimization + NMR shielding)
     # Both steps use COSMO solvation - this fixes the gas-phase bug
@@ -135,6 +136,7 @@ def run_nmr_task(job_id: str) -> dict:
         preset=preset,
         solvent=solvent,
         processes=preset['processes'],
+        on_optimization_complete=on_opt_complete,
     )
 
     geometry_file = result['geometry_file']

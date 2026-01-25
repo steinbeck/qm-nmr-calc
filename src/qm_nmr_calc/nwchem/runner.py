@@ -5,6 +5,7 @@ replacing the ISiCLE wrapper with direct subprocess execution and our own
 input generation/output parsing.
 """
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -57,6 +58,8 @@ def run_nwchem(
 ) -> None:
     """Execute NWChem via subprocess with MPI.
 
+    Uses shell execution like ISiCLE for compatibility.
+
     Args:
         input_file: Path to NWChem input file (.nw)
         output_file: Path to write NWChem output
@@ -65,26 +68,29 @@ def run_nwchem(
     Raises:
         RuntimeError: If NWChem returns non-zero exit code
     """
-    cmd = ["mpirun", "-np", str(processes), "nwchem", str(input_file)]
+    # Match ISiCLE's approach: shell=True, --bind-to none, unset DISPLAY
+    infile = str(input_file.resolve())
+    outfile = str(output_file.resolve())
+    logfile = str(output_file.with_suffix(".log").resolve())
 
-    result = subprocess.run(
-        cmd,
-        capture_output=True,
-        text=True,
-        cwd=input_file.parent,
-    )
+    # Unset DISPLAY to prevent X11 errors in headless mode
+    cmd = f"unset DISPLAY; mpirun --bind-to none -n {processes} nwchem {infile} > {outfile} 2> {logfile}"
 
-    # Write stdout to output file
-    output_file.write_text(result.stdout)
+    result = subprocess.call(cmd, shell=True)
 
-    if result.returncode != 0:
-        error_msg = f"NWChem failed with exit code {result.returncode}"
-        if result.stderr:
-            error_msg += f"\nstderr: {result.stderr}"
+    if result != 0:
+        error_msg = f"NWChem failed with exit code {result}"
+        # Read stderr from log file
+        if Path(logfile).exists():
+            stderr = Path(logfile).read_text()
+            if stderr.strip():
+                error_msg += f"\nstderr: {stderr}"
         # Include last 50 lines of stdout for debugging
-        stdout_lines = result.stdout.strip().split("\n")
-        if stdout_lines:
-            error_msg += f"\nLast output lines:\n" + "\n".join(stdout_lines[-50:])
+        if Path(outfile).exists():
+            stdout = Path(outfile).read_text()
+            stdout_lines = stdout.strip().split("\n")
+            if stdout_lines:
+                error_msg += f"\nLast output lines:\n" + "\n".join(stdout_lines[-50:])
         raise RuntimeError(error_msg)
 
 
@@ -96,6 +102,7 @@ def run_calculation(
     processes: int = 4,
     skip_optimization: bool = False,
     geometry_file: Path | None = None,
+    on_optimization_complete: callable = None,
 ) -> dict:
     """Run complete NMR calculation (geometry optimization + NMR shielding).
 
@@ -175,6 +182,10 @@ def run_calculation(
         num_atoms = len(xyz_block.strip().split("\n"))
         full_xyz = f"{num_atoms}\nOptimized geometry from NWChem\n{xyz_block}"
         optimized_xyz_path.write_text(full_xyz)
+
+    # Notify caller that optimization is complete (for step tracking)
+    if on_optimization_complete:
+        on_optimization_complete()
 
     # Step 5: Generate NMR shielding input with COSMO
     shielding_input = generate_shielding_input(

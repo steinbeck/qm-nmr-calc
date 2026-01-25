@@ -1,33 +1,32 @@
-"""NWChem input file generation for geometry optimization and NMR shielding."""
+"""NWChem input file generation for geometry optimization and NMR shielding.
 
-# COSMO dielectric constants for supported solvents
-# Sources: Standard literature values
-COSMO_DIELECTRIC: dict[str, float] = {
-    "chcl3": 4.8,
-    "dmso": 46.0,
-}
+Input format follows ISiCLE conventions for compatibility and reliability.
+"""
+
+# Supported solvents for COSMO (NWChem recognizes these by name)
+SUPPORTED_SOLVENTS = {"chcl3", "dmso", "water", "acetone", "methanol"}
 
 
-def _validate_solvent(solvent: str) -> float:
-    """Validate solvent and return its dielectric constant.
+def _validate_solvent(solvent: str) -> str:
+    """Validate solvent and return normalized name.
 
     Args:
         solvent: Solvent name (case-insensitive)
 
     Returns:
-        Dielectric constant for the solvent
+        Normalized solvent name for NWChem COSMO
 
     Raises:
         ValueError: If solvent is not supported
     """
     solvent_lower = solvent.lower()
-    if solvent_lower not in COSMO_DIELECTRIC:
-        valid_solvents = ", ".join(sorted(COSMO_DIELECTRIC.keys()))
+    if solvent_lower not in SUPPORTED_SOLVENTS:
+        valid_solvents = ", ".join(sorted(SUPPORTED_SOLVENTS))
         raise ValueError(
             f"Unsupported solvent: '{solvent}'. "
             f"Valid options: {valid_solvents}"
         )
-    return COSMO_DIELECTRIC[solvent_lower]
+    return solvent_lower
 
 
 def generate_optimization_input(
@@ -36,18 +35,21 @@ def generate_optimization_input(
     basis_set: str,
     solvent: str,
     max_iter: int = 150,
-    noautoz: bool = False,
 ) -> str:
     """Generate NWChem input file for geometry optimization with COSMO.
+
+    Uses ISiCLE-compatible format:
+    - Memory allocation (1600 MB global, 100 MB heap, 600 MB stack)
+    - noautoz noautosym geometry options
+    - Driver block for optimization control
+    - Solvent specification by name in COSMO block
 
     Args:
         geometry_xyz: XYZ-format geometry (atom lines only, no header)
         functional: DFT functional (e.g., 'b3lyp')
         basis_set: Basis set name (e.g., '6-31G*')
-        solvent: Solvent name for COSMO (chcl3 or dmso)
+        solvent: Solvent name for COSMO (chcl3, dmso, etc.)
         max_iter: Maximum optimization iterations
-        noautoz: If True, disable AUTOZ (use for linear molecules that fail
-            with "insufficient internal variables" error). Default False.
 
     Returns:
         Complete NWChem input file as string
@@ -55,29 +57,33 @@ def generate_optimization_input(
     Raises:
         ValueError: If solvent is not supported
     """
-    dielec = _validate_solvent(solvent)
-    geom_opts = "noautosym noautoz" if noautoz else "noautosym"
+    solvent_name = _validate_solvent(solvent)
 
     return f"""start molecule
 title "Geometry Optimization"
 
-geometry units angstrom {geom_opts}
+memory global 1600 mb heap 100 mb stack 600 mb
+
+geometry units angstrom noautoz noautosym
 {geometry_xyz}
 end
 
 basis spherical
-  * library "{basis_set}"
+  * library {basis_set}
 end
 
 dft
   xc {functional}
-  iterations {max_iter}
-  convergence energy 1e-7 density 1e-5 gradient 5e-4
-  direct
+end
+
+driver
+  maxiter {max_iter}
+  xyz molecule_geom
 end
 
 cosmo
-  dielec {dielec}
+  do_gasphase False
+  solvent {solvent_name}
 end
 
 task dft optimize
@@ -89,17 +95,16 @@ def generate_shielding_input(
     functional: str,
     basis_set: str,
     solvent: str,
-    noautoz: bool = False,
 ) -> str:
     """Generate NWChem input file for NMR shielding calculation with COSMO.
+
+    Uses ISiCLE-compatible format.
 
     Args:
         geometry_xyz: XYZ-format geometry (atom lines only, no header)
         functional: DFT functional (e.g., 'b3lyp')
         basis_set: Basis set name (e.g., '6-311+G(2d,p)')
-        solvent: Solvent name for COSMO (chcl3 or dmso)
-        noautoz: If True, disable AUTOZ (use for linear molecules that fail
-            with "insufficient internal variables" error). Default False.
+        solvent: Solvent name for COSMO (chcl3, dmso, etc.)
 
     Returns:
         Complete NWChem input file as string
@@ -107,27 +112,28 @@ def generate_shielding_input(
     Raises:
         ValueError: If solvent is not supported
     """
-    dielec = _validate_solvent(solvent)
-    geom_opts = "noautosym noautoz" if noautoz else "noautosym"
+    solvent_name = _validate_solvent(solvent)
 
     return f"""start molecule
 title "NMR Shielding Calculation"
 
-geometry units angstrom {geom_opts}
+memory global 1600 mb heap 100 mb stack 600 mb
+
+geometry units angstrom noautoz noautosym
 {geometry_xyz}
 end
 
 basis spherical
-  * library "{basis_set}"
+  * library {basis_set}
 end
 
 dft
   xc {functional}
-  direct
 end
 
 cosmo
-  dielec {dielec}
+  do_gasphase False
+  solvent {solvent_name}
 end
 
 property

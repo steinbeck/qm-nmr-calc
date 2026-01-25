@@ -9,7 +9,7 @@ Or directly:
     python scripts/run_consumer.py
 
 The consumer will:
-1. Validate environment (NWChem, ISiCLE, directories)
+1. Validate environment (NWChem, directories)
 2. Recover any interrupted jobs from previous runs
 3. Start processing queued tasks
 """
@@ -21,7 +21,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
 from qm_nmr_calc.startup import startup
-from qm_nmr_calc.isicle_wrapper import get_versions
+from qm_nmr_calc.nwchem.runner import get_nwchem_version
 
 
 def main():
@@ -33,9 +33,8 @@ def main():
     startup()
 
     # Print version info
-    versions = get_versions()
-    print(f"ISiCLE version: {versions.isicle}")
-    print(f"NWChem version: {versions.nwchem}")
+    nwchem_version = get_nwchem_version()
+    print(f"NWChem version: {nwchem_version}")
     print()
 
     # Start Huey consumer
