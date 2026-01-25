@@ -30,6 +30,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 10: Scaling Factors** - Derive and validate NWChem-specific scaling factors
 - [x] **Phase 11: Production Integration** - Apply scaling factors and remove ISiCLE dependency
 - [x] **Phase 11.1: 3D Molecule Visualization** - Interactive 3Dmol.js viewer on job status page (INSERTED)
+- [ ] **Phase 11.2: Vacuum Benchmark Calculations** - Gas-phase DELTA50 benchmark and scaling factors (INSERTED)
 
 ## Phase Details
 
@@ -238,10 +239,26 @@ Plans:
 - [x] 11.1-01-PLAN.md — Backend: initial geometry storage and geometry.json API endpoint
 - [x] 11.1-02-PLAN.md — Frontend: 3Dmol.js viewer on status and results pages
 
+### Phase 11.2: Vacuum Benchmark Calculations (INSERTED)
+**Goal**: Run DELTA50 benchmark without solvent (vacuum/gas phase) to provide scaling factors for gas-phase NMR predictions
+**Depends on**: Phase 11.1
+**Requirements**: None (extends benchmark coverage)
+**Success Criteria** (what must be TRUE):
+  1. All 50 DELTA50 molecules calculated with B3LYP in vacuum (no COSMO)
+  2. Scaling factors derived for B3LYP/vacuum via linear regression
+  3. Vacuum scaling factors validated with MAE/RMSD statistics
+  4. Production system supports vacuum as solvent option
+**Plans**: 3 plans
+
+Plans:
+- [ ] 11.2-01-PLAN.md — Enable vacuum support in input_gen.py and benchmark runner
+- [ ] 11.2-02-PLAN.md — Execute vacuum benchmark (50 B3LYP calculations)
+- [ ] 11.2-03-PLAN.md — Derive vacuum scaling factors and update production
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 8.1 -> 9 -> 10 -> 11 -> 11.1
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 8.1 -> 9 -> 10 -> 11 -> 11.1 -> 11.2
 
 ### Milestone v1.0: Core NMR Service
 
@@ -265,3 +282,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 8.1 -> 
 | 10. Scaling Factors | 2/2 | Complete | 2026-01-23 |
 | 11. Production Integration | 3/3 | Complete | 2026-01-23 |
 | 11.1. 3D Molecule Visualization | 2/2 | Complete | 2026-01-24 |
+| 11.2. Vacuum Benchmark Calculations | 0/3 | Planned | — |
