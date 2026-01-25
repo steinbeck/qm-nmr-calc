@@ -38,7 +38,7 @@ def get_scaling_factor(
         functional: DFT functional (e.g., 'B3LYP')
         basis_set: Basis set (e.g., '6-311+G(2d,p)')
         nucleus: Nucleus type ('1H' or '13C')
-        solvent: Solvent name (e.g., 'CHCl3', 'DMSO')
+        solvent: Solvent name (e.g., 'CHCl3', 'DMSO', 'vacuum')
 
     Returns:
         Dict with: slope, intercept, r_squared, mae, rmsd, n_points
@@ -47,7 +47,7 @@ def get_scaling_factor(
         ValueError: If no factor exists for this combination
     """
     # Normalize solvent name to match scaling factors format
-    solvent_map = {"chcl3": "CHCl3", "dmso": "DMSO"}
+    solvent_map = {"chcl3": "CHCl3", "dmso": "DMSO", "vacuum": "vacuum"}
     normalized_solvent = solvent_map.get(solvent.lower(), solvent)
 
     key = f"{functional}/{basis_set}/{nucleus}/{normalized_solvent}"
@@ -79,7 +79,7 @@ def shielding_to_shift(
             Format: {'index': [1,2,3...], 'atom': ['H','C'...], 'shielding': [29.1, 156.2...]}
         functional: DFT functional (e.g., 'B3LYP')
         basis_set: Basis set (e.g., '6-311+G(2d,p)')
-        solvent: Solvent name (e.g., 'CHCl3', 'DMSO')
+        solvent: Solvent name (e.g., 'CHCl3', 'DMSO', 'vacuum')
 
     Returns:
         Dict with '1H' and '13C' keys, each containing a list of shift dicts
