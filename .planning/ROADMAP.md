@@ -30,7 +30,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 10: Scaling Factors** - Derive and validate NWChem-specific scaling factors
 - [x] **Phase 11: Production Integration** - Apply scaling factors and remove ISiCLE dependency
 - [x] **Phase 11.1: 3D Molecule Visualization** - Interactive 3Dmol.js viewer on job status page (INSERTED)
-- [ ] **Phase 11.2: Vacuum Benchmark Calculations** - Gas-phase DELTA50 benchmark and scaling factors (INSERTED)
+- [x] **Phase 11.2: Vacuum Benchmark Calculations** - Gas-phase DELTA50 benchmark and scaling factors (INSERTED)
 
 ## Phase Details
 
@@ -251,9 +251,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 11.2-01-PLAN.md — Enable vacuum support in input_gen.py and benchmark runner
-- [ ] 11.2-02-PLAN.md — Execute vacuum benchmark (50 B3LYP calculations)
-- [ ] 11.2-03-PLAN.md — Derive vacuum scaling factors and update production
+- [x] 11.2-01-PLAN.md — Enable vacuum support in input_gen.py and benchmark runner
+- [x] 11.2-02-PLAN.md — Execute vacuum benchmark (50 B3LYP calculations)
+- [x] 11.2-03-PLAN.md — Derive vacuum scaling factors and update production
 
 ## Progress
 
@@ -282,4 +282,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 8.1 -> 
 | 10. Scaling Factors | 2/2 | Complete | 2026-01-23 |
 | 11. Production Integration | 3/3 | Complete | 2026-01-23 |
 | 11.1. 3D Molecule Visualization | 2/2 | Complete | 2026-01-24 |
-| 11.2. Vacuum Benchmark Calculations | 0/3 | Planned | — |
+| 11.2. Vacuum Benchmark Calculations | 3/3 | Complete | 2026-01-25 |
