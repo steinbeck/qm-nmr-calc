@@ -4,7 +4,8 @@ Input format follows ISiCLE conventions for compatibility and reliability.
 """
 
 # Supported solvents for COSMO (NWChem recognizes these by name)
-SUPPORTED_SOLVENTS = {"chcl3", "dmso", "water", "acetone", "methanol"}
+# "vacuum" is special - no COSMO block will be generated for gas-phase calculations
+SUPPORTED_SOLVENTS = {"chcl3", "dmso", "water", "acetone", "methanol", "vacuum"}
 
 
 def _validate_solvent(solvent: str) -> str:
@@ -36,19 +37,19 @@ def generate_optimization_input(
     solvent: str,
     max_iter: int = 150,
 ) -> str:
-    """Generate NWChem input file for geometry optimization with COSMO.
+    """Generate NWChem input file for geometry optimization.
 
     Uses ISiCLE-compatible format:
     - Memory allocation (1600 MB global, 100 MB heap, 600 MB stack)
     - noautoz noautosym geometry options
     - Driver block for optimization control
-    - Solvent specification by name in COSMO block
+    - COSMO solvation block (omitted for vacuum/gas-phase calculations)
 
     Args:
         geometry_xyz: XYZ-format geometry (atom lines only, no header)
         functional: DFT functional (e.g., 'b3lyp')
         basis_set: Basis set name (e.g., '6-31G*')
-        solvent: Solvent name for COSMO (chcl3, dmso, etc.)
+        solvent: Solvent name for COSMO (chcl3, dmso, etc.) or "vacuum" for gas-phase
         max_iter: Maximum optimization iterations
 
     Returns:
@@ -58,6 +59,17 @@ def generate_optimization_input(
         ValueError: If solvent is not supported
     """
     solvent_name = _validate_solvent(solvent)
+
+    # Build COSMO block only for non-vacuum calculations
+    if solvent_name == "vacuum":
+        cosmo_block = ""
+    else:
+        cosmo_block = f"""
+cosmo
+  do_gasphase False
+  solvent {solvent_name}
+end
+"""
 
     return f"""start molecule
 title "Geometry Optimization"
@@ -80,12 +92,7 @@ driver
   maxiter {max_iter}
   xyz molecule_geom
 end
-
-cosmo
-  do_gasphase False
-  solvent {solvent_name}
-end
-
+{cosmo_block}
 task dft optimize
 """
 
@@ -96,15 +103,15 @@ def generate_shielding_input(
     basis_set: str,
     solvent: str,
 ) -> str:
-    """Generate NWChem input file for NMR shielding calculation with COSMO.
+    """Generate NWChem input file for NMR shielding calculation.
 
-    Uses ISiCLE-compatible format.
+    Uses ISiCLE-compatible format. COSMO solvation is omitted for vacuum/gas-phase.
 
     Args:
         geometry_xyz: XYZ-format geometry (atom lines only, no header)
         functional: DFT functional (e.g., 'b3lyp')
         basis_set: Basis set name (e.g., '6-311+G(2d,p)')
-        solvent: Solvent name for COSMO (chcl3, dmso, etc.)
+        solvent: Solvent name for COSMO (chcl3, dmso, etc.) or "vacuum" for gas-phase
 
     Returns:
         Complete NWChem input file as string
@@ -113,6 +120,17 @@ def generate_shielding_input(
         ValueError: If solvent is not supported
     """
     solvent_name = _validate_solvent(solvent)
+
+    # Build COSMO block only for non-vacuum calculations
+    if solvent_name == "vacuum":
+        cosmo_block = ""
+    else:
+        cosmo_block = f"""
+cosmo
+  do_gasphase False
+  solvent {solvent_name}
+end
+"""
 
     return f"""start molecule
 title "NMR Shielding Calculation"
@@ -130,12 +148,7 @@ end
 dft
   xc {functional}
 end
-
-cosmo
-  do_gasphase False
-  solvent {solvent_name}
-end
-
+{cosmo_block}
 property
   shielding
 end
