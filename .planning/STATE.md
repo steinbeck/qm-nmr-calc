@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-21)
 ## Current Position
 
 Phase: 11.2 of 13 (Vacuum Benchmark Calculations)
-Plan: 1 of 3 in phase
-Status: In progress
-Last activity: 2026-01-25 — Completed 11.2-01-PLAN.md (Enable Vacuum Calculations)
+Plan: 3 of 3 in phase (COMPLETE)
+Status: Phase complete
+Last activity: 2026-01-25 — Completed 11.2-03-PLAN.md (Derive Vacuum Scaling Factors)
 
-Progress: [█████████████████████████████████████████░] 97% (35/37 plans completed)
+Progress: [██████████████████████████████████████████] 100% (37/37 plans completed)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 35
+- Total plans completed: 37
 - Average duration: 8.1 min
-- Total execution time: 284 min
+- Total execution time: 299 min
 
 **By Phase:**
 
@@ -40,13 +40,13 @@ Progress: [███████████████████████
 | 10-scaling-factors | 2 | 7 min | 3.5 min |
 | 11-production-integration | 3 | 16 min | 5.3 min |
 | 11.1-3d-molecule-visualization | 2 | 12 min | 6.0 min |
-| 11.2-vacuum-benchmark-calculations | 1 | 8 min | 8.0 min |
+| 11.2-vacuum-benchmark-calculations | 3 | 15 min | 5.0 min |
 
 *Note: Phase 8.1 required additional human verification session (not counted in execution time)*
 
 **Recent Trend:**
-- Last 5 plans: 11-03 (5 min), 11.1-01 (6 min), 11.1-02 (6 min), 11.2-01 (8 min)
-- Note: 09-02 included ~2.5 hours of NWChem calculations
+- Last 5 plans: 11.1-02 (6 min), 11.2-01 (8 min), 11.2-02 (user executed), 11.2-03 (7 min)
+- Note: 09-02 and 11.2-02 included long NWChem calculations (executed by user)
 
 *Updated after each plan completion*
 
@@ -147,6 +147,8 @@ Recent decisions affecting current work:
 - Shift assignments (h1_assignments, c13_assignments) returned as null for running jobs
 - Vacuum as special solvent value for gas-phase calculations (no COSMO block)
 - Save shielding data even without scaling factors for later factor derivation
+- Vacuum scaling factors derived via OLS regression with comparable R^2 to solvated (>0.99)
+- Production supports 6 factor combinations: CHCl3/DMSO/vacuum x 1H/13C
 
 ### Roadmap Evolution
 
@@ -165,6 +167,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-25
-Stopped at: Completed 11.2-01-PLAN.md
+Stopped at: Completed 11.2-03-PLAN.md (Phase 11.2 complete)
 Resume file: None
-Next: Continue phase 11.2 (Plan 02 - Run Vacuum Benchmarks)
+Next: All planned phases complete (37/37 plans)
