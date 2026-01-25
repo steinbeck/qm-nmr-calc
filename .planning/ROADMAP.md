@@ -29,7 +29,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 9: Benchmark Calculations** - Execute DELTA50 calculation matrix
 - [x] **Phase 10: Scaling Factors** - Derive and validate NWChem-specific scaling factors
 - [x] **Phase 11: Production Integration** - Apply scaling factors and remove ISiCLE dependency
-- [ ] **Phase 11.1: 3D Molecule Visualization** - Interactive 3Dmol.js viewer on job status page (INSERTED)
+- [x] **Phase 11.1: 3D Molecule Visualization** - Interactive 3Dmol.js viewer on job status page (INSERTED)
 
 ## Phase Details
 
@@ -235,8 +235,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 11.1-01-PLAN.md — Backend: initial geometry storage and geometry.json API endpoint
-- [ ] 11.1-02-PLAN.md — Frontend: 3Dmol.js viewer on status and results pages
+- [x] 11.1-01-PLAN.md — Backend: initial geometry storage and geometry.json API endpoint
+- [x] 11.1-02-PLAN.md — Frontend: 3Dmol.js viewer on status and results pages
 
 ## Progress
 
@@ -264,4 +264,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 8.1 -> 
 | 9. Benchmark Calculations | 2/2 | Complete | 2026-01-22 |
 | 10. Scaling Factors | 2/2 | Complete | 2026-01-23 |
 | 11. Production Integration | 3/3 | Complete | 2026-01-23 |
-| 11.1. 3D Molecule Visualization | 0/2 | Planned | — |
+| 11.1. 3D Molecule Visualization | 2/2 | Complete | 2026-01-24 |

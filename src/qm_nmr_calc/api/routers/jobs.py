@@ -794,16 +794,42 @@ async def get_geometry_data(job_id: str):
     # Build shift assignments only for complete jobs
     h1_assignments = {}
     c13_assignments = {}
+    sdf_content = None
+
     if job_status.status == "complete" and job_status.nmr_results:
         for s in job_status.nmr_results.h1_shifts:
             h1_assignments[str(s.index)] = s.shift
         for s in job_status.nmr_results.c13_shifts:
             c13_assignments[str(s.index)] = s.shift
 
+        # Generate SDF with proper bond orders for complete jobs
+        # SDF preserves double/triple bonds from original SMILES
+        try:
+            xyz_lines = xyz_content.strip().split("\n")
+            coords = []
+            for line in xyz_lines[2:]:  # Skip count and comment lines
+                parts = line.split()
+                if len(parts) >= 4:
+                    coords.append((float(parts[1]), float(parts[2]), float(parts[3])))
+
+            mol = Chem.MolFromSmiles(job_status.input.smiles)
+            if mol:
+                mol = Chem.AddHs(mol)
+                conf = Chem.Conformer(mol.GetNumAtoms())
+                for i, (x, y, z) in enumerate(coords):
+                    if i < mol.GetNumAtoms():
+                        conf.SetAtomPosition(i, (x, y, z))
+                mol.AddConformer(conf, assignId=True)
+                sdf_content = Chem.MolToMolBlock(mol)
+        except Exception:
+            # Fall back to XYZ only if SDF generation fails
+            pass
+
     return {
         "job_id": job_id,
         "status": job_status.status,
         "xyz": xyz_content,
+        "sdf": sdf_content,
         "h1_assignments": h1_assignments if h1_assignments else None,
         "c13_assignments": c13_assignments if c13_assignments else None,
     }

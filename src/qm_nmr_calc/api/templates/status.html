@@ -131,7 +131,13 @@
             viewer.removeAllModels();
             viewer.removeAllLabels();
 
-            const model = viewer.addModel(data.xyz, 'xyz', {assignBonds: true});
+            // Prefer SDF format for proper double/triple bond display
+            let model;
+            if (data.sdf) {
+                model = viewer.addModel(data.sdf, 'sdf');
+            } else {
+                model = viewer.addModel(data.xyz, 'xyz', {assignBonds: true});
+            }
 
             viewer.setStyle({}, {
                 stick: {radius: 0.12, colorscheme: 'Jmol'},
