@@ -129,7 +129,8 @@ def build_task_matrix(
     Args:
         molecules: Specific molecule IDs to include (default: all 50)
         functionals: Functionals to test (default: B3LYP, WP04)
-        solvents: Solvents to test (default: CHCl3, DMSO)
+        solvents: Solvents to test (default: CHCl3, DMSO). Can include "vacuum"
+            for gas-phase calculations.
 
     Returns:
         List of task dicts with keys: molecule_id, functional, solvent, task_id
@@ -192,12 +193,14 @@ def run_single_calculation(
     Args:
         mol_id: Molecule ID (e.g., "compound_01")
         functional: Functional name (B3LYP or WP04)
-        solvent: Solvent name (CHCl3 or DMSO)
+        solvent: Solvent name (CHCl3, DMSO, or vacuum)
         results_dir: Base results directory
         processes: Number of MPI processes
 
     Returns:
-        BenchmarkResult with calculated shifts or error info
+        BenchmarkResult with calculated shifts or error info.
+        For solvents without scaling factors (e.g., vacuum), shifts will be empty
+        but shielding data is still saved.
     """
     output_dir = results_dir / mol_id / f"{functional}_{solvent}"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -235,16 +238,22 @@ def run_single_calculation(
         )
 
         # Convert shielding to shifts using DELTA50 regression factors
-        shifts_data = shielding_to_shift(
-            result["shielding_data"],
-            functional=functional.upper(),  # Already have functional from task params
-            basis_set=BENCHMARK_PRESETS[functional]["nmr_basis_set"],
-            solvent=solvent,  # Already have solvent from task params
-        )
-
-        # Extract shift values
-        h1_shifts = [s["shift"] for s in shifts_data["1H"]]
-        c13_shifts = [s["shift"] for s in shifts_data["13C"]]
+        # For solvents without scaling factors (e.g., vacuum), save shielding only
+        try:
+            shifts_data = shielding_to_shift(
+                result["shielding_data"],
+                functional=functional.upper(),
+                basis_set=BENCHMARK_PRESETS[functional]["nmr_basis_set"],
+                solvent=solvent,
+            )
+            h1_shifts = [s["shift"] for s in shifts_data["1H"]]
+            c13_shifts = [s["shift"] for s in shifts_data["13C"]]
+        except ValueError as e:
+            # No scaling factor for this combination - save raw shielding only
+            # This is expected for vacuum until factors are derived from this data
+            logger.info(f"No scaling factor for {functional}/{solvent}: {e}")
+            h1_shifts = []
+            c13_shifts = []
 
         # Save shifts to JSON
         shifts_output = {
@@ -296,7 +305,8 @@ def run_benchmark(
         resume: If True, skip already-completed calculations
         molecules: Specific molecule IDs to run (default: all 50)
         functionals: Functionals to test (default: B3LYP, WP04)
-        solvents: Solvents to test (default: CHCl3, DMSO)
+        solvents: Solvents to test (default: CHCl3, DMSO). Can include "vacuum"
+            for gas-phase calculations without COSMO solvation.
         processes: Number of MPI processes per calculation
         headless: If True, disable tqdm and configure file logging
 
