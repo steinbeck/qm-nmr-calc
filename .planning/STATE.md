@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 12 of 17 (Conformer Data Model and Storage)
-Plan: 02 of 03 (Phase 12)
+Plan: 03 of 03 (Phase 12)
 Status: In progress
-Last activity: 2026-01-26 -- Completed 12-02-PLAN.md (Canonical Atom Ordering)
+Last activity: 2026-01-26 -- Completed 12-01-PLAN.md (Conformer Data Model and Storage)
 
-Progress: █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 33% (Phase 12: 1/3 plans)
+Progress: ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 67% (Phase 12: 2/3 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 37
-- Average duration: 8.0 min
-- Total execution time: 302 min (5.0 hours)
+- Total plans completed: 38
+- Average duration: 7.9 min
+- Total execution time: 306 min (5.1 hours)
 
 **By Milestone:**
 
@@ -33,7 +33,7 @@ Progress: █░░░░░░░░░░░░░░░░░░░░░░�
 
 **Recent Trend:**
 - Last 5 plans: 3-12 min
-- Trend: Fast (12-02: TDD module, 3 min)
+- Trend: Steady (12-01: Data models, 4.3 min; 12-02: TDD module, 3 min)
 
 ## Accumulated Context
 
@@ -47,6 +47,8 @@ Recent v2.0 decisions affecting current work:
 - Boltzmann weight by DFT energies: Most accurate readily available energy level for weighting
 - RDKit CanonicalRankAtoms for atom ordering: Built-in deterministic canonicalization (12-02)
 - Mapping as metadata not transformation: Don't physically reorder atoms (breaks RDKit ops) (12-02)
+- Per-conformer scratch directory isolation: Each conformer gets unique scratch dir to prevent NWChem database conflicts (12-01)
+- Explicit energy unit tracking: ConformerData stores energy_unit alongside energy to prevent conversion bugs (12-01)
 
 ### Roadmap Evolution
 
@@ -64,11 +66,11 @@ None.
 
 **v2.0 Architecture:**
 - Numerical stability: Boltzmann weighting with wide energy ranges needs exp-normalize trick (Phase 14)
-- Scratch directory isolation: Per-conformer directories critical to prevent NWChem database corruption (Phase 12)
 - CREST timeouts: Macrocycles can hang, need timeout with RDKit fallback (Phase 16)
 
 **Resolved (v2.0):**
 - Atom ordering consistency: Canonical indexing established via CanonicalRankAtoms (12-02)
+- Scratch directory isolation: Per-conformer directories prevent NWChem database corruption (12-01)
 
 **Resolved (v1.x):**
 - RDKit stderr capture limitation (known, fallback messages used)
@@ -77,6 +79,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-26
-Stopped at: Completed 12-02-PLAN.md (Canonical Atom Ordering via TDD)
+Stopped at: Completed 12-01-PLAN.md (Conformer Data Model and Storage)
 Resume file: None
-Next: Continue Phase 12 (2 of 3 plans remaining)
+Next: Execute 12-03-PLAN.md (Conformer ensemble validation)
