@@ -33,6 +33,19 @@ class JobSubmitRequest(BaseModel):
         description="Email address for completion notification (opt-in)",
         examples=["user@example.com"],
     )
+    # v2.0: Conformational sampling parameters
+    conformer_mode: str = Field(
+        default="single",
+        description="Conformational sampling mode: 'single' (v1.x default) or 'ensemble' (v2.0 multi-conformer)",
+    )
+    conformer_method: Optional[str] = Field(
+        None,
+        description="Conformer generation method: 'rdkit_kdg' or 'crest'. Only used when conformer_mode='ensemble'.",
+    )
+    max_conformers: Optional[int] = Field(
+        None,
+        description="Maximum number of conformers to generate. None uses adaptive default. Only used when conformer_mode='ensemble'.",
+    )
 
 
 class AtomShiftResponse(BaseModel):
@@ -106,6 +119,11 @@ class JobStatusResponse(BaseModel):
     error_message: Optional[str] = Field(None, description="Error message if failed")
     nmr_results: Optional[NMRResultsResponse] = Field(
         None, description="NMR results (available when status is complete)"
+    )
+    # v2.0: Conformational sampling mode
+    conformer_mode: str = Field(
+        default="single",
+        description="Conformational sampling mode: 'single' or 'ensemble'",
     )
 
 

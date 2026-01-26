@@ -102,6 +102,7 @@ def job_status_to_response(job_status: JobStatus) -> dict:
         "steps_completed": steps_completed,
         "error_message": job_status.error_message,
         "nmr_results": nmr_results,
+        "conformer_mode": job_status.conformer_mode,
     }
 
 
