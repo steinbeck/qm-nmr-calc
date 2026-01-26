@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-26)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.0 Conformational Sampling -- Phase 12 ready to plan
+**Current focus:** v2.0 Conformational Sampling -- Phase 12 complete, Phase 13 next
 
 ## Current Position
 
 Phase: 12 of 17 (Conformer Data Model and Storage)
 Plan: 03 of 03 (Phase 12)
-Status: In progress
-Last activity: 2026-01-26 -- Completed 12-01-PLAN.md (Conformer Data Model and Storage)
+Status: Phase complete
+Last activity: 2026-01-26 -- Completed 12-03-PLAN.md (Backward compat + API schemas)
 
-Progress: ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 67% (Phase 12: 2/3 plans)
+Progress: ███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 100% (Phase 12: 3/3 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 38
-- Average duration: 7.9 min
-- Total execution time: 306 min (5.1 hours)
+- Total plans completed: 39
+- Average duration: 7.8 min
+- Total execution time: 312 min (5.2 hours)
 
 **By Milestone:**
 
@@ -33,7 +33,7 @@ Progress: ██░░░░░░░░░░░░░░░░░░░░░�
 
 **Recent Trend:**
 - Last 5 plans: 3-12 min
-- Trend: Steady (12-01: Data models, 4.3 min; 12-02: TDD module, 3 min)
+- Trend: Steady (12-01: Data models, 4.3 min; 12-02: TDD module, 3 min; 12-03: Compat + API, 5.6 min)
 
 ## Accumulated Context
 
@@ -49,6 +49,7 @@ Recent v2.0 decisions affecting current work:
 - Mapping as metadata not transformation: Don't physically reorder atoms (breaks RDKit ops) (12-02)
 - Per-conformer scratch directory isolation: Each conformer gets unique scratch dir to prevent NWChem database conflicts (12-01)
 - Explicit energy unit tracking: ConformerData stores energy_unit alongside energy to prevent conversion bugs (12-01)
+- str type for API conformer_mode: API schemas use str (not Literal) for flexibility, validation at service layer (12-03)
 
 ### Roadmap Evolution
 
@@ -71,6 +72,7 @@ None.
 **Resolved (v2.0):**
 - Atom ordering consistency: Canonical indexing established via CanonicalRankAtoms (12-02)
 - Scratch directory isolation: Per-conformer directories prevent NWChem database corruption (12-01)
+- Backward compatibility: v1.x JSON loads verified with 8 fixture tests (12-03)
 
 **Resolved (v1.x):**
 - RDKit stderr capture limitation (known, fallback messages used)
@@ -79,6 +81,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-26
-Stopped at: Completed 12-01-PLAN.md (Conformer Data Model and Storage)
+Stopped at: Completed 12-03-PLAN.md (Phase 12 complete)
 Resume file: None
-Next: Execute 12-03-PLAN.md (Conformer ensemble validation)
+Next: Plan and execute Phase 13 (RDKit Conformer Generation)
