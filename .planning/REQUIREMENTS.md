@@ -26,7 +26,7 @@ Requirements for v2.0 Conformational Sampling. Each maps to roadmap phases.
 
 - [ ] **DFT-01**: System runs DFT geometry optimization on each conformer surviving pre-DFT filter
 - [ ] **DFT-02**: System runs NMR shielding calculation on each conformer surviving post-DFT filter
-- [ ] **DFT-03**: Each conformer uses isolated scratch directory to prevent NWChem file conflicts
+- [x] **DFT-03**: Each conformer uses isolated scratch directory to prevent NWChem file conflicts
 - [ ] **DFT-04**: System extracts DFT energies from optimization step for Boltzmann weighting
 - [ ] **DFT-05**: System handles partial conformer failures gracefully (continues with successful conformers)
 
@@ -42,7 +42,7 @@ Requirements for v2.0 Conformational Sampling. Each maps to roadmap phases.
 - [ ] **API-01**: API returns Boltzmann-weighted average shifts (not per-conformer detail)
 - [ ] **API-02**: API response includes ensemble metadata (conformer count, energy range, top 3 populations, method used, temperature)
 - [ ] **API-03**: 3D viewer shows lowest-energy conformer geometry with shift labels
-- [ ] **API-04**: Existing v1.x single-conformer API behavior preserved when conformer_mode=single (backward compatible)
+- [x] **API-04**: Existing v1.x single-conformer API behavior preserved when conformer_mode=single (backward compatible)
 
 ### Progress Tracking
 
@@ -101,7 +101,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FILT-03 | Phase 15 | Pending |
 | DFT-01 | Phase 15 | Pending |
 | DFT-02 | Phase 15 | Pending |
-| DFT-03 | Phase 12 | Pending |
+| DFT-03 | Phase 12 | Complete |
 | DFT-04 | Phase 15 | Pending |
 | DFT-05 | Phase 15 | Pending |
 | BOLTZ-01 | Phase 14 | Pending |
@@ -111,7 +111,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | API-01 | Phase 17 | Pending |
 | API-02 | Phase 17 | Pending |
 | API-03 | Phase 17 | Pending |
-| API-04 | Phase 12 | Pending |
+| API-04 | Phase 12 | Complete |
 | PROG-01 | Phase 17 | Pending |
 | PROG-02 | Phase 17 | Pending |
 
