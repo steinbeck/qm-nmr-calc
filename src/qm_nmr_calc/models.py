@@ -29,6 +29,41 @@ class NMRResults(BaseModel):
     solvent: str  # COSMO solvent used
 
 
+# Energy unit type for conformer energies
+EnergyUnit = Literal["hartree", "kcal_mol", "kj_mol"]
+
+
+class ConformerData(BaseModel):
+    """Data for a single conformer in an ensemble."""
+
+    model_config = ConfigDict(strict=True)
+
+    conformer_id: str  # e.g., "conf_001"
+    energy: Optional[float] = None  # Populated after DFT optimization
+    energy_unit: Optional[EnergyUnit] = None
+    weight: Optional[float] = None  # Boltzmann weight, populated after averaging
+    geometry_file: Optional[str] = None  # Path relative to job dir, e.g., "output/conformers/conf_001.xyz"
+    optimized_geometry_file: Optional[str] = None  # Path relative to job dir
+    rmsd_from_ref: Optional[float] = None  # RMSD from lowest-energy conformer
+    status: Literal["pending", "optimizing", "optimized", "nmr_running", "nmr_complete", "failed"] = "pending"
+    error_message: Optional[str] = None
+
+
+class ConformerEnsemble(BaseModel):
+    """Ensemble of conformers for a molecule."""
+
+    model_config = ConfigDict(strict=True)
+
+    method: Literal["rdkit_kdg", "crest"]  # Generation method
+    conformers: list[ConformerData]  # List of conformers
+    temperature_k: float = 298.15  # For Boltzmann weighting
+    pre_dft_energy_window_kcal: float = 6.0  # Pre-DFT filter threshold
+    post_dft_energy_window_kcal: float = 3.0  # Post-DFT filter threshold
+    total_generated: int = 0  # Before filtering
+    total_after_pre_filter: int = 0
+    total_after_post_filter: int = 0
+
+
 class StepTiming(BaseModel):
     """Timing information for a completed calculation step."""
 
@@ -52,6 +87,9 @@ class JobInput(BaseModel):
     preset: Literal["draft", "production"] = "production"
     solvent: str  # Required field - no default, user must specify
     notification_email: Optional[str] = None  # Opt-in email for completion notification
+    conformer_mode: Literal["single", "ensemble"] = "single"  # v2.0: conformational sampling mode
+    conformer_method: Optional[Literal["rdkit_kdg", "crest"]] = None  # Only relevant when mode=ensemble
+    max_conformers: Optional[int] = None  # None = use adaptive default
 
 
 class JobStatus(BaseModel):
@@ -92,3 +130,7 @@ class JobStatus(BaseModel):
     # NMR results (populated on completion)
     nmr_results: Optional[NMRResults] = None
     optimized_geometry_file: Optional[str] = None  # Path to XYZ file
+
+    # v2.0: Conformational sampling (backward compatible with v1.x)
+    conformer_mode: Literal["single", "ensemble"] = "single"
+    conformer_ensemble: Optional[ConformerEnsemble] = None
