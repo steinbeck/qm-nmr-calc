@@ -89,12 +89,12 @@ The roadmap follows a risk-mitigation strategy: establish data foundations first
 
 </details>
 
-### 🚧 v2.0 Conformational Sampling (In Progress)
+### v2.0 Conformational Sampling (In Progress)
 
-**Milestone Goal:** Boltzmann-weighted ensemble averaging for flexible molecules — generate conformers, compute NMR on each, weight by DFT energies for population-averaged shifts.
+**Milestone Goal:** Boltzmann-weighted ensemble averaging for flexible molecules -- generate conformers, compute NMR on each, weight by DFT energies for population-averaged shifts.
 
 #### Phase 12: Conformer Data Model and Storage
-**Goal**: Foundation for multi-conformer calculations — data structures, file organization, backward compatibility
+**Goal**: Foundation for multi-conformer calculations -- data structures, file organization, backward compatibility
 **Depends on**: Phase 11.2
 **Requirements**: DFT-03, API-04 (partial)
 **Success Criteria** (what must be TRUE):
@@ -103,10 +103,12 @@ The roadmap follows a risk-mitigation strategy: establish data foundations first
   3. Canonical atom ordering established and verified across conformer lifecycle
   4. Existing v1.x single-conformer jobs load and run without modification
   5. Job directory structure supports per-conformer outputs (`output/conformers/`, `output/optimized/`)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 12-01: TBD
+- [ ] 12-01-PLAN.md -- Conformer data models and per-conformer storage structure
+- [ ] 12-02-PLAN.md -- Canonical atom ordering (TDD)
+- [ ] 12-03-PLAN.md -- Backward compatibility verification and API schema updates
 
 #### Phase 13: RDKit KDG Conformer Generation
 **Goal**: Generate conformer ensembles using RDKit distance geometry (no external dependencies)
@@ -189,7 +191,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 12 → 13 → 14 → 15 → 16 → 17
+Phases execute in numeric order: 12 -> 13 -> 14 -> 15 -> 16 -> 17
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -206,7 +208,7 @@ Phases execute in numeric order: 12 → 13 → 14 → 15 → 16 → 17
 | 11. Geometry Input | v1.1 | 2/2 | Complete | 2026-01-25 |
 | 11.1 Solvent Research | v1.1 | 1/1 | Complete | 2026-01-25 |
 | 11.2 Vacuum Benchmark | v1.1 | 3/3 | Complete | 2026-01-25 |
-| 12. Data Model | v2.0 | 0/? | Not started | - |
+| 12. Data Model | v2.0 | 0/3 | Not started | - |
 | 13. RDKit Generation | v2.0 | 0/? | Not started | - |
 | 14. Boltzmann Averaging | v2.0 | 0/? | Not started | - |
 | 15. NWChem Integration | v2.0 | 0/? | Not started | - |
@@ -215,4 +217,4 @@ Phases execute in numeric order: 12 → 13 → 14 → 15 → 16 → 17
 
 ---
 
-*Last updated: 2026-01-26 after v2.0 roadmap creation*
+*Last updated: 2026-01-26 after Phase 12 planning*
