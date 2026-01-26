@@ -26,7 +26,20 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - Calculation presets (draft/production)
 - Job status polling + email notifications
 
-**Known limitation:** Single-conformer predictions only. Flexible molecules may have inaccurate predictions because the experimental NMR spectrum is a population-weighted average across all thermally accessible conformers.
+**Known limitation:** Single-conformer predictions only (being addressed in v2.0). Flexible molecules may have inaccurate predictions because the experimental NMR spectrum is a population-weighted average across all thermally accessible conformers.
+
+## Current Milestone: v2.0 Conformational Sampling
+
+**Goal:** Boltzmann-weighted ensemble averaging for flexible molecules -- generate multiple conformers, compute NMR on each, weight by DFT energies for population-averaged shifts.
+
+**Target features:**
+- RDKit KDG conformer generation (built-in, no new deps)
+- CREST/xTB conformer generation (optional, auto-detected)
+- Two-stage energy filtering (pre-DFT wide window, post-DFT tight window)
+- Full DFT geometry optimization on each conformer
+- Boltzmann-weighted averaging of NMR shifts
+- User choice: single-conformer (v1.x behavior) or ensemble mode
+- User choice: RDKit or CREST conformer method
 
 ## Requirements
 
@@ -53,7 +66,16 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 ### Active
 
-(None -- next milestone requirements to be defined via `/gsd:new-milestone`)
+- [ ] Conformer generation via RDKit KDG (pure distance geometry, no crystal bias)
+- [ ] Conformer generation via CREST/xTB (optional system deps, auto-detected)
+- [ ] Energy window filtering (initial pre-DFT and post-DFT)
+- [ ] DFT geometry optimization on each conformer
+- [ ] NMR shielding calculation on each conformer
+- [ ] Boltzmann weighting by DFT energies
+- [ ] Weighted-average chemical shift output
+- [ ] User choice between single-conformer and ensemble modes
+- [ ] User choice between RDKit and CREST conformer methods
+- [ ] API and web UI updates for conformational sampling parameters
 
 ### Out of Scope
 
@@ -69,20 +91,26 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 **NWChem**: Open-source quantum chemistry package that performs the actual DFT calculations. Installed system dependency. Direct I/O integration (input generation, output parsing) replaces former ISiCLE dependency.
 
-**Calculation time**: NMR QM calculations take minutes to hours depending on molecule size and theory level. Async architecture is essential -- API calls return immediately with job IDs.
+**Calculation time**: NMR QM calculations take minutes to hours depending on molecule size and theory level. Async architecture is essential -- API calls return immediately with job IDs. Conformational sampling multiplies this by the number of conformers.
 
 **DELTA50 benchmark**: 50-molecule dataset used to derive NWChem-specific scaling factors via OLS regression. Factors stored in JSON, loaded lazily via importlib.resources.
 
+**Conformational sampling reference**: `references/conformational_sampling_nmr_analysis.md` -- comprehensive analysis of RDKit vs CREST approaches, Boltzmann weighting implementation, energy window guidelines, and NWChem input templates for ensemble calculations.
+
+**CREST/xTB**: Optional system dependencies for production-quality conformer searching. CREST uses metadynamics with GFN2-xTB for thorough conformational sampling. Better conformer ranking than force fields (Spearman rho ~0.39-0.47 vs DFT). ALPB solvation model available.
+
 **Project structure**:
 - `qm-nmr-calc` (this repo): API server, job queue, web UI, NWChem integration, benchmark tooling
-- NWChem: Installed system dependency (no other external calculation dependencies)
+- NWChem: Installed system dependency
+- CREST/xTB: Optional system dependencies (for conformer generation)
 
 ## Constraints
 
 - **Deployment**: Single cloud VM -- architecture should work without distributed infrastructure
 - **Storage**: Filesystem-based -- no database requirement, job metadata in JSON files
 - **Python ecosystem**: Backend stays in Python for NWChem/RDKit integration
-- **Single conformer**: Currently one conformer per molecule (conformational sampling planned for v1.2)
+- **Single conformer**: Being addressed in v2.0 -- conformational sampling with Boltzmann weighting
+- **CREST/xTB optional**: App must work without CREST/xTB installed (RDKit-only fallback)
 
 ## Key Decisions
 
@@ -97,5 +125,9 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 | 3Dmol.js from CDN | Minimal build complexity for 3D visualization | Good -- zero build step, works well |
 | Vacuum as solvent value | Cleaner than separate gas-phase parameter | Good -- consistent API surface |
 
+| KDG over ETKDG for conformers | Avoids crystal structure bias for solution-phase NMR | -- Pending |
+| CREST/xTB as optional deps | App works without them, enables when detected | -- Pending |
+| Boltzmann weight by DFT energies | Most accurate readily available energy level | -- Pending |
+
 ---
-*Last updated: 2026-01-26 after v1.1 milestone completion*
+*Last updated: 2026-01-26 after v2.0 milestone initialization*
