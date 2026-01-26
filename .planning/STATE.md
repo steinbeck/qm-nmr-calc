@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 12 of 17 (Conformer Data Model and Storage)
-Plan: --
-Status: Ready to plan
-Last activity: 2026-01-26 -- v2.0 roadmap created, 6 phases (12-17) mapped to 24 requirements
+Plan: 02 of 03 (Phase 12)
+Status: In progress
+Last activity: 2026-01-26 -- Completed 12-02-PLAN.md (Canonical Atom Ordering)
 
-Progress: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0% (v2.0)
+Progress: █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 33% (Phase 12: 1/3 plans)
 
 ## Performance Metrics
 
 **Velocity:**
 - Total plans completed: 37
-- Average duration: 8.1 min
-- Total execution time: 299 min (5.0 hours)
+- Average duration: 8.0 min
+- Total execution time: 302 min (5.0 hours)
 
 **By Milestone:**
 
@@ -32,8 +32,8 @@ Progress: ░░░░░░░░░░░░░░░░░░░░░░░�
 | v2.0 Conformational Sampling | 6 | TBD | In progress |
 
 **Recent Trend:**
-- Last 5 plans (v1.1): 7-12 min
-- Trend: Stable (benchmark/implementation phases)
+- Last 5 plans: 3-12 min
+- Trend: Fast (12-02: TDD module, 3 min)
 
 ## Accumulated Context
 
@@ -45,6 +45,8 @@ Recent v2.0 decisions affecting current work:
 - KDG over ETKDG: Avoids crystal structure bias for solution-phase NMR
 - CREST/xTB optional: App works without them, enables high-accuracy mode when detected
 - Boltzmann weight by DFT energies: Most accurate readily available energy level for weighting
+- RDKit CanonicalRankAtoms for atom ordering: Built-in deterministic canonicalization (12-02)
+- Mapping as metadata not transformation: Don't physically reorder atoms (breaks RDKit ops) (12-02)
 
 ### Roadmap Evolution
 
@@ -62,9 +64,11 @@ None.
 
 **v2.0 Architecture:**
 - Numerical stability: Boltzmann weighting with wide energy ranges needs exp-normalize trick (Phase 14)
-- Atom ordering consistency: Canonical indexing must be established early (Phase 12)
 - Scratch directory isolation: Per-conformer directories critical to prevent NWChem database corruption (Phase 12)
 - CREST timeouts: Macrocycles can hang, need timeout with RDKit fallback (Phase 16)
+
+**Resolved (v2.0):**
+- Atom ordering consistency: Canonical indexing established via CanonicalRankAtoms (12-02)
 
 **Resolved (v1.x):**
 - RDKit stderr capture limitation (known, fallback messages used)
@@ -73,6 +77,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-26
-Stopped at: v2.0 roadmap created, traceability updated, ready for Phase 12 planning
+Stopped at: Completed 12-02-PLAN.md (Canonical Atom Ordering via TDD)
 Resume file: None
-Next: `/gsd:plan-phase 12`
+Next: Continue Phase 12 (2 of 3 plans remaining)
