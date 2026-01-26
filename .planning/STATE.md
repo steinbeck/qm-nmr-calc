@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-26)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.0 Conformational Sampling -- defining requirements
+**Current focus:** v2.0 Conformational Sampling -- Phase 12 ready to plan
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 12 of 17 (Conformer Data Model and Storage)
 Plan: --
-Status: Defining requirements for v2.0
-Last activity: 2026-01-26 -- Milestone v2.0 started
+Status: Ready to plan
+Last activity: 2026-01-26 -- v2.0 roadmap created, 6 phases (12-17) mapped to 24 requirements
 
-Progress: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0%
+Progress: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0% (v2.0)
 
 ## Performance Metrics
 
 **Velocity:**
 - Total plans completed: 37
 - Average duration: 8.1 min
-- Total execution time: 299 min
+- Total execution time: 299 min (5.0 hours)
 
 **By Milestone:**
 
@@ -29,19 +29,30 @@ Progress: ░░░░░░░░░░░░░░░░░░░░░░░�
 |-----------|--------|-------|----------|
 | v1.0 Core NMR Service | 6 | 16 | 2 days |
 | v1.1 Accurate Chemical Shifts | 8 | 21 | 5 days |
+| v2.0 Conformational Sampling | 6 | TBD | In progress |
+
+**Recent Trend:**
+- Last 5 plans (v1.1): 7-12 min
+- Trend: Stable (benchmark/implementation phases)
 
 ## Accumulated Context
 
 ### Decisions
 
-All decisions logged in PROJECT.md Key Decisions table and milestone archives.
+All decisions logged in PROJECT.md Key Decisions table.
+Recent v2.0 decisions affecting current work:
+
+- KDG over ETKDG: Avoids crystal structure bias for solution-phase NMR
+- CREST/xTB optional: App works without them, enables high-accuracy mode when detected
+- Boltzmann weight by DFT energies: Most accurate readily available energy level for weighting
 
 ### Roadmap Evolution
 
 - v1.0: 6 phases (1-6), shipped 2026-01-20
 - v1.1: 8 phases (7-11.2, including 3 inserted), shipped 2026-01-25
-- 3 decimal phases inserted during v1.1: 8.1 (data viewer), 11.1 (3D viz), 11.2 (vacuum)
-- v2.0: Conformational Sampling milestone started 2026-01-26
+- v2.0: 6 phases (12-17), started 2026-01-26
+  - Phase structure: Data Model → RDKit → Boltzmann → NWChem → CREST → API
+  - Risk mitigation: RDKit-only path (12-15, 17) complete before CREST complexity (16)
 
 ### Pending Todos
 
@@ -49,12 +60,19 @@ None.
 
 ### Blockers/Concerns
 
-- RDKit stderr capture doesn't work for C-level output (known limitation, fallback error messages used)
-- Single-conformer limitation for flexible molecules (being addressed in v2.0)
+**v2.0 Architecture:**
+- Numerical stability: Boltzmann weighting with wide energy ranges needs exp-normalize trick (Phase 14)
+- Atom ordering consistency: Canonical indexing must be established early (Phase 12)
+- Scratch directory isolation: Per-conformer directories critical to prevent NWChem database corruption (Phase 12)
+- CREST timeouts: Macrocycles can hang, need timeout with RDKit fallback (Phase 16)
+
+**Resolved (v1.x):**
+- RDKit stderr capture limitation (known, fallback messages used)
+- Single-conformer limitation (being addressed in v2.0)
 
 ## Session Continuity
 
 Last session: 2026-01-26
-Stopped at: v2.0 milestone initialization -- defining requirements
+Stopped at: v2.0 roadmap created, traceability updated, ready for Phase 12 planning
 Resume file: None
-Next: Complete requirements definition and roadmap creation
+Next: `/gsd:plan-phase 12`
