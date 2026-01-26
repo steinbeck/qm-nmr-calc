@@ -26,7 +26,6 @@ def get_job_dir(job_id: str) -> Path:
 def create_job_directory(
     smiles: str,
     solvent: str,
-    isicle_version: str,
     nwchem_version: str,
     name: Optional[str] = None,
     preset: str = "production",
@@ -57,7 +56,6 @@ def create_job_directory(
             solvent=solvent,
             notification_email=notification_email,
         ),
-        isicle_version=isicle_version,
         nwchem_version=nwchem_version,
     )
 
@@ -198,6 +196,12 @@ def list_jobs_by_status(status_filter: str) -> list[str]:
 def get_geometry_file(job_id: str) -> Optional[Path]:
     """Get path to optimized geometry XYZ file if it exists."""
     geometry_file = get_job_dir(job_id) / "output" / "optimized.xyz"
+    return geometry_file if geometry_file.exists() else None
+
+
+def get_initial_geometry_file(job_id: str) -> Optional[Path]:
+    """Get path to initial RDKit geometry XYZ file if it exists."""
+    geometry_file = get_job_dir(job_id) / "output" / "initial.xyz"
     return geometry_file if geometry_file.exists() else None
 
 

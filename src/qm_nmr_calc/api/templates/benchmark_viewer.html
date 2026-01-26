@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+
+{% block title %}DELTA50 Benchmark Viewer - QM NMR Calculator{% endblock %}
+
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.5.3/3Dmol-min.js"></script>
+{% endblock %}
+
+{% block content %}
+<h2>DELTA50 Benchmark Viewer</h2>
+<p class="muted">Verify extracted molecular structures and experimental NMR shifts before running benchmark calculations.</p>
+
+<div class="benchmark-layout">
+    <!-- Sidebar with molecule list -->
+    <aside class="benchmark-sidebar">
+        <h3>DELTA50 Molecules</h3>
+        <div class="verification-progress">
+            <span id="verified-count">0</span> of 50 verified
+        </div>
+        <nav>
+            <ul>
+                {% for mol in molecule_list %}
+                <li>
+                    <label class="molecule-item">
+                        <input type="checkbox" class="verify-checkbox" data-compound-id="{{ mol.id }}">
+                        <a href="#" data-compound-id="{{ mol.id }}">
+                            {{ mol.compound_number }}. {{ mol.name }}
+                        </a>
+                    </label>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main content area -->
+    <div class="benchmark-main">
+        <!-- 3D Viewer container -->
+        <div id="viewer-container"></div>
+
+        <!-- Metadata panel -->
+        <div class="molecule-metadata" id="metadata-panel" style="display: none;">
+            <h4 id="molecule-title">Molecule Info</h4>
+            <div class="metadata-grid">
+                <dt>Compound ID:</dt>
+                <dd id="meta-compound-id">-</dd>
+                <dt>H atoms:</dt>
+                <dd id="meta-h-atoms">-</dd>
+                <dt>C atoms:</dt>
+                <dd id="meta-c-atoms">-</dd>
+                <dt>Assigned shifts:</dt>
+                <dd id="meta-assigned">-</dd>
+            </div>
+
+            <div class="shifts-display">
+                <h5>Experimental <sup>1</sup>H Shifts (ppm)</h5>
+                <div id="h1-shifts-container">-</div>
+
+                <h5>Experimental <sup>13</sup>C Shifts (ppm)</h5>
+                <div id="c13-shifts-container">-</div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="legend-color h1"></span>
+                    <span><sup>1</sup>H shifts (blue)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color c13"></span>
+                    <span><sup>13</sup>C shifts (green)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading/empty state -->
+        <div id="empty-state" class="molecule-metadata">
+            <p>Select a molecule from the sidebar to view its 3D structure and experimental NMR shifts.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let viewer = null;
+
+    const STORAGE_KEY = 'delta50_verified';
+
+    function loadVerificationState() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        return stored ? JSON.parse(stored) : {};
+    }
+
+    function saveVerificationState(state) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function updateVerifiedCount() {
+        const state = loadVerificationState();
+        const count = Object.values(state).filter(v => v).length;
+        document.getElementById('verified-count').textContent = count;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize 3Dmol viewer once
+        const viewerContainer = document.getElementById('viewer-container');
+        viewer = $3Dmol.createViewer(viewerContainer, {
+            backgroundColor: 'white'
+        });
+
+        // Restore checkbox states from localStorage
+        const state = loadVerificationState();
+        const checkboxes = document.querySelectorAll('.verify-checkbox');
+        checkboxes.forEach(cb => {
+            const compoundId = cb.dataset.compoundId;
+            cb.checked = state[compoundId] || false;
+
+            // Update visual state of parent
+            if (cb.checked) {
+                cb.closest('.molecule-item').classList.add('verified');
+            }
+
+            // Handle checkbox changes
+            cb.addEventListener('change', function(e) {
+                e.stopPropagation();
+                const currentState = loadVerificationState();
+                currentState[compoundId] = this.checked;
+                saveVerificationState(currentState);
+                updateVerifiedCount();
+
+                // Update visual state
+                if (this.checked) {
+                    this.closest('.molecule-item').classList.add('verified');
+                } else {
+                    this.closest('.molecule-item').classList.remove('verified');
+                }
+            });
+        });
+        updateVerifiedCount();
+
+        // Set up sidebar click handlers
+        const sidebarLinks = document.querySelectorAll('.benchmark-sidebar nav a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Update selection state
+                sidebarLinks.forEach(l => l.removeAttribute('aria-current'));
+                this.setAttribute('aria-current', 'page');
+
+                // Load molecule
+                const compoundId = this.dataset.compoundId;
+                loadMolecule(compoundId);
+            });
+        });
+
+        // Auto-load first molecule
+        if (sidebarLinks.length > 0) {
+            sidebarLinks[0].click();
+        }
+    });
+
+    async function loadMolecule(compoundId) {
+        try {
+            // Clear existing view
+            viewer.removeAllModels();
+            viewer.removeAllLabels();
+
+            // Fetch molecule data
+            const response = await fetch(`/benchmark/delta50/molecules/${compoundId}`);
+            if (!response.ok) {
+                throw new Error(`Failed to load molecule: ${response.statusText}`);
+            }
+            const data = await response.json();
+
+            // Add model to viewer
+            const model = viewer.addModel(data.xyz, 'xyz', {assignBonds: true});
+
+            // Set style: stick + sphere with Jmol colors
+            viewer.setStyle({}, {
+                stick: {radius: 0.12, colorscheme: 'Jmol'},
+                sphere: {scale: 0.25, colorscheme: 'Jmol'}
+            });
+
+            // Add shift labels
+            addShiftLabels(model, data.h1_assignments, data.c13_assignments);
+
+            // Render
+            viewer.zoomTo();
+            viewer.render();
+
+            // Update metadata panel
+            updateMetadataPanel(data);
+
+        } catch (error) {
+            console.error('Error loading molecule:', error);
+            alert('Failed to load molecule: ' + error.message);
+        }
+    }
+
+    function addShiftLabels(model, h1Assignments, c13Assignments) {
+        // Get all atoms from the model
+        const atoms = model.selectedAtoms({});
+
+        atoms.forEach(atom => {
+            // 3Dmol.js uses 0-based serial, but our assignments use 1-based atom indices
+            const atomIndex = String(atom.serial + 1);
+
+            // Check for 1H shift assignment (hydrogen atoms)
+            if (atom.elem === 'H' && h1Assignments && h1Assignments[atomIndex]) {
+                const shift = h1Assignments[atomIndex];
+                viewer.addLabel(shift.toFixed(2), {
+                    position: {x: atom.x, y: atom.y, z: atom.z},
+                    fontSize: 11,
+                    fontColor: 'white',
+                    backgroundColor: '#3498db',
+                    backgroundOpacity: 0.85,
+                    inFront: true
+                });
+            }
+
+            // Check for 13C shift assignment (carbon atoms)
+            if (atom.elem === 'C' && c13Assignments && c13Assignments[atomIndex]) {
+                const shift = c13Assignments[atomIndex];
+                viewer.addLabel(shift.toFixed(2), {
+                    position: {x: atom.x, y: atom.y, z: atom.z},
+                    fontSize: 11,
+                    fontColor: 'white',
+                    backgroundColor: '#27ae60',
+                    backgroundOpacity: 0.85,
+                    inFront: true
+                });
+            }
+        });
+    }
+
+    function updateMetadataPanel(data) {
+        // Hide empty state, show metadata
+        document.getElementById('empty-state').style.display = 'none';
+        document.getElementById('metadata-panel').style.display = 'block';
+
+        // Update title
+        document.getElementById('molecule-title').textContent = data.name;
+
+        // Update metadata grid
+        document.getElementById('meta-compound-id').textContent = data.compound_id;
+        document.getElementById('meta-h-atoms').textContent = data.num_h_atoms;
+        document.getElementById('meta-c-atoms').textContent = data.num_c_atoms;
+
+        // Count assigned shifts
+        const h1AssignedCount = data.h1_assignments ? Object.keys(data.h1_assignments).length : 0;
+        const c13AssignedCount = data.c13_assignments ? Object.keys(data.c13_assignments).length : 0;
+        document.getElementById('meta-assigned').textContent =
+            `${h1AssignedCount} H, ${c13AssignedCount} C`;
+
+        // Update 1H shifts display
+        const h1Container = document.getElementById('h1-shifts-container');
+        if (data.h1_shifts && data.h1_shifts.length > 0) {
+            h1Container.innerHTML = data.h1_shifts
+                .map(s => `<span class="shift-badge h1">${s.toFixed(2)}</span>`)
+                .join('');
+        } else {
+            h1Container.innerHTML = '<em class="muted">No 1H shifts available</em>';
+        }
+
+        // Update 13C shifts display
+        const c13Container = document.getElementById('c13-shifts-container');
+        if (data.c13_shifts && data.c13_shifts.length > 0) {
+            c13Container.innerHTML = data.c13_shifts
+                .map(s => `<span class="shift-badge c13">${s.toFixed(2)}</span>`)
+                .join('');
+        } else {
+            c13Container.innerHTML = '<em class="muted">No 13C shifts available</em>';
+        }
+    }
+</script>
+{% endblock %}

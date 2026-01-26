@@ -2,6 +2,8 @@
 from pathlib import Path
 
 import orjson
+from rdkit import Chem
+from rdkit.Chem import AllChem
 
 from .queue import huey
 from .storage import load_job_status, get_job_dir, update_job_status, start_step, complete_current_step
@@ -10,6 +12,27 @@ from .presets import PRESETS, PresetName
 from .shifts import shielding_to_shift
 from .models import NMRResults, AtomShift
 from .visualization import generate_spectrum_plot, generate_annotated_structure
+
+
+def _generate_initial_xyz(smiles: str, output_path: Path) -> None:
+    """Generate and save RDKit 3D geometry for immediate visualization."""
+    mol = Chem.MolFromSmiles(smiles)
+    mol = Chem.AddHs(mol)
+
+    # ETKDGv3 with deterministic seed (project standard: 0xF00D)
+    params = AllChem.ETKDGv3()
+    params.randomSeed = 0xF00D
+    AllChem.EmbedMolecule(mol, params)
+    AllChem.MMFFOptimizeMoleculeConfs(mol)
+
+    # Generate XYZ
+    xyz_lines = [str(mol.GetNumAtoms()), smiles]
+    conf = mol.GetConformer()
+    for atom in mol.GetAtoms():
+        pos = conf.GetAtomPosition(atom.GetIdx())
+        xyz_lines.append(f"{atom.GetSymbol()} {pos.x:.6f} {pos.y:.6f} {pos.z:.6f}")
+
+    output_path.write_text("\n".join(xyz_lines))
 
 
 @huey.task()
@@ -94,11 +117,16 @@ def run_nmr_task(job_id: str) -> dict:
     solvent = job_status.input.solvent
     job_dir = get_job_dir(job_id)
 
+    # Generate initial RDKit geometry for 3D visualization (before optimization starts)
+    initial_xyz_path = job_dir / "output" / "initial.xyz"
+    _generate_initial_xyz(smiles, initial_xyz_path)
+
     # Step 1: Geometry optimization
     start_step(job_id, "geometry_optimization", "Optimizing geometry")
 
-    # Step 2: NMR shielding calculation (tracked within run_calculation)
-    start_step(job_id, "nmr_shielding", "Computing NMR shielding")
+    # Callback to switch step tracking when optimization completes
+    def on_opt_complete():
+        start_step(job_id, "nmr_shielding", "Computing NMR shielding")
 
     # Run complete calculation (geometry optimization + NMR shielding)
     # Both steps use COSMO solvation - this fixes the gas-phase bug
@@ -108,6 +136,7 @@ def run_nmr_task(job_id: str) -> dict:
         preset=preset,
         solvent=solvent,
         processes=preset['processes'],
+        on_optimization_complete=on_opt_complete,
     )
 
     geometry_file = result['geometry_file']
@@ -115,8 +144,13 @@ def run_nmr_task(job_id: str) -> dict:
     # Step 3: Post-processing
     start_step(job_id, "post_processing", "Generating results")
 
-    # Convert shielding to chemical shifts using preset-specific TMS reference
-    shifts = shielding_to_shift(result['shielding_data'], preset=job_status.input.preset)
+    # Convert shielding to chemical shifts using DELTA50 regression factors
+    shifts = shielding_to_shift(
+        result['shielding_data'],
+        functional=preset['functional'].upper(),  # 'b3lyp' -> 'B3LYP'
+        basis_set=preset['nmr_basis_set'],
+        solvent=solvent,
+    )
 
     # Build NMRResults object
     h1_shifts = [

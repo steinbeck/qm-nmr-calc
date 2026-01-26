@@ -201,7 +201,7 @@ class TestNWChemNMRShielding:
         shielding_data = parse_shielding_output(nmr_out.read_text())
 
         # Convert to chemical shifts
-        shifts = shielding_to_shift(shielding_data)
+        shifts = shielding_to_shift(shielding_data, "B3LYP", "6-311+G(2d,p)", "CHCl3")
 
         # Verify we got shifts
         assert len(shifts["1H"]) == 4, "Should have 4 H shifts for methane"

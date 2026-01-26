@@ -2,125 +2,58 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-01-21)
+See: .planning/PROJECT.md (updated 2026-01-26)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Milestone v1.1 — Accurate Chemical Shifts
+**Current focus:** Between milestones -- v1.1 shipped, planning next milestone
 
 ## Current Position
 
-Phase: 7 of 11 (NWChem Integration)
-Plan: 4 of 4 in phase (Phase complete)
-Status: Phase complete
-Last activity: 2026-01-21 — Completed 07-04-PLAN.md (Phase 7 complete: ISiCLE removed, pipeline integrated)
+Phase: None (between milestones)
+Plan: N/A
+Status: v1.1 milestone complete, ready for next milestone
+Last activity: 2026-01-26 -- v1.1 Accurate Chemical Shifts archived
 
-Progress: [█████████████████████████░░░░░░░░░░░░░░░░] 50% (20/40 plans)
+Progress: [████████████████████████████████████████] 100% (37/37 plans completed across v1.0 + v1.1)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 20
-- Average duration: 3.0 min
-- Total execution time: 61 min
+- Total plans completed: 37
+- Average duration: 8.1 min
+- Total execution time: 299 min
 
-**By Phase:**
+**By Milestone:**
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 01-foundation | 3 | 9 min | 3.0 min |
-| 02-input-and-api | 3 | 8 min | 2.7 min |
-| 03-nmr-calculations | 3 | 11 min | 3.7 min |
-| 04-results-delivery | 2 | 7 min | 3.5 min |
-| 05-visualization | 2 | 5 min | 2.5 min |
-| 06-web-ui | 3 | 6 min | 2.0 min |
-| 07-nwchem-integration | 4 | 15 min | 3.75 min |
-
-**Recent Trend:**
-- Last 5 plans: 07-01 (2 min), 07-02 (4 min), 07-03 (3 min), 07-04 (6 min)
-- Trend: Stable
-
-*Updated after each plan completion*
+| Milestone | Phases | Plans | Duration |
+|-----------|--------|-------|----------|
+| v1.0 Core NMR Service | 6 | 16 | 2 days |
+| v1.1 Accurate Chemical Shifts | 8 | 21 | 5 days |
 
 ## Accumulated Context
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
+All decisions logged in PROJECT.md Key Decisions table and milestone archives.
 
-- Use hatchling build system for src layout (uv compatible)
-- 12-character hex job IDs from uuid4 for URL-safe identifiers
-- orjson with OPT_INDENT_2 for human-readable status.json files
-- ISiCLE removed, direct NWChem integration via nwchem module
-- SqliteHuey with fsync=True for crash-safe job queue
-- Job ID as first argument convention for all tasks (signal handler extraction)
-- Scratch directory inside job directory for cleanup
-- Let exceptions propagate to Huey for consistent error handling
-- validate_environment() exits process on failure (fail-fast)
-- recover_interrupted_jobs() scans for 'running' jobs at startup
-- Quick test for CI, full test requires running consumer
-- Tuple return pattern for validation: (mol, None) success, (None, error) failure
-- Detect SDF vs MOL by $$$$ delimiter presence in content
-- Flattened input fields in JobStatusResponse for simpler API
-- RFC 7807 ProblemDetail schema for standardized error responses
-- Health liveness is minimal (just return alive status)
-- Readiness checks data directory writable and Huey importable
-- Use JSONResponse with explicit headers for 202 Accepted responses
-- OpenAPI JSON served at /api/v1/openapi.json (versioned)
-- Health endpoints at root (no /api/v1 prefix)
-- TestClient module-level client for test efficiency
-- Production preset as default (reliability over speed)
-- TypedDict for preset config (not Pydantic - just config data)
-- TMS reference scaling factors from Pierens et al. for B3LYP/6-311+G(2d,p)
-- CHCl3 and DMSO solvents supported (those with COSMO dielectric values)
-- Solvent is required field (no default) - users must explicitly choose
-- AtomShift stores both shielding and shift; API returns only shift
-- NMRResults includes calculation metadata (functional, basis_set, solvent)
-- Two-step DFT: geometry optimization then NMR shielding
-- run_nmr_task updates job status with NMR results
-- Validate solvent at API level before job creation
-- Return 409 Conflict for incomplete jobs (vs 404 for missing)
-- SDF generated on-the-fly from SMILES + XYZ coordinates
-- Output ZIP includes only .out and .nw files from scratch directory
-- aiosmtplib for async SMTP, email-validator for Pydantic EmailStr
-- Best-effort email delivery (logs errors, never fails jobs)
-- Environment variables for all SMTP config (no hardcoded credentials)
-- Async/sync wrapper pattern for Huey signal handlers
-- Agg backend set before pyplot import for headless rendering
-- NWChem 1-based to RDKit 0-based index conversion for atomNote
-- 2400x1800 PNG for 300 DPI equivalent at 8x6 inches
-- atomNote set before PrepareMolForDrawing()
-- plt.close(fig) after savefig to prevent memory leaks
-- Visualizations generated before job status update (ready when complete)
-- Helper function _get_visualization() for common endpoint logic
-- Pico CSS blue theme via CDN for minimal/clean scientific aesthetic
-- Static files mounted at /static before routers to avoid route conflicts
-- Web router at root (no /api prefix) for browser-friendly URLs
-- Native HTML dialog over JavaScript modal library (zero dependencies)
-- 303 See Other redirect for incomplete jobs to status page
-- Re-use submit.html template for error display (404, 500)
-- Quoted basis set names in NWChem input to handle special characters
-- Case-insensitive solvent validation with lowercase lookup
-- COSMO_DIELECTRIC dict pattern for solvent dielectric constants
-- Flexible regex patterns with fallbacks for NWChem version variations
-- Shielding data format: {index: [], atom: [], shielding: []} for shifts.py compatibility
-- Descriptive RuntimeError messages with expected NWChem section headers
-- ETKDGv3 as default conformer generation method with deterministic seeding (0xF00D)
-- XYZ bond determination requires explicit charge parameter (default=0)
-- run_calculation() as single entry point for NMR calculations
-- COSMO solvation applied to BOTH geometry optimization and NMR shielding
-- Keep isicle_version field in models with "N/A" for backwards compatibility
+### Roadmap Evolution
+
+- v1.0: 6 phases (1-6), shipped 2026-01-20
+- v1.1: 8 phases (7-11.2, including 3 inserted), shipped 2026-01-25
+- 3 decimal phases inserted during v1.1: 8.1 (data viewer), 11.1 (3D viz), 11.2 (vacuum)
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
 - RDKit stderr capture doesn't work for C-level output (known limitation, fallback error messages used)
+- Single-conformer limitation for flexible molecules (planned for v1.2)
 
 ## Session Continuity
 
-Last session: 2026-01-21T13:31:00Z
-Stopped at: Completed 07-04-PLAN.md (Phase 7 complete)
+Last session: 2026-01-26
+Stopped at: v1.1 milestone completion and archival
 Resume file: None
+Next: `/gsd:new-milestone` to start v1.2 planning

@@ -16,8 +16,8 @@ from ...solvents import (
     get_supported_solvents,
     validate_solvent,
 )
-from ...storage import create_job_directory, load_job_status
-from ...tasks import run_nmr_task
+from ...storage import create_job_directory, get_job_dir, load_job_status
+from ...tasks import run_nmr_task, _generate_initial_xyz
 from ...validation import validate_mol_file, validate_smiles
 
 # Template engine setup
@@ -140,12 +140,16 @@ async def submit_job(
     job_status = create_job_directory(
         smiles=final_smiles,
         solvent=normalized_solvent,
-        isicle_version="N/A",  # ISiCLE removed, using direct NWChem integration
         nwchem_version=nwchem_version,
         name=final_name,
         preset=preset,
         notification_email=notification_email,
     )
+
+    # Generate initial 3D geometry for immediate visualization
+    job_dir = get_job_dir(job_status.job_id)
+    initial_xyz_path = job_dir / "output" / "initial.xyz"
+    _generate_initial_xyz(final_smiles, initial_xyz_path)
 
     # Queue the NMR calculation task
     run_nmr_task(job_status.job_id)

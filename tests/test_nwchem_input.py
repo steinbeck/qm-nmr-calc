@@ -23,8 +23,8 @@ class TestGenerateOptimizationInput:
         assert "cosmo" in result.lower()
         assert "task dft optimize" in result
 
-    def test_optimization_input_chcl3_dielectric(self):
-        """Verify dielec 4.8 for chcl3 solvent."""
+    def test_optimization_input_chcl3_solvent(self):
+        """Verify COSMO block with chcl3 solvent name."""
         result = generate_optimization_input(
             geometry_xyz="C 0.0 0.0 0.0",
             functional="b3lyp",
@@ -32,10 +32,11 @@ class TestGenerateOptimizationInput:
             solvent="chcl3",
         )
 
-        assert "dielec 4.8" in result
+        assert "cosmo" in result.lower()
+        assert "solvent chcl3" in result.lower()
 
-    def test_optimization_input_dmso_dielectric(self):
-        """Verify dielec 46.0 for dmso solvent."""
+    def test_optimization_input_dmso_solvent(self):
+        """Verify COSMO block with dmso solvent name."""
         result = generate_optimization_input(
             geometry_xyz="C 0.0 0.0 0.0",
             functional="b3lyp",
@@ -43,10 +44,11 @@ class TestGenerateOptimizationInput:
             solvent="dmso",
         )
 
-        assert "dielec 46.0" in result
+        assert "cosmo" in result.lower()
+        assert "solvent dmso" in result.lower()
 
-    def test_optimization_input_quoted_basis_set(self):
-        """Verify basis set name is quoted (important for special chars like *)."""
+    def test_optimization_input_basis_set_in_library(self):
+        """Verify basis set name appears in library directive."""
         result = generate_optimization_input(
             geometry_xyz="C 0.0 0.0 0.0",
             functional="b3lyp",
@@ -54,10 +56,10 @@ class TestGenerateOptimizationInput:
             solvent="chcl3",
         )
 
-        assert 'library "6-31G*"' in result
+        assert "library 6-31G*" in result
 
     def test_optimization_input_max_iter(self):
-        """Verify iterations parameter appears in dft block."""
+        """Verify maxiter parameter appears in driver block."""
         result = generate_optimization_input(
             geometry_xyz="C 0.0 0.0 0.0",
             functional="b3lyp",
@@ -66,7 +68,7 @@ class TestGenerateOptimizationInput:
             max_iter=200,
         )
 
-        assert "iterations 200" in result
+        assert "maxiter 200" in result
 
     def test_optimization_input_noautosym(self):
         """Verify geometry block has noautosym."""
@@ -116,26 +118,65 @@ class TestGenerateShieldingInput:
         )
 
         assert "cosmo" in result.lower()
-        assert "dielec 46.0" in result
+        assert "solvent dmso" in result.lower()
+
+
+class TestVacuumSupport:
+    """Tests for vacuum (gas-phase) calculations without COSMO."""
+
+    def test_vacuum_optimization_no_cosmo(self):
+        """Verify vacuum optimization has no COSMO block."""
+        result = generate_optimization_input(
+            geometry_xyz="H 0.0 0.0 0.0\nH 0.0 0.0 1.0",
+            functional="b3lyp",
+            basis_set="6-31G*",
+            solvent="vacuum",
+        )
+
+        assert "cosmo" not in result.lower()
+        assert "task dft optimize" in result
+
+    def test_vacuum_shielding_no_cosmo(self):
+        """Verify vacuum shielding has no COSMO block."""
+        result = generate_shielding_input(
+            geometry_xyz="H 0.0 0.0 0.0\nH 0.0 0.0 1.0",
+            functional="b3lyp",
+            basis_set="6-311+G(2d,p)",
+            solvent="vacuum",
+        )
+
+        assert "cosmo" not in result.lower()
+        assert "task dft property" in result
+
+    def test_vacuum_case_insensitive(self):
+        """Vacuum should work with any case."""
+        for vacuum_str in ["vacuum", "VACUUM", "Vacuum"]:
+            result = generate_optimization_input(
+                geometry_xyz="H 0.0 0.0 0.0",
+                functional="b3lyp",
+                basis_set="6-31G*",
+                solvent=vacuum_str,
+            )
+            assert "cosmo" not in result.lower()
 
 
 class TestInvalidSolvent:
     """Tests for invalid solvent handling."""
 
     def test_invalid_solvent_raises_valueerror(self):
-        """Verify ValueError with helpful message."""
+        """Verify ValueError with helpful message for unknown solvent."""
         with pytest.raises(ValueError) as exc_info:
             generate_optimization_input(
                 geometry_xyz="C 0.0 0.0 0.0",
                 functional="b3lyp",
                 basis_set="6-31G*",
-                solvent="water",
+                solvent="unknown_solvent",
             )
 
         error_message = str(exc_info.value).lower()
-        assert "water" in error_message
-        assert "chcl3" in error_message
-        assert "dmso" in error_message
+        assert "unknown_solvent" in error_message
+        # Should mention valid options
+        assert "chcl3" in error_message or "valid" in error_message
 
     def test_invalid_solvent_raises_for_shielding(self):
         """Verify ValueError for shielding input as well."""
@@ -144,13 +185,11 @@ class TestInvalidSolvent:
                 geometry_xyz="C 0.0 0.0 0.0",
                 functional="b3lyp",
                 basis_set="6-311+G(2d,p)",
-                solvent="acetone",
+                solvent="not_a_solvent",
             )
 
         error_message = str(exc_info.value).lower()
-        assert "acetone" in error_message
-        assert "chcl3" in error_message
-        assert "dmso" in error_message
+        assert "not_a_solvent" in error_message
 
     def test_solvent_case_insensitive(self):
         """Both 'CHCL3' and 'chcl3' should work."""
@@ -161,7 +200,8 @@ class TestInvalidSolvent:
             basis_set="6-31G*",
             solvent="CHCL3",
         )
-        assert "dielec 4.8" in result_upper
+        assert "cosmo" in result_upper.lower()
+        assert "solvent chcl3" in result_upper.lower()
 
         # Mixed case
         result_mixed = generate_optimization_input(
@@ -170,7 +210,8 @@ class TestInvalidSolvent:
             basis_set="6-31G*",
             solvent="ChCl3",
         )
-        assert "dielec 4.8" in result_mixed
+        assert "cosmo" in result_mixed.lower()
+        assert "solvent chcl3" in result_mixed.lower()
 
         # Lowercase (standard)
         result_lower = generate_optimization_input(
@@ -179,4 +220,5 @@ class TestInvalidSolvent:
             basis_set="6-31G*",
             solvent="chcl3",
         )
-        assert "dielec 4.8" in result_lower
+        assert "cosmo" in result_lower.lower()
+        assert "solvent chcl3" in result_lower.lower()

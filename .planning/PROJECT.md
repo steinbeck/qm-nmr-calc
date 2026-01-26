@@ -2,95 +2,100 @@
 
 ## What This Is
 
-An asynchronous web service for running NMR quantum mechanical calculations on organic molecules. Users submit molecular structures (SMILES or file uploads), calculations run in the background using ISiCLE/NWChem, and users retrieve predicted chemical shifts and optimized geometries when ready.
+An asynchronous web service for running NMR quantum mechanical calculations on organic molecules. Users submit molecular structures (SMILES or file uploads), calculations run in the background using NWChem with COSMO solvation, and users retrieve predicted chemical shifts with interactive 3D visualization and optimized geometries when ready.
 
 ## Core Value
 
-Reliable async NMR predictions with full control over calculation parameters — submit a molecule, get back accurate ¹H/¹³C shifts without babysitting long-running calculations.
+Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
 
-## Current Milestone: v1.1 Accurate Chemical Shifts
+## Current State
 
-**Goal:** Replace ISiCLE dependency and derive NWChem-specific scaling factors from DELTA50 benchmark, enabling accurate solvated NMR predictions.
+**Shipped:** v1.1 Accurate Chemical Shifts (2026-01-25)
 
-**Target features:**
-- Custom NWChem wrapper (no ISiCLE runtime dependency)
-- Working COSMO solvation (currently broken - solvent param ignored)
-- NWChem-derived scaling factors for CHCl3 and DMSO solvents
-- B3LYP (general) + WP04 (optimized ¹H) functionals
-- Publication-quality benchmark data from DELTA50 dataset
+**Codebase:** 5,432 LOC Python, 1,417 LOC tests, 892 LOC templates
+**Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Pico CSS
+**Test suite:** 95 tests (92 unit + 3 NWChem integration)
 
-## Previous Milestone: v1.0 Core NMR Service ✓
-
-**Delivered:** Working async NMR prediction service with REST API and web UI.
-- Submit molecules (SMILES/MOL) via API or web UI
-- ISiCLE/NWChem calculation pipeline
-- Results: raw files, JSON with atom-assigned shifts, spectrum plot, annotated structure drawing
+**What works today:**
+- Submit molecules (SMILES/MOL/SDF) via REST API or web UI
+- NWChem DFT calculations with B3LYP/6-311+G(2d,p)
+- COSMO solvation for CHCl3, DMSO, or vacuum (gas phase)
+- DELTA50-derived scaling factors (1H MAE: 0.12 ppm, 13C MAE: 2.0 ppm)
+- Interactive 3D molecule viewer with shift annotations (3Dmol.js)
+- Spectrum plots, annotated structure drawings, file downloads
 - Calculation presets (draft/production)
 - Job status polling + email notifications
-- Clean web interface with Pico CSS
+
+**Known limitation:** Single-conformer predictions only. Flexible molecules may have inaccurate predictions because the experimental NMR spectrum is a population-weighted average across all thermally accessible conformers.
 
 ## Requirements
 
-### Validated (v1.0)
+### Validated
 
-- ✓ Submit molecules via SMILES string or structure file (SDF/MOL)
-- ✓ Queue calculations for background processing
-- ✓ Check job status and retrieve results via API
-- ✓ Return predicted ¹H and ¹³C NMR chemical shifts with atom assignments
-- ✓ Return optimized molecular geometry
-- ✓ Return raw NWChem output files
-- ✓ Visual spectrum plot generation
-- ✓ Annotated structure drawing showing shifts on atoms
-- ✓ Calculation presets (draft/production)
-- ✓ Email notification when calculation completes
-- ✓ Clean, usable web UI for submitting jobs and viewing results
-- ✓ REST API for programmatic access
+- Submit molecules via SMILES string or structure file (SDF/MOL) -- v1.0
+- Queue calculations for background processing -- v1.0
+- Check job status and retrieve results via API -- v1.0
+- Return predicted 1H and 13C NMR chemical shifts with atom assignments -- v1.0
+- Return optimized molecular geometry -- v1.0
+- Return raw NWChem output files -- v1.0
+- Visual spectrum plot generation -- v1.0
+- Annotated structure drawing showing shifts on atoms -- v1.0
+- Calculation presets (draft/production) -- v1.0
+- Email notification when calculation completes -- v1.0
+- Clean, usable web UI for submitting jobs and viewing results -- v1.0
+- REST API for programmatic access -- v1.0
+- Custom NWChem input/output handling (no ISiCLE runtime dependency) -- v1.1
+- Working COSMO solvation for CHCl3, DMSO, and vacuum -- v1.1
+- NWChem-derived scaling factors from DELTA50 benchmark -- v1.1
+- Accept pre-optimized XYZ/SDF geometries (skip geometry opt) -- v1.1
+- Interactive 3D molecule visualization with shift labels -- v1.1
+- Scaling factor metadata in API responses (source, expected MAE) -- v1.1
 
-### Active (v1.1)
+### Active
 
-- [ ] Custom NWChem input/output handling (no ISiCLE runtime dependency)
-- [ ] Working COSMO solvation for CHCl3 and DMSO
-- [ ] NWChem-derived scaling factors from DELTA50 benchmark
-- [ ] WP04 functional option for improved ¹H accuracy
-- [ ] Accept pre-optimized XYZ/SDF geometries (skip geometry opt)
+(None -- next milestone requirements to be defined via `/gsd:new-milestone`)
 
 ### Out of Scope
 
-- Multi-user authentication — single user for now, architecture supports adding later
-- Other nuclei (¹⁵N, ³¹P, ¹⁹F) — ¹H/¹³C only for now
-- Batch submission UI — can be added later, API could support
-- Mobile interface — web UI is desktop-focused
-- Real-time calculation streaming — poll for completion
-- Public benchmark API — benchmark tooling is internal only
+- Multi-user authentication -- single user for now, architecture supports adding later
+- Other nuclei (15N, 31P, 19F) -- 1H/13C only for now
+- Batch submission UI -- can be added later, API could support
+- Mobile interface -- web UI is desktop-focused
+- Real-time calculation streaming -- poll for completion
+- Public benchmark API -- benchmark tooling is internal only
+- WP04 functional -- NWChem doesn't support WP04 without custom compilation
 
 ## Context
 
-**ISiCLE**: Pacific Northwest National Laboratory's in silico chemical library engine (https://github.com/pnnl/isicle/). Handles geometry optimization and NMR shielding calculations via NWChem. Development has slowed; we'll maintain a minimal fork for bug fixes while keeping close to upstream.
+**NWChem**: Open-source quantum chemistry package that performs the actual DFT calculations. Installed system dependency. Direct I/O integration (input generation, output parsing) replaces former ISiCLE dependency.
 
-**NWChem**: Open-source quantum chemistry package that performs the actual DFT calculations. Needs to be installed on the target VM.
+**Calculation time**: NMR QM calculations take minutes to hours depending on molecule size and theory level. Async architecture is essential -- API calls return immediately with job IDs.
 
-**Calculation time**: NMR QM calculations can take minutes to hours depending on molecule size and theory level. Async architecture is essential — API calls return immediately with job IDs.
+**DELTA50 benchmark**: 50-molecule dataset used to derive NWChem-specific scaling factors via OLS regression. Factors stored in JSON, loaded lazily via importlib.resources.
 
 **Project structure**:
-- `qm-nmr-calc` (this repo): API server, job queue, web UI, orchestration scripts
-- ISiCLE fork: Calculation engine dependency
-- NWChem: Installed system dependency
+- `qm-nmr-calc` (this repo): API server, job queue, web UI, NWChem integration, benchmark tooling
+- NWChem: Installed system dependency (no other external calculation dependencies)
 
 ## Constraints
 
-- **Deployment**: Single cloud VM — architecture should work without distributed infrastructure
-- **Storage**: Filesystem-based — no database requirement for v1, but job metadata needs organization
-- **Python ecosystem**: ISiCLE is Python, backend should stay in Python for clean integration
-- **ISiCLE compatibility**: Fork stays minimal to ease upstream tracking
+- **Deployment**: Single cloud VM -- architecture should work without distributed infrastructure
+- **Storage**: Filesystem-based -- no database requirement, job metadata in JSON files
+- **Python ecosystem**: Backend stays in Python for NWChem/RDKit integration
+- **Single conformer**: Currently one conformer per molecule (conformational sampling planned for v1.2)
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| FastAPI for backend | Modern async Python, good for APIs, natural fit with ISiCLE | — Pending |
-| Filesystem storage | Simple for single VM, avoids database ops overhead | — Pending |
-| Lightweight job queue | Single VM doesn't need Celery/Redis complexity | — Pending |
-| ISiCLE as dependency | Minimal fork, wrap rather than modify | — Pending |
+| FastAPI for backend | Modern async Python, good for APIs | Good -- clean API with OpenAPI docs |
+| Filesystem storage | Simple for single VM, avoids database ops overhead | Good -- JSON files work well |
+| Huey with SQLite | Single VM doesn't need Celery/Redis complexity | Good -- crash-safe, simple |
+| Direct NWChem I/O | ISiCLE development stalled, more control needed | Good -- simpler, COSMO bug fixed |
+| DELTA50 regression factors | Literature-standard benchmark dataset | Good -- 1H MAE 0.12 ppm, 13C MAE 2.0 ppm |
+| OLS with 3-sigma outlier removal | Standard approach for scaling factor derivation | Good -- R^2 > 0.99 for all factor sets |
+| 3Dmol.js from CDN | Minimal build complexity for 3D visualization | Good -- zero build step, works well |
+| Vacuum as solvent value | Cleaner than separate gas-phase parameter | Good -- consistent API surface |
 
 ---
-*Last updated: 2026-01-21 after v1.1 milestone definition*
+*Last updated: 2026-01-26 after v1.1 milestone completion*

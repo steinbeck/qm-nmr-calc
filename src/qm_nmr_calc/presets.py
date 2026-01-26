@@ -50,7 +50,7 @@ PRESETS: dict[PresetName, CalculationPreset] = {
         "basis_set": "6-31G*",
         "nmr_basis_set": "6-311+G(2d,p)",
         "processes": 40,
-        "max_iter": 150,
+        "max_iter": 300,
     },
 }
 

@@ -192,8 +192,8 @@ class TestShieldingDataCompatibility:
         output_text = (FIXTURES_DIR / "nwchem_shielding_output.txt").read_text()
         shielding_data = parse_shielding_output(output_text)
 
-        # Should not raise
-        shifts = shielding_to_shift(shielding_data)
+        # Should not raise (use production defaults)
+        shifts = shielding_to_shift(shielding_data, "B3LYP", "6-311+G(2d,p)", "CHCl3")
 
         # Should produce valid output
         assert "1H" in shifts
@@ -203,7 +203,7 @@ class TestShieldingDataCompatibility:
         """Produces 1H chemical shifts from methane."""
         output_text = (FIXTURES_DIR / "nwchem_shielding_output.txt").read_text()
         shielding_data = parse_shielding_output(output_text)
-        shifts = shielding_to_shift(shielding_data)
+        shifts = shielding_to_shift(shielding_data, "B3LYP", "6-311+G(2d,p)", "CHCl3")
 
         # Methane has 4 H atoms
         assert len(shifts["1H"]) == 4
@@ -219,7 +219,7 @@ class TestShieldingDataCompatibility:
         """Produces 13C chemical shifts from methane."""
         output_text = (FIXTURES_DIR / "nwchem_shielding_output.txt").read_text()
         shielding_data = parse_shielding_output(output_text)
-        shifts = shielding_to_shift(shielding_data)
+        shifts = shielding_to_shift(shielding_data, "B3LYP", "6-311+G(2d,p)", "CHCl3")
 
         # Methane has 1 C atom
         assert len(shifts["13C"]) == 1
@@ -234,7 +234,7 @@ class TestShieldingDataCompatibility:
         """Chemical shift values are in reasonable range."""
         output_text = (FIXTURES_DIR / "nwchem_shielding_output.txt").read_text()
         shielding_data = parse_shielding_output(output_text)
-        shifts = shielding_to_shift(shielding_data)
+        shifts = shielding_to_shift(shielding_data, "B3LYP", "6-311+G(2d,p)", "CHCl3")
 
         # 1H shifts typically 0-15 ppm for organic molecules
         for h_shift in shifts["1H"]:

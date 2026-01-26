@@ -11,9 +11,10 @@ from rdkit import Chem
 from ..schemas import JobStatusResponse, JobSubmitRequest, NMRResultsResponse, ProblemDetail
 from ...nwchem import get_nwchem_version
 from ...models import JobStatus
+from ...shifts import get_scaling_factor
 from ...solvents import validate_solvent, get_supported_solvents
-from ...storage import create_job_directory, get_geometry_file, get_output_files, get_visualization_file, load_job_status
-from ...tasks import run_nmr_task
+from ...storage import create_job_directory, get_job_dir, get_geometry_file, get_initial_geometry_file, get_output_files, get_visualization_file, load_job_status
+from ...tasks import run_nmr_task, _generate_initial_xyz
 from ...validation import validate_mol_file, validate_smiles
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
@@ -29,6 +30,21 @@ def job_status_to_response(job_status: JobStatus) -> dict:
     # Convert NMR results if present
     nmr_results = None
     if job_status.nmr_results is not None:
+        # Get factor metadata for MAE display
+        # Note: functional stored lowercase, get_scaling_factor expects uppercase
+        h1_factor = get_scaling_factor(
+            job_status.nmr_results.functional.upper(),
+            job_status.nmr_results.basis_set,
+            "1H",
+            job_status.nmr_results.solvent
+        )
+        c13_factor = get_scaling_factor(
+            job_status.nmr_results.functional.upper(),
+            job_status.nmr_results.basis_set,
+            "13C",
+            job_status.nmr_results.solvent
+        )
+
         nmr_results = {
             "h1_shifts": [
                 {"index": s.index, "atom": s.atom, "shift": s.shift}
@@ -41,6 +57,9 @@ def job_status_to_response(job_status: JobStatus) -> dict:
             "functional": job_status.nmr_results.functional,
             "basis_set": job_status.nmr_results.basis_set,
             "solvent": job_status.nmr_results.solvent,
+            "scaling_factor_source": "DELTA50",
+            "h1_expected_mae": f"+/- {h1_factor['mae']:.2f} ppm",
+            "c13_expected_mae": f"+/- {c13_factor['mae']:.2f} ppm",
         }
 
     # Convert completed steps to response format
@@ -134,12 +153,16 @@ async def submit_smiles(request: JobSubmitRequest):
     job_status = create_job_directory(
         smiles=request.smiles,
         solvent=normalized_solvent,
-        isicle_version="N/A",  # ISiCLE removed, using direct NWChem integration
         nwchem_version=nwchem_version,
         name=request.name,
         preset=request.preset,
         notification_email=request.notification_email,
     )
+
+    # Generate initial 3D geometry for immediate visualization
+    job_dir = get_job_dir(job_status.job_id)
+    initial_xyz_path = job_dir / "output" / "initial.xyz"
+    _generate_initial_xyz(request.smiles, initial_xyz_path)
 
     # Queue the NMR calculation task
     run_nmr_task(job_status.job_id)
@@ -241,12 +264,16 @@ async def submit_file(
     job_status = create_job_directory(
         smiles=smiles,
         solvent=normalized_solvent,
-        isicle_version="N/A",  # ISiCLE removed, using direct NWChem integration
         nwchem_version=nwchem_version,
         name=name or filename,
         preset=preset,
         notification_email=notification_email,
     )
+
+    # Generate initial 3D geometry for immediate visualization
+    job_dir = get_job_dir(job_status.job_id)
+    initial_xyz_path = job_dir / "output" / "initial.xyz"
+    _generate_initial_xyz(smiles, initial_xyz_path)
 
     # Queue NMR calculation
     run_nmr_task(job_status.job_id)
@@ -352,6 +379,21 @@ async def get_nmr_results(job_id: str):
             },
         )
 
+    # Get factor metadata for MAE display
+    # Note: functional stored lowercase, get_scaling_factor expects uppercase
+    h1_factor = get_scaling_factor(
+        job_status.nmr_results.functional.upper(),
+        job_status.nmr_results.basis_set,
+        "1H",
+        job_status.nmr_results.solvent
+    )
+    c13_factor = get_scaling_factor(
+        job_status.nmr_results.functional.upper(),
+        job_status.nmr_results.basis_set,
+        "13C",
+        job_status.nmr_results.solvent
+    )
+
     # Convert to response format (without shielding, only shift)
     return NMRResultsResponse(
         h1_shifts=[
@@ -365,6 +407,9 @@ async def get_nmr_results(job_id: str):
         functional=job_status.nmr_results.functional,
         basis_set=job_status.nmr_results.basis_set,
         solvent=job_status.nmr_results.solvent,
+        scaling_factor_source="DELTA50",
+        h1_expected_mae=f"+/- {h1_factor['mae']:.2f} ppm",
+        c13_expected_mae=f"+/- {c13_factor['mae']:.2f} ppm",
     )
 
 
@@ -699,3 +744,92 @@ async def download_structure_png(job_id: str):
 async def download_structure_svg(job_id: str):
     """Download annotated molecular structure as SVG."""
     return await _get_visualization(job_id, "structure_annotated.svg", "image/svg+xml", f"{job_id}_structure.svg")
+
+
+@router.get(
+    "/{job_id}/geometry.json",
+    responses={
+        200: {"description": "Geometry and shift data for 3D visualization"},
+        404: {"model": ProblemDetail, "description": "Job not found"},
+    },
+)
+async def get_geometry_data(job_id: str):
+    """Get geometry and shift data for 3D visualization.
+
+    Returns initial RDKit geometry for running jobs,
+    optimized NWChem geometry for complete jobs.
+    Shift assignments included only when job is complete.
+    """
+    job_status = load_job_status(job_id)
+    if job_status is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-found",
+                "title": "Job Not Found",
+                "status": 404,
+                "detail": f"No job exists with ID '{job_id}'",
+            },
+        )
+
+    # Determine which geometry to return
+    # Prefer optimized geometry if available (even during NMR shielding step)
+    geometry_file = get_geometry_file(job_id)  # optimized.xyz
+    if geometry_file is None:
+        geometry_file = get_initial_geometry_file(job_id)  # initial.xyz fallback
+
+    if geometry_file is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/geometry-not-found",
+                "title": "Geometry Not Found",
+                "status": 404,
+                "detail": f"Geometry file not available for job '{job_id}'",
+            },
+        )
+
+    xyz_content = geometry_file.read_text()
+
+    # Build shift assignments only for complete jobs
+    h1_assignments = {}
+    c13_assignments = {}
+    sdf_content = None
+
+    if job_status.status == "complete" and job_status.nmr_results:
+        for s in job_status.nmr_results.h1_shifts:
+            h1_assignments[str(s.index)] = s.shift
+        for s in job_status.nmr_results.c13_shifts:
+            c13_assignments[str(s.index)] = s.shift
+
+        # Generate SDF with proper bond orders for complete jobs
+        # SDF preserves double/triple bonds from original SMILES
+        try:
+            xyz_lines = xyz_content.strip().split("\n")
+            coords = []
+            for line in xyz_lines[2:]:  # Skip count and comment lines
+                parts = line.split()
+                if len(parts) >= 4:
+                    coords.append((float(parts[1]), float(parts[2]), float(parts[3])))
+
+            mol = Chem.MolFromSmiles(job_status.input.smiles)
+            if mol:
+                mol = Chem.AddHs(mol)
+                conf = Chem.Conformer(mol.GetNumAtoms())
+                for i, (x, y, z) in enumerate(coords):
+                    if i < mol.GetNumAtoms():
+                        conf.SetAtomPosition(i, (x, y, z))
+                mol.AddConformer(conf, assignId=True)
+                sdf_content = Chem.MolToMolBlock(mol)
+        except Exception:
+            # Fall back to XYZ only if SDF generation fails
+            pass
+
+    return {
+        "job_id": job_id,
+        "status": job_status.status,
+        "xyz": xyz_content,
+        "sdf": sdf_content,
+        "h1_assignments": h1_assignments if h1_assignments else None,
+        "c13_assignments": c13_assignments if c13_assignments else None,
+    }
