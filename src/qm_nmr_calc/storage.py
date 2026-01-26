@@ -232,3 +232,86 @@ def get_visualization_file(job_id: str, filename: str) -> Optional[Path]:
     """
     viz_file = get_job_dir(job_id) / "output" / filename
     return viz_file if viz_file.exists() else None
+
+
+# v2.0 Conformer directory helpers
+
+
+def create_conformer_directories(job_id: str, conformer_ids: list[str]) -> dict[str, Path]:
+    """Create per-conformer scratch and output directories.
+
+    Creates directory structure:
+        data/jobs/{job_id}/
+            scratch/conformers/{conf_id}/  - Isolated NWChem scratch per conformer
+            output/conformers/{conf_id}/   - Per-conformer outputs
+            output/optimized/              - Optimized geometries
+
+    This prevents NWChem database file conflicts when running multiple conformers.
+
+    Args:
+        job_id: Job identifier
+        conformer_ids: List of conformer IDs (e.g., ["conf_001", "conf_002"])
+
+    Returns:
+        Dict mapping conformer_id -> scratch_dir Path
+    """
+    job_dir = get_job_dir(job_id)
+    scratch_base = job_dir / "scratch" / "conformers"
+    output_base = job_dir / "output" / "conformers"
+    optimized_dir = job_dir / "output" / "optimized"
+
+    # Create parent directories
+    scratch_base.mkdir(parents=True, exist_ok=True)
+    output_base.mkdir(parents=True, exist_ok=True)
+    optimized_dir.mkdir(parents=True, exist_ok=True)
+
+    # Create per-conformer directories
+    result = {}
+    for conf_id in conformer_ids:
+        conf_scratch = scratch_base / conf_id
+        conf_output = output_base / conf_id
+        conf_scratch.mkdir(exist_ok=True)
+        conf_output.mkdir(exist_ok=True)
+        result[conf_id] = conf_scratch
+
+    return result
+
+
+def get_conformer_scratch_dir(job_id: str, conformer_id: str) -> Path:
+    """Get path to conformer-specific scratch directory.
+
+    Args:
+        job_id: Job identifier
+        conformer_id: Conformer ID (e.g., "conf_001")
+
+    Returns:
+        Path to scratch/conformers/{conformer_id}/
+
+    Note: Does NOT create directory. Use create_conformer_directories first.
+    """
+    return get_job_dir(job_id) / "scratch" / "conformers" / conformer_id
+
+
+def get_conformer_output_dir(job_id: str, conformer_id: str) -> Path:
+    """Get path to conformer-specific output directory.
+
+    Args:
+        job_id: Job identifier
+        conformer_id: Conformer ID (e.g., "conf_001")
+
+    Returns:
+        Path to output/conformers/{conformer_id}/
+    """
+    return get_job_dir(job_id) / "output" / "conformers" / conformer_id
+
+
+def get_optimized_conformers_dir(job_id: str) -> Path:
+    """Get path to optimized conformers directory.
+
+    Args:
+        job_id: Job identifier
+
+    Returns:
+        Path to output/optimized/
+    """
+    return get_job_dir(job_id) / "output" / "optimized"
