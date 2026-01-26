@@ -15,6 +15,26 @@ Functions:
 from rdkit import Chem
 
 
+def _smiles_to_mol_with_h(smiles: str) -> Chem.Mol:
+    """Parse SMILES and add explicit hydrogens.
+
+    Helper function to avoid duplication across module functions.
+
+    Args:
+        smiles: SMILES string representing the molecule
+
+    Returns:
+        RDKit Mol object with explicit hydrogens
+
+    Raises:
+        ValueError: If SMILES string is invalid
+    """
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        raise ValueError(f"Invalid SMILES: {smiles}")
+    return Chem.AddHs(mol)
+
+
 def canonical_atom_order(smiles: str) -> list[int]:
     """Get canonical atom ordering for a SMILES string.
 
@@ -39,13 +59,8 @@ def canonical_atom_order(smiles: str) -> list[int]:
         >>> set(order)  # All ranks from 0 to 8
         {0, 1, 2, 3, 4, 5, 6, 7, 8}
     """
-    # Parse SMILES
-    mol = Chem.MolFromSmiles(smiles)
-    if mol is None:
-        raise ValueError(f"Invalid SMILES: {smiles}")
-
-    # Add explicit hydrogens (required for complete atom indexing)
-    mol = Chem.AddHs(mol)
+    # Parse SMILES and add explicit hydrogens
+    mol = _smiles_to_mol_with_h(smiles)
 
     # Get canonical atom ranking
     # This uses RDKit's canonical ordering algorithm, which is deterministic
@@ -117,13 +132,8 @@ def get_atom_count(smiles: str) -> tuple[int, int, int]:
         >>> get_atom_count("CCO")  # ethanol
         (9, 6, 3)  # 9 total: 2C + 1O + 6H, 6 H, 3 heavy
     """
-    # Parse SMILES
-    mol = Chem.MolFromSmiles(smiles)
-    if mol is None:
-        raise ValueError(f"Invalid SMILES: {smiles}")
-
-    # Add explicit hydrogens
-    mol = Chem.AddHs(mol)
+    # Parse SMILES and add explicit hydrogens
+    mol = _smiles_to_mol_with_h(smiles)
 
     # Count atoms
     total_atoms = mol.GetNumAtoms()
