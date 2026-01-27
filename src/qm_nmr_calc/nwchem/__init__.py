@@ -16,6 +16,7 @@ from qm_nmr_calc.nwchem.input_gen import (
     generate_shielding_input,
 )
 from qm_nmr_calc.nwchem.output_parser import (
+    extract_dft_energy,
     extract_optimized_geometry,
     parse_shielding_output,
 )
@@ -36,6 +37,7 @@ __all__ = [
     "generate_optimization_input",
     "generate_shielding_input",
     # Output parsing
+    "extract_dft_energy",
     "extract_optimized_geometry",
     "parse_shielding_output",
     # Runner

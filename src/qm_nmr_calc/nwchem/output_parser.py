@@ -33,6 +33,36 @@ adjustment for different NWChem versions. Test with actual output files.
 import re
 
 
+def extract_dft_energy(output_text: str) -> float:
+    """Extract total DFT energy from NWChem optimization output.
+
+    Finds the LAST occurrence of "Total DFT energy:" in the output,
+    which corresponds to the final optimization cycle energy.
+
+    Args:
+        output_text: Full NWChem output file content as string.
+
+    Returns:
+        Total DFT energy in Hartree (atomic units). Always negative for bound molecules.
+
+    Raises:
+        RuntimeError: If no "Total DFT energy:" line found in output.
+    """
+    # Pattern: "Total DFT energy:      -40.51864189"
+    # Use findall to get ALL occurrences, then take the last one
+    pattern = r"Total\s+DFT\s+energy:\s+([-+]?\d+\.\d+)"
+    matches = re.findall(pattern, output_text, re.IGNORECASE)
+
+    if not matches:
+        raise RuntimeError(
+            "Could not find 'Total DFT energy:' line in NWChem output. "
+            "Ensure the calculation completed successfully and includes DFT energy output."
+        )
+
+    # Return the LAST occurrence (final optimized energy)
+    return float(matches[-1])
+
+
 def extract_optimized_geometry(output_text: str) -> str:
     """Extract the final optimized geometry from NWChem output.
 
