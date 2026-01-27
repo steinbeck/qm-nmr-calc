@@ -154,10 +154,12 @@ Plans:
   4. System runs NMR shielding calculation on each conformer surviving post-DFT filter
   5. Partial conformer failures handled gracefully (job continues with successful conformers if >50% succeed)
   6. User can configure energy window parameters (pre-DFT and post-DFT thresholds)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 15-01: TBD
+- [ ] 15-01-PLAN.md -- DFT energy extraction from NWChem output (TDD)
+- [ ] 15-02-PLAN.md -- Per-conformer DFT optimization loop with partial failure handling (TDD)
+- [ ] 15-03-PLAN.md -- Per-conformer NMR loop and full ensemble orchestrator (TDD)
 
 #### Phase 16: CREST Integration (Optional High-Accuracy Mode)
 **Goal**: Production-quality conformer generation using CREST metadynamics (when available)
