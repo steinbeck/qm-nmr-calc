@@ -19,16 +19,16 @@ Requirements for v2.0 Conformational Sampling. Each maps to roadmap phases.
 ### Energy Filtering
 
 - [x] **FILT-01**: System applies pre-DFT energy window filter (default 6 kcal/mol) to conformer set
-- [ ] **FILT-02**: System applies post-DFT energy window filter (default 3 kcal/mol) after geometry optimization
-- [ ] **FILT-03**: User can configure energy window parameters (pre-DFT and post-DFT thresholds)
+- [x] **FILT-02**: System applies post-DFT energy window filter (default 3 kcal/mol) after geometry optimization
+- [x] **FILT-03**: User can configure energy window parameters (pre-DFT and post-DFT thresholds)
 
 ### DFT Calculations
 
-- [ ] **DFT-01**: System runs DFT geometry optimization on each conformer surviving pre-DFT filter
-- [ ] **DFT-02**: System runs NMR shielding calculation on each conformer surviving post-DFT filter
+- [x] **DFT-01**: System runs DFT geometry optimization on each conformer surviving pre-DFT filter
+- [x] **DFT-02**: System runs NMR shielding calculation on each conformer surviving post-DFT filter
 - [x] **DFT-03**: Each conformer uses isolated scratch directory to prevent NWChem file conflicts
-- [ ] **DFT-04**: System extracts DFT energies from optimization step for Boltzmann weighting
-- [ ] **DFT-05**: System handles partial conformer failures gracefully (continues with successful conformers)
+- [x] **DFT-04**: System extracts DFT energies from optimization step for Boltzmann weighting
+- [x] **DFT-05**: System handles partial conformer failures gracefully (continues with successful conformers)
 
 ### Boltzmann Averaging
 
@@ -97,13 +97,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONF-05 | Phase 16 | Pending |
 | CONF-06 | Phase 13 | Complete |
 | FILT-01 | Phase 13 | Complete |
-| FILT-02 | Phase 15 | Pending |
-| FILT-03 | Phase 15 | Pending |
-| DFT-01 | Phase 15 | Pending |
-| DFT-02 | Phase 15 | Pending |
+| FILT-02 | Phase 15 | Complete |
+| FILT-03 | Phase 15 | Complete |
+| DFT-01 | Phase 15 | Complete |
+| DFT-02 | Phase 15 | Complete |
 | DFT-03 | Phase 12 | Complete |
-| DFT-04 | Phase 15 | Pending |
-| DFT-05 | Phase 15 | Pending |
+| DFT-04 | Phase 15 | Complete |
+| DFT-05 | Phase 15 | Complete |
 | BOLTZ-01 | Phase 14 | Complete |
 | BOLTZ-02 | Phase 14 | Complete |
 | BOLTZ-03 | Phase 14 | Complete |

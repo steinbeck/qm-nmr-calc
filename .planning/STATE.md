@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-01-26)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.0 Conformational Sampling -- Phase 15 in progress
+**Current focus:** v2.0 Conformational Sampling -- Phase 15 complete, Phase 16 next
 
 ## Current Position
 
 Phase: 15 of 17 (Multi-Conformer NWChem Integration)
 Plan: 03 of 03 (Phase 15)
-Status: Phase complete
-Last activity: 2026-01-27 -- Completed 15-03-PLAN.md (NMR loop and full ensemble orchestrator)
+Status: Phase verified
+Last activity: 2026-01-27 -- Phase 15 verified (24/24 must-haves passed)
 
 Progress: █████████████████████████████████████████████ 100% (47/47 plans complete)
 
@@ -100,6 +100,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-27
-Stopped at: Completed 15-03-PLAN.md (NMR loop and full ensemble orchestrator) -- Phase 15 complete
+Stopped at: Phase 15 verified and complete -- all 24 must-haves passed
 Resume file: None
 Next: Phase 16 (CREST Integration) - High-accuracy conformer generation with timeout handling

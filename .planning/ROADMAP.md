@@ -157,9 +157,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 15-01-PLAN.md -- DFT energy extraction from NWChem output (TDD)
-- [ ] 15-02-PLAN.md -- Per-conformer DFT optimization loop with partial failure handling (TDD)
-- [ ] 15-03-PLAN.md -- Per-conformer NMR loop and full ensemble orchestrator (TDD)
+- [x] 15-01-PLAN.md -- DFT energy extraction from NWChem output (TDD)
+- [x] 15-02-PLAN.md -- Per-conformer DFT optimization loop with partial failure handling (TDD)
+- [x] 15-03-PLAN.md -- Per-conformer NMR loop and full ensemble orchestrator (TDD)
 
 #### Phase 16: CREST Integration (Optional High-Accuracy Mode)
 **Goal**: Production-quality conformer generation using CREST metadynamics (when available)
@@ -216,10 +216,10 @@ Phases execute in numeric order: 12 -> 13 -> 14 -> 15 -> 16 -> 17
 | 12. Data Model | v2.0 | 3/3 | Complete | 2026-01-26 |
 | 13. RDKit Generation | v2.0 | 3/3 | Complete | 2026-01-27 |
 | 14. Boltzmann Averaging | v2.0 | 2/2 | Complete | 2026-01-27 |
-| 15. NWChem Integration | v2.0 | 0/? | Not started | - |
+| 15. NWChem Integration | v2.0 | 3/3 | Complete | 2026-01-27 |
 | 16. CREST Integration | v2.0 | 0/? | Not started | - |
 | 17. API Integration | v2.0 | 0/? | Not started | - |
 
 ---
 
-*Last updated: 2026-01-27 after Phase 14 execution complete*
+*Last updated: 2026-01-27 after Phase 15 execution complete*
