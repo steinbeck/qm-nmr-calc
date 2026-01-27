@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 15 of 17 (Multi-Conformer NWChem Integration)
-Plan: 02 of 03 (Phase 15)
-Status: In progress
-Last activity: 2026-01-27 -- Completed 15-02-PLAN.md (Multi-conformer optimization workflow)
+Plan: 03 of 03 (Phase 15)
+Status: Phase complete
+Last activity: 2026-01-27 -- Completed 15-03-PLAN.md (NMR loop and full ensemble orchestrator)
 
-Progress: █████████████████████████████████████████████ 100% (46/46 plans complete)
+Progress: █████████████████████████████████████████████ 100% (47/47 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 46
+- Total plans completed: 47
 - Average duration: 8.1 min
-- Total execution time: 381 min (6.4 hours)
+- Total execution time: 390 min (6.5 hours)
 
 **By Milestone:**
 
@@ -32,8 +32,8 @@ Progress: ███████████████████████�
 | v2.0 Conformational Sampling | 6 | TBD | In progress |
 
 **Recent Trend:**
-- Last 5 plans: 6-29 min
-- Trend: Consistent fast TDD (14-01: 6 min, 14-02: 7 min, 15-01: 9 min, 15-02: 10 min with 10 new tests)
+- Last 5 plans: 6-10 min
+- Trend: Consistent fast TDD (14-01: 6 min, 14-02: 7 min, 15-01: 9 min, 15-02: 10 min, 15-03: 9 min)
 
 ## Accumulated Context
 
@@ -66,6 +66,9 @@ Recent v2.0 decisions affecting current work:
 - Sequential conformer processing: Process conformers one at a time for simplicity, parallelize later if needed (15-02)
 - 50% success threshold: Fail if more than half of conformers fail DFT optimization (15-02)
 - smiles=None support: Allow geometry-file-only input for conformer optimization path (15-02)
+- No NMR minimum success threshold: Any successful NMR results usable since DFT already caught systematic failures (15-03)
+- nmr_basis_set substitution: NMR step uses nmr_basis_set instead of optimization basis_set for higher accuracy (15-03)
+- In-place ensemble mutation: Conformer status fields updated by reference during pipeline (15-03)
 
 ### Roadmap Evolution
 
@@ -97,6 +100,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-27
-Stopped at: Completed 15-02-PLAN.md (Multi-conformer optimization workflow)
+Stopped at: Completed 15-03-PLAN.md (NMR loop and full ensemble orchestrator) -- Phase 15 complete
 Resume file: None
-Next: Phase 15 Plan 03 (NMR calculation loop) - Final v2.0 implementation plan
+Next: Phase 16 (CREST Integration) - High-accuracy conformer generation with timeout handling
