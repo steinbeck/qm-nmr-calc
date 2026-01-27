@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from qm_nmr_calc.nwchem.output_parser import (
+    extract_dft_energy,
     extract_optimized_geometry,
     parse_shielding_output,
 )
@@ -243,3 +244,71 @@ class TestShieldingDataCompatibility:
         # 13C shifts typically -20 to 220 ppm
         for c_shift in shifts["13C"]:
             assert -50 < c_shift["shift"] < 250
+
+
+class TestExtractDftEnergy:
+    """Tests for extract_dft_energy function."""
+
+    def test_extract_dft_energy_from_fixture(self):
+        """Extract DFT energy from NWChem optimization output fixture."""
+        output_text = (FIXTURES_DIR / "nwchem_optimization_output.txt").read_text()
+        energy = extract_dft_energy(output_text)
+
+        # Expected energy from line 109: "Total DFT energy:      -40.51864189"
+        assert energy == pytest.approx(-40.51864189, abs=1e-8)
+        assert isinstance(energy, float)
+
+    def test_extract_dft_energy_from_inline_text(self):
+        """Extract DFT energy from inline text with energy line."""
+        output_text = """
+        Some NWChem output text here...
+
+        Total DFT energy:      -123.45678901
+
+        More output text...
+        """
+        energy = extract_dft_energy(output_text)
+
+        assert energy == pytest.approx(-123.45678901, abs=1e-8)
+        assert isinstance(energy, float)
+
+    def test_extract_dft_energy_last_occurrence(self):
+        """Extract LAST DFT energy when multiple optimization cycles exist."""
+        output_text = """
+        First optimization cycle:
+        Total DFT energy:      -40.51853412
+
+        Second optimization cycle:
+        Total DFT energy:      -40.51863254
+
+        Final optimization cycle:
+        Total DFT energy:      -40.51864189
+
+        Task completed.
+        """
+        energy = extract_dft_energy(output_text)
+
+        # Should return the LAST occurrence (final optimized energy)
+        assert energy == pytest.approx(-40.51864189, abs=1e-8)
+
+    def test_extract_dft_energy_missing_raises(self):
+        """RuntimeError raised when energy line is missing."""
+        output_text = """
+        Some NWChem output without energy information.
+        No Total DFT energy line here.
+        """
+        with pytest.raises(RuntimeError) as exc_info:
+            extract_dft_energy(output_text)
+
+        error_msg = str(exc_info.value).lower()
+        assert "energy" in error_msg or "dft" in error_msg
+
+    def test_extract_dft_energy_negative_value(self):
+        """DFT energies are negative for bound molecules."""
+        output_text = """
+        Total DFT energy:      -234.98765432
+        """
+        energy = extract_dft_energy(output_text)
+
+        assert energy < 0
+        assert energy == pytest.approx(-234.98765432, abs=1e-8)
