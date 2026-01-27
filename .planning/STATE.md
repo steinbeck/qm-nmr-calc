@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 14 of 17 (Boltzmann Averaging)
-Plan: 01 of 01 (Phase 14)
+Plan: 02 of 02 (Phase 14)
 Status: Phase complete
-Last activity: 2026-01-27 -- Completed 14-01-PLAN.md (Boltzmann weight calculation)
+Last activity: 2026-01-27 -- Completed 14-02-PLAN.md (Ensemble NMR shift averaging)
 
-Progress: ████████████████████████████████████████████ 100% (Phase 14: 1/1 plans complete)
+Progress: ████████████████████████████████████████████ 100% (Phase 14: 2/2 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 44
-- Average duration: 8.0 min
-- Total execution time: 355 min (5.9 hours)
+- Total plans completed: 45
+- Average duration: 7.9 min
+- Total execution time: 362 min (6.0 hours)
 
 **By Milestone:**
 
@@ -33,7 +33,7 @@ Progress: ███████████████████████�
 
 **Recent Trend:**
 - Last 5 plans: 4-29 min
-- Trend: Fast TDD (13-02: 4 min, 13-03: 29 min, 14-01: 6 min TDD with 20 tests)
+- Trend: Consistent fast TDD (13-03: 29 min, 14-01: 6 min, 14-02: 7 min TDD with 15 new tests)
 
 ## Accumulated Context
 
@@ -58,6 +58,9 @@ Recent v2.0 decisions affecting current work:
 - Relative geometry_file paths: Stored relative to job dir for portability (13-03)
 - exp-normalize trick for Boltzmann: Subtract min energy before exp to prevent overflow/underflow (14-01)
 - Pure Python math.exp: No numpy dependency for Boltzmann weights, sufficient performance for typical conformer counts (14-01)
+- Weighted averaging by atom index: Cross-conformer matching via index field (NWChem 1-based), not implicit ordering (14-02)
+- Descending shift sort: NMR convention (highest shift first) for all returned results (14-02)
+- In-place weight population: average_ensemble_nmr mutates ConformerData.weight for tracking (14-02)
 
 ### Roadmap Evolution
 
@@ -89,6 +92,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-27
-Stopped at: Completed 14-01-PLAN.md (Boltzmann weight calculation)
+Stopped at: Completed 14-02-PLAN.md (Ensemble NMR shift averaging)
 Resume file: None
-Next: Phase 15 (Conformer NMR Integration) - Integrate Boltzmann weighting into NMR averaging
+Next: Phase 15 (Conformer NMR Integration) - Integrate Boltzmann averaging into per-conformer NMR pipeline
