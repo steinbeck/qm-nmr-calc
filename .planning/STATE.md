@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 
 ## Current Position
 
-Phase: 12 of 17 (Conformer Data Model and Storage)
-Plan: 03 of 03 (Phase 12)
-Status: Phase complete
-Last activity: 2026-01-26 -- Completed 12-03-PLAN.md (Backward compat + API schemas)
+Phase: 13 of 17 (RDKit Conformer Generation)
+Plan: 02 of 03 (Phase 13)
+Status: In progress
+Last activity: 2026-01-27 -- Completed 13-02-PLAN.md (Conformer filters)
 
-Progress: ███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 100% (Phase 12: 3/3 plans)
+Progress: ███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 33% (Phase 13: 1/3 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 39
-- Average duration: 7.8 min
-- Total execution time: 312 min (5.2 hours)
+- Total plans completed: 40
+- Average duration: 7.7 min
+- Total execution time: 316 min (5.3 hours)
 
 **By Milestone:**
 
@@ -32,8 +32,8 @@ Progress: ███░░░░░░░░░░░░░░░░░░░░�
 | v2.0 Conformational Sampling | 6 | TBD | In progress |
 
 **Recent Trend:**
-- Last 5 plans: 3-12 min
-- Trend: Steady (12-01: Data models, 4.3 min; 12-02: TDD module, 3 min; 12-03: Compat + API, 5.6 min)
+- Last 5 plans: 3-6 min
+- Trend: Fast (12-02: TDD module, 3 min; 12-03: Compat + API, 5.6 min; 13-02: Filters TDD, 4 min)
 
 ## Accumulated Context
 
@@ -50,6 +50,8 @@ Recent v2.0 decisions affecting current work:
 - Per-conformer scratch directory isolation: Each conformer gets unique scratch dir to prevent NWChem database conflicts (12-01)
 - Explicit energy unit tracking: ConformerData stores energy_unit alongside energy to prevent conversion bugs (12-01)
 - str type for API conformer_mode: API schemas use str (not Literal) for flexibility, validation at service layer (12-03)
+- Pairwise GetBestRMS over matrix approach: Clearer code, acceptable performance for typical ensemble sizes (13-02)
+- Decoupled energy filtering: Operates on extracted data, reusable for MMFF and DFT (13-02)
 
 ### Roadmap Evolution
 
@@ -80,7 +82,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-01-26
-Stopped at: Completed 12-03-PLAN.md (Phase 12 complete)
+Last session: 2026-01-27
+Stopped at: Completed 13-02-PLAN.md (Conformer filters)
 Resume file: None
-Next: Plan and execute Phase 13 (RDKit Conformer Generation)
+Next: Continue Phase 13 (13-03: Pipeline integration)
