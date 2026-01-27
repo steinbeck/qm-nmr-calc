@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-26)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.0 Conformational Sampling -- Phase 12 complete, Phase 13 next
+**Current focus:** v2.0 Conformational Sampling -- Phase 14 in progress
 
 ## Current Position
 
-Phase: 13 of 17 (RDKit Conformer Generation)
-Plan: 03 of 03 (Phase 13)
+Phase: 14 of 17 (Boltzmann Averaging)
+Plan: 01 of 01 (Phase 14)
 Status: Phase complete
-Last activity: 2026-01-27 -- Completed 13-03-PLAN.md (End-to-end pipeline)
+Last activity: 2026-01-27 -- Completed 14-01-PLAN.md (Boltzmann weight calculation)
 
-Progress: ████████████████████████████████████████████ 100% (Phase 13: 3/3 plans complete)
+Progress: ████████████████████████████████████████████ 100% (Phase 14: 1/1 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 43
-- Average duration: 8.1 min
-- Total execution time: 349 min (5.8 hours)
+- Total plans completed: 44
+- Average duration: 8.0 min
+- Total execution time: 355 min (5.9 hours)
 
 **By Milestone:**
 
@@ -33,7 +33,7 @@ Progress: ███████████████████████�
 
 **Recent Trend:**
 - Last 5 plans: 4-29 min
-- Trend: Mixed (13-01: 4 min, 13-02: 4 min, 13-03: 29 min with integration tests)
+- Trend: Fast TDD (13-02: 4 min, 13-03: 29 min, 14-01: 6 min TDD with 20 tests)
 
 ## Accumulated Context
 
@@ -56,6 +56,8 @@ Recent v2.0 decisions affecting current work:
 - Dedup before energy filter: Run RMSD deduplication first, then energy window filter on deduped subset (13-03)
 - Sequential 1-based conformer IDs: conf_001, conf_002, ... for user-facing consistency (13-03)
 - Relative geometry_file paths: Stored relative to job dir for portability (13-03)
+- exp-normalize trick for Boltzmann: Subtract min energy before exp to prevent overflow/underflow (14-01)
+- Pure Python math.exp: No numpy dependency for Boltzmann weights, sufficient performance for typical conformer counts (14-01)
 
 ### Roadmap Evolution
 
@@ -72,10 +74,10 @@ None.
 ### Blockers/Concerns
 
 **v2.0 Architecture:**
-- Numerical stability: Boltzmann weighting with wide energy ranges needs exp-normalize trick (Phase 14)
 - CREST timeouts: Macrocycles can hang, need timeout with RDKit fallback (Phase 16)
 
 **Resolved (v2.0):**
+- Numerical stability: Boltzmann weighting implemented with exp-normalize trick, tested with extreme ranges (14-01)
 - Atom ordering consistency: Canonical indexing established via CanonicalRankAtoms (12-02)
 - Scratch directory isolation: Per-conformer directories prevent NWChem database corruption (12-01)
 - Backward compatibility: v1.x JSON loads verified with 8 fixture tests (12-03)
@@ -87,6 +89,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-27
-Stopped at: Completed 13-03-PLAN.md (End-to-end conformer pipeline)
+Stopped at: Completed 14-01-PLAN.md (Boltzmann weight calculation)
 Resume file: None
-Next: Phase 14 (Boltzmann Weighting) - Calculate conformer weights from DFT energies
+Next: Phase 15 (Conformer NMR Integration) - Integrate Boltzmann weighting into NMR averaging
