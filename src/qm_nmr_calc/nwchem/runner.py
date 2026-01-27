@@ -95,7 +95,7 @@ def run_nwchem(
 
 
 def run_calculation(
-    smiles: str,
+    smiles: str | None,
     job_dir: Path,
     preset: dict,
     solvent: str,
@@ -103,6 +103,7 @@ def run_calculation(
     skip_optimization: bool = False,
     geometry_file: Path | None = None,
     on_optimization_complete: callable = None,
+    scratch_dir_override: Path | None = None,
 ) -> dict:
     """Run complete NMR calculation (geometry optimization + NMR shielding).
 
@@ -114,13 +115,15 @@ def run_calculation(
     For vacuum/gas-phase calculations, pass solvent="vacuum" to run without COSMO.
 
     Args:
-        smiles: SMILES string of molecule
+        smiles: SMILES string of molecule (None if geometry_file provided)
         job_dir: Job directory for outputs and scratch
         preset: Calculation preset dict with functional, basis_set, nmr_basis_set, max_iter
         solvent: Solvent name for COSMO (chcl3, dmso) or "vacuum" for gas-phase
         processes: Number of MPI processes
         skip_optimization: If True, skip geometry optimization and use geometry_file
-        geometry_file: Path to pre-optimized geometry file (required if skip_optimization=True)
+        geometry_file: Path to pre-optimized geometry file (required if skip_optimization=True or smiles=None)
+        on_optimization_complete: Optional callback after optimization completes
+        scratch_dir_override: Optional custom scratch directory (for per-conformer isolation)
 
     Returns:
         Dict with:
@@ -130,11 +133,15 @@ def run_calculation(
             - 'shielding_output': Path to shielding.out
 
     Raises:
-        ValueError: If skip_optimization=True but geometry_file not provided
+        ValueError: If both smiles and geometry_file are None, or if skip_optimization=True but geometry_file not provided
         RuntimeError: If NWChem calculation fails
     """
+    # Validate inputs
+    if smiles is None and geometry_file is None:
+        raise ValueError("Either smiles or geometry_file must be provided")
+
     # Set up directories
-    scratch_dir = job_dir / "scratch"
+    scratch_dir = scratch_dir_override if scratch_dir_override else job_dir / "scratch"
     output_dir = job_dir / "output"
     scratch_dir.mkdir(exist_ok=True)
     output_dir.mkdir(exist_ok=True)
@@ -153,8 +160,15 @@ def run_calculation(
         if geometry_file.resolve() != optimized_xyz_path.resolve():
             optimized_xyz_path.write_text(geometry_file.read_text())
     else:
-        # Step 1: Generate initial 3D geometry from SMILES
-        mol, xyz_block = smiles_to_xyz(smiles)
+        # Step 1: Generate initial 3D geometry
+        if smiles is not None:
+            # Generate from SMILES
+            mol, xyz_block = smiles_to_xyz(smiles)
+        else:
+            # Load from geometry file
+            if geometry_file is None:
+                raise ValueError("geometry_file required when smiles is None and skip_optimization=False")
+            mol, xyz_block = load_geometry_file(geometry_file)
 
         # Step 2: Generate optimization input with COSMO
         opt_input = generate_optimization_input(
@@ -215,3 +229,135 @@ def run_calculation(
         "optimization_output": optimization_output,
         "shielding_output": shielding_output_file,
     }
+
+
+def run_conformer_dft_optimization(
+    ensemble,
+    job_id: str,
+    preset: dict,
+    solvent: str,
+    processes: int = 4,
+):
+    """Run DFT geometry optimization on all conformers in an ensemble.
+
+    Processes conformers sequentially. Individual conformer failures are caught
+    and do not stop processing of remaining conformers. However, if more than
+    50% of conformers fail, raises RuntimeError.
+
+    Args:
+        ensemble: ConformerEnsemble with conformers to optimize
+        job_id: Job identifier for directory lookup
+        preset: Calculation preset dict (functional, basis_set, nmr_basis_set, max_iter)
+        solvent: Solvent name for COSMO
+        processes: Number of MPI processes
+
+    Returns:
+        Tuple of (successful_conformers, failed_conformers) where each is a list of ConformerData
+
+    Raises:
+        RuntimeError: If less than 50% of conformers succeed
+    """
+    from qm_nmr_calc.models import ConformerData, ConformerEnsemble
+    from qm_nmr_calc.storage import get_job_dir, get_conformer_scratch_dir
+    from qm_nmr_calc.nwchem.output_parser import extract_dft_energy
+
+    job_dir = get_job_dir(job_id)
+    successful = []
+    failed = []
+
+    for conformer in ensemble.conformers:
+        try:
+            # Update status to optimizing
+            conformer.status = "optimizing"
+
+            # Get conformer-specific scratch directory
+            scratch_dir = get_conformer_scratch_dir(job_id, conformer.conformer_id)
+
+            # Resolve geometry file path
+            geom_path = job_dir / conformer.geometry_file
+
+            # Run DFT optimization (no SMILES, use geometry file)
+            result = run_calculation(
+                smiles=None,
+                job_dir=job_dir,
+                preset=preset,
+                solvent=solvent,
+                processes=processes,
+                skip_optimization=False,
+                geometry_file=geom_path,
+                scratch_dir_override=scratch_dir,
+            )
+
+            # Extract DFT energy from optimization output
+            opt_output_text = result["optimization_output"].read_text()
+            dft_energy = extract_dft_energy(opt_output_text)
+
+            # Update conformer with DFT results
+            conformer.energy = dft_energy
+            conformer.energy_unit = "hartree"
+            conformer.status = "optimized"
+            conformer.optimized_geometry_file = str(
+                result["geometry_file"].relative_to(job_dir)
+            )
+
+            successful.append(conformer)
+
+        except Exception as e:
+            # Mark conformer as failed and continue
+            import traceback
+            conformer.status = "failed"
+            error_msg = f"{type(e).__name__}: {str(e)}"
+            conformer.error_message = error_msg[:200]
+            failed.append(conformer)
+            # DEBUG: Print traceback for test debugging
+            # print(f"DEBUG: Conformer {conformer.conformer_id} failed: {error_msg}")
+            # traceback.print_exc()
+
+    # Check success rate
+    success_rate = len(successful) / len(ensemble.conformers)
+    if success_rate < 0.5:
+        raise RuntimeError(
+            f"DFT optimization failed for too many conformers: "
+            f"{len(successful)}/{len(ensemble.conformers)} succeeded "
+            f"({success_rate:.1%} success rate). "
+            f"Need at least 50% success rate."
+        )
+
+    return (successful, failed)
+
+
+def apply_post_dft_filter(
+    optimized_conformers: list,
+    window_kcal: float = 3.0,
+) -> list:
+    """Filter conformers by DFT energy window.
+
+    Keeps only conformers within window_kcal of the lowest DFT energy.
+    Uses existing filter_by_energy_window from conformers.filters module.
+
+    Args:
+        optimized_conformers: List of ConformerData with DFT energies in Hartree
+        window_kcal: Energy window in kcal/mol above minimum (default: 3.0)
+
+    Returns:
+        List of ConformerData within energy window
+    """
+    from qm_nmr_calc.conformers.boltzmann import HARTREE_TO_KCAL
+    from qm_nmr_calc.conformers.filters import filter_by_energy_window
+
+    # Single conformer always passes
+    if len(optimized_conformers) <= 1:
+        return optimized_conformers
+
+    # Extract conformer IDs and energies
+    conf_ids = list(range(len(optimized_conformers)))
+    energies_hartree = [c.energy for c in optimized_conformers]
+
+    # Convert to kcal/mol for filtering
+    energies_kcal = [e * HARTREE_TO_KCAL for e in energies_hartree]
+
+    # Apply energy window filter
+    kept_ids, _ = filter_by_energy_window(conf_ids, energies_kcal, window_kcal)
+
+    # Return filtered conformers
+    return [optimized_conformers[i] for i in kept_ids]

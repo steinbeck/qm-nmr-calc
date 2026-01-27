@@ -80,7 +80,7 @@ def test_run_calculation_uses_scratch_dir_override():
             def side_effect(input_file, output_file, processes):
                 # Create output files in the scratch directory
                 output_file.write_text(
-                    "Total DFT energy =     -40.5186\n"
+                    "Total DFT energy:     -40.5186\n"
                     "Output coordinates in angstroms\n"
                     "No.       Tag         Charge          X              Y              Z\n"
                     "---- ---------------- ---------- -------------- -------------- --------------\n"
@@ -138,26 +138,31 @@ def test_conformer_dft_optimization_all_succeed():
         with unittest.mock.patch(
             "qm_nmr_calc.nwchem.runner.run_calculation"
         ) as mock_run:
-            # Create temp files for optimization output
-            opt_output = Path(tmpdir) / "optimize.out"
-            opt_output.write_text("Total DFT energy =     -40.5186\n")
-            geom_output = Path(tmpdir) / "optimized.xyz"
+            # Create temp files for optimization output - must be under job_dir
+            opt_output = job_dir / "optimize.out"
+            opt_output.write_text("Total DFT energy:     -40.5186\n")
+            geom_output = job_dir / "output" / "optimized.xyz"
             geom_output.write_text("2\nOptimized\nC 0 0 0\nH 1.1 0 0\n")
 
             mock_run.return_value = {
                 "optimization_output": opt_output,
                 "geometry_file": geom_output,
                 "shielding_data": {},
-                "shielding_output": Path(tmpdir) / "shielding.out",
+                "shielding_output": job_dir / "shielding.out",
             }
 
             # Mock storage functions
+            def get_scratch_with_create(job_id, conf_id):
+                scratch_path = job_dir / "scratch" / conf_id
+                scratch_path.mkdir(parents=True, exist_ok=True)
+                return scratch_path
+
             with unittest.mock.patch(
-                "qm_nmr_calc.nwchem.runner.get_job_dir", return_value=job_dir
+                "qm_nmr_calc.storage.get_job_dir", return_value=job_dir
             ):
                 with unittest.mock.patch(
-                    "qm_nmr_calc.nwchem.runner.get_conformer_scratch_dir",
-                    side_effect=lambda job_id, conf_id: job_dir / "scratch" / conf_id,
+                    "qm_nmr_calc.storage.get_conformer_scratch_dir",
+                    side_effect=get_scratch_with_create,
                 ):
                     # Run optimization
                     successful, failed = run_conformer_dft_optimization(
@@ -206,29 +211,34 @@ def test_conformer_dft_optimization_partial_failure():
             if idx == 1:  # Second conformer (conf_002) fails
                 raise RuntimeError("NWChem optimization failed for this conformer")
 
-            # Success case
-            opt_output = Path(tmpdir) / f"optimize_{idx}.out"
-            opt_output.write_text("Total DFT energy =     -40.5186\n")
-            geom_output = Path(tmpdir) / f"optimized_{idx}.xyz"
+            # Success case - files must be under job_dir
+            opt_output = job_dir / f"optimize_{idx}.out"
+            opt_output.write_text("Total DFT energy:     -40.5186\n")
+            geom_output = job_dir / "output" / f"optimized_{idx}.xyz"
             geom_output.write_text("2\nOptimized\nC 0 0 0\nH 1.1 0 0\n")
 
             return {
                 "optimization_output": opt_output,
                 "geometry_file": geom_output,
                 "shielding_data": {},
-                "shielding_output": Path(tmpdir) / f"shielding_{idx}.out",
+                "shielding_output": job_dir / f"shielding_{idx}.out",
             }
+
+        def get_scratch_with_create(job_id, conf_id):
+            scratch_path = job_dir / "scratch" / conf_id
+            scratch_path.mkdir(parents=True, exist_ok=True)
+            return scratch_path
 
         with unittest.mock.patch(
             "qm_nmr_calc.nwchem.runner.run_calculation",
             side_effect=mock_run_calculation,
         ):
             with unittest.mock.patch(
-                "qm_nmr_calc.nwchem.runner.get_job_dir", return_value=job_dir
+                "qm_nmr_calc.storage.get_job_dir", return_value=job_dir
             ):
                 with unittest.mock.patch(
-                    "qm_nmr_calc.nwchem.runner.get_conformer_scratch_dir",
-                    side_effect=lambda job_id, conf_id: job_dir / "scratch" / conf_id,
+                    "qm_nmr_calc.storage.get_conformer_scratch_dir",
+                    side_effect=get_scratch_with_create,
                 ):
                     # Run optimization
                     successful, failed = run_conformer_dft_optimization(
@@ -279,29 +289,34 @@ def test_conformer_dft_optimization_too_many_failures():
             if idx != 0:  # Only first conformer succeeds
                 raise RuntimeError("NWChem optimization failed")
 
-            # Success case
-            opt_output = Path(tmpdir) / "optimize.out"
-            opt_output.write_text("Total DFT energy =     -40.5186\n")
-            geom_output = Path(tmpdir) / "optimized.xyz"
+            # Success case - files must be under job_dir
+            opt_output = job_dir / "optimize.out"
+            opt_output.write_text("Total DFT energy:     -40.5186\n")
+            geom_output = job_dir / "output" / "optimized.xyz"
             geom_output.write_text("2\nOptimized\nC 0 0 0\nH 1.1 0 0\n")
 
             return {
                 "optimization_output": opt_output,
                 "geometry_file": geom_output,
                 "shielding_data": {},
-                "shielding_output": Path(tmpdir) / "shielding.out",
+                "shielding_output": job_dir / "shielding.out",
             }
+
+        def get_scratch_with_create(job_id, conf_id):
+            scratch_path = job_dir / "scratch" / conf_id
+            scratch_path.mkdir(parents=True, exist_ok=True)
+            return scratch_path
 
         with unittest.mock.patch(
             "qm_nmr_calc.nwchem.runner.run_calculation",
             side_effect=mock_run_calculation,
         ):
             with unittest.mock.patch(
-                "qm_nmr_calc.nwchem.runner.get_job_dir", return_value=job_dir
+                "qm_nmr_calc.storage.get_job_dir", return_value=job_dir
             ):
                 with unittest.mock.patch(
-                    "qm_nmr_calc.nwchem.runner.get_conformer_scratch_dir",
-                    side_effect=lambda job_id, conf_id: job_dir / "scratch" / conf_id,
+                    "qm_nmr_calc.storage.get_conformer_scratch_dir",
+                    side_effect=get_scratch_with_create,
                 ):
                     # Run optimization - should raise RuntimeError
                     with pytest.raises(RuntimeError, match="success rate"):
@@ -340,29 +355,34 @@ def test_conformer_dft_optimization_status_tracking():
             for conf in ensemble.conformers:
                 status_transitions.append((conf.conformer_id, conf.status))
 
-            # Return success
-            opt_output = Path(tmpdir) / "optimize.out"
-            opt_output.write_text("Total DFT energy =     -40.5186\n")
-            geom_output = Path(tmpdir) / "optimized.xyz"
+            # Return success - files must be under job_dir
+            opt_output = job_dir / "optimize.out"
+            opt_output.write_text("Total DFT energy:     -40.5186\n")
+            geom_output = job_dir / "output" / "optimized.xyz"
             geom_output.write_text("2\nOptimized\nC 0 0 0\nH 1.1 0 0\n")
 
             return {
                 "optimization_output": opt_output,
                 "geometry_file": geom_output,
                 "shielding_data": {},
-                "shielding_output": Path(tmpdir) / "shielding.out",
+                "shielding_output": job_dir / "shielding.out",
             }
+
+        def get_scratch_with_create(job_id, conf_id):
+            scratch_path = job_dir / "scratch" / conf_id
+            scratch_path.mkdir(parents=True, exist_ok=True)
+            return scratch_path
 
         with unittest.mock.patch(
             "qm_nmr_calc.nwchem.runner.run_calculation",
             side_effect=mock_run_calculation,
         ):
             with unittest.mock.patch(
-                "qm_nmr_calc.nwchem.runner.get_job_dir", return_value=job_dir
+                "qm_nmr_calc.storage.get_job_dir", return_value=job_dir
             ):
                 with unittest.mock.patch(
-                    "qm_nmr_calc.nwchem.runner.get_conformer_scratch_dir",
-                    side_effect=lambda job_id, conf_id: job_dir / "scratch" / conf_id,
+                    "qm_nmr_calc.storage.get_conformer_scratch_dir",
+                    side_effect=get_scratch_with_create,
                 ):
                     # Run optimization
                     successful, failed = run_conformer_dft_optimization(
@@ -405,11 +425,16 @@ def test_conformer_dft_optimization_stores_optimized_geometry_path():
         geom_output = job_dir / "output" / "optimized" / "conf_001_optimized.xyz"
         geom_output.parent.mkdir(parents=True, exist_ok=True)
 
+        def get_scratch_with_create(job_id, conf_id):
+            scratch_path = job_dir / "scratch" / conf_id
+            scratch_path.mkdir(parents=True, exist_ok=True)
+            return scratch_path
+
         with unittest.mock.patch(
             "qm_nmr_calc.nwchem.runner.run_calculation"
         ) as mock_run:
             opt_output = Path(tmpdir) / "optimize.out"
-            opt_output.write_text("Total DFT energy =     -40.5186\n")
+            opt_output.write_text("Total DFT energy:     -40.5186\n")
 
             mock_run.return_value = {
                 "optimization_output": opt_output,
@@ -419,11 +444,11 @@ def test_conformer_dft_optimization_stores_optimized_geometry_path():
             }
 
             with unittest.mock.patch(
-                "qm_nmr_calc.nwchem.runner.get_job_dir", return_value=job_dir
+                "qm_nmr_calc.storage.get_job_dir", return_value=job_dir
             ):
                 with unittest.mock.patch(
-                    "qm_nmr_calc.nwchem.runner.get_conformer_scratch_dir",
-                    side_effect=lambda job_id, conf_id: job_dir / "scratch" / conf_id,
+                    "qm_nmr_calc.storage.get_conformer_scratch_dir",
+                    side_effect=get_scratch_with_create,
                 ):
                     # Run optimization
                     successful, failed = run_conformer_dft_optimization(

@@ -21,8 +21,10 @@ from qm_nmr_calc.nwchem.output_parser import (
     parse_shielding_output,
 )
 from qm_nmr_calc.nwchem.runner import (
+    apply_post_dft_filter,
     get_nwchem_version,
     run_calculation,
+    run_conformer_dft_optimization,
     run_nwchem,
     validate_nwchem,
 )
@@ -43,6 +45,8 @@ __all__ = [
     # Runner
     "run_nwchem",
     "run_calculation",
+    "run_conformer_dft_optimization",
+    "apply_post_dft_filter",
     "validate_nwchem",
     "get_nwchem_version",
 ]
