@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 13 of 17 (RDKit Conformer Generation)
-Plan: 02 of 03 (Phase 13)
+Plan: 01 of 03 (Phase 13)
 Status: In progress
-Last activity: 2026-01-27 -- Completed 13-02-PLAN.md (Conformer filters)
+Last activity: 2026-01-27 -- Completed 13-01-PLAN.md (KDG generator with MMFF)
 
 Progress: ███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 33% (Phase 13: 1/3 plans)
 
@@ -20,8 +20,8 @@ Progress: ███░░░░░░░░░░░░░░░░░░░░�
 
 **Velocity:**
 - Total plans completed: 40
-- Average duration: 7.7 min
-- Total execution time: 316 min (5.3 hours)
+- Average duration: 7.6 min
+- Total execution time: 320 min (5.3 hours)
 
 **By Milestone:**
 
@@ -33,7 +33,7 @@ Progress: ███░░░░░░░░░░░░░░░░░░░░�
 
 **Recent Trend:**
 - Last 5 plans: 3-6 min
-- Trend: Fast (12-02: TDD module, 3 min; 12-03: Compat + API, 5.6 min; 13-02: Filters TDD, 4 min)
+- Trend: Fast (12-03: Compat + API, 5.6 min; 13-01: KDG TDD, 4 min)
 
 ## Accumulated Context
 
@@ -50,8 +50,9 @@ Recent v2.0 decisions affecting current work:
 - Per-conformer scratch directory isolation: Each conformer gets unique scratch dir to prevent NWChem database conflicts (12-01)
 - Explicit energy unit tracking: ConformerData stores energy_unit alongside energy to prevent conversion bugs (12-01)
 - str type for API conformer_mode: API schemas use str (not Literal) for flexibility, validation at service layer (12-03)
-- Pairwise GetBestRMS over matrix approach: Clearer code, acceptable performance for typical ensemble sizes (13-02)
-- Decoupled energy filtering: Operates on extracted data, reusable for MMFF and DFT (13-02)
+- KDG params for solution-phase: pruneRmsThresh=-1.0 (no pre-opt pruning), numThreads=0 (all threads), random coords fallback (13-01)
+- 8 rotatable bonds threshold: Separates rigid (50 confs) from flexible (200 confs) based on conformational space needs (13-01)
+- MMFF native units: Return energies in kcal/mol without conversion (13-01)
 
 ### Roadmap Evolution
 
@@ -83,6 +84,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-27
-Stopped at: Completed 13-02-PLAN.md (Conformer filters)
+Stopped at: Completed 13-01-PLAN.md (KDG generator with MMFF)
 Resume file: None
-Next: Continue Phase 13 (13-03: Pipeline integration)
+Next: Continue Phase 13 (13-02: Conformer filters)
