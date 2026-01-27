@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 13 of 17 (RDKit Conformer Generation)
-Plan: 01 of 03 (Phase 13)
-Status: In progress
-Last activity: 2026-01-27 -- Completed 13-01-PLAN.md (KDG generator with MMFF)
+Plan: 03 of 03 (Phase 13)
+Status: Phase complete
+Last activity: 2026-01-27 -- Completed 13-03-PLAN.md (End-to-end pipeline)
 
-Progress: ███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 33% (Phase 13: 1/3 plans)
+Progress: ████████████████████████████████████████████ 100% (Phase 13: 3/3 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 40
-- Average duration: 7.6 min
-- Total execution time: 320 min (5.3 hours)
+- Total plans completed: 43
+- Average duration: 8.1 min
+- Total execution time: 349 min (5.8 hours)
 
 **By Milestone:**
 
@@ -32,8 +32,8 @@ Progress: ███░░░░░░░░░░░░░░░░░░░░�
 | v2.0 Conformational Sampling | 6 | TBD | In progress |
 
 **Recent Trend:**
-- Last 5 plans: 3-6 min
-- Trend: Fast (12-03: Compat + API, 5.6 min; 13-01: KDG TDD, 4 min)
+- Last 5 plans: 4-29 min
+- Trend: Mixed (13-01: 4 min, 13-02: 4 min, 13-03: 29 min with integration tests)
 
 ## Accumulated Context
 
@@ -53,6 +53,9 @@ Recent v2.0 decisions affecting current work:
 - KDG params for solution-phase: pruneRmsThresh=-1.0 (no pre-opt pruning), numThreads=0 (all threads), random coords fallback (13-01)
 - 8 rotatable bonds threshold: Separates rigid (50 confs) from flexible (200 confs) based on conformational space needs (13-01)
 - MMFF native units: Return energies in kcal/mol without conversion (13-01)
+- Dedup before energy filter: Run RMSD deduplication first, then energy window filter on deduped subset (13-03)
+- Sequential 1-based conformer IDs: conf_001, conf_002, ... for user-facing consistency (13-03)
+- Relative geometry_file paths: Stored relative to job dir for portability (13-03)
 
 ### Roadmap Evolution
 
@@ -84,6 +87,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-27
-Stopped at: Completed 13-01-PLAN.md (KDG generator with MMFF)
+Stopped at: Completed 13-03-PLAN.md (End-to-end conformer pipeline)
 Resume file: None
-Next: Continue Phase 13 (13-02: Conformer filters)
+Next: Phase 14 (Boltzmann Weighting) - Calculate conformer weights from DFT energies
