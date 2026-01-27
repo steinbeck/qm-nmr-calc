@@ -258,14 +258,15 @@ class TestAverageNMRShifts:
         result = average_nmr_shifts([conf], weights)
 
         assert len(result) == 2
-        assert result[0].index == 1
-        assert result[0].atom == "H"
-        assert abs(result[0].shielding - 30.5) < 1e-4
-        assert abs(result[0].shift - 2.25) < 0.01
-        assert result[1].index == 2
-        assert result[1].atom == "C"
-        assert abs(result[1].shielding - 150.0) < 1e-4
-        assert abs(result[1].shift - 45.0) < 0.01
+        # Results sorted by shift descending, so C (45.0) before H (2.25)
+        assert result[0].index == 2
+        assert result[0].atom == "C"
+        assert abs(result[0].shielding - 150.0) < 1e-4
+        assert abs(result[0].shift - 45.0) < 0.01
+        assert result[1].index == 1
+        assert result[1].atom == "H"
+        assert abs(result[1].shielding - 30.5) < 1e-4
+        assert abs(result[1].shift - 2.25) < 0.01
 
     def test_multiple_atoms_averaged_independently(self):
         """Multiple atoms (H and C) should be averaged independently."""
@@ -284,21 +285,22 @@ class TestAverageNMRShifts:
         result = average_nmr_shifts([conf1, conf2], weights)
 
         assert len(result) == 3
-        # H atom 1: shielding = 0.6*30 + 0.4*32 = 30.8, shift = 0.6*2.0 + 0.4*1.0 = 1.6
-        assert result[0].index == 1
-        assert result[0].atom == "H"
-        assert abs(result[0].shielding - 30.8) < 1e-4
-        assert abs(result[0].shift - 1.6) < 0.01
+        # Results sorted by shift descending: C(48.0), H2(3.6), H1(1.6)
+        # C atom 3: shielding = 0.6*150 + 0.4*160 = 154.0, shift = 0.6*50 + 0.4*45 = 48.0
+        assert result[0].index == 3
+        assert result[0].atom == "C"
+        assert abs(result[0].shielding - 154.0) < 1e-4
+        assert abs(result[0].shift - 48.0) < 0.01
         # H atom 2: shielding = 0.6*28 + 0.4*30 = 28.8, shift = 0.6*4.0 + 0.4*3.0 = 3.6
         assert result[1].index == 2
         assert result[1].atom == "H"
         assert abs(result[1].shielding - 28.8) < 1e-4
         assert abs(result[1].shift - 3.6) < 0.01
-        # C atom 3: shielding = 0.6*150 + 0.4*160 = 154.0, shift = 0.6*50 + 0.4*45 = 48.0
-        assert result[2].index == 3
-        assert result[2].atom == "C"
-        assert abs(result[2].shielding - 154.0) < 1e-4
-        assert abs(result[2].shift - 48.0) < 0.01
+        # H atom 1: shielding = 0.6*30 + 0.4*32 = 30.8, shift = 0.6*2.0 + 0.4*1.0 = 1.6
+        assert result[2].index == 1
+        assert result[2].atom == "H"
+        assert abs(result[2].shielding - 30.8) < 1e-4
+        assert abs(result[2].shift - 1.6) < 0.01
 
     def test_mismatched_count_raises_error(self):
         """Mismatched conformer count and weight count should raise ValueError."""
