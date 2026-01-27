@@ -137,10 +137,11 @@ Plans:
   3. Temperature parameter (default 298.15 K) correctly applied in Boltzmann calculation
   4. Unit tests validate numerics with wide energy ranges (0-20 kcal/mol) and known test cases
   5. Single-conformer edge case (ensemble of 1) returns correct degeneracy (weight = 1.0)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 14-01: TBD
+- [ ] 14-01-PLAN.md -- Boltzmann weight calculation with numerical stability (TDD)
+- [ ] 14-02-PLAN.md -- Ensemble NMR shift averaging and orchestration (TDD)
 
 #### Phase 15: Multi-Conformer NWChem Integration
 **Goal**: Sequential DFT optimization and NMR calculation loop for conformer ensemble
@@ -212,11 +213,11 @@ Phases execute in numeric order: 12 -> 13 -> 14 -> 15 -> 16 -> 17
 | 11.2 Vacuum Benchmark | v1.1 | 3/3 | Complete | 2026-01-25 |
 | 12. Data Model | v2.0 | 3/3 | Complete | 2026-01-26 |
 | 13. RDKit Generation | v2.0 | 3/3 | Complete | 2026-01-27 |
-| 14. Boltzmann Averaging | v2.0 | 0/? | Not started | - |
+| 14. Boltzmann Averaging | v2.0 | 0/2 | Not started | - |
 | 15. NWChem Integration | v2.0 | 0/? | Not started | - |
 | 16. CREST Integration | v2.0 | 0/? | Not started | - |
 | 17. API Integration | v2.0 | 0/? | Not started | - |
 
 ---
 
-*Last updated: 2026-01-27 after Phase 13 execution complete*
+*Last updated: 2026-01-27 after Phase 14 planning complete*
