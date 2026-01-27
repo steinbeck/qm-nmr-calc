@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 15 of 17 (Multi-Conformer NWChem Integration)
-Plan: 01 of 03 (Phase 15)
+Plan: 02 of 03 (Phase 15)
 Status: In progress
-Last activity: 2026-01-27 -- Completed 15-01-PLAN.md (DFT energy extraction)
+Last activity: 2026-01-27 -- Completed 15-02-PLAN.md (Multi-conformer optimization workflow)
 
-Progress: ████████████████████████████████████████████░ 98% (45/46 plans complete)
+Progress: █████████████████████████████████████████████ 100% (46/46 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
 - Total plans completed: 46
 - Average duration: 8.1 min
-- Total execution time: 371 min (6.2 hours)
+- Total execution time: 381 min (6.4 hours)
 
 **By Milestone:**
 
@@ -33,7 +33,7 @@ Progress: ███████████████████████�
 
 **Recent Trend:**
 - Last 5 plans: 6-29 min
-- Trend: Consistent fast TDD (14-01: 6 min, 14-02: 7 min, 15-01: 9 min TDD with 5 new tests)
+- Trend: Consistent fast TDD (14-01: 6 min, 14-02: 7 min, 15-01: 9 min, 15-02: 10 min with 10 new tests)
 
 ## Accumulated Context
 
@@ -63,6 +63,9 @@ Recent v2.0 decisions affecting current work:
 - In-place weight population: average_ensemble_nmr mutates ConformerData.weight for tracking (14-02)
 - re.findall last-occurrence for optimization: Takes final energy from multi-cycle NWChem optimization (15-01)
 - Hartree native units for DFT energy: No conversion from NWChem output, matches Boltzmann functions (15-01)
+- Sequential conformer processing: Process conformers one at a time for simplicity, parallelize later if needed (15-02)
+- 50% success threshold: Fail if more than half of conformers fail DFT optimization (15-02)
+- smiles=None support: Allow geometry-file-only input for conformer optimization path (15-02)
 
 ### Roadmap Evolution
 
@@ -94,6 +97,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-27
-Stopped at: Completed 15-01-PLAN.md (DFT energy extraction)
+Stopped at: Completed 15-02-PLAN.md (Multi-conformer optimization workflow)
 Resume file: None
-Next: Phase 15 Plan 02 (Multi-conformer optimization workflow)
+Next: Phase 15 Plan 03 (NMR calculation loop) - Final v2.0 implementation plan
