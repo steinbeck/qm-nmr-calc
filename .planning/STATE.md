@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-26)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.0 Conformational Sampling -- Phase 14 in progress
+**Current focus:** v2.0 Conformational Sampling -- Phase 15 in progress
 
 ## Current Position
 
-Phase: 14 of 17 (Boltzmann Averaging)
-Plan: 02 of 02 (Phase 14)
-Status: Phase complete
-Last activity: 2026-01-27 -- Completed 14-02-PLAN.md (Ensemble NMR shift averaging)
+Phase: 15 of 17 (Multi-Conformer NWChem Integration)
+Plan: 01 of 03 (Phase 15)
+Status: In progress
+Last activity: 2026-01-27 -- Completed 15-01-PLAN.md (DFT energy extraction)
 
-Progress: ████████████████████████████████████████████ 100% (Phase 14: 2/2 plans complete)
+Progress: ████████████████████████████████████████████░ 98% (45/46 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 45
-- Average duration: 7.9 min
-- Total execution time: 362 min (6.0 hours)
+- Total plans completed: 46
+- Average duration: 8.1 min
+- Total execution time: 371 min (6.2 hours)
 
 **By Milestone:**
 
@@ -32,8 +32,8 @@ Progress: ███████████████████████�
 | v2.0 Conformational Sampling | 6 | TBD | In progress |
 
 **Recent Trend:**
-- Last 5 plans: 4-29 min
-- Trend: Consistent fast TDD (13-03: 29 min, 14-01: 6 min, 14-02: 7 min TDD with 15 new tests)
+- Last 5 plans: 6-29 min
+- Trend: Consistent fast TDD (14-01: 6 min, 14-02: 7 min, 15-01: 9 min TDD with 5 new tests)
 
 ## Accumulated Context
 
@@ -61,6 +61,8 @@ Recent v2.0 decisions affecting current work:
 - Weighted averaging by atom index: Cross-conformer matching via index field (NWChem 1-based), not implicit ordering (14-02)
 - Descending shift sort: NMR convention (highest shift first) for all returned results (14-02)
 - In-place weight population: average_ensemble_nmr mutates ConformerData.weight for tracking (14-02)
+- re.findall last-occurrence for optimization: Takes final energy from multi-cycle NWChem optimization (15-01)
+- Hartree native units for DFT energy: No conversion from NWChem output, matches Boltzmann functions (15-01)
 
 ### Roadmap Evolution
 
@@ -92,6 +94,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-27
-Stopped at: Completed 14-02-PLAN.md (Ensemble NMR shift averaging)
+Stopped at: Completed 15-01-PLAN.md (DFT energy extraction)
 Resume file: None
-Next: Phase 15 (Conformer NMR Integration) - Integrate Boltzmann averaging into per-conformer NMR pipeline
+Next: Phase 15 Plan 02 (Multi-conformer optimization workflow)
