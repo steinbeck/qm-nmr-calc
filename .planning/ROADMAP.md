@@ -120,10 +120,12 @@ Plans:
   3. Pre-DFT energy window filter (default 6 kcal/mol) removes high-energy conformers
   4. Adaptive conformer count scales with rotatable bond count
   5. App works fully without CREST/xTB installed (RDKit-only mode validated)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 13-01: TBD
+- [ ] 13-01-PLAN.md -- KDG conformer generation and MMFF optimization (TDD)
+- [ ] 13-02-PLAN.md -- RMSD deduplication and energy window filtering (TDD)
+- [ ] 13-03-PLAN.md -- Pipeline orchestration, XYZ writing, and integration tests
 
 #### Phase 14: Boltzmann Averaging Implementation
 **Goal**: Numerically stable Boltzmann weighting and ensemble averaging
@@ -209,7 +211,7 @@ Phases execute in numeric order: 12 -> 13 -> 14 -> 15 -> 16 -> 17
 | 11.1 Solvent Research | v1.1 | 1/1 | Complete | 2026-01-25 |
 | 11.2 Vacuum Benchmark | v1.1 | 3/3 | Complete | 2026-01-25 |
 | 12. Data Model | v2.0 | 3/3 | Complete | 2026-01-26 |
-| 13. RDKit Generation | v2.0 | 0/? | Not started | - |
+| 13. RDKit Generation | v2.0 | 0/3 | Not started | - |
 | 14. Boltzmann Averaging | v2.0 | 0/? | Not started | - |
 | 15. NWChem Integration | v2.0 | 0/? | Not started | - |
 | 16. CREST Integration | v2.0 | 0/? | Not started | - |
@@ -217,4 +219,4 @@ Phases execute in numeric order: 12 -> 13 -> 14 -> 15 -> 16 -> 17
 
 ---
 
-*Last updated: 2026-01-26 after Phase 12 execution complete*
+*Last updated: 2026-01-27 after Phase 13 planning complete*
