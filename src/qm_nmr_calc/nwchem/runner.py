@@ -361,3 +361,166 @@ def apply_post_dft_filter(
 
     # Return filtered conformers
     return [optimized_conformers[i] for i in kept_ids]
+
+
+def run_conformer_nmr_calculations(
+    optimized_conformers: list,
+    job_id: str,
+    preset: dict,
+    solvent: str,
+    processes: int = 4,
+) -> tuple[list, list]:
+    """Run NMR shielding calculations on optimized conformers.
+
+    For each conformer, runs NMR shielding calculation with skip_optimization=True
+    using the optimized geometry. Converts shielding to chemical shifts using
+    scaling factors. Individual conformer NMR failures do not stop processing.
+
+    Note: NO minimum success threshold for NMR step. Unlike DFT optimization
+    (which requires >50% success), any successful NMR results are usable since
+    the DFT step already caught systematic failures.
+
+    Args:
+        optimized_conformers: List of ConformerData with status="optimized"
+        job_id: Job identifier for directory lookup
+        preset: Calculation preset dict (functional, basis_set, nmr_basis_set, max_iter)
+        solvent: Solvent name for COSMO
+        processes: Number of MPI processes
+
+    Returns:
+        Tuple of (nmr_results, failed_conformers) where:
+            - nmr_results: List of NMRResults objects (one per successful conformer)
+            - failed_conformers: List of ConformerData that failed NMR
+    """
+    from qm_nmr_calc.models import NMRResults, AtomShift
+    from qm_nmr_calc.shifts import shielding_to_shift
+    from qm_nmr_calc.storage import get_job_dir, get_conformer_scratch_dir
+
+    job_dir = get_job_dir(job_id)
+    nmr_results = []
+    failed = []
+
+    for conformer in optimized_conformers:
+        try:
+            # Update status to nmr_running
+            conformer.status = "nmr_running"
+
+            # Get conformer-specific scratch directory
+            scratch_dir = get_conformer_scratch_dir(job_id, conformer.conformer_id)
+
+            # Resolve optimized geometry file path
+            opt_geom_path = job_dir / conformer.optimized_geometry_file
+
+            # Build NMR preset with nmr_basis_set
+            nmr_preset = {**preset, "basis_set": preset["nmr_basis_set"]}
+
+            # Run NMR calculation with skip_optimization=True
+            result = run_calculation(
+                smiles=None,
+                job_dir=job_dir,
+                preset=nmr_preset,
+                solvent=solvent,
+                processes=processes,
+                skip_optimization=True,
+                geometry_file=opt_geom_path,
+                scratch_dir_override=scratch_dir,
+            )
+
+            # Parse shielding data
+            shielding_data = result["shielding_data"]
+
+            # Convert shielding to shifts
+            shift_data = shielding_to_shift(
+                shielding_data,
+                functional=preset["functional"],
+                basis_set=preset["nmr_basis_set"],
+                solvent=solvent,
+            )
+
+            # Build NMRResults from shift data
+            h1_shifts = [AtomShift(**s) for s in shift_data["1H"]]
+            c13_shifts = [AtomShift(**s) for s in shift_data["13C"]]
+            nmr_result = NMRResults(
+                h1_shifts=h1_shifts,
+                c13_shifts=c13_shifts,
+                functional=preset["functional"],
+                basis_set=preset["nmr_basis_set"],
+                solvent=solvent,
+            )
+
+            # Update conformer status to complete
+            conformer.status = "nmr_complete"
+
+            # Add result to list
+            nmr_results.append(nmr_result)
+
+        except Exception as e:
+            # Mark conformer as failed and continue
+            conformer.status = "failed"
+            error_msg = f"{type(e).__name__}: {str(e)}"
+            conformer.error_message = error_msg[:200]
+            failed.append(conformer)
+
+    return (nmr_results, failed)
+
+
+def run_ensemble_dft_and_nmr(
+    ensemble,
+    job_id: str,
+    preset: dict,
+    solvent: str,
+    processes: int = 4,
+) -> tuple:
+    """Run full ensemble calculation pipeline: DFT optimization -> post-DFT filter -> NMR -> Boltzmann.
+
+    This is the main entry point for conformer ensemble calculations. It orchestrates:
+    1. DFT geometry optimization on all conformers
+    2. Post-DFT energy window filtering
+    3. NMR shielding calculations on filtered conformers
+    4. Returns ensemble + NMR results for Boltzmann averaging
+
+    The ensemble is mutated in place - conformer status fields are updated throughout
+    the pipeline. Final states:
+    - Conformers that completed NMR: status="nmr_complete"
+    - Conformers filtered by post-DFT energy window: status="optimized" (excluded from NMR)
+    - Conformers that failed DFT or NMR: status="failed"
+
+    Args:
+        ensemble: ConformerEnsemble with conformers to process
+        job_id: Job identifier for directory lookup
+        preset: Calculation preset dict (functional, basis_set, nmr_basis_set, max_iter)
+        solvent: Solvent name for COSMO
+        processes: Number of MPI processes
+
+    Returns:
+        Tuple of (ensemble, nmr_results) where:
+            - ensemble: Updated ConformerEnsemble with total_after_post_filter set
+            - nmr_results: List of NMRResults for conformers that completed NMR
+
+    Raises:
+        RuntimeError: If DFT optimization fails for >50% of conformers
+    """
+    # Step 1: DFT optimization
+    optimized_conformers, failed_dft = run_conformer_dft_optimization(
+        ensemble, job_id, preset, solvent, processes
+    )
+
+    # Step 2: Post-DFT energy filter
+    filtered_conformers = apply_post_dft_filter(
+        optimized_conformers,
+        window_kcal=ensemble.post_dft_energy_window_kcal,
+    )
+
+    # Update ensemble metadata
+    ensemble.total_after_post_filter = len(filtered_conformers)
+
+    # Step 3: NMR calculations
+    nmr_results, failed_nmr = run_conformer_nmr_calculations(
+        filtered_conformers, job_id, preset, solvent, processes
+    )
+
+    # Note: ensemble.conformers is already mutated in place by the loops above
+    # Each ConformerData object's status/energy/etc fields were updated by reference
+    # No reconstruction needed - final states are already reflected
+
+    return (ensemble, nmr_results)

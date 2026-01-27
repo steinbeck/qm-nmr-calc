@@ -25,6 +25,8 @@ from qm_nmr_calc.nwchem.runner import (
     get_nwchem_version,
     run_calculation,
     run_conformer_dft_optimization,
+    run_conformer_nmr_calculations,
+    run_ensemble_dft_and_nmr,
     run_nwchem,
     validate_nwchem,
 )
@@ -46,6 +48,8 @@ __all__ = [
     "run_nwchem",
     "run_calculation",
     "run_conformer_dft_optimization",
+    "run_conformer_nmr_calculations",
+    "run_ensemble_dft_and_nmr",
     "apply_post_dft_filter",
     "validate_nwchem",
     "get_nwchem_version",

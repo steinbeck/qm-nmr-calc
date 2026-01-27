@@ -668,7 +668,7 @@ def test_conformer_nmr_all_succeed():
             "qm_nmr_calc.nwchem.runner.run_calculation", side_effect=mock_run_calc
         ):
             with unittest.mock.patch(
-                "qm_nmr_calc.nwchem.runner.shielding_to_shift", side_effect=mock_shifts
+                "qm_nmr_calc.shifts.shielding_to_shift", side_effect=mock_shifts
             ):
                 with unittest.mock.patch(
                     "qm_nmr_calc.storage.get_job_dir", return_value=job_dir
@@ -759,7 +759,7 @@ def test_conformer_nmr_partial_failure():
             "qm_nmr_calc.nwchem.runner.run_calculation", side_effect=mock_run_calc
         ):
             with unittest.mock.patch(
-                "qm_nmr_calc.nwchem.runner.shielding_to_shift", side_effect=mock_shifts
+                "qm_nmr_calc.shifts.shielding_to_shift", side_effect=mock_shifts
             ):
                 with unittest.mock.patch(
                     "qm_nmr_calc.storage.get_job_dir", return_value=job_dir
@@ -836,7 +836,7 @@ def test_conformer_nmr_status_transitions():
             "qm_nmr_calc.nwchem.runner.run_calculation", side_effect=mock_run_calc
         ):
             with unittest.mock.patch(
-                "qm_nmr_calc.nwchem.runner.shielding_to_shift", side_effect=mock_shifts
+                "qm_nmr_calc.shifts.shielding_to_shift", side_effect=mock_shifts
             ):
                 with unittest.mock.patch(
                     "qm_nmr_calc.storage.get_job_dir", return_value=job_dir
@@ -901,7 +901,7 @@ def test_conformer_nmr_uses_skip_optimization():
             }
 
             with unittest.mock.patch(
-                "qm_nmr_calc.nwchem.runner.shielding_to_shift", side_effect=mock_shifts
+                "qm_nmr_calc.shifts.shielding_to_shift", side_effect=mock_shifts
             ):
                 with unittest.mock.patch(
                     "qm_nmr_calc.storage.get_job_dir", return_value=job_dir
@@ -967,7 +967,7 @@ def test_conformer_nmr_uses_nmr_basis_set():
             }
 
             with unittest.mock.patch(
-                "qm_nmr_calc.nwchem.runner.shielding_to_shift", side_effect=mock_shifts
+                "qm_nmr_calc.shifts.shielding_to_shift", side_effect=mock_shifts
             ):
                 with unittest.mock.patch(
                     "qm_nmr_calc.storage.get_job_dir", return_value=job_dir
