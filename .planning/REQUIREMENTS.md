@@ -32,10 +32,10 @@ Requirements for v2.0 Conformational Sampling. Each maps to roadmap phases.
 
 ### Boltzmann Averaging
 
-- [ ] **BOLTZ-01**: System calculates Boltzmann weights from DFT optimization energies
-- [ ] **BOLTZ-02**: System computes population-weighted average chemical shifts across conformer ensemble
-- [ ] **BOLTZ-03**: Boltzmann implementation is numerically stable (handles wide energy ranges without overflow/underflow)
-- [ ] **BOLTZ-04**: User can set temperature parameter for Boltzmann weighting (default 298.15 K)
+- [x] **BOLTZ-01**: System calculates Boltzmann weights from DFT optimization energies
+- [x] **BOLTZ-02**: System computes population-weighted average chemical shifts across conformer ensemble
+- [x] **BOLTZ-03**: Boltzmann implementation is numerically stable (handles wide energy ranges without overflow/underflow)
+- [x] **BOLTZ-04**: User can set temperature parameter for Boltzmann weighting (default 298.15 K)
 
 ### API and Output
 
@@ -104,10 +104,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DFT-03 | Phase 12 | Complete |
 | DFT-04 | Phase 15 | Pending |
 | DFT-05 | Phase 15 | Pending |
-| BOLTZ-01 | Phase 14 | Pending |
-| BOLTZ-02 | Phase 14 | Pending |
-| BOLTZ-03 | Phase 14 | Pending |
-| BOLTZ-04 | Phase 14 | Pending |
+| BOLTZ-01 | Phase 14 | Complete |
+| BOLTZ-02 | Phase 14 | Complete |
+| BOLTZ-03 | Phase 14 | Complete |
+| BOLTZ-04 | Phase 14 | Complete |
 | API-01 | Phase 17 | Pending |
 | API-02 | Phase 17 | Pending |
 | API-03 | Phase 17 | Pending |
