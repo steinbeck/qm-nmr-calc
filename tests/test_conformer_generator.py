@@ -161,7 +161,7 @@ class TestIntegration:
 
     def test_full_workflow_flexible_molecule(self):
         """Full workflow for flexible molecule."""
-        smiles = "CCCCCCCC"  # Octane, flexible
+        smiles = "CCCCCCCCCCCC"  # Dodecane, flexible (9 rotatable bonds)
 
         # Calculate conformer count
         num_confs = calculate_num_conformers(smiles)
