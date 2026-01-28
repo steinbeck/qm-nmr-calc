@@ -169,3 +169,57 @@ class TestOpenAPI:
         data = response.json()
         assert data["info"]["title"] == "QM NMR Calculator API"
         assert "/api/v1/jobs" in str(data["paths"])
+
+
+class TestEnsembleSchemas:
+    """Tests for ensemble API schema extensions."""
+
+    def test_ensemble_metadata_response_model(self):
+        """Verify EnsembleMetadataResponse model can be instantiated."""
+        from qm_nmr_calc.api.schemas import EnsembleMetadataResponse
+
+        metadata = EnsembleMetadataResponse(
+            conformer_count=5,
+            total_generated=20,
+            method="rdkit_kdg",
+            temperature_k=298.15,
+            energy_range_kcal=2.5,
+            top_populations=[
+                {"id": "conf_001", "population": 0.45, "energy_kcal": 0.0},
+                {"id": "conf_002", "population": 0.30, "energy_kcal": 0.5},
+            ],
+        )
+        assert metadata.conformer_count == 5
+        assert metadata.method == "rdkit_kdg"
+
+    def test_conformer_progress_response_model(self):
+        """Verify ConformerProgressResponse model can be instantiated."""
+        from qm_nmr_calc.api.schemas import ConformerProgressResponse
+
+        progress = ConformerProgressResponse(
+            conformer_id="conf_001",
+            status="nmr_complete",
+            energy_kcal=0.0,
+            population=0.45,
+        )
+        assert progress.conformer_id == "conf_001"
+        assert progress.status == "nmr_complete"
+
+    def test_job_status_response_ensemble_fields(self):
+        """Verify JobStatusResponse has ensemble fields."""
+        from qm_nmr_calc.api.schemas import JobStatusResponse
+
+        fields = JobStatusResponse.model_fields
+        assert "conformer_mode" in fields
+        assert "conformer_method" in fields
+        assert "conformer_count" in fields
+        assert "conformer_progress" in fields
+        assert "ensemble_metadata" in fields
+        assert "conformer_method_warning" in fields
+
+    def test_nmr_results_response_ensemble_metadata(self):
+        """Verify NMRResultsResponse has ensemble_metadata field."""
+        from qm_nmr_calc.api.schemas import NMRResultsResponse
+
+        fields = NMRResultsResponse.model_fields
+        assert "ensemble_metadata" in fields
