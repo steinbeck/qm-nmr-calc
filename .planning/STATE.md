@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 
 ## Current Position
 
-Phase: 16 of 17 (CREST Integration)
-Plan: 03 of 03 (Phase 16)
-Status: Phase complete
-Last activity: 2026-01-28 -- Completed 16-03-PLAN.md (CREST pipeline dispatch and health endpoint)
+Phase: 17 of 17 (API Integration)
+Plan: 02 of 03 (Phase 17)
+Status: In progress
+Last activity: 2026-01-28 -- Completed 17-02-PLAN.md (Ensemble schema extensions)
 
-Progress: ██████████████████████████████████████████████ 100% (50/50 plans complete)
+Progress: ██████████████████████████████████████████████ 100% (52/53 plans complete)
 
 ## Performance Metrics
 
@@ -82,6 +82,8 @@ Recent v2.0 decisions affecting current work:
 - Defensive directory creation: mkdir(parents=True, exist_ok=True) before XYZ write (16-02)
 - conformer_method parameter for dispatch: "rdkit_kdg" (default) or "crest" with fail-fast validation (16-03)
 - CREST as informational health field: Non-blocking capability reporting in health endpoint (16-03)
+- Energy display in relative kcal/mol: User-friendly display units in API responses (17-02)
+- Top 3 conformers in ensemble metadata: Quick summary without overwhelming detail (17-02)
 
 ### Roadmap Evolution
 
@@ -117,7 +119,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 16-03-PLAN.md (CREST pipeline dispatch and health endpoint)
+Stopped at: Completed 17-02-PLAN.md (Ensemble schema extensions)
 Resume file: None
-Next: Phase 17 (API Integration for v2.0 Conformational Sampling)
-Tests: All 262+ tests passing (229 base + 27 CREST + 6 dispatch)
+Next: 17-03-PLAN.md (Huey task integration for ensemble mode)
+Tests: All 266+ tests passing (16 API tests with 4 new ensemble schema tests)
