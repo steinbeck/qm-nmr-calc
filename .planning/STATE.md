@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 16 of 17 (CREST Integration)
-Plan: 01 of 03 (Phase 16)
+Plan: 02 of 03 (Phase 16)
 Status: In progress
-Last activity: 2026-01-28 -- Completed 16-01-PLAN.md (CREST foundation utilities)
+Last activity: 2026-01-28 -- Completed 16-02-PLAN.md (CREST runner and ensemble builder)
 
-Progress: ██████████████████████████████████████████████ 100% (48/48 plans complete)
+Progress: ██████████████████████████████████████████████ 100% (49/49 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 48
-- Average duration: 8.2 min
-- Total execution time: 402 min (6.7 hours)
+- Total plans completed: 49
+- Average duration: 8.4 min
+- Total execution time: 419 min (7.0 hours)
 
 **By Milestone:**
 
@@ -32,8 +32,8 @@ Progress: ███████████████████████�
 | v2.0 Conformational Sampling | 6 | TBD | In progress |
 
 **Recent Trend:**
-- Last 5 plans: 9-12 min
-- Trend: Consistent fast TDD (15-01: 9 min, 15-02: 10 min, 15-03: 9 min, 16-01: 12 min)
+- Last 5 plans: 9-17 min
+- Trend: Consistent fast TDD (15-02: 10 min, 15-03: 9 min, 16-01: 12 min, 16-02: 17 min)
 
 ## Accumulated Context
 
@@ -75,6 +75,11 @@ Recent v2.0 decisions affecting current work:
 - Require both crest and xtb binaries: CREST depends on xTB for functionality (16-01)
 - ALPB solvent map for chcl3/dmso: Only supported solvents, extensible for future additions (16-01)
 - Case-insensitive solvent matching: Normalize to lowercase before ALPB lookup (16-01)
+- CREST timeout default 7200s (2 hours): Balances macrocycle completeness vs responsiveness (16-02)
+- RDKit fallback in timeout message: User-facing guidance when CREST too slow (16-02)
+- CREST energies as relative kcal/mol: Consistency with RDKit path for pre-DFT filtering (16-02)
+- Skip RMSD dedup after CREST: CREST handles deduplication internally (16-02)
+- Defensive directory creation: mkdir(parents=True, exist_ok=True) before XYZ write (16-02)
 
 ### Roadmap Evolution
 
@@ -91,10 +96,10 @@ None.
 ### Blockers/Concerns
 
 **v2.0 Architecture:**
-- CREST timeouts: Macrocycles can hang, need timeout with RDKit fallback (Phase 16)
 - Ensemble filtering before averaging: `average_ensemble_nmr` requires `len(conformers) == len(nmr_results)`. After `run_ensemble_dft_and_nmr`, ensemble contains ALL conformers (including filtered/failed), but nmr_results only covers nmr_complete ones. Phase 17 caller (Huey task) must create a filtered ensemble with only nmr_complete conformers before calling `average_ensemble_nmr`.
 
 **Resolved (v2.0):**
+- CREST timeouts: Implemented subprocess timeout with user-friendly fallback message (16-02)
 - Numerical stability: Boltzmann weighting implemented with exp-normalize trick, tested with extreme ranges (14-01)
 - Atom ordering consistency: Canonical indexing established via CanonicalRankAtoms (12-02)
 - Scratch directory isolation: Per-conformer directories prevent NWChem database corruption (12-01)
@@ -110,7 +115,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 16-01-PLAN.md (CREST foundation utilities: binary detection, ALPB mapping, XYZ parsing)
+Stopped at: Completed 16-02-PLAN.md (CREST runner and ensemble builder: subprocess execution, energy conversion, XYZ writing)
 Resume file: None
-Next: 16-02 (CREST runner implementation)
-Tests: All 244 tests passing (229 existing + 15 new for CREST utilities)
+Next: 16-03 (CREST integration into conformer_mode selection)
+Tests: All 256 tests passing (229 base + 27 CREST)
