@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 16 of 17 (CREST Integration)
-Plan: 02 of 03 (Phase 16)
-Status: In progress
-Last activity: 2026-01-28 -- Completed 16-02-PLAN.md (CREST runner and ensemble builder)
+Plan: 03 of 03 (Phase 16)
+Status: Phase complete
+Last activity: 2026-01-28 -- Completed 16-03-PLAN.md (CREST pipeline dispatch and health endpoint)
 
-Progress: ██████████████████████████████████████████████ 100% (49/49 plans complete)
+Progress: ██████████████████████████████████████████████ 100% (50/50 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 49
-- Average duration: 8.4 min
-- Total execution time: 419 min (7.0 hours)
+- Total plans completed: 50
+- Average duration: 8.6 min
+- Total execution time: 432 min (7.2 hours)
 
 **By Milestone:**
 
@@ -33,7 +33,7 @@ Progress: ███████████████████████�
 
 **Recent Trend:**
 - Last 5 plans: 9-17 min
-- Trend: Consistent fast TDD (15-02: 10 min, 15-03: 9 min, 16-01: 12 min, 16-02: 17 min)
+- Trend: Consistent fast execution (15-03: 9 min, 16-01: 12 min, 16-02: 17 min, 16-03: 13 min)
 
 ## Accumulated Context
 
@@ -80,6 +80,8 @@ Recent v2.0 decisions affecting current work:
 - CREST energies as relative kcal/mol: Consistency with RDKit path for pre-DFT filtering (16-02)
 - Skip RMSD dedup after CREST: CREST handles deduplication internally (16-02)
 - Defensive directory creation: mkdir(parents=True, exist_ok=True) before XYZ write (16-02)
+- conformer_method parameter for dispatch: "rdkit_kdg" (default) or "crest" with fail-fast validation (16-03)
+- CREST as informational health field: Non-blocking capability reporting in health endpoint (16-03)
 
 ### Roadmap Evolution
 
@@ -115,7 +117,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 16-02-PLAN.md (CREST runner and ensemble builder: subprocess execution, energy conversion, XYZ writing)
+Stopped at: Completed 16-03-PLAN.md (CREST pipeline dispatch and health endpoint)
 Resume file: None
-Next: 16-03 (CREST integration into conformer_mode selection)
-Tests: All 256 tests passing (229 base + 27 CREST)
+Next: Phase 17 (API Integration for v2.0 Conformational Sampling)
+Tests: All 262+ tests passing (229 base + 27 CREST + 6 dispatch)
