@@ -5,6 +5,49 @@ from typing import Literal, Optional
 from pydantic import BaseModel, EmailStr, Field
 
 
+class ConformerProgressResponse(BaseModel):
+    """Progress status for a single conformer."""
+
+    conformer_id: str = Field(..., description="Conformer identifier (e.g., conf_001)")
+    status: str = Field(
+        ...,
+        description="Status: pending, optimizing, optimized, nmr_running, nmr_complete, failed",
+    )
+    energy_kcal: Optional[float] = Field(
+        None, description="Relative energy in kcal/mol (after DFT)"
+    )
+    population: Optional[float] = Field(
+        None, description="Boltzmann population (0-1, after averaging)"
+    )
+
+
+class EnsembleMetadataResponse(BaseModel):
+    """Ensemble metadata included in completed job results."""
+
+    conformer_count: int = Field(
+        ..., description="Number of conformers used in averaging"
+    )
+    total_generated: int = Field(
+        ..., description="Total conformers generated before filtering"
+    )
+    method: str = Field(
+        ..., description="Conformer generation method: rdkit_kdg or crest"
+    )
+    temperature_k: float = Field(
+        default=298.15, description="Temperature for Boltzmann weighting"
+    )
+    energy_range_kcal: float = Field(
+        ..., description="Energy range of used conformers in kcal/mol"
+    )
+    top_populations: list[dict] = Field(
+        ...,
+        description="Top 3 conformers by population: [{id, population, energy_kcal}]",
+    )
+    conformer_method_warning: Optional[str] = Field(
+        None, description="Warning message if CREST fell back to RDKit"
+    )
+
+
 class JobSubmitRequest(BaseModel):
     """Request body for SMILES job submission."""
 
@@ -71,17 +114,21 @@ class NMRResultsResponse(BaseModel):
     # Scaling factor metadata
     scaling_factor_source: str = Field(
         default="DELTA50",
-        description="Source of scaling factors used for shift calculation"
+        description="Source of scaling factors used for shift calculation",
     )
     h1_expected_mae: str = Field(
         ...,
         description="Expected mean absolute error for 1H shifts (e.g., '+/- 0.12 ppm')",
-        examples=["+/- 0.12 ppm"]
+        examples=["+/- 0.12 ppm"],
     )
     c13_expected_mae: str = Field(
         ...,
         description="Expected mean absolute error for 13C shifts (e.g., '+/- 1.95 ppm')",
-        examples=["+/- 1.95 ppm"]
+        examples=["+/- 1.95 ppm"],
+    )
+    # v2.0: Ensemble metadata (only for ensemble mode results)
+    ensemble_metadata: Optional[EnsembleMetadataResponse] = Field(
+        None, description="Ensemble metadata (only for ensemble mode results)"
     )
 
 
@@ -112,7 +159,9 @@ class JobStatusResponse(BaseModel):
     # Step progress tracking
     current_step: Optional[str] = Field(None, description="Current step identifier")
     current_step_label: Optional[str] = Field(None, description="Current step label")
-    step_started_at: Optional[str] = Field(None, description="When current step started")
+    step_started_at: Optional[str] = Field(
+        None, description="When current step started"
+    )
     steps_completed: list[StepTimingResponse] = Field(
         default_factory=list, description="Completed steps with timings"
     )
@@ -124,6 +173,25 @@ class JobStatusResponse(BaseModel):
     conformer_mode: str = Field(
         default="single",
         description="Conformational sampling mode: 'single' or 'ensemble'",
+    )
+    # Ensemble-specific fields (only populated when mode="ensemble")
+    conformer_method: Optional[str] = Field(
+        None, description="Conformer generation method: 'rdkit_kdg' or 'crest'"
+    )
+    conformer_count: Optional[int] = Field(
+        None, description="Number of conformers (only for ensemble mode)"
+    )
+    conformer_progress: Optional[list[ConformerProgressResponse]] = Field(
+        None, description="Per-conformer status array for progress tracking"
+    )
+    eta_seconds: Optional[int] = Field(
+        None, description="Estimated time remaining in seconds"
+    )
+    conformer_method_warning: Optional[str] = Field(
+        None, description="Warning if CREST fell back to RDKit"
+    )
+    ensemble_metadata: Optional[EnsembleMetadataResponse] = Field(
+        None, description="Ensemble metadata (only for completed ensemble jobs)"
     )
 
 
