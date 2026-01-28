@@ -1,4 +1,6 @@
 """Integration tests for the QM NMR Calculator API."""
+from unittest import mock
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -22,6 +24,28 @@ class TestHealth:
         # May be 200 or 503 depending on environment
         assert response.status_code in [200, 503]
         assert "status" in response.json()
+
+    def test_health_ready_includes_crest_available(self):
+        """GET /health/ready includes crest_available boolean field."""
+        # Mock CREST detection to ensure predictable result
+        with mock.patch("qm_nmr_calc.conformers.crest_generator.detect_crest_available") as mock_detect:
+            # Test with CREST available
+            mock_detect.return_value = True
+            response = client.get("/health/ready")
+            data = response.json()
+            assert "crest_available" in data
+            assert data["crest_available"] is True
+            assert "checks" in data
+            assert data["checks"]["crest_available"] is True
+
+            # Test with CREST not available
+            mock_detect.return_value = False
+            response = client.get("/health/ready")
+            data = response.json()
+            assert "crest_available" in data
+            assert data["crest_available"] is False
+            assert "checks" in data
+            assert data["checks"]["crest_available"] is False
 
 
 class TestJobSubmission:

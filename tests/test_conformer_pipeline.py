@@ -1,5 +1,7 @@
 """Integration tests for end-to-end conformer pipeline."""
 
+from unittest import mock
+
 import pytest
 
 from qm_nmr_calc.conformers import generate_conformer_ensemble
@@ -150,3 +152,138 @@ class TestConformerPipeline:
         # Invalid SMILES should raise ValueError
         with pytest.raises(ValueError, match="Invalid SMILES"):
             generate_conformer_ensemble("invalid_smiles_string", "test_job_008")
+
+
+class TestCRESTDispatch:
+    """Tests for CREST dispatch in pipeline."""
+
+    def test_pipeline_crest_dispatch_when_available(self, tmp_path, monkeypatch):
+        """Test pipeline dispatches to CREST when method='crest' and CREST available."""
+        # Monkeypatch DATA_DIR
+        import qm_nmr_calc.storage as storage
+
+        monkeypatch.setattr(storage, "DATA_DIR", tmp_path)
+
+        # Mock CREST functions at their actual location
+        with mock.patch("qm_nmr_calc.conformers.crest_generator.detect_crest_available") as mock_detect, \
+             mock.patch("qm_nmr_calc.conformers.crest_generator.get_alpb_solvent") as mock_get_alpb, \
+             mock.patch("qm_nmr_calc.conformers.crest_generator.generate_crest_ensemble") as mock_crest_gen:
+
+            # Setup mocks
+            mock_detect.return_value = True
+            mock_get_alpb.return_value = "chcl3"
+
+            # Create mock ensemble
+            from qm_nmr_calc.models import ConformerEnsemble
+            mock_ensemble = ConformerEnsemble(
+                method="crest",
+                conformers=[],
+                pre_dft_energy_window_kcal=6.0,
+                total_generated=5,
+                total_after_pre_filter=5,
+            )
+            mock_crest_gen.return_value = mock_ensemble
+
+            # Call with CREST method
+            ensemble = generate_conformer_ensemble(
+                smiles="CCO",
+                job_id="test_crest_001",
+                conformer_method="crest",
+                solvent="chcl3",
+            )
+
+            # Verify CREST was called
+            mock_detect.assert_called_once()
+            mock_get_alpb.assert_called_once_with("chcl3")
+            mock_crest_gen.assert_called_once_with(
+                smiles="CCO",
+                job_id="test_crest_001",
+                solvent="chcl3",
+                charge=0,
+                energy_window_kcal=6.0,
+                timeout_seconds=7200,
+            )
+            assert ensemble.method == "crest"
+
+    def test_pipeline_crest_raises_when_not_installed(self, tmp_path, monkeypatch):
+        """Test pipeline raises ValueError when CREST requested but not installed."""
+        # Monkeypatch DATA_DIR
+        import qm_nmr_calc.storage as storage
+
+        monkeypatch.setattr(storage, "DATA_DIR", tmp_path)
+
+        # Mock CREST not available
+        with mock.patch("qm_nmr_calc.conformers.crest_generator.detect_crest_available") as mock_detect:
+            mock_detect.return_value = False
+
+            # Verify ValueError raised
+            with pytest.raises(ValueError, match="CREST/xTB not installed"):
+                generate_conformer_ensemble(
+                    smiles="CCO",
+                    job_id="test_crest_002",
+                    conformer_method="crest",
+                )
+
+    def test_pipeline_crest_raises_for_vacuum(self, tmp_path, monkeypatch):
+        """Test pipeline raises ValueError when CREST requested for vacuum."""
+        # Monkeypatch DATA_DIR
+        import qm_nmr_calc.storage as storage
+
+        monkeypatch.setattr(storage, "DATA_DIR", tmp_path)
+
+        # Mock CREST available but vacuum solvent
+        with mock.patch("qm_nmr_calc.conformers.crest_generator.detect_crest_available") as mock_detect, \
+             mock.patch("qm_nmr_calc.conformers.crest_generator.get_alpb_solvent") as mock_get_alpb:
+
+            mock_detect.return_value = True
+            mock_get_alpb.return_value = None  # vacuum returns None
+
+            # Verify ValueError raised
+            with pytest.raises(ValueError, match="not supported.*vacuum or unsupported"):
+                generate_conformer_ensemble(
+                    smiles="CCO",
+                    job_id="test_crest_003",
+                    conformer_method="crest",
+                    solvent="vacuum",
+                )
+
+    def test_pipeline_crest_raises_for_unsupported_solvent(self, tmp_path, monkeypatch):
+        """Test pipeline raises ValueError when CREST requested for unsupported solvent."""
+        # Monkeypatch DATA_DIR
+        import qm_nmr_calc.storage as storage
+
+        monkeypatch.setattr(storage, "DATA_DIR", tmp_path)
+
+        # Mock CREST available but unsupported solvent
+        with mock.patch("qm_nmr_calc.conformers.crest_generator.detect_crest_available") as mock_detect, \
+             mock.patch("qm_nmr_calc.conformers.crest_generator.get_alpb_solvent") as mock_get_alpb:
+
+            mock_detect.return_value = True
+            mock_get_alpb.return_value = None  # water not supported
+
+            # Verify ValueError raised
+            with pytest.raises(ValueError, match="not supported"):
+                generate_conformer_ensemble(
+                    smiles="CCO",
+                    job_id="test_crest_004",
+                    conformer_method="crest",
+                    solvent="water",
+                )
+
+    def test_pipeline_rdkit_default_path_unchanged(self, tmp_path, monkeypatch):
+        """Test pipeline still works with RDKit method (backward compatibility)."""
+        # Monkeypatch DATA_DIR
+        import qm_nmr_calc.storage as storage
+
+        monkeypatch.setattr(storage, "DATA_DIR", tmp_path)
+
+        # Call with default method (rdkit_kdg)
+        ensemble = generate_conformer_ensemble(
+            smiles="CCO",
+            job_id="test_rdkit_001",
+            conformer_method="rdkit_kdg",
+        )
+
+        # Verify RDKit path works
+        assert ensemble.method == "rdkit_kdg"
+        assert len(ensemble.conformers) >= 1
