@@ -30,6 +30,9 @@ def create_job_directory(
     name: Optional[str] = None,
     preset: str = "production",
     notification_email: Optional[str] = None,
+    conformer_mode: str = "single",
+    conformer_method: Optional[str] = None,
+    max_conformers: Optional[int] = None,
 ) -> JobStatus:
     """Create job directory with initial queued status.
 
@@ -38,6 +41,20 @@ def create_job_directory(
             status.json  - Job metadata and status
             output/      - Calculation outputs
             logs/        - NWChem logs
+
+    Args:
+        smiles: SMILES string of molecule
+        solvent: Solvent name for COSMO
+        nwchem_version: NWChem version string
+        name: Optional molecule name
+        preset: Calculation preset (draft or production)
+        notification_email: Optional email for completion notification
+        conformer_mode: "single" (v1.x behavior) or "ensemble" (v2.0)
+        conformer_method: Conformer generation method ("rdkit_kdg" or "crest"), only used when mode=ensemble
+        max_conformers: Maximum conformers to generate (None = adaptive)
+
+    Returns:
+        JobStatus with initial queued status
     """
     job_id = generate_job_id()
     job_dir = get_job_dir(job_id)
@@ -55,8 +72,12 @@ def create_job_directory(
             preset=preset,
             solvent=solvent,
             notification_email=notification_email,
+            conformer_mode=conformer_mode,
+            conformer_method=conformer_method,
+            max_conformers=max_conformers,
         ),
         nwchem_version=nwchem_version,
+        conformer_mode=conformer_mode,
     )
 
     _write_status(job_id, status)

@@ -237,6 +237,7 @@ def run_conformer_dft_optimization(
     preset: dict,
     solvent: str,
     processes: int = 4,
+    progress_callback: callable = None,
 ):
     """Run DFT geometry optimization on all conformers in an ensemble.
 
@@ -250,6 +251,7 @@ def run_conformer_dft_optimization(
         preset: Calculation preset dict (functional, basis_set, nmr_basis_set, max_iter)
         solvent: Solvent name for COSMO
         processes: Number of MPI processes
+        progress_callback: Optional callback called with (step, current, total) for progress tracking
 
     Returns:
         Tuple of (successful_conformers, failed_conformers) where each is a list of ConformerData
@@ -311,6 +313,10 @@ def run_conformer_dft_optimization(
 
             successful.append(conformer)
 
+            # Report progress after each conformer completes (success)
+            if progress_callback:
+                progress_callback("optimizing_conformers", len(successful) + len(failed), len(ensemble.conformers))
+
         except Exception as e:
             # Mark conformer as failed and continue
             import traceback
@@ -321,6 +327,10 @@ def run_conformer_dft_optimization(
             # DEBUG: Print traceback for test debugging
             # print(f"DEBUG: Conformer {conformer.conformer_id} failed: {error_msg}")
             # traceback.print_exc()
+
+            # Report progress after each conformer completes (fail)
+            if progress_callback:
+                progress_callback("optimizing_conformers", len(successful) + len(failed), len(ensemble.conformers))
 
     # Check success rate
     success_rate = len(successful) / len(ensemble.conformers)
@@ -378,6 +388,7 @@ def run_conformer_nmr_calculations(
     preset: dict,
     solvent: str,
     processes: int = 4,
+    progress_callback: callable = None,
 ) -> tuple[list, list]:
     """Run NMR shielding calculations on optimized conformers.
 
@@ -395,6 +406,7 @@ def run_conformer_nmr_calculations(
         preset: Calculation preset dict (functional, basis_set, nmr_basis_set, max_iter)
         solvent: Solvent name for COSMO
         processes: Number of MPI processes
+        progress_callback: Optional callback called with (step, current, total) for progress tracking
 
     Returns:
         Tuple of (nmr_results, failed_conformers) where:
@@ -463,12 +475,20 @@ def run_conformer_nmr_calculations(
             # Add result to list
             nmr_results.append(nmr_result)
 
+            # Report progress after each conformer completes (success)
+            if progress_callback:
+                progress_callback("calculating_nmr", len(nmr_results) + len(failed), len(optimized_conformers))
+
         except Exception as e:
             # Mark conformer as failed and continue
             conformer.status = "failed"
             error_msg = f"{type(e).__name__}: {str(e)}"
             conformer.error_message = error_msg[:200]
             failed.append(conformer)
+
+            # Report progress after each conformer completes (fail)
+            if progress_callback:
+                progress_callback("calculating_nmr", len(nmr_results) + len(failed), len(optimized_conformers))
 
     return (nmr_results, failed)
 
@@ -479,6 +499,7 @@ def run_ensemble_dft_and_nmr(
     preset: dict,
     solvent: str,
     processes: int = 4,
+    progress_callback: callable = None,
 ) -> tuple:
     """Run full ensemble calculation pipeline: DFT optimization -> post-DFT filter -> NMR -> Boltzmann.
 
@@ -500,6 +521,7 @@ def run_ensemble_dft_and_nmr(
         preset: Calculation preset dict (functional, basis_set, nmr_basis_set, max_iter)
         solvent: Solvent name for COSMO
         processes: Number of MPI processes
+        progress_callback: Optional callback called with (step, current, total) for progress tracking
 
     Returns:
         Tuple of (ensemble, nmr_results) where:
@@ -511,7 +533,7 @@ def run_ensemble_dft_and_nmr(
     """
     # Step 1: DFT optimization
     optimized_conformers, failed_dft = run_conformer_dft_optimization(
-        ensemble, job_id, preset, solvent, processes
+        ensemble, job_id, preset, solvent, processes, progress_callback
     )
 
     # Step 2: Post-DFT energy filter
@@ -525,7 +547,7 @@ def run_ensemble_dft_and_nmr(
 
     # Step 3: NMR calculations
     nmr_results, failed_nmr = run_conformer_nmr_calculations(
-        filtered_conformers, job_id, preset, solvent, processes
+        filtered_conformers, job_id, preset, solvent, processes, progress_callback
     )
 
     # Note: ensemble.conformers is already mutated in place by the loops above

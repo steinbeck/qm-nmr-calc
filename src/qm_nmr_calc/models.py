@@ -134,3 +134,4 @@ class JobStatus(BaseModel):
     # v2.0: Conformational sampling (backward compatible with v1.x)
     conformer_mode: Literal["single", "ensemble"] = "single"
     conformer_ensemble: Optional[ConformerEnsemble] = None
+    conformer_method_warning: Optional[str] = None  # Warning message when CREST falls back to RDKit
