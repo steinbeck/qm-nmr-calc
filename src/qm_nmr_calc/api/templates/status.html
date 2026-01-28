@@ -4,6 +4,19 @@
 
 {% block head %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.5.3/3Dmol-min.js"></script>
+<style>
+    /* Conformer progress styling */
+    .status-nmr_complete td:nth-child(2) { color: green; }
+    .status-failed td:nth-child(2) { color: red; }
+    .status-optimizing td:nth-child(2),
+    .status-nmr_running td:nth-child(2) { color: orange; }
+    #conformer-progress-bar {
+        height: 1.5rem;
+    }
+    #conformer-table {
+        font-size: 0.9rem;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -71,6 +84,32 @@
         </div>
     </div>
 
+    <!-- Conformer Progress Section (for ensemble jobs) -->
+    <div id="conformer-progress" style="display: none; margin-top: 1.5rem;">
+        <h4>Conformer Progress</h4>
+        <div id="conformer-stage" style="margin-bottom: 0.5rem;"></div>
+        <progress id="conformer-progress-bar" value="0" max="100" style="width: 100%;"></progress>
+        <p id="conformer-count" style="margin-top: 0.5rem;"></p>
+        <p id="eta-display" class="muted"></p>
+
+        <!-- Per-conformer status table (collapsible) -->
+        <details style="margin-top: 1rem;">
+            <summary>Conformer Details</summary>
+            <table id="conformer-table" role="grid" style="margin-top: 0.5rem;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Status</th>
+                        <th>Energy (kcal/mol)</th>
+                        <th>Population</th>
+                    </tr>
+                </thead>
+                <tbody id="conformer-table-body">
+                </tbody>
+            </table>
+        </details>
+    </div>
+
     <div id="error-display" style="display: none;" role="alert">
         <p id="error-message"></p>
     </div>
@@ -103,6 +142,14 @@
     const stepElapsed = document.getElementById('step-elapsed');
     const completedStepsDiv = document.getElementById('completed-steps');
     const stepsTbody = document.getElementById('steps-tbody');
+
+    // Conformer progress elements
+    const conformerProgressDiv = document.getElementById('conformer-progress');
+    const conformerStage = document.getElementById('conformer-stage');
+    const conformerProgressBar = document.getElementById('conformer-progress-bar');
+    const conformerCount = document.getElementById('conformer-count');
+    const etaDisplay = document.getElementById('eta-display');
+    const conformerTableBody = document.getElementById('conformer-table-body');
 
     let currentStepStartedAt = null;
 
@@ -169,6 +216,83 @@
         return mins + 'm ' + secs + 's';
     }
 
+    function formatConformerStatus(status) {
+        const labels = {
+            'pending': 'Pending',
+            'optimizing': 'Optimizing...',
+            'optimized': 'Optimized',
+            'nmr_running': 'NMR running...',
+            'nmr_complete': 'Complete',
+            'failed': 'Failed'
+        };
+        return labels[status] || status;
+    }
+
+    function formatEta(seconds) {
+        if (seconds < 60) return '~' + Math.round(seconds) + ' seconds';
+        if (seconds < 3600) return '~' + Math.ceil(seconds / 60) + ' minutes';
+        return '~' + (seconds / 3600).toFixed(1) + ' hours';
+    }
+
+    function updateConformerProgress(data) {
+        // Only show for ensemble jobs
+        if (data.conformer_mode !== 'ensemble') {
+            conformerProgressDiv.style.display = 'none';
+            return;
+        }
+
+        conformerProgressDiv.style.display = 'block';
+
+        // Update stage display
+        if (data.current_step_label) {
+            conformerStage.textContent = data.current_step_label;
+        }
+
+        // Update conformer count and progress
+        if (data.conformer_progress && data.conformer_progress.length > 0) {
+            const total = data.conformer_progress.length;
+            const completed = data.conformer_progress.filter(c =>
+                c.status === 'nmr_complete' || c.status === 'optimized'
+            ).length;
+            const failed = data.conformer_progress.filter(c =>
+                c.status === 'failed'
+            ).length;
+
+            let countText = 'Conformers: ' + completed + '/' + total;
+            if (failed > 0) {
+                countText += ' (' + failed + ' failed)';
+            }
+            conformerCount.textContent = countText;
+
+            // Update progress bar
+            const progress = (completed / total) * 100;
+            conformerProgressBar.value = progress;
+
+            // Update per-conformer table
+            conformerTableBody.innerHTML = data.conformer_progress.map(c => {
+                const energyStr = c.energy_kcal !== null && c.energy_kcal !== undefined
+                    ? c.energy_kcal.toFixed(2)
+                    : '-';
+                const popStr = c.population !== null && c.population !== undefined
+                    ? (c.population * 100).toFixed(1) + '%'
+                    : '-';
+                return '<tr class="status-' + c.status + '">' +
+                    '<td>' + c.conformer_id + '</td>' +
+                    '<td>' + formatConformerStatus(c.status) + '</td>' +
+                    '<td>' + energyStr + '</td>' +
+                    '<td>' + popStr + '</td>' +
+                    '</tr>';
+            }).join('');
+        }
+
+        // Update ETA
+        if (data.eta_seconds) {
+            etaDisplay.textContent = 'Estimated time remaining: ' + formatEta(data.eta_seconds);
+        } else {
+            etaDisplay.textContent = '';
+        }
+    }
+
     function updateElapsedTime() {
         const now = new Date();
         const elapsed = Math.floor((now - CREATED_AT) / 1000);
@@ -221,6 +345,9 @@
 
             // Update step progress
             updateStepProgress(data);
+
+            // Update conformer progress (for ensemble jobs)
+            updateConformerProgress(data);
 
             if (data.status === 'complete') {
                 // Redirect to results page
