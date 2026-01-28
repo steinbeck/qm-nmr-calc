@@ -20,7 +20,9 @@ class TestDetectCRESTAvailable:
 
     def test_both_binaries_present(self):
         """detect_crest_available returns True when both crest and xtb are found."""
-        with mock.patch("shutil.which") as mock_which:
+        # Clear cache before test
+        detect_crest_available.cache_clear()
+        with mock.patch("qm_nmr_calc.conformers.crest_generator.shutil.which") as mock_which:
             # Both binaries found
             mock_which.side_effect = lambda cmd: f"/usr/bin/{cmd}" if cmd in ["crest", "xtb"] else None
             result = detect_crest_available()
@@ -28,7 +30,9 @@ class TestDetectCRESTAvailable:
 
     def test_only_crest_present(self):
         """detect_crest_available returns False when only crest is found."""
-        with mock.patch("shutil.which") as mock_which:
+        # Clear cache before test
+        detect_crest_available.cache_clear()
+        with mock.patch("qm_nmr_calc.conformers.crest_generator.shutil.which") as mock_which:
             # Only crest found
             mock_which.side_effect = lambda cmd: "/usr/bin/crest" if cmd == "crest" else None
             result = detect_crest_available()
@@ -36,7 +40,9 @@ class TestDetectCRESTAvailable:
 
     def test_only_xtb_present(self):
         """detect_crest_available returns False when only xtb is found."""
-        with mock.patch("shutil.which") as mock_which:
+        # Clear cache before test
+        detect_crest_available.cache_clear()
+        with mock.patch("qm_nmr_calc.conformers.crest_generator.shutil.which") as mock_which:
             # Only xtb found
             mock_which.side_effect = lambda cmd: "/usr/bin/xtb" if cmd == "xtb" else None
             result = detect_crest_available()
@@ -44,7 +50,9 @@ class TestDetectCRESTAvailable:
 
     def test_neither_binary_present(self):
         """detect_crest_available returns False when neither binary is found."""
-        with mock.patch("shutil.which") as mock_which:
+        # Clear cache before test
+        detect_crest_available.cache_clear()
+        with mock.patch("qm_nmr_calc.conformers.crest_generator.shutil.which") as mock_which:
             # Neither found
             mock_which.return_value = None
             result = detect_crest_available()
