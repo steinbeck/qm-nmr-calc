@@ -14,7 +14,7 @@ from ...models import JobStatus
 from ...shifts import get_scaling_factor
 from ...solvents import validate_solvent, get_supported_solvents
 from ...storage import create_job_directory, get_job_dir, get_geometry_file, get_initial_geometry_file, get_output_files, get_visualization_file, load_job_status
-from ...tasks import run_nmr_task, _generate_initial_xyz
+from ...tasks import run_nmr_task, run_ensemble_nmr_task, _generate_initial_xyz
 from ...validation import validate_mol_file, validate_smiles
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
@@ -26,7 +26,10 @@ def job_status_to_response(job_status: JobStatus) -> dict:
     Flattens input.smiles -> input_smiles, input.name -> input_name.
     Converts datetime fields to ISO strings.
     Converts NMR results if present.
+    Builds ensemble-specific fields for conformer_mode="ensemble".
     """
+    from ...conformers.boltzmann import HARTREE_TO_KCAL
+
     # Convert NMR results if present
     nmr_results = None
     if job_status.nmr_results is not None:
@@ -36,13 +39,13 @@ def job_status_to_response(job_status: JobStatus) -> dict:
             job_status.nmr_results.functional.upper(),
             job_status.nmr_results.basis_set,
             "1H",
-            job_status.nmr_results.solvent
+            job_status.nmr_results.solvent,
         )
         c13_factor = get_scaling_factor(
             job_status.nmr_results.functional.upper(),
             job_status.nmr_results.basis_set,
             "13C",
-            job_status.nmr_results.solvent
+            job_status.nmr_results.solvent,
         )
 
         nmr_results = {
@@ -74,14 +77,103 @@ def job_status_to_response(job_status: JobStatus) -> dict:
         for step in job_status.steps_completed
     ]
 
+    # Build ensemble-specific fields
+    conformer_method = None
+    conformer_count = None
+    conformer_progress = None
+    ensemble_metadata = None
+    conformer_method_warning = getattr(job_status, "conformer_method_warning", None)
+
+    if job_status.conformer_mode == "ensemble" and job_status.conformer_ensemble:
+        ensemble = job_status.conformer_ensemble
+        conformer_method = ensemble.method
+        conformer_count = len(ensemble.conformers)
+
+        # Find minimum energy for relative energy display
+        min_energy = None
+        for c in ensemble.conformers:
+            if c.energy is not None and c.status in ("optimized", "nmr_complete"):
+                if min_energy is None or c.energy < min_energy:
+                    min_energy = c.energy
+
+        # Build per-conformer progress array
+        conformer_progress = []
+        for c in ensemble.conformers:
+            energy_kcal = None
+            if c.energy is not None and min_energy is not None:
+                if c.energy_unit == "hartree":
+                    energy_kcal = (c.energy - min_energy) * HARTREE_TO_KCAL
+                else:
+                    # Already in kcal/mol (from MMFF or pre-DFT)
+                    energy_kcal = c.energy - min_energy
+
+            conformer_progress.append(
+                {
+                    "conformer_id": c.conformer_id,
+                    "status": c.status,
+                    "energy_kcal": round(energy_kcal, 2) if energy_kcal is not None else None,
+                    "population": round(c.weight, 4) if c.weight is not None else None,
+                }
+            )
+
+        # Build ensemble metadata for completed jobs
+        if job_status.status == "complete":
+            nmr_complete = [c for c in ensemble.conformers if c.status == "nmr_complete"]
+            if nmr_complete:
+                # Calculate energy range
+                energies_kcal = []
+                for c in nmr_complete:
+                    if c.energy is not None and min_energy is not None:
+                        if c.energy_unit == "hartree":
+                            energies_kcal.append((c.energy - min_energy) * HARTREE_TO_KCAL)
+                        else:
+                            energies_kcal.append(c.energy - min_energy)
+
+                energy_range = max(energies_kcal) - min(energies_kcal) if energies_kcal else 0.0
+
+                # Get top 3 by population
+                sorted_by_pop = sorted(
+                    [c for c in nmr_complete if c.weight is not None],
+                    key=lambda x: x.weight,
+                    reverse=True,
+                )[:3]
+
+                top_populations = []
+                for c in sorted_by_pop:
+                    e_kcal = None
+                    if c.energy is not None and min_energy is not None:
+                        if c.energy_unit == "hartree":
+                            e_kcal = (c.energy - min_energy) * HARTREE_TO_KCAL
+                        else:
+                            e_kcal = c.energy - min_energy
+                    top_populations.append(
+                        {
+                            "id": c.conformer_id,
+                            "population": round(c.weight, 4),
+                            "energy_kcal": round(e_kcal, 2) if e_kcal is not None else None,
+                        }
+                    )
+
+                ensemble_metadata = {
+                    "conformer_count": len(nmr_complete),
+                    "total_generated": ensemble.total_generated,
+                    "method": ensemble.method,
+                    "temperature_k": ensemble.temperature_k,
+                    "energy_range_kcal": round(energy_range, 2),
+                    "top_populations": top_populations,
+                    "conformer_method_warning": conformer_method_warning,
+                }
+
+        # Add ensemble_metadata to nmr_results if present
+        if nmr_results is not None and ensemble_metadata is not None:
+            nmr_results["ensemble_metadata"] = ensemble_metadata
+
     return {
         "job_id": job_status.job_id,
         "status": job_status.status,
         "created_at": job_status.created_at.isoformat() + "Z",
         "started_at": (
-            job_status.started_at.isoformat() + "Z"
-            if job_status.started_at
-            else None
+            job_status.started_at.isoformat() + "Z" if job_status.started_at else None
         ),
         "completed_at": (
             job_status.completed_at.isoformat() + "Z"
@@ -103,6 +195,14 @@ def job_status_to_response(job_status: JobStatus) -> dict:
         "error_message": job_status.error_message,
         "nmr_results": nmr_results,
         "conformer_mode": job_status.conformer_mode,
+        # Ensemble-specific fields
+        "conformer_method": conformer_method,
+        "conformer_count": conformer_count,
+        "conformer_progress": conformer_progress,
+        "conformer_method_warning": conformer_method_warning,
+        "ensemble_metadata": ensemble_metadata,
+        # TODO: eta_seconds - implement in Plan 03
+        "eta_seconds": None,
     }
 
 
@@ -158,6 +258,9 @@ async def submit_smiles(request: JobSubmitRequest):
         name=request.name,
         preset=request.preset,
         notification_email=request.notification_email,
+        conformer_mode=request.conformer_mode,
+        conformer_method=request.conformer_method,
+        max_conformers=request.max_conformers,
     )
 
     # Generate initial 3D geometry for immediate visualization
@@ -165,8 +268,11 @@ async def submit_smiles(request: JobSubmitRequest):
     initial_xyz_path = job_dir / "output" / "initial.xyz"
     _generate_initial_xyz(request.smiles, initial_xyz_path)
 
-    # Queue the NMR calculation task
-    run_nmr_task(job_status.job_id)
+    # Queue the appropriate NMR calculation task based on conformer mode
+    if job_status.input.conformer_mode == "ensemble":
+        run_ensemble_nmr_task(job_status.job_id)
+    else:
+        run_nmr_task(job_status.job_id)
 
     return JSONResponse(
         status_code=status.HTTP_202_ACCEPTED,
@@ -200,6 +306,15 @@ async def submit_file(
     ] = "production",
     notification_email: Annotated[
         Optional[str], Form(description="Email for completion notification")
+    ] = None,
+    conformer_mode: Annotated[
+        str, Form(description="Conformational sampling mode: single or ensemble")
+    ] = "single",
+    conformer_method: Annotated[
+        Optional[str], Form(description="Conformer generation method: rdkit_kdg or crest")
+    ] = None,
+    max_conformers: Annotated[
+        Optional[int], Form(description="Maximum conformers to generate")
     ] = None,
 ):
     """Submit molecule via MOL/SDF file upload for NMR calculation.
@@ -269,6 +384,9 @@ async def submit_file(
         name=name or filename,
         preset=preset,
         notification_email=notification_email,
+        conformer_mode=conformer_mode,
+        conformer_method=conformer_method,
+        max_conformers=max_conformers,
     )
 
     # Generate initial 3D geometry for immediate visualization
@@ -276,8 +394,11 @@ async def submit_file(
     initial_xyz_path = job_dir / "output" / "initial.xyz"
     _generate_initial_xyz(smiles, initial_xyz_path)
 
-    # Queue NMR calculation
-    run_nmr_task(job_status.job_id)
+    # Queue the appropriate NMR calculation task based on conformer mode
+    if job_status.input.conformer_mode == "ensemble":
+        run_ensemble_nmr_task(job_status.job_id)
+    else:
+        run_nmr_task(job_status.job_id)
 
     return JSONResponse(
         status_code=status.HTTP_202_ACCEPTED,
@@ -386,14 +507,77 @@ async def get_nmr_results(job_id: str):
         job_status.nmr_results.functional.upper(),
         job_status.nmr_results.basis_set,
         "1H",
-        job_status.nmr_results.solvent
+        job_status.nmr_results.solvent,
     )
     c13_factor = get_scaling_factor(
         job_status.nmr_results.functional.upper(),
         job_status.nmr_results.basis_set,
         "13C",
-        job_status.nmr_results.solvent
+        job_status.nmr_results.solvent,
     )
+
+    # Build ensemble metadata if this is an ensemble job
+    ensemble_metadata = None
+    if job_status.conformer_mode == "ensemble" and job_status.conformer_ensemble:
+        from ...conformers.boltzmann import HARTREE_TO_KCAL
+
+        ensemble = job_status.conformer_ensemble
+        conformer_method_warning = getattr(job_status, "conformer_method_warning", None)
+
+        # Find minimum energy for relative energy display
+        min_energy = None
+        for c in ensemble.conformers:
+            if c.energy is not None and c.status == "nmr_complete":
+                if min_energy is None or c.energy < min_energy:
+                    min_energy = c.energy
+
+        nmr_complete = [c for c in ensemble.conformers if c.status == "nmr_complete"]
+        if nmr_complete:
+            # Calculate energy range
+            energies_kcal = []
+            for c in nmr_complete:
+                if c.energy is not None and min_energy is not None:
+                    if c.energy_unit == "hartree":
+                        energies_kcal.append((c.energy - min_energy) * HARTREE_TO_KCAL)
+                    else:
+                        energies_kcal.append(c.energy - min_energy)
+
+            energy_range = max(energies_kcal) - min(energies_kcal) if energies_kcal else 0.0
+
+            # Get top 3 by population
+            sorted_by_pop = sorted(
+                [c for c in nmr_complete if c.weight is not None],
+                key=lambda x: x.weight,
+                reverse=True,
+            )[:3]
+
+            top_populations = []
+            for c in sorted_by_pop:
+                e_kcal = None
+                if c.energy is not None and min_energy is not None:
+                    if c.energy_unit == "hartree":
+                        e_kcal = (c.energy - min_energy) * HARTREE_TO_KCAL
+                    else:
+                        e_kcal = c.energy - min_energy
+                top_populations.append(
+                    {
+                        "id": c.conformer_id,
+                        "population": round(c.weight, 4),
+                        "energy_kcal": round(e_kcal, 2) if e_kcal is not None else None,
+                    }
+                )
+
+            from ..schemas import EnsembleMetadataResponse
+
+            ensemble_metadata = EnsembleMetadataResponse(
+                conformer_count=len(nmr_complete),
+                total_generated=ensemble.total_generated,
+                method=ensemble.method,
+                temperature_k=ensemble.temperature_k,
+                energy_range_kcal=round(energy_range, 2),
+                top_populations=top_populations,
+                conformer_method_warning=conformer_method_warning,
+            )
 
     # Convert to response format (without shielding, only shift)
     return NMRResultsResponse(
@@ -411,6 +595,7 @@ async def get_nmr_results(job_id: str):
         scaling_factor_source="DELTA50",
         h1_expected_mae=f"+/- {h1_factor['mae']:.2f} ppm",
         c13_expected_mae=f"+/- {c13_factor['mae']:.2f} ppm",
+        ensemble_metadata=ensemble_metadata,
     )
 
 

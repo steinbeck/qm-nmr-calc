@@ -17,7 +17,7 @@ from ...solvents import (
     validate_solvent,
 )
 from ...storage import create_job_directory, get_job_dir, load_job_status
-from ...tasks import run_nmr_task, _generate_initial_xyz
+from ...tasks import run_nmr_task, run_ensemble_nmr_task, _generate_initial_xyz
 from ...validation import validate_mol_file, validate_smiles
 
 # Template engine setup
@@ -66,6 +66,8 @@ async def submit_job(
     preset: Annotated[str, Form()] = "production",
     name: Annotated[Optional[str], Form()] = None,
     notification_email: Annotated[Optional[str], Form()] = None,
+    conformer_mode: Annotated[str, Form()] = "ensemble",  # Default to ensemble per CONTEXT.md
+    conformer_method: Annotated[Optional[str], Form()] = None,  # None = use default (rdkit_kdg)
 ):
     """Process job submission from web form."""
     # Preserve form data for re-render on error
@@ -75,6 +77,8 @@ async def submit_job(
         "preset": preset,
         "name": name or "",
         "notification_email": notification_email or "",
+        "conformer_mode": conformer_mode,
+        "conformer_method": conformer_method or "",
     }
 
     def render_error(error: str) -> HTMLResponse:
@@ -144,6 +148,8 @@ async def submit_job(
         name=final_name,
         preset=preset,
         notification_email=notification_email,
+        conformer_mode=conformer_mode,
+        conformer_method=conformer_method or None,  # Convert empty string to None
     )
 
     # Generate initial 3D geometry for immediate visualization
@@ -151,8 +157,11 @@ async def submit_job(
     initial_xyz_path = job_dir / "output" / "initial.xyz"
     _generate_initial_xyz(final_smiles, initial_xyz_path)
 
-    # Queue the NMR calculation task
-    run_nmr_task(job_status.job_id)
+    # Queue the appropriate NMR calculation task based on conformer mode
+    if job_status.input.conformer_mode == "ensemble":
+        run_ensemble_nmr_task(job_status.job_id)
+    else:
+        run_nmr_task(job_status.job_id)
 
     # Redirect to status page with 303 See Other
     return RedirectResponse(
