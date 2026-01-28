@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 
 ## Current Position
 
-Phase: 15 of 17 (Multi-Conformer NWChem Integration)
-Plan: 03 of 03 (Phase 15)
-Status: Phase verified
-Last activity: 2026-01-27 -- Phase 15 verified (24/24 must-haves passed)
+Phase: 16 of 17 (CREST Integration)
+Plan: 01 of 03 (Phase 16)
+Status: In progress
+Last activity: 2026-01-28 -- Completed 16-01-PLAN.md (CREST foundation utilities)
 
-Progress: █████████████████████████████████████████████ 100% (47/47 plans complete)
+Progress: ██████████████████████████████████████████████ 100% (48/48 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 47
-- Average duration: 8.1 min
-- Total execution time: 390 min (6.5 hours)
+- Total plans completed: 48
+- Average duration: 8.2 min
+- Total execution time: 402 min (6.7 hours)
 
 **By Milestone:**
 
@@ -32,8 +32,8 @@ Progress: ███████████████████████�
 | v2.0 Conformational Sampling | 6 | TBD | In progress |
 
 **Recent Trend:**
-- Last 5 plans: 6-10 min
-- Trend: Consistent fast TDD (14-01: 6 min, 14-02: 7 min, 15-01: 9 min, 15-02: 10 min, 15-03: 9 min)
+- Last 5 plans: 9-12 min
+- Trend: Consistent fast TDD (15-01: 9 min, 15-02: 10 min, 15-03: 9 min, 16-01: 12 min)
 
 ## Accumulated Context
 
@@ -69,6 +69,12 @@ Recent v2.0 decisions affecting current work:
 - No NMR minimum success threshold: Any successful NMR results usable since DFT already caught systematic failures (15-03)
 - nmr_basis_set substitution: NMR step uses nmr_basis_set instead of optimization basis_set for higher accuracy (15-03)
 - In-place ensemble mutation: Conformer status fields updated by reference during pipeline (15-03)
+- Accept both `=` and `:` in DFT energy regex: NWChem version compatibility (E2E fix)
+- Case-normalize all scaling factor lookup keys: functional, solvent, basis_set (E2E fix)
+- lru_cache(maxsize=1) for CREST binary detection: Binary availability immutable during process lifetime (16-01)
+- Require both crest and xtb binaries: CREST depends on xTB for functionality (16-01)
+- ALPB solvent map for chcl3/dmso: Only supported solvents, extensible for future additions (16-01)
+- Case-insensitive solvent matching: Normalize to lowercase before ALPB lookup (16-01)
 
 ### Roadmap Evolution
 
@@ -86,12 +92,16 @@ None.
 
 **v2.0 Architecture:**
 - CREST timeouts: Macrocycles can hang, need timeout with RDKit fallback (Phase 16)
+- Ensemble filtering before averaging: `average_ensemble_nmr` requires `len(conformers) == len(nmr_results)`. After `run_ensemble_dft_and_nmr`, ensemble contains ALL conformers (including filtered/failed), but nmr_results only covers nmr_complete ones. Phase 17 caller (Huey task) must create a filtered ensemble with only nmr_complete conformers before calling `average_ensemble_nmr`.
 
 **Resolved (v2.0):**
 - Numerical stability: Boltzmann weighting implemented with exp-normalize trick, tested with extreme ranges (14-01)
 - Atom ordering consistency: Canonical indexing established via CanonicalRankAtoms (12-02)
 - Scratch directory isolation: Per-conformer directories prevent NWChem database corruption (12-01)
 - Backward compatibility: v1.x JSON loads verified with 8 fixture tests (12-03)
+- DFT energy regex mismatch: Real NWChem 7.x uses `=` not `:` in "Total DFT energy" line. Fixed to accept both. Test fixtures had wrong format. (E2E testing)
+- Functional case sensitivity: Presets store "b3lyp" lowercase but scaling factors use "B3LYP". Added `.upper()` normalization in `get_scaling_factor`. (E2E testing)
+- Shared optimized geometry path: `run_calculation` writes to shared `output/optimized.xyz`, overwritten by each conformer. Fixed: copy to per-conformer output dir after each optimization. (E2E testing)
 
 **Resolved (v1.x):**
 - RDKit stderr capture limitation (known, fallback messages used)
@@ -99,7 +109,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-01-27
-Stopped at: Phase 15 verified and complete -- all 24 must-haves passed
+Last session: 2026-01-28
+Stopped at: Completed 16-01-PLAN.md (CREST foundation utilities: binary detection, ALPB mapping, XYZ parsing)
 Resume file: None
-Next: Phase 16 (CREST Integration) - High-accuracy conformer generation with timeout handling
+Next: 16-02 (CREST runner implementation)
+Tests: All 244 tests passing (229 existing + 15 new for CREST utilities)
