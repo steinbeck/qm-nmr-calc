@@ -48,6 +48,14 @@
     <!-- Interactive 3D Structure -->
     <div class="structure-3d-container">
         <h4>Interactive 3D Structure</h4>
+        <!-- Conformer selector (only visible for ensemble jobs) -->
+        <div id="conformer-selector-container" style="display: none; margin-bottom: 1rem;">
+            <label for="conformer-selector" style="margin-right: 0.5rem;">View Conformer:</label>
+            <select id="conformer-selector" style="min-width: 280px;">
+                <!-- Populated by JavaScript -->
+            </select>
+            <span id="current-conformer-info" style="margin-left: 1rem; font-style: italic; color: #666;"></span>
+        </div>
         <div id="viewer-container-3d"></div>
         <div class="viewer-legend">
             <div class="viewer-legend-item">
@@ -126,9 +134,11 @@ modal.addEventListener('click', (e) => {
 
 modal.addEventListener('cancel', closeModal);
 
-// 3D Viewer with shift labels
+// 3D Viewer with shift labels and conformer switching
 const JOB_ID = "{{ job.job_id }}";
 let viewer = null;
+let geometryData = null;
+let currentConformerIndex = 0;
 
 document.addEventListener('DOMContentLoaded', function() {
     initViewer();
@@ -141,10 +151,10 @@ function initViewer() {
     viewer = $3Dmol.createViewer(container, {
         backgroundColor: 'white'
     });
-    loadGeometry();
+    loadGeometryData();
 }
 
-async function loadGeometry() {
+async function loadGeometryData() {
     if (!viewer) return;
 
     try {
@@ -154,34 +164,88 @@ async function loadGeometry() {
             return;
         }
 
-        const data = await response.json();
+        geometryData = await response.json();
 
-        viewer.removeAllModels();
-        viewer.removeAllLabels();
-
-        // Prefer SDF format for proper double/triple bond display
-        let model;
-        if (data.sdf) {
-            model = viewer.addModel(data.sdf, 'sdf');
-        } else {
-            model = viewer.addModel(data.xyz, 'xyz', {assignBonds: true});
+        // Check if this is an ensemble job with conformers
+        if (geometryData.conformer_mode === 'ensemble' && geometryData.conformers && geometryData.conformers.length > 0) {
+            // Show conformer selector
+            document.getElementById('conformer-selector-container').style.display = 'block';
+            populateConformerSelector(geometryData.conformers);
         }
 
-        viewer.setStyle({}, {
-            stick: {radius: 0.12, colorscheme: 'Jmol'},
-            sphere: {scale: 0.25, colorscheme: 'Jmol'}
-        });
-
-        // Add shift labels for complete jobs
-        if (data.h1_assignments || data.c13_assignments) {
-            addShiftLabels(model, data.h1_assignments, data.c13_assignments);
-        }
-
-        viewer.zoomTo();
-        viewer.render();
+        // Display first conformer (lowest energy) or single conformer
+        displayConformer(0);
     } catch (error) {
         console.error('Error loading geometry:', error);
     }
+}
+
+function populateConformerSelector(conformers) {
+    const selector = document.getElementById('conformer-selector');
+    selector.innerHTML = conformers.map((c, i) => {
+        const energyStr = c.energy_kcal !== null ? c.energy_kcal.toFixed(2) : '?';
+        const popStr = c.population !== null ? (c.population * 100).toFixed(1) : '?';
+        return `<option value="${i}">${c.id}: ${energyStr} kcal/mol (${popStr}%)</option>`;
+    }).join('');
+
+    selector.addEventListener('change', (e) => {
+        displayConformer(parseInt(e.target.value));
+    });
+}
+
+function displayConformer(index) {
+    if (!geometryData || !viewer) return;
+
+    currentConformerIndex = index;
+
+    // Get conformer data
+    let xyz, sdf;
+    if (geometryData.conformers && geometryData.conformers[index]) {
+        const conf = geometryData.conformers[index];
+        xyz = conf.xyz;
+        sdf = conf.sdf;
+
+        // Update info display
+        const info = document.getElementById('current-conformer-info');
+        if (conf.population !== null) {
+            info.textContent = `Contributing ${(conf.population * 100).toFixed(1)}% to averaged shifts`;
+        } else {
+            info.textContent = '';
+        }
+    } else {
+        // Single conformer mode
+        xyz = geometryData.xyz;
+        sdf = geometryData.sdf;
+    }
+
+    // Clear and redraw viewer
+    viewer.removeAllModels();
+    viewer.removeAllLabels();
+
+    // Add model (prefer SDF for proper bonds)
+    let model;
+    if (sdf) {
+        model = viewer.addModel(sdf, 'sdf');
+    } else if (xyz) {
+        model = viewer.addModel(xyz, 'xyz', {assignBonds: true});
+    } else {
+        console.error('No geometry data available');
+        return;
+    }
+
+    // Apply style
+    viewer.setStyle({}, {
+        stick: {radius: 0.12, colorscheme: 'Jmol'},
+        sphere: {scale: 0.25, colorscheme: 'Jmol'}
+    });
+
+    // Add shift labels if available (averaged shifts apply to all conformers)
+    if (geometryData.h1_assignments || geometryData.c13_assignments) {
+        addShiftLabels(model, geometryData.h1_assignments, geometryData.c13_assignments);
+    }
+
+    viewer.zoomTo();
+    viewer.render();
 }
 
 function addShiftLabels(model, h1Assignments, c13Assignments) {
