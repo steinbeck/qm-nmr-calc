@@ -171,10 +171,12 @@ Plans:
   3. CREST includes ALPB solvation model matching job solvent parameter
   4. CREST timeout (default 3600s) with automatic fallback to RDKit prevents hanging on macrocycles
   5. Environment variables (OMP_STACKSIZE, GFORTRAN_UNBUFFERED_ALL) configured for stability
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 16-01: TBD
+- [ ] 16-01-PLAN.md -- CREST detection, ALPB solvent mapping, multi-XYZ parsing (TDD)
+- [ ] 16-02-PLAN.md -- CREST subprocess runner with timeout and ensemble builder (TDD)
+- [ ] 16-03-PLAN.md -- Pipeline dispatch, health endpoint, integration tests
 
 #### Phase 17: API Integration and Progress Tracking
 **Goal**: User-facing ensemble mode with conformer selection, metadata, and progress updates
