@@ -6,12 +6,26 @@ CREST/xTB when available:
 - Binary detection for CREST and xTB
 - ALPB solvent model mapping
 - Multi-structure XYZ file parsing
+- CREST subprocess execution
+- Ensemble generation pipeline
 """
 
+import os
 import shutil
+import subprocess
 from functools import lru_cache
 from pathlib import Path
 from typing import NamedTuple
+
+from qm_nmr_calc.conformers.boltzmann import HARTREE_TO_KCAL
+from qm_nmr_calc.conformers.filters import filter_by_energy_window
+from qm_nmr_calc.models import ConformerData, ConformerEnsemble
+from qm_nmr_calc.nwchem.geometry import smiles_to_xyz
+from qm_nmr_calc.storage import (
+    create_conformer_directories,
+    get_conformer_output_dir,
+    get_job_dir,
+)
 
 
 class CRESTConformer(NamedTuple):
@@ -153,3 +167,214 @@ def parse_crest_ensemble(ensemble_file: Path) -> list[CRESTConformer]:
         conf_number += 1
 
     return conformers
+
+
+def run_crest(
+    input_xyz: Path,
+    solvent: str,
+    charge: int = 0,
+    ewin_kcal: float = 6.0,
+    num_threads: int | None = None,
+    timeout_seconds: int = 7200,
+) -> Path:
+    """
+    Run CREST conformational search subprocess.
+
+    Executes CREST with GFN2-xTB and ALPB implicit solvent. Includes timeout
+    handling for macrocycles that may hang.
+
+    Args:
+        input_xyz: Path to input XYZ file
+        solvent: ALPB solvent name (e.g., "chcl3", "dmso")
+        charge: Molecular charge (default: 0)
+        ewin_kcal: Energy window in kcal/mol for conformer filtering (default: 6.0)
+        num_threads: Number of threads (default: os.cpu_count() or 4)
+        timeout_seconds: Subprocess timeout in seconds (default: 7200 = 2 hours)
+
+    Returns:
+        Path to crest_conformers.xyz output file
+
+    Raises:
+        RuntimeError: If CREST times out, exits with error, or output file missing
+
+    Example:
+        >>> output = run_crest(Path("input.xyz"), "chcl3", charge=0)
+        >>> output.exists()
+        True
+    """
+    # Default num_threads
+    if num_threads is None:
+        num_threads = os.cpu_count() or 4
+
+    # Build CREST command
+    cmd = [
+        "crest",
+        str(input_xyz),
+        "--gfn2",
+        "--alpb",
+        solvent,
+        "--chrg",
+        str(charge),
+        "--ewin",
+        str(ewin_kcal),
+        "-T",
+        str(num_threads),
+    ]
+
+    # Set up environment variables
+    env = os.environ.copy()
+    env["OMP_STACKSIZE"] = "2G"
+    env["GFORTRAN_UNBUFFERED_ALL"] = "1"
+
+    # Run CREST subprocess
+    try:
+        subprocess.run(
+            cmd,
+            cwd=input_xyz.parent,
+            capture_output=True,
+            text=True,
+            timeout=timeout_seconds,
+            env=env,
+            check=True,
+        )
+    except subprocess.TimeoutExpired as e:
+        raise RuntimeError(
+            f"CREST timeout after {timeout_seconds} seconds. "
+            "This can happen with large/complex molecules (especially macrocycles). "
+            "Consider using RDKit conformer generation mode instead."
+        ) from e
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(
+            f"CREST failed with exit code {e.returncode}. "
+            f"Error output: {e.stderr}"
+        ) from e
+
+    # Verify output file exists
+    output_file = input_xyz.parent / "crest_conformers.xyz"
+    if not output_file.exists():
+        raise RuntimeError(
+            f"CREST completed but output file not found: {output_file}"
+        )
+
+    return output_file
+
+
+def generate_crest_ensemble(
+    smiles: str,
+    job_id: str,
+    solvent: str,
+    charge: int = 0,
+    energy_window_kcal: float = 6.0,
+    timeout_seconds: int = 7200,
+) -> ConformerEnsemble:
+    """
+    Generate conformer ensemble using CREST.
+
+    Pipeline:
+    1. Generate initial 3D geometry from SMILES using RDKit
+    2. Run CREST conformational search
+    3. Parse CREST output
+    4. Convert energies from Hartree to relative kcal/mol
+    5. Apply energy window filter
+    6. Write individual XYZ files
+    7. Build ConformerEnsemble
+
+    Args:
+        smiles: SMILES string
+        job_id: Job identifier
+        solvent: ALPB solvent name (must be pre-validated)
+        charge: Molecular charge (default: 0)
+        energy_window_kcal: Energy window for filtering (default: 6.0 kcal/mol)
+        timeout_seconds: CREST timeout (default: 7200 = 2 hours)
+
+    Returns:
+        ConformerEnsemble with method="crest", relative energies in kcal/mol
+
+    Example:
+        >>> ensemble = generate_crest_ensemble("C", "job123", "chcl3")
+        >>> ensemble.method
+        'crest'
+        >>> len(ensemble.conformers) > 0
+        True
+    """
+    # Get job directory and create input XYZ
+    job_dir = get_job_dir(job_id)
+    output_dir = job_dir / "output"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Generate initial geometry from SMILES
+    mol, xyz_block = smiles_to_xyz(smiles)
+    input_xyz = output_dir / "crest_input.xyz"
+    input_xyz.write_text(xyz_block)
+
+    # Run CREST
+    crest_output = run_crest(
+        input_xyz,
+        solvent,
+        charge=charge,
+        ewin_kcal=energy_window_kcal,
+        timeout_seconds=timeout_seconds,
+    )
+
+    # Parse CREST output
+    crest_conformers = parse_crest_ensemble(crest_output)
+    total_generated = len(crest_conformers)
+
+    # Convert energies from Hartree to relative kcal/mol
+    hartree_energies = [conf.energy_hartree for conf in crest_conformers]
+    min_energy_hartree = min(hartree_energies)
+
+    # Calculate relative energies in kcal/mol
+    relative_energies_kcal = [
+        (energy - min_energy_hartree) * HARTREE_TO_KCAL
+        for energy in hartree_energies
+    ]
+
+    # Apply energy window filter
+    # filter_by_energy_window expects conf_ids as list[int], but we'll use indices
+    conf_indices = list(range(len(crest_conformers)))
+    filtered_indices, filtered_energies = filter_by_energy_window(
+        conf_indices, relative_energies_kcal, window_kcal=energy_window_kcal
+    )
+
+    # Filter conformers
+    filtered_conformers = [crest_conformers[i] for i in filtered_indices]
+    total_after_pre_filter = len(filtered_conformers)
+
+    # Create per-conformer directories
+    conformer_ids = [conf.conformer_id for conf in filtered_conformers]
+    create_conformer_directories(job_id, conformer_ids)
+
+    # Write individual XYZ files and build ConformerData list
+    conformer_data_list = []
+    for conf, energy_kcal in zip(filtered_conformers, filtered_energies):
+        # Get output directory for this conformer
+        conf_output_dir = get_conformer_output_dir(job_id, conf.conformer_id)
+
+        # Ensure directory exists (create_conformer_directories should have done this)
+        conf_output_dir.mkdir(parents=True, exist_ok=True)
+
+        # Write XYZ file
+        xyz_file = conf_output_dir / "geometry.xyz"
+        xyz_file.write_text(conf.xyz_block)
+
+        # Build ConformerData
+        conformer_data = ConformerData(
+            conformer_id=conf.conformer_id,
+            energy=energy_kcal,
+            energy_unit="kcal_mol",
+            geometry_file=f"output/conformers/{conf.conformer_id}/geometry.xyz",
+            status="pending",
+        )
+        conformer_data_list.append(conformer_data)
+
+    # Build ConformerEnsemble
+    ensemble = ConformerEnsemble(
+        method="crest",
+        conformers=conformer_data_list,
+        pre_dft_energy_window_kcal=energy_window_kcal,
+        total_generated=total_generated,
+        total_after_pre_filter=total_after_pre_filter,
+    )
+
+    return ensemble
