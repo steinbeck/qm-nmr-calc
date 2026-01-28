@@ -12,8 +12,8 @@ Requirements for v2.0 Conformational Sampling. Each maps to roadmap phases.
 - [ ] **CONF-01**: User can choose between single-conformer mode (v1.x behavior) and ensemble mode when submitting a job
 - [ ] **CONF-02**: User can choose RDKit KDG or CREST as conformer generation method in ensemble mode
 - [x] **CONF-03**: System generates conformers using RDKit KDG (pure distance geometry, no crystal bias)
-- [ ] **CONF-04**: System generates conformers using CREST/xTB when CREST binary is available on PATH
-- [ ] **CONF-05**: System auto-detects CREST/xTB availability and reports it in API health/status
+- [x] **CONF-04**: System generates conformers using CREST/xTB when CREST binary is available on PATH
+- [x] **CONF-05**: System auto-detects CREST/xTB availability and reports it in API health/status
 - [x] **CONF-06**: App works fully without CREST/xTB installed (RDKit-only mode)
 
 ### Energy Filtering
@@ -93,8 +93,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONF-01 | Phase 17 | Pending |
 | CONF-02 | Phase 17 | Pending |
 | CONF-03 | Phase 13 | Complete |
-| CONF-04 | Phase 16 | Pending |
-| CONF-05 | Phase 16 | Pending |
+| CONF-04 | Phase 16 | Complete |
+| CONF-05 | Phase 16 | Complete |
 | CONF-06 | Phase 13 | Complete |
 | FILT-01 | Phase 13 | Complete |
 | FILT-02 | Phase 15 | Complete |
@@ -130,4 +130,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-26*
-*Last updated: 2026-01-26 after roadmap creation*
+*Last updated: 2026-01-28 after Phase 16 complete*

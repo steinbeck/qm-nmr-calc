@@ -169,14 +169,14 @@ Plans:
   1. System generates conformers using CREST/xTB when binaries available on PATH
   2. System auto-detects CREST/xTB availability and reports status in API health endpoint
   3. CREST includes ALPB solvation model matching job solvent parameter
-  4. CREST timeout (default 3600s) with automatic fallback to RDKit prevents hanging on macrocycles
+  4. CREST timeout (default 7200s) with clear error message prevents hanging on macrocycles (fail-fast, no auto-fallback)
   5. Environment variables (OMP_STACKSIZE, GFORTRAN_UNBUFFERED_ALL) configured for stability
 **Plans**: 3 plans
 
 Plans:
-- [ ] 16-01-PLAN.md -- CREST detection, ALPB solvent mapping, multi-XYZ parsing (TDD)
-- [ ] 16-02-PLAN.md -- CREST subprocess runner with timeout and ensemble builder (TDD)
-- [ ] 16-03-PLAN.md -- Pipeline dispatch, health endpoint, integration tests
+- [x] 16-01-PLAN.md -- CREST detection, ALPB solvent mapping, multi-XYZ parsing (TDD)
+- [x] 16-02-PLAN.md -- CREST subprocess runner with timeout and ensemble builder (TDD)
+- [x] 16-03-PLAN.md -- Pipeline dispatch, health endpoint, integration tests
 
 #### Phase 17: API Integration and Progress Tracking
 **Goal**: User-facing ensemble mode with conformer selection, metadata, and progress updates
@@ -219,9 +219,9 @@ Phases execute in numeric order: 12 -> 13 -> 14 -> 15 -> 16 -> 17
 | 13. RDKit Generation | v2.0 | 3/3 | Complete | 2026-01-27 |
 | 14. Boltzmann Averaging | v2.0 | 2/2 | Complete | 2026-01-27 |
 | 15. NWChem Integration | v2.0 | 3/3 | Complete | 2026-01-27 |
-| 16. CREST Integration | v2.0 | 0/? | Not started | - |
+| 16. CREST Integration | v2.0 | 3/3 | Complete | 2026-01-28 |
 | 17. API Integration | v2.0 | 0/? | Not started | - |
 
 ---
 
-*Last updated: 2026-01-27 after Phase 15 execution complete*
+*Last updated: 2026-01-28 after Phase 16 execution complete*
