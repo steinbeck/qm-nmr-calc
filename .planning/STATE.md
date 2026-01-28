@@ -12,9 +12,9 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 Phase: 17 of 17 (API Integration)
 Plan: 02 of 03 (Phase 17)
 Status: In progress
-Last activity: 2026-01-28 -- Completed 17-02-PLAN.md (Ensemble schema extensions)
+Last activity: 2026-01-28 -- Completed 17-01-PLAN.md (Ensemble task and API dispatch)
 
-Progress: ██████████████████████████████████████████████ 100% (52/53 plans complete)
+Progress: ██████████████████████████████████████████████ 100% (53/53 plans complete)
 
 ## Performance Metrics
 
@@ -84,6 +84,9 @@ Recent v2.0 decisions affecting current work:
 - CREST as informational health field: Non-blocking capability reporting in health endpoint (16-03)
 - Energy display in relative kcal/mol: User-friendly display units in API responses (17-02)
 - Top 3 conformers in ensemble metadata: Quick summary without overwhelming detail (17-02)
+- Progress callback pattern: Callback with (step, current, total) tuple for conformer processing (17-01)
+- CREST fallback warning: Store warning in job status, continue with RDKit (17-01)
+- Web default to ensemble: Users opt OUT to single-conformer mode (17-01)
 
 ### Roadmap Evolution
 
@@ -99,10 +102,10 @@ None.
 
 ### Blockers/Concerns
 
-**v2.0 Architecture:**
-- Ensemble filtering before averaging: `average_ensemble_nmr` requires `len(conformers) == len(nmr_results)`. After `run_ensemble_dft_and_nmr`, ensemble contains ALL conformers (including filtered/failed), but nmr_results only covers nmr_complete ones. Phase 17 caller (Huey task) must create a filtered ensemble with only nmr_complete conformers before calling `average_ensemble_nmr`.
+**None.**
 
 **Resolved (v2.0):**
+- Ensemble filtering before averaging: run_ensemble_nmr_task now filters to nmr_complete conformers before calling average_ensemble_nmr (17-01)
 - CREST timeouts: Implemented subprocess timeout with user-friendly fallback message (16-02)
 - Numerical stability: Boltzmann weighting implemented with exp-normalize trick, tested with extreme ranges (14-01)
 - Atom ordering consistency: Canonical indexing established via CanonicalRankAtoms (12-02)
@@ -119,7 +122,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 17-02-PLAN.md (Ensemble schema extensions)
+Stopped at: Completed 17-01-PLAN.md (Ensemble task and API dispatch)
 Resume file: None
-Next: 17-03-PLAN.md (Huey task integration for ensemble mode)
-Tests: All 266+ tests passing (16 API tests with 4 new ensemble schema tests)
+Next: 17-03-PLAN.md (Web UI for ensemble mode)
+Tests: All 279+ tests passing (13 new ensemble task tests)
