@@ -190,10 +190,14 @@ Plans:
   5. 3D viewer shows lowest-energy conformer geometry with shift labels
   6. Job status includes ensemble-specific states (generating_conformers, optimizing_conformers X/N, calculating_nmr X/N, averaging_shifts)
   7. Web UI displays conformer progress for ensemble jobs
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
-- [ ] 17-01: TBD
+- [ ] 17-01-PLAN.md -- Ensemble Huey task and API submission dispatch
+- [ ] 17-02-PLAN.md -- API schema extensions for ensemble response
+- [ ] 17-03-PLAN.md -- Web form and status page updates
+- [ ] 17-04-PLAN.md -- Geometry endpoint and 3D viewer conformer selection
+- [ ] 17-05-PLAN.md -- Results page with ensemble metadata display
 
 ## Progress
 
@@ -220,8 +224,8 @@ Phases execute in numeric order: 12 -> 13 -> 14 -> 15 -> 16 -> 17
 | 14. Boltzmann Averaging | v2.0 | 2/2 | Complete | 2026-01-27 |
 | 15. NWChem Integration | v2.0 | 3/3 | Complete | 2026-01-27 |
 | 16. CREST Integration | v2.0 | 3/3 | Complete | 2026-01-28 |
-| 17. API Integration | v2.0 | 0/? | Not started | - |
+| 17. API Integration | v2.0 | 0/5 | Not started | - |
 
 ---
 
-*Last updated: 2026-01-28 after Phase 16 execution complete*
+*Last updated: 2026-01-28 after Phase 17 planning complete*
