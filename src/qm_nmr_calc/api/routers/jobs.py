@@ -932,6 +932,39 @@ async def download_structure_svg(job_id: str):
     return await _get_visualization(job_id, "structure_annotated.svg", "image/svg+xml", f"{job_id}_structure.svg")
 
 
+def _xyz_to_sdf(xyz_content: str, smiles: str) -> str | None:
+    """Convert XYZ content to SDF using SMILES for bond information.
+
+    Args:
+        xyz_content: XYZ format geometry string
+        smiles: SMILES string for bond connectivity
+
+    Returns:
+        SDF/MOL block string, or None if conversion fails
+    """
+    try:
+        xyz_lines = xyz_content.strip().split("\n")
+        coords = []
+        for line in xyz_lines[2:]:  # Skip count and comment lines
+            parts = line.split()
+            if len(parts) >= 4:
+                coords.append((float(parts[1]), float(parts[2]), float(parts[3])))
+
+        mol = Chem.MolFromSmiles(smiles)
+        if mol is None:
+            return None
+
+        mol = Chem.AddHs(mol)
+        conf = Chem.Conformer(mol.GetNumAtoms())
+        for i, (x, y, z) in enumerate(coords):
+            if i < mol.GetNumAtoms():
+                conf.SetAtomPosition(i, (x, y, z))
+        mol.AddConformer(conf, assignId=True)
+        return Chem.MolToMolBlock(mol)
+    except Exception:
+        return None
+
+
 @router.get(
     "/{job_id}/geometry.json",
     responses={
@@ -942,9 +975,13 @@ async def download_structure_svg(job_id: str):
 async def get_geometry_data(job_id: str):
     """Get geometry and shift data for 3D visualization.
 
-    Returns initial RDKit geometry for running jobs,
-    optimized NWChem geometry for complete jobs.
-    Shift assignments included only when job is complete.
+    For single-conformer jobs:
+        Returns initial RDKit geometry for running jobs,
+        optimized NWChem geometry for complete jobs.
+
+    For ensemble jobs:
+        Returns array of conformer geometries with energies and populations.
+        Default geometry (xyz/sdf) is the lowest-energy conformer.
     """
     job_status = load_job_status(job_id)
     if job_status is None:
@@ -958,6 +995,83 @@ async def get_geometry_data(job_id: str):
             },
         )
 
+    # Build shift assignments only for complete jobs
+    h1_assignments = {}
+    c13_assignments = {}
+    if job_status.status == "complete" and job_status.nmr_results:
+        for s in job_status.nmr_results.h1_shifts:
+            h1_assignments[str(s.index)] = s.shift
+        for s in job_status.nmr_results.c13_shifts:
+            c13_assignments[str(s.index)] = s.shift
+
+    # Handle ensemble mode
+    if job_status.conformer_mode == "ensemble" and job_status.conformer_ensemble:
+        from ...conformers.boltzmann import HARTREE_TO_KCAL
+
+        ensemble = job_status.conformer_ensemble
+        job_dir = get_job_dir(job_id)
+
+        # Build conformer array
+        conformers_data = []
+        min_energy = None
+
+        # Find minimum energy for relative calculation
+        for c in ensemble.conformers:
+            if c.energy is not None and c.status in ("optimized", "nmr_complete"):
+                if min_energy is None or c.energy < min_energy:
+                    min_energy = c.energy
+
+        # Sort by energy (lowest first)
+        sorted_conformers = sorted(
+            [c for c in ensemble.conformers if c.status in ("optimized", "nmr_complete")],
+            key=lambda x: x.energy if x.energy is not None else float("inf"),
+        )
+
+        for c in sorted_conformers:
+            # Read geometry file (prefer optimized over initial)
+            geom_file = c.optimized_geometry_file or c.geometry_file
+            if geom_file:
+                geom_path = job_dir / geom_file
+                if geom_path.exists():
+                    xyz_content = geom_path.read_text()
+
+                    # Calculate relative energy in kcal/mol
+                    energy_kcal = None
+                    if c.energy is not None and min_energy is not None:
+                        if c.energy_unit == "hartree":
+                            energy_kcal = (c.energy - min_energy) * HARTREE_TO_KCAL
+                        else:
+                            energy_kcal = c.energy - min_energy
+
+                    # Generate SDF from XYZ + SMILES for proper bonds
+                    sdf_content = None
+                    if job_status.status == "complete" and job_status.input.smiles:
+                        sdf_content = _xyz_to_sdf(xyz_content, job_status.input.smiles)
+
+                    conformers_data.append({
+                        "id": c.conformer_id,
+                        "xyz": xyz_content,
+                        "sdf": sdf_content,
+                        "energy_kcal": round(energy_kcal, 2) if energy_kcal is not None else None,
+                        "population": round(c.weight, 4) if c.weight is not None else None,
+                    })
+
+        # Default geometry is first conformer (lowest energy)
+        default_xyz = conformers_data[0]["xyz"] if conformers_data else None
+        default_sdf = conformers_data[0]["sdf"] if conformers_data else None
+
+        return {
+            "job_id": job_id,
+            "status": job_status.status,
+            "conformer_mode": "ensemble",
+            "xyz": default_xyz,
+            "sdf": default_sdf,
+            "h1_assignments": h1_assignments if h1_assignments else None,
+            "c13_assignments": c13_assignments if c13_assignments else None,
+            "conformers": conformers_data,
+        }
+
+    # Single conformer mode (existing logic)
     # Determine which geometry to return
     # Prefer optimized geometry if available (even during NMR shielding step)
     geometry_file = get_geometry_file(job_id)  # optimized.xyz
@@ -977,45 +1091,18 @@ async def get_geometry_data(job_id: str):
 
     xyz_content = geometry_file.read_text()
 
-    # Build shift assignments only for complete jobs
-    h1_assignments = {}
-    c13_assignments = {}
+    # Generate SDF for complete jobs
     sdf_content = None
-
-    if job_status.status == "complete" and job_status.nmr_results:
-        for s in job_status.nmr_results.h1_shifts:
-            h1_assignments[str(s.index)] = s.shift
-        for s in job_status.nmr_results.c13_shifts:
-            c13_assignments[str(s.index)] = s.shift
-
-        # Generate SDF with proper bond orders for complete jobs
-        # SDF preserves double/triple bonds from original SMILES
-        try:
-            xyz_lines = xyz_content.strip().split("\n")
-            coords = []
-            for line in xyz_lines[2:]:  # Skip count and comment lines
-                parts = line.split()
-                if len(parts) >= 4:
-                    coords.append((float(parts[1]), float(parts[2]), float(parts[3])))
-
-            mol = Chem.MolFromSmiles(job_status.input.smiles)
-            if mol:
-                mol = Chem.AddHs(mol)
-                conf = Chem.Conformer(mol.GetNumAtoms())
-                for i, (x, y, z) in enumerate(coords):
-                    if i < mol.GetNumAtoms():
-                        conf.SetAtomPosition(i, (x, y, z))
-                mol.AddConformer(conf, assignId=True)
-                sdf_content = Chem.MolToMolBlock(mol)
-        except Exception:
-            # Fall back to XYZ only if SDF generation fails
-            pass
+    if job_status.status == "complete" and job_status.nmr_results and job_status.input.smiles:
+        sdf_content = _xyz_to_sdf(xyz_content, job_status.input.smiles)
 
     return {
         "job_id": job_id,
         "status": job_status.status,
+        "conformer_mode": "single",
         "xyz": xyz_content,
         "sdf": sdf_content,
         "h1_assignments": h1_assignments if h1_assignments else None,
         "c13_assignments": c13_assignments if c13_assignments else None,
+        "conformers": None,
     }
