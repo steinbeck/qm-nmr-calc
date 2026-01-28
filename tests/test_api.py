@@ -223,3 +223,103 @@ class TestEnsembleSchemas:
 
         fields = NMRResultsResponse.model_fields
         assert "ensemble_metadata" in fields
+
+
+class TestGeometryEndpoint:
+    """Tests for geometry.json endpoint."""
+
+    def test_geometry_endpoint_requires_existing_job(self):
+        """GET /api/v1/jobs/{id}/geometry.json returns 404 for unknown job."""
+        response = client.get("/api/v1/jobs/nonexistent123/geometry.json")
+        assert response.status_code == 404
+        data = response.json()["detail"]
+        assert data["status"] == 404
+
+    def test_geometry_endpoint_includes_conformer_mode(self):
+        """GET /api/v1/jobs/{id}/geometry.json includes conformer_mode field."""
+        # Create a single-conformer job
+        create_response = client.post(
+            "/api/v1/jobs",
+            json={"smiles": "CCO", "solvent": "chcl3", "conformer_mode": "single"}
+        )
+        job_id = create_response.json()["job_id"]
+
+        response = client.get(f"/api/v1/jobs/{job_id}/geometry.json")
+        assert response.status_code == 200
+        data = response.json()
+        assert "conformer_mode" in data
+        assert data["conformer_mode"] == "single"
+        assert "conformers" in data
+        assert data["conformers"] is None
+
+    def test_geometry_endpoint_single_conformer_structure(self):
+        """Verify single conformer geometry response has expected fields."""
+        # Create job
+        create_response = client.post(
+            "/api/v1/jobs",
+            json={"smiles": "C", "solvent": "chcl3", "conformer_mode": "single"}
+        )
+        job_id = create_response.json()["job_id"]
+
+        response = client.get(f"/api/v1/jobs/{job_id}/geometry.json")
+        assert response.status_code == 200
+        data = response.json()
+
+        # Check required fields
+        assert "job_id" in data
+        assert "status" in data
+        assert "xyz" in data
+        assert "sdf" in data
+        assert "h1_assignments" in data
+        assert "c13_assignments" in data
+        assert "conformer_mode" in data
+        assert "conformers" in data
+
+    def test_geometry_endpoint_function_signature(self):
+        """Verify get_geometry_data function exists with correct signature."""
+        from qm_nmr_calc.api.routers.jobs import get_geometry_data
+        import inspect
+
+        sig = inspect.signature(get_geometry_data)
+        assert "job_id" in sig.parameters
+
+    def test_xyz_to_sdf_helper_exists(self):
+        """Verify _xyz_to_sdf helper function exists."""
+        from qm_nmr_calc.api.routers.jobs import _xyz_to_sdf
+
+        # Test with valid input
+        xyz_content = """5
+Methane
+C   0.0000   0.0000   0.0000
+H   1.0890   0.0000   0.0000
+H  -0.3630   1.0270   0.0000
+H  -0.3630  -0.5135   0.8892
+H  -0.3630  -0.5135  -0.8892
+"""
+        smiles = "C"
+        result = _xyz_to_sdf(xyz_content, smiles)
+        assert result is not None
+        assert "M  END" in result  # SDF/MOL block terminator
+
+    def test_xyz_to_sdf_helper_handles_invalid_smiles(self):
+        """Verify _xyz_to_sdf returns None for invalid SMILES."""
+        from qm_nmr_calc.api.routers.jobs import _xyz_to_sdf
+
+        xyz_content = "2\ntest\nC 0 0 0\nH 1 0 0\n"
+        result = _xyz_to_sdf(xyz_content, "not-valid-smiles")
+        assert result is None
+
+    def test_conformer_data_schema_fields(self):
+        """Verify expected conformer data fields in ensemble response."""
+        # This is a schema verification test
+        # Full integration test would require running NWChem
+        expected_conformer_fields = {"id", "xyz", "sdf", "energy_kcal", "population"}
+
+        # Verify by examining the endpoint code
+        from qm_nmr_calc.api.routers.jobs import get_geometry_data
+        import inspect
+
+        source = inspect.getsource(get_geometry_data)
+        # Check that all expected fields are in the response construction
+        for field in expected_conformer_fields:
+            assert f'"{field}"' in source, f"Field '{field}' not found in conformer data"
