@@ -26,6 +26,7 @@ async def readiness():
     Checks:
     - Data directory is writable
     - Huey task queue is importable
+    - CREST/xTB binary availability
     """
     checks = {}
 
@@ -57,8 +58,14 @@ async def readiness():
             content={"status": "not ready", "checks": checks},
         )
 
+    # Check CREST availability (non-blocking, informational only)
+    from ...conformers.crest_generator import detect_crest_available
+
+    checks["crest_available"] = detect_crest_available()
+
     return {
         "status": "ready",
         "checks": checks,
+        "crest_available": checks["crest_available"],
         "timestamp": datetime.utcnow().isoformat() + "Z",
     }

@@ -23,14 +23,18 @@ def generate_conformer_ensemble(
     energy_window_kcal: float = 6.0,
     rmsd_threshold: float = 0.5,
     random_seed: int = 0xF00D,
+    conformer_method: str = "rdkit_kdg",
+    solvent: str = "chcl3",
+    charge: int = 0,
+    timeout_seconds: int = 7200,
 ) -> ConformerEnsemble:
     """Generate, optimize, filter, and write conformer ensemble from SMILES.
 
     This is the main pipeline function that orchestrates:
-    1. Adaptive conformer count calculation
-    2. RDKit KDG conformer generation
-    3. MMFF optimization
-    4. RMSD-based deduplication
+    1. Adaptive conformer count calculation (RDKit) OR CREST conformational search
+    2. RDKit KDG conformer generation OR CREST ensemble generation
+    3. MMFF optimization (RDKit only)
+    4. RMSD-based deduplication (RDKit only - CREST handles internally)
     5. Energy window filtering
     6. Per-conformer directory creation
     7. XYZ file writing
@@ -39,16 +43,21 @@ def generate_conformer_ensemble(
     Args:
         smiles: SMILES string of molecule
         job_id: Job identifier for directory creation
-        max_conformers: Optional override for conformer count (None = adaptive)
+        max_conformers: Optional override for conformer count (None = adaptive, RDKit only)
         energy_window_kcal: Energy window in kcal/mol for filtering (default: 6.0)
-        rmsd_threshold: RMSD threshold in Angstroms for deduplication (default: 0.5)
-        random_seed: Random seed for reproducibility (default: 0xF00D)
+        rmsd_threshold: RMSD threshold in Angstroms for deduplication (default: 0.5, RDKit only)
+        random_seed: Random seed for reproducibility (default: 0xF00D, RDKit only)
+        conformer_method: Method for conformer generation - "rdkit_kdg" or "crest" (default: "rdkit_kdg")
+        solvent: Solvent for CREST ALPB solvation (default: "chcl3", CREST only)
+        charge: Molecular charge (default: 0, CREST only)
+        timeout_seconds: CREST timeout in seconds (default: 7200 = 2 hours, CREST only)
 
     Returns:
         ConformerEnsemble with populated conformers, energies, and file paths
 
     Raises:
-        ValueError: If SMILES is invalid or molecule lacks MMFF parameters
+        ValueError: If SMILES is invalid, molecule lacks MMFF parameters, CREST requested but not installed,
+                    CREST requested for vacuum, or CREST requested for unsupported solvent
         RuntimeError: If conformer generation fails
 
     Example:
@@ -60,6 +69,36 @@ def generate_conformer_ensemble(
         >>> ensemble.conformers[0].geometry_file
         'output/conformers/conf_001/geometry.xyz'
     """
+    # Dispatch to CREST or RDKit based on conformer_method
+    if conformer_method == "crest":
+        from .crest_generator import detect_crest_available, get_alpb_solvent, generate_crest_ensemble
+
+        # Fail-fast: CREST requested but not installed
+        if not detect_crest_available():
+            raise ValueError(
+                "CREST conformer method requested but CREST/xTB not installed. "
+                "Install both crest and xtb binaries, or use 'rdkit_kdg' method."
+            )
+
+        # Fail-fast: CREST requires ALPB solvation
+        alpb_solvent = get_alpb_solvent(solvent)
+        if alpb_solvent is None:
+            raise ValueError(
+                f"CREST conformer method requires ALPB-compatible solvent. "
+                f"Solvent '{solvent}' is not supported (vacuum or unsupported). "
+                f"Use 'rdkit_kdg' method or change solvent to CHCl3 or DMSO."
+            )
+
+        return generate_crest_ensemble(
+            smiles=smiles,
+            job_id=job_id,
+            solvent=alpb_solvent,
+            charge=charge,
+            energy_window_kcal=energy_window_kcal,
+            timeout_seconds=timeout_seconds,
+        )
+
+    # RDKit path (default)
     # Step 1: Calculate adaptive conformer count
     num_confs = calculate_num_conformers(smiles, max_conformers)
 
