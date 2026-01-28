@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-26)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.0 Conformational Sampling -- Phase 15 complete, Phase 16 next
+**Current focus:** v2.0 Conformational Sampling -- Phase 17 complete, v2.0 complete
 
 ## Current Position
 
 Phase: 17 of 17 (API Integration)
-Plan: 02 of 03 (Phase 17)
-Status: In progress
-Last activity: 2026-01-28 -- Completed 17-01-PLAN.md (Ensemble task and API dispatch)
+Plan: 04 of 04 (Phase 17)
+Status: Complete
+Last activity: 2026-01-28 -- Completed 17-04-PLAN.md (Conformer geometry viewer)
 
-Progress: ██████████████████████████████████████████████ 100% (53/53 plans complete)
+Progress: ████████████████████████████████████████████████████ 100% (54/54 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 50
-- Average duration: 8.6 min
-- Total execution time: 432 min (7.2 hours)
+- Total plans completed: 54
+- Average duration: ~9 min
+- Total execution time: ~486 min (~8.1 hours)
 
 **By Milestone:**
 
@@ -29,11 +29,11 @@ Progress: ███████████████████████�
 |-----------|--------|-------|----------|
 | v1.0 Core NMR Service | 6 | 16 | 2 days |
 | v1.1 Accurate Chemical Shifts | 8 | 21 | 5 days |
-| v2.0 Conformational Sampling | 6 | TBD | In progress |
+| v2.0 Conformational Sampling | 6 | 17 | ~2 days |
 
 **Recent Trend:**
 - Last 5 plans: 9-17 min
-- Trend: Consistent fast execution (15-03: 9 min, 16-01: 12 min, 16-02: 17 min, 16-03: 13 min)
+- Trend: Consistent fast execution (16-02: 17 min, 16-03: 13 min, 17-01: ~15 min, 17-02: ~10 min, 17-04: 11 min)
 
 ## Accumulated Context
 
@@ -87,13 +87,16 @@ Recent v2.0 decisions affecting current work:
 - Progress callback pattern: Callback with (step, current, total) tuple for conformer processing (17-01)
 - CREST fallback warning: Store warning in job status, continue with RDKit (17-01)
 - Web default to ensemble: Users opt OUT to single-conformer mode (17-01)
+- Helper function for XYZ to SDF: Extract _xyz_to_sdf to avoid duplication in geometry.json endpoint (17-04)
+- Sort conformers by energy: Lowest-energy first in geometry.json response (17-04)
+- Averaged shifts on all conformers: Labels show Boltzmann-weighted average, not per-conformer shifts (17-04)
 
 ### Roadmap Evolution
 
 - v1.0: 6 phases (1-6), shipped 2026-01-20
 - v1.1: 8 phases (7-11.2, including 3 inserted), shipped 2026-01-25
-- v2.0: 6 phases (12-17), started 2026-01-26
-  - Phase structure: Data Model → RDKit → Boltzmann → NWChem → CREST → API
+- v2.0: 6 phases (12-17), shipped 2026-01-28
+  - Phase structure: Data Model -> RDKit -> Boltzmann -> NWChem -> CREST -> API
   - Risk mitigation: RDKit-only path (12-15, 17) complete before CREST complexity (16)
 
 ### Pending Todos
@@ -117,12 +120,12 @@ None.
 
 **Resolved (v1.x):**
 - RDKit stderr capture limitation (known, fallback messages used)
-- Single-conformer limitation (being addressed in v2.0)
+- Single-conformer limitation (addressed in v2.0)
 
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 17-01-PLAN.md (Ensemble task and API dispatch)
+Stopped at: Completed 17-04-PLAN.md (Conformer geometry viewer)
 Resume file: None
-Next: 17-03-PLAN.md (Web UI for ensemble mode)
-Tests: All 279+ tests passing (13 new ensemble task tests)
+Next: v2.0 complete - final verification and release
+Tests: All tests passing (77 API tests verified, ~280+ total)
