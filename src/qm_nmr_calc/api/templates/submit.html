@@ -49,6 +49,44 @@
         </fieldset>
 
         <fieldset>
+            <legend>Conformer Mode</legend>
+
+            <label for="conformer_mode">Calculation Mode</label>
+            <select id="conformer_mode" name="conformer_mode" required>
+                <option value="ensemble" {% if form_data.get('conformer_mode', 'ensemble') == 'ensemble' %}selected{% endif %}>
+                    Ensemble (multi-conformer, recommended)
+                </option>
+                <option value="single" {% if form_data.get('conformer_mode') == 'single' %}selected{% endif %}>
+                    Single conformer (faster, v1.x behavior)
+                </option>
+            </select>
+            <small>Ensemble mode generates multiple conformers for more accurate predictions on flexible molecules.</small>
+
+            <label for="conformer_method">Conformer Method</label>
+            <select id="conformer_method" name="conformer_method">
+                <option value="rdkit_kdg" {% if form_data.get('conformer_method', 'rdkit_kdg') == 'rdkit_kdg' %}selected{% endif %}>
+                    RDKit KDG (fast, always available)
+                </option>
+                <option value="crest" {% if not crest_available %}disabled{% endif %}
+                        {% if form_data.get('conformer_method') == 'crest' %}selected{% endif %}>
+                    CREST/xTB (thorough){% if not crest_available %} - not installed{% endif %}
+                </option>
+            </select>
+            <small>CREST provides better conformer sampling for complex molecules but requires external installation.</small>
+        </fieldset>
+
+        <details>
+            <summary>Advanced Options</summary>
+            <fieldset>
+                <label for="max_conformers">Max Conformers (optional)</label>
+                <input type="number" id="max_conformers" name="max_conformers"
+                       value="{{ form_data.get('max_conformers', '') }}"
+                       min="1" max="500" placeholder="Auto (based on flexibility)">
+                <small>Leave empty for automatic selection based on molecular flexibility.</small>
+            </fieldset>
+        </details>
+
+        <fieldset>
             <legend>Optional Details</legend>
 
             <label for="name">Molecule Name (optional)</label>
@@ -108,6 +146,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial state check
     updateInputStates();
+
+    // Conformer mode/method interaction
+    const modeSelect = document.getElementById('conformer_mode');
+    const methodSelect = document.getElementById('conformer_method');
+
+    function updateMethodState() {
+        if (modeSelect.value === 'single') {
+            methodSelect.disabled = true;
+            methodSelect.value = 'rdkit_kdg';
+            methodSelect.style.opacity = '0.5';
+        } else {
+            // Only enable if not CREST-disabled
+            const crestOption = methodSelect.querySelector('option[value="crest"]');
+            if (crestOption && !crestOption.disabled) {
+                methodSelect.disabled = false;
+            } else if (methodSelect.value === 'rdkit_kdg') {
+                methodSelect.disabled = false;
+            }
+            methodSelect.style.opacity = '1';
+        }
+    }
+
+    modeSelect.addEventListener('change', updateMethodState);
+
+    // Initialize conformer method state
+    updateMethodState();
 });
 </script>
 {% endblock %}

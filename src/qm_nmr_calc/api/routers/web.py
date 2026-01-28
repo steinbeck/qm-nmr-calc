@@ -29,7 +29,9 @@ router = APIRouter(tags=["web"])
 
 
 def _get_form_context() -> dict:
-    """Build common form context with solvents and presets."""
+    """Build common form context with solvents, presets, and CREST availability."""
+    from ...conformers import detect_crest_available
+
     # Build solvent options with descriptions
     solvents = [
         {"value": key, "label": desc}
@@ -42,7 +44,10 @@ def _get_form_context() -> dict:
         for preset, config in PRESETS.items()
     ]
 
-    return {"solvents": solvents, "presets": presets}
+    # Check CREST availability for form display
+    crest_available = detect_crest_available()
+
+    return {"solvents": solvents, "presets": presets, "crest_available": crest_available}
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -68,6 +73,7 @@ async def submit_job(
     notification_email: Annotated[Optional[str], Form()] = None,
     conformer_mode: Annotated[str, Form()] = "ensemble",  # Default to ensemble per CONTEXT.md
     conformer_method: Annotated[Optional[str], Form()] = None,  # None = use default (rdkit_kdg)
+    max_conformers: Annotated[Optional[str], Form()] = None,  # String from form, convert to int
 ):
     """Process job submission from web form."""
     # Preserve form data for re-render on error
@@ -79,6 +85,7 @@ async def submit_job(
         "notification_email": notification_email or "",
         "conformer_mode": conformer_mode,
         "conformer_method": conformer_method or "",
+        "max_conformers": max_conformers or "",
     }
 
     def render_error(error: str) -> HTMLResponse:
@@ -140,6 +147,19 @@ async def submit_job(
     # Get software versions
     nwchem_version = get_nwchem_version()
 
+    # Convert max_conformers from string to int if provided
+    max_conformers_int = None
+    if max_conformers and max_conformers.strip():
+        try:
+            max_conformers_int = int(max_conformers.strip())
+            if max_conformers_int < 1 or max_conformers_int > 500:
+                return render_error("Max conformers must be between 1 and 500.")
+        except ValueError:
+            return render_error("Max conformers must be a number.")
+
+    # If mode is single, ignore conformer_method
+    effective_method = None if conformer_mode == "single" else (conformer_method or None)
+
     # Create job directory and initial status
     job_status = create_job_directory(
         smiles=final_smiles,
@@ -149,7 +169,8 @@ async def submit_job(
         preset=preset,
         notification_email=notification_email,
         conformer_mode=conformer_mode,
-        conformer_method=conformer_method or None,  # Convert empty string to None
+        conformer_method=effective_method,  # Convert empty string to None
+        max_conformers=max_conformers_int,
     )
 
     # Generate initial 3D geometry for immediate visualization
