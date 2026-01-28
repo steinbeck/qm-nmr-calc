@@ -36,7 +36,7 @@ import re
 def extract_dft_energy(output_text: str) -> float:
     """Extract total DFT energy from NWChem optimization output.
 
-    Finds the LAST occurrence of "Total DFT energy:" in the output,
+    Finds the LAST occurrence of "Total DFT energy" in the output,
     which corresponds to the final optimization cycle energy.
 
     Args:
@@ -48,14 +48,15 @@ def extract_dft_energy(output_text: str) -> float:
     Raises:
         RuntimeError: If no "Total DFT energy:" line found in output.
     """
-    # Pattern: "Total DFT energy:      -40.51864189"
+    # Pattern: "Total DFT energy =   -232.430665572225" (real NWChem output)
+    # Also matches "Total DFT energy:     -40.51864189" (legacy format)
     # Use findall to get ALL occurrences, then take the last one
-    pattern = r"Total\s+DFT\s+energy:\s+([-+]?\d+\.\d+)"
+    pattern = r"Total\s+DFT\s+energy\s*[=:]\s*([-+]?\d+\.\d+)"
     matches = re.findall(pattern, output_text, re.IGNORECASE)
 
     if not matches:
         raise RuntimeError(
-            "Could not find 'Total DFT energy:' line in NWChem output. "
+            "Could not find 'Total DFT energy' line in NWChem output. "
             "Ensure the calculation completed successfully and includes DFT energy output."
         )
 

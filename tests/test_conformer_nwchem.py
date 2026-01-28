@@ -424,6 +424,7 @@ def test_conformer_dft_optimization_stores_optimized_geometry_path():
         # Mock run_calculation
         geom_output = job_dir / "output" / "optimized" / "conf_001_optimized.xyz"
         geom_output.parent.mkdir(parents=True, exist_ok=True)
+        geom_output.write_text("2\nOptimized\nC 0 0 0\nH 1 0 0\n")
 
         def get_scratch_with_create(job_id, conf_id):
             scratch_path = job_dir / "scratch" / conf_id

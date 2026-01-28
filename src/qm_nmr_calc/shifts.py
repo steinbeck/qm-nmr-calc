@@ -50,7 +50,10 @@ def get_scaling_factor(
     solvent_map = {"chcl3": "CHCl3", "dmso": "DMSO", "vacuum": "vacuum"}
     normalized_solvent = solvent_map.get(solvent.lower(), solvent)
 
-    key = f"{functional}/{basis_set}/{nucleus}/{normalized_solvent}"
+    # Normalize functional name to uppercase (e.g., "b3lyp" -> "B3LYP")
+    normalized_functional = functional.upper()
+
+    key = f"{normalized_functional}/{basis_set}/{nucleus}/{normalized_solvent}"
     factors = load_scaling_factors()
 
     if key not in factors:

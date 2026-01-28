@@ -257,8 +257,10 @@ def run_conformer_dft_optimization(
     Raises:
         RuntimeError: If less than 50% of conformers succeed
     """
+    import shutil
+
     from qm_nmr_calc.models import ConformerData, ConformerEnsemble
-    from qm_nmr_calc.storage import get_job_dir, get_conformer_scratch_dir
+    from qm_nmr_calc.storage import get_job_dir, get_conformer_scratch_dir, get_conformer_output_dir
     from qm_nmr_calc.nwchem.output_parser import extract_dft_energy
 
     job_dir = get_job_dir(job_id)
@@ -292,12 +294,19 @@ def run_conformer_dft_optimization(
             opt_output_text = result["optimization_output"].read_text()
             dft_energy = extract_dft_energy(opt_output_text)
 
+            # Copy optimized geometry to conformer-specific directory
+            # (run_calculation writes to shared output/optimized.xyz which
+            # would be overwritten by the next conformer)
+            conf_output_dir = get_conformer_output_dir(job_id, conformer.conformer_id)
+            conf_optimized_path = conf_output_dir / "optimized.xyz"
+            shutil.copy2(result["geometry_file"], conf_optimized_path)
+
             # Update conformer with DFT results
             conformer.energy = dft_energy
             conformer.energy_unit = "hartree"
             conformer.status = "optimized"
             conformer.optimized_geometry_file = str(
-                result["geometry_file"].relative_to(job_dir)
+                conf_optimized_path.relative_to(job_dir)
             )
 
             successful.append(conformer)
