@@ -1,0 +1,196 @@
+/*
+ * Submit Page Components
+ *
+ * Page-specific styling for the NMR calculation submission page.
+ * Uses design tokens from tokens.css and follows Phase 18 patterns.
+ *
+ * Layout: Two-column grid with form on left, preview on right.
+ * Responsive: Collapses to single column at 900px with preview first.
+ *
+ * Key components:
+ * - .submit-layout: Two-column responsive grid
+ * - .form-group: Fieldset-style form sections with BEM naming
+ * - .preview-card: Solid white background (like viewer-card) for 3D preview
+ * - .required-indicator: Red asterisk for required fields
+ * - .field-help: Descriptive text below form inputs
+ */
+
+@layer components {
+
+    /* ===== Submit Layout ===== */
+    /*
+     * Two-column grid: form fields on left, molecule preview on right.
+     * Preview column fixed at 350px for consistent canvas sizing.
+     */
+    .submit-layout {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: var(--space-xl);
+        align-items: start;
+    }
+
+    @media (max-width: 900px) {
+        .submit-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .submit-layout__preview {
+            order: -1; /* Preview first on mobile */
+        }
+    }
+
+
+    /* ===== Form Group ===== */
+    /*
+     * Fieldset-style form sections with consistent visual treatment.
+     * Uses BEM naming: .form-group, .form-group__field
+     */
+    .form-group {
+        border: 1px solid var(--color-border);
+        border-radius: 0.5rem;
+        padding: var(--space-lg);
+        margin-bottom: var(--space-lg);
+        background: var(--color-white);
+    }
+
+    .form-group legend {
+        font-weight: 600;
+        font-size: var(--text-lg);
+        padding: 0 var(--space-sm);
+        color: var(--color-text);
+    }
+
+    .form-group__field {
+        margin-bottom: var(--space-md);
+    }
+
+    .form-group__field:last-child {
+        margin-bottom: 0;
+    }
+
+
+    /* ===== Required Indicator ===== */
+    /*
+     * Red asterisk for required fields.
+     * Placed after label text: <label>Field <span class="required-indicator">*</span></label>
+     */
+    .required-indicator {
+        color: var(--color-error);
+        margin-left: var(--space-xs);
+    }
+
+
+    /* ===== Field Help ===== */
+    /*
+     * Descriptive text below form inputs.
+     * Smaller, muted text to avoid competing with labels.
+     */
+    .field-help {
+        display: block;
+        margin-top: var(--space-xs);
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        line-height: 1.4;
+    }
+
+
+    /* ===== Form Instructions ===== */
+    /*
+     * Instructions at top of form explaining required fields.
+     * E.g., "Fields marked with * are required"
+     */
+    .form-instructions {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-lg);
+    }
+
+
+    /* ===== Preview Card ===== */
+    /*
+     * CRITICAL: Uses solid white background instead of glass effect.
+     * Same approach as viewer-card - glass/blur causes performance
+     * issues with WebGL/3Dmol.js rendering.
+     *
+     * Sticky positioning keeps preview visible while scrolling form.
+     */
+    .preview-card {
+        background: var(--color-white);
+        border: 1px solid var(--color-border);
+        border-radius: var(--glass-radius);
+        box-shadow: var(--glass-shadow);
+        padding: var(--space-lg);
+        position: sticky;
+        top: var(--space-lg);
+    }
+
+    .preview-card__title {
+        font-size: var(--text-lg);
+        font-weight: 600;
+        margin: 0 0 var(--space-md) 0;
+    }
+
+    /*
+     * Canvas container for molecule preview.
+     * Square aspect ratio for consistent molecular display.
+     */
+    .preview-card__canvas {
+        width: 100%;
+        aspect-ratio: 1;
+        background: var(--color-gray-50);
+        border: 1px solid var(--color-gray-200);
+        border-radius: var(--space-xs);
+    }
+
+    .preview-card__status {
+        margin-top: var(--space-md);
+        font-size: var(--text-sm);
+        text-align: center;
+    }
+
+    /* Status variants for validation feedback */
+    .preview-card__status--valid {
+        color: var(--color-success);
+    }
+
+    .preview-card__status--invalid {
+        color: var(--color-error);
+    }
+
+    .preview-card__status--empty {
+        color: var(--color-text-muted);
+    }
+
+
+    /* ===== Submit Button ===== */
+    /*
+     * Full-width on mobile for easy touch targets.
+     */
+    .submit-form__button {
+        margin-top: var(--space-lg);
+    }
+
+    @media (max-width: 600px) {
+        .submit-form__button {
+            width: 100%;
+        }
+    }
+
+
+    /* ===== Advanced Options ===== */
+    /*
+     * Borderless variant for nested options within a form group.
+     * Used for optional/advanced settings that don't need visual separation.
+     */
+    .form-group--advanced {
+        border: none;
+        padding: var(--space-md) 0 0 0;
+        margin: 0;
+        background: transparent;
+    }
+
+    .form-group--advanced legend {
+        display: none;
+    }
+
+}
