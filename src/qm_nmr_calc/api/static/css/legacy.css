@@ -1,0 +1,464 @@
+/* Legacy styles from pre-v2.1 -- migrate to new components in Phases 19-21 */
+@layer components {
+    /* Custom styles for QM NMR Calculator */
+
+    /* Article max-width for better readability */
+    article {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* Wider container for results page */
+    article.results-container {
+        max-width: 1200px;
+    }
+
+    /* Clickable images */
+    img.clickable {
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+    img.clickable:hover {
+        opacity: 0.9;
+    }
+
+    /* Modal styles for enlarged images */
+    .modal-image {
+        max-height: 80vh;
+        max-width: 90vw;
+        object-fit: contain;
+    }
+
+    /* Form improvements */
+    form fieldset {
+        margin-bottom: var(--space-md);
+    }
+
+    /* Status indicator styling */
+    .status-indicator {
+        display: inline-block;
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 50%;
+        margin-right: var(--space-sm);
+    }
+
+    .status-pending {
+        background-color: var(--color-warning);
+    }
+
+    .status-running {
+        background-color: var(--color-info);
+        animation: pulse 1.5s infinite;
+    }
+
+    .status-complete {
+        background-color: var(--color-success);
+    }
+
+    .status-failed {
+        background-color: var(--color-error);
+    }
+
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+
+    /* Structure image - full width, prominent */
+    .structure-container {
+        margin: var(--space-md) 0 var(--space-xl) 0;
+        text-align: center;
+    }
+
+    .structure-container figure {
+        margin: 0;
+    }
+
+    .structure-container img {
+        max-width: 100%;
+        height: auto;
+        max-height: 600px;
+        object-fit: contain;
+        border: 1px solid var(--color-border);
+        border-radius: var(--space-xs);
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .structure-container img:hover {
+        transform: scale(1.01);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .structure-container figcaption {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        margin-top: var(--space-sm);
+    }
+
+    /* Spectra grid - two side by side */
+    .spectra-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-lg);
+        margin: var(--space-md) 0;
+    }
+
+    @media (max-width: 768px) {
+        .spectra-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .spectra-grid figure {
+        margin: 0;
+        text-align: center;
+    }
+
+    .spectra-grid img {
+        max-width: 100%;
+        height: auto;
+        max-height: 400px;
+        object-fit: contain;
+        border: 1px solid var(--color-border);
+        border-radius: var(--space-xs);
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .spectra-grid img:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .spectra-grid figcaption {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        margin-top: var(--space-sm);
+    }
+
+    /* Download section styling */
+    .download-section {
+        margin-top: var(--space-xl);
+        padding-top: var(--space-md);
+        border-top: 1px solid var(--color-border);
+    }
+
+    /* Metadata display */
+    .metadata-grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: var(--space-sm) var(--space-md);
+    }
+
+    .metadata-grid dt {
+        font-weight: 600;
+        color: var(--color-text-muted);
+    }
+
+    .metadata-grid dd {
+        margin: 0;
+    }
+
+    /* Download button grid */
+    .download-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .download-grid a[role="button"] {
+        text-align: center;
+        font-size: var(--text-sm);
+    }
+
+    /* Modal dialog improvements */
+    dialog#image-modal {
+        max-width: 95vw;
+        max-height: 95vh;
+        padding: 0;
+        border: none;
+        border-radius: var(--space-sm);
+        background: transparent;
+    }
+
+    dialog#image-modal::backdrop {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    dialog#image-modal article {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    dialog#image-modal article header {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: var(--space-sm);
+        background: transparent;
+    }
+
+    dialog#image-modal article header button {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        width: 2rem;
+        height: 2rem;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Muted text helper */
+    .muted {
+        color: var(--color-text-muted);
+    }
+
+    /* Step progress styling */
+    .step-indicator {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+
+    .steps-table {
+        margin-top: var(--space-sm);
+    }
+
+    .steps-table th,
+    .steps-table td {
+        padding: var(--space-sm) 0.75rem;
+    }
+
+    .steps-table td:first-child {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+
+    .steps-table td:last-child {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* Benchmark viewer layout */
+    .benchmark-layout {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: var(--space-md);
+        min-height: 70vh;
+    }
+
+    .benchmark-sidebar {
+        background: var(--glass-bg-subtle);
+        border: 1px solid var(--color-border);
+        border-radius: var(--space-xs);
+        overflow-y: auto;
+        max-height: 80vh;
+    }
+
+    .benchmark-sidebar h3 {
+        padding: var(--space-md);
+        margin: 0;
+        border-bottom: 1px solid var(--color-border);
+        font-size: var(--text-base);
+    }
+
+    .benchmark-sidebar nav ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .benchmark-sidebar nav ul li {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .verification-progress {
+        padding: var(--space-sm) var(--space-md);
+        font-size: var(--text-xs);
+        color: var(--color-text-muted);
+        border-bottom: 1px solid var(--color-border);
+        background: var(--color-gray-100);
+    }
+
+    .verification-progress #verified-count {
+        font-weight: 600;
+        color: var(--color-primary);
+    }
+
+    .molecule-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        padding: var(--space-sm) var(--space-md);
+        cursor: pointer;
+        border-left: 3px solid transparent;
+    }
+
+    .molecule-item:hover {
+        background: var(--color-gray-200);
+    }
+
+    .molecule-item.verified {
+        background: rgba(39, 174, 96, 0.1);
+    }
+
+    .molecule-item .verify-checkbox {
+        margin: 0;
+        flex-shrink: 0;
+    }
+
+    .benchmark-sidebar nav a {
+        display: block;
+        text-decoration: none;
+        font-size: var(--text-sm);
+        flex-grow: 1;
+    }
+
+    .benchmark-sidebar nav a:hover {
+        /* Hover handled by .molecule-item */
+    }
+
+    .benchmark-sidebar nav a[aria-current="page"] {
+        font-weight: 600;
+    }
+
+    .molecule-item:has(a[aria-current="page"]) {
+        background: var(--color-primary-light);
+        border-left-color: var(--color-primary);
+    }
+
+    .molecule-item.verified:has(a[aria-current="page"]) {
+        background: linear-gradient(90deg, rgba(39, 174, 96, 0.15) 0%, var(--color-primary-light) 100%);
+    }
+
+    /* Viewer container */
+    #viewer-container {
+        position: relative;
+        width: 100%;
+        height: 500px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--space-xs);
+        background: white;
+    }
+
+    /* Metadata panel */
+    .molecule-metadata {
+        margin-top: var(--space-md);
+        padding: var(--space-md);
+        background: var(--glass-bg-subtle);
+        border: 1px solid var(--color-border);
+        border-radius: var(--space-xs);
+    }
+
+    .molecule-metadata h4 {
+        margin: 0 0 0.75rem 0;
+        font-size: var(--text-base);
+    }
+
+    .molecule-metadata h5 {
+        margin: var(--space-md) 0 var(--space-sm) 0;
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+    }
+
+    .shifts-display {
+        margin-top: var(--space-md);
+    }
+
+    .shift-badge {
+        display: inline-block;
+        padding: var(--space-xs) var(--space-sm);
+        margin: var(--space-xs);
+        border-radius: var(--space-xs);
+        font-size: var(--text-xs);
+        font-family: var(--font-mono);
+    }
+
+    .shift-badge.h1 {
+        background: #3498db;
+        color: white;
+    }
+
+    .shift-badge.c13 {
+        background: #27ae60;
+        color: white;
+    }
+
+    .legend {
+        display: flex;
+        gap: var(--space-md);
+        font-size: var(--text-sm);
+        margin-top: var(--space-sm);
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+    }
+
+    .legend-color {
+        width: var(--space-md);
+        height: var(--space-md);
+        border-radius: var(--space-xs);
+    }
+
+    .legend-color.h1 { background: #3498db; }
+    .legend-color.c13 { background: #27ae60; }
+
+    /* 3D Molecule Viewer */
+    #viewer-container-3d {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--space-xs);
+        background: white;
+        margin-bottom: var(--space-md);
+    }
+
+    /* Viewer legend for shift colors */
+    .viewer-legend {
+        display: flex;
+        gap: var(--space-lg);
+        margin-top: var(--space-sm);
+        font-size: var(--text-sm);
+    }
+
+    .viewer-legend-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+
+    .viewer-legend-color {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 2px;
+    }
+
+    .viewer-legend-color.h1 {
+        background-color: #3498db;  /* Blue for 1H */
+    }
+
+    .viewer-legend-color.c13 {
+        background-color: #e67e22;  /* Orange for 13C per CONTEXT.md */
+    }
+
+    @media (max-width: 768px) {
+        .benchmark-layout {
+            grid-template-columns: 1fr;
+        }
+        .benchmark-sidebar {
+            max-height: 200px;
+        }
+    }
+}
