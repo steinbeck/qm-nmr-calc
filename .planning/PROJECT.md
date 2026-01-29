@@ -28,18 +28,18 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 **Known limitation:** Single-conformer predictions only (being addressed in v2.0). Flexible molecules may have inaccurate predictions because the experimental NMR spectrum is a population-weighted average across all thermally accessible conformers.
 
-## Current Milestone: v2.0 Conformational Sampling
+## Current Milestone: v2.1 UI Redesign
 
-**Goal:** Boltzmann-weighted ensemble averaging for flexible molecules -- generate multiple conformers, compute NMR on each, weight by DFT energies for population-averaged shifts.
+**Goal:** Modern bento grid layout with glassmorphism effects -- visually appealing, clear component separation, professional scientific aesthetic.
 
 **Target features:**
-- RDKit KDG conformer generation (built-in, no new deps)
-- CREST/xTB conformer generation (optional, auto-detected)
-- Two-stage energy filtering (pre-DFT wide window, post-DFT tight window)
-- Full DFT geometry optimization on each conformer
-- Boltzmann-weighted averaging of NMR shifts
-- User choice: single-conformer (v1.x behavior) or ensemble mode
-- User choice: RDKit or CREST conformer method
+- Bento grid layout system with asymmetric card arrangements
+- Glassmorphism effects (frosted glass, backdrop blur, subtle borders)
+- Light mode with depth (white/gray backgrounds, layered cards)
+- Full redesign of Results, Submit, and Status pages
+- Custom CSS replacing Pico CSS framework
+- Responsive design maintaining usability on tablet/mobile
+- Smooth transitions and hover interactions
 
 ## Requirements
 
@@ -63,19 +63,27 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - Accept pre-optimized XYZ/SDF geometries (skip geometry opt) -- v1.1
 - Interactive 3D molecule visualization with shift labels -- v1.1
 - Scaling factor metadata in API responses (source, expected MAE) -- v1.1
+- Conformer generation via RDKit KDG (pure distance geometry) -- v2.0
+- Conformer generation via CREST/xTB (optional, auto-detected) -- v2.0
+- Two-stage energy window filtering (pre-DFT and post-DFT) -- v2.0
+- DFT geometry optimization on each conformer -- v2.0
+- NMR shielding calculation on each conformer -- v2.0
+- Boltzmann weighting by DFT energies -- v2.0
+- Weighted-average chemical shift output -- v2.0
+- User choice between single-conformer and ensemble modes -- v2.0
+- Ensemble metadata in API responses (conformer count, populations) -- v2.0
+- Conformer progress tracking in web UI -- v2.0
 
 ### Active
 
-- [ ] Conformer generation via RDKit KDG (pure distance geometry, no crystal bias)
-- [ ] Conformer generation via CREST/xTB (optional system deps, auto-detected)
-- [ ] Energy window filtering (initial pre-DFT and post-DFT)
-- [ ] DFT geometry optimization on each conformer
-- [ ] NMR shielding calculation on each conformer
-- [ ] Boltzmann weighting by DFT energies
-- [ ] Weighted-average chemical shift output
-- [ ] User choice between single-conformer and ensemble modes
-- [ ] User choice between RDKit and CREST conformer methods
-- [ ] API and web UI updates for conformational sampling parameters
+- [ ] Bento grid layout system for all pages
+- [ ] Glassmorphism card styling (backdrop blur, transparency, borders)
+- [ ] Results page redesign with prominent 3D viewer and spectra
+- [ ] Submit page redesign with clean form layout
+- [ ] Status page redesign with progress visualization
+- [ ] Custom CSS framework replacing Pico CSS
+- [ ] Responsive breakpoints for tablet and mobile
+- [ ] Hover states and smooth transitions
 
 ### Out of Scope
 
@@ -130,4 +138,4 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 | Boltzmann weight by DFT energies | Most accurate readily available energy level | Good -- chemically reasonable shifts from E2E test |
 
 ---
-*Last updated: 2026-01-28 after E2E validation of v2.0 ensemble pipeline*
+*Last updated: 2026-01-29 after starting v2.1 UI Redesign milestone*

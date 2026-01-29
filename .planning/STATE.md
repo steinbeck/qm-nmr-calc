@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-01-26)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.0 Conformational Sampling -- Phase 17 complete, v2.0 complete
+**Current focus:** v2.1 UI Redesign -- Defining requirements
 
 ## Current Position
 
-Phase: 17 of 17 (API Integration)
-Plan: 05 of 05 (Phase 17)
-Status: Complete
-Last activity: 2026-01-29 -- Completed 17-05-PLAN.md (Ensemble results display)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-01-29 -- Started milestone v2.1 UI Redesign
 
-Progress: ████████████████████████████████████████████████████ 100% (55/55 plans complete)
+Progress: Researching...
 
 ## Performance Metrics
 
@@ -127,7 +127,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Completed 17-05-PLAN.md (Ensemble results display)
+Stopped at: Starting v2.1 UI Redesign milestone
 Resume file: None
-Next: v2.0 complete - ready for release
-Tests: All tests passing (23 API tests, 94 conformer/ensemble tests verified)
+Next: Complete research, define requirements, create roadmap
+Tests: All tests passing
