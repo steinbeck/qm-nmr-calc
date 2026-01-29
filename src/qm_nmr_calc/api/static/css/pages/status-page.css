@@ -328,6 +328,42 @@
     }
 
 
+    /* ===== Conformer Details ===== */
+    /*
+     * Collapsible section for conformer table in ensemble jobs.
+     */
+    .conformer-details {
+        margin-top: var(--space-lg);
+    }
+
+    .conformer-details summary {
+        cursor: pointer;
+        font-weight: 500;
+        color: var(--color-text);
+    }
+
+    .conformer-details summary:hover {
+        color: var(--color-primary);
+    }
+
+
+    /* ===== SMILES Code ===== */
+    /*
+     * Styling for long SMILES strings that need to wrap.
+     */
+    .smiles-code {
+        word-break: break-all;
+        font-size: var(--text-sm);
+        font-family: var(--font-mono);
+    }
+
+
+    /* ===== Muted Text Helper ===== */
+    .muted {
+        color: var(--color-text-muted);
+    }
+
+
     /* ===== Pulse Animation ===== */
     @keyframes pulse {
         0%, 100% { transform: scale(1); opacity: 1; }
