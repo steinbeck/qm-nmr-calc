@@ -10,12 +10,12 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Milestone: v2.1 UI Redesign
-Phase: 18 - CSS Foundation and Design System
-Plan: 03 of 4 complete (18-01, 18-02, 18-03 done)
-Status: In progress
-Last activity: 2026-01-29 -- Completed 18-02-PLAN.md (base styles and bento grid)
+Phase: 18 - CSS Foundation and Design System (COMPLETE)
+Plan: 04 of 4 complete (18-01, 18-02, 18-03, 18-04 done)
+Status: Phase complete
+Last activity: 2026-01-29 -- Completed 18-04-PLAN.md (base template integration)
 
-Progress: ▓▓▓░░░ Phase 18 of 23 (26%)
+Progress: ████░░ Phase 18 of 23 (26%) - Phase 18 complete, ready for Phase 19
 
 ## Performance Metrics
 
@@ -55,6 +55,8 @@ All decisions logged in PROJECT.md Key Decisions table.
 - Design tokens as CSS custom properties: Replaces preprocessor variables
 - Glass opacity 85-95%: Higher opacity for WCAG contrast compliance
 - Mobile performance budget: 2-3 glass elements max, 6px blur vs 10px desktop
+- CSS load order: layers.css -> reset -> tokens -> base -> layout -> components -> utilities -> legacy
+- Legacy styles in @layer components: Controlled migration path for existing custom.css
 
 **v2.0 Conformational Sampling decisions (inherited context):**
 
@@ -106,8 +108,8 @@ None. Phase 18 in progress.
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Completed 18-02-PLAN.md (Base Styles and Bento Grid)
+Stopped at: Completed 18-04-PLAN.md (Base Template Integration) - Phase 18 COMPLETE
 Resume file: None
-Next: 18-04-PLAN.md (Base Template Update) - only remaining plan in Phase 18
+Next: Phase 19 - Results Page Redesign
 Tests: All tests passing (226 unit + 3 integration = 229 tests)
 Codebase: 5,432 LOC Python, 1,417 LOC tests, 892 LOC templates
