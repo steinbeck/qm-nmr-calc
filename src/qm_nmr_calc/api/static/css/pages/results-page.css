@@ -13,6 +13,13 @@
 
 @layer components {
 
+    /* ===== Override Legacy article max-width ===== */
+    /* Legacy CSS constrains articles to 900px - remove for bento grid */
+    .bento-grid article {
+        max-width: none;
+        margin: 0;
+    }
+
     /* ===== Results Header ===== */
     .results-header {
         margin-bottom: var(--space-xl);
@@ -212,8 +219,20 @@
     /* ===== Download Grid ===== */
     .download-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: var(--space-sm);
+        grid-template-columns: repeat(6, 1fr);
+        gap: var(--space-md);
+    }
+
+    @media (max-width: 1024px) {
+        .download-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .download-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
 
     /*
