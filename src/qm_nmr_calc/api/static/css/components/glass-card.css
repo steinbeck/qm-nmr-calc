@@ -1,0 +1,132 @@
+/*
+ * Glassmorphic Card Component
+ *
+ * BEM naming convention:
+ * - Block: .glass-card
+ * - Elements: .glass-card__header, .glass-card__title, .glass-card__body, .glass-card__footer
+ * - Modifiers: .glass-card--subtle, .glass-card--featured, .glass-card--elevated, .glass-card--interactive
+ *
+ * Usage: <div class="glass-card glass-card--featured">
+ *          <header class="glass-card__header">...</header>
+ *        </div>
+ *
+ * IMPORTANT: Modifiers are additional classes, not replacements.
+ * Always include base class with modifier: "glass-card glass-card--featured"
+ *
+ * Safari requires -webkit-backdrop-filter with LITERAL values (CSS variables don't work).
+ */
+
+@layer components {
+    /* ===== Block: Base glass card ===== */
+    .glass-card {
+        /* High opacity for WCAG contrast (85%) */
+        background: var(--glass-bg-light, hsl(0 0% 100% / 0.85));
+
+        /* Glassmorphism effect */
+        backdrop-filter: var(--glass-blur-medium, blur(12px));
+        -webkit-backdrop-filter: blur(12px);  /* Safari: MUST use literal value */
+
+        /* Border and shape */
+        border: var(--glass-border, 1px solid hsl(0 0% 100% / 0.3));
+        border-radius: var(--glass-radius, 1rem);
+
+        /* Elevation */
+        box-shadow: var(--glass-shadow, 0 8px 32px hsl(0 0% 0% / 0.1));
+
+        /* Spacing */
+        padding: var(--space-lg, 1.5rem);
+
+        /* Performance-friendly animations (transform and box-shadow only) */
+        transition: transform var(--transition-base, 250ms ease),
+                    box-shadow var(--transition-base, 250ms ease);
+    }
+
+    /* ===== Elements ===== */
+    .glass-card__header {
+        margin-bottom: var(--space-md, 1rem);
+        padding-bottom: var(--space-md, 1rem);
+        border-bottom: 1px solid hsl(0 0% 0% / 0.1);
+    }
+
+    .glass-card__title {
+        font-size: var(--text-2xl, 1.5rem);
+        font-weight: 600;
+        margin: 0;
+        color: var(--color-text, hsl(0 0% 10%));
+        line-height: 1.2;
+    }
+
+    .glass-card__body {
+        color: var(--color-text, hsl(0 0% 15%));
+        line-height: 1.6;
+    }
+
+    .glass-card__footer {
+        margin-top: var(--space-lg, 1.5rem);
+        padding-top: var(--space-md, 1rem);
+        border-top: 1px solid hsl(0 0% 0% / 0.1);
+    }
+
+    /* ===== Modifiers ===== */
+
+    /* Subtle: Higher opacity (95%), lighter blur for secondary content */
+    .glass-card--subtle {
+        background: var(--glass-bg-subtle, hsl(0 0% 100% / 0.95));
+        backdrop-filter: var(--glass-blur-light, blur(8px));
+        -webkit-backdrop-filter: blur(8px);  /* Safari: literal value */
+    }
+
+    /* Featured: Medium opacity (90%), stronger shadow, thicker border */
+    .glass-card--featured {
+        background: var(--glass-bg-medium, hsl(0 0% 100% / 0.90));
+        border-width: 2px;
+        box-shadow: 0 12px 48px hsl(0 0% 0% / 0.15);
+    }
+
+    /* Elevated: Enhanced shadow for prominent cards */
+    .glass-card--elevated {
+        box-shadow: 0 16px 64px hsl(0 0% 0% / 0.18);
+    }
+
+    /* Interactive: Adds hover effects (desktop only via hover media query) */
+    /* Note: Hover styles defined in media query below for desktop detection */
+}
+
+/* ===== Interactive hover (desktop only) ===== */
+@media (hover: hover) {
+    .glass-card--interactive:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 48px hsl(0 0% 0% / 0.2);
+    }
+}
+
+/* ===== Fallback for browsers without backdrop-filter ===== */
+@supports not (backdrop-filter: blur(1px)) {
+    .glass-card {
+        background: hsl(0 0% 100% / 0.95);  /* Solid fallback */
+    }
+
+    .glass-card--subtle {
+        background: hsl(0 0% 100% / 0.98);
+    }
+
+    .glass-card--featured {
+        background: hsl(0 0% 100% / 0.97);
+    }
+}
+
+/* ===== Accessibility: Reduced transparency preference ===== */
+@media (prefers-reduced-transparency: reduce) {
+    .glass-card {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: hsl(0 0% 100%);
+    }
+
+    .glass-card--subtle,
+    .glass-card--featured {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: hsl(0 0% 100%);
+    }
+}
