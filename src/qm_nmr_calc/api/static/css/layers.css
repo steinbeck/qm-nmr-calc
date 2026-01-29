@@ -1,0 +1,15 @@
+/*
+ * CSS Cascade Layers - Order Declaration
+ *
+ * IMPORTANT: This file MUST be loaded first before any other CSS files.
+ * The layer order declared here determines cascade priority:
+ * - reset: lowest priority (browser normalization)
+ * - base: element defaults
+ * - layout: page structure and grids
+ * - components: reusable UI components
+ * - utilities: highest priority (single-purpose overrides)
+ *
+ * Styles in later layers override earlier layers regardless of specificity.
+ */
+
+@layer reset, base, layout, components, utilities;
