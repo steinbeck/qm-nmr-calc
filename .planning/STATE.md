@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 
 Milestone: v2.1 UI Redesign
 Phase: 19 - Results Page Redesign
-Plan: 01 of 3 complete (19-01 done)
+Plan: 02 of 3 complete (19-02 done)
 Status: In progress
-Last activity: 2026-01-29 -- Completed 19-01-PLAN.md (results page CSS components)
+Last activity: 2026-01-29 -- Completed 19-02-PLAN.md (results template bento grid)
 
-Progress: ████░░ Phase 19 of 23 (30%) - Plan 19-01 complete, ready for 19-02
+Progress: ████░░ Phase 19 of 23 (35%) - Plan 19-02 complete, ready for 19-03
 
 ## Performance Metrics
 
@@ -61,6 +61,8 @@ All decisions logged in PROJECT.md Key Decisions table.
 - 44px min-height for download buttons: WCAG 2.5.5 touch target recommendation
 - tabular-nums for shift tables: Ensures decimal points align in numeric columns
 - Page-specific CSS in pages/ subdirectory: Separates page-level from generic components
+- Jinja2 conditional rendering for ensemble elements: Cleaner than JS style.display toggles
+- page_css block in base.html: Child templates inject page-specific CSS after components
 
 **v2.0 Conformational Sampling decisions (inherited context):**
 
@@ -88,7 +90,7 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
-None. Plan 19-01 complete, ready for 19-02 (template update).
+None. Plan 19-02 complete, ready for 19-03 (visual verification checkpoint).
 
 ### Blockers/Concerns
 
@@ -111,9 +113,9 @@ None. Plan 19-01 complete, ready for 19-02 (template update).
 
 ## Session Continuity
 
-Last session: 2026-01-29T14:12:58Z
-Stopped at: Completed 19-01-PLAN.md (results page CSS components)
+Last session: 2026-01-29T14:17:43Z
+Stopped at: Completed 19-02-PLAN.md (results template bento grid)
 Resume file: None
-Next: Execute 19-02-PLAN.md (template update)
+Next: Execute 19-03-PLAN.md (visual verification checkpoint)
 Tests: All tests passing (226 unit + 3 integration = 229 tests)
-Codebase: 5,432 LOC Python, 1,417 LOC tests, 892 LOC templates + 299 lines CSS (results-page.css)
+Codebase: 5,432 LOC Python, 1,417 LOC tests, 941 LOC templates + 299 lines CSS (results-page.css)
