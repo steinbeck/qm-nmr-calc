@@ -2,124 +2,162 @@
 
 {% block title %}Job Status | QM NMR Calculator{% endblock %}
 
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='/css/pages/results-page.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='/css/pages/status-page.css') }}">
+{% endblock %}
+
 {% block head %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.5.3/3Dmol-min.js"></script>
-<style>
-    /* Conformer progress styling */
-    .status-nmr_complete td:nth-child(2) { color: green; }
-    .status-failed td:nth-child(2) { color: red; }
-    .status-optimizing td:nth-child(2),
-    .status-nmr_running td:nth-child(2) { color: orange; }
-    #conformer-progress-bar {
-        height: 1.5rem;
-    }
-    #conformer-table {
-        font-size: 0.9rem;
-    }
-</style>
 {% endblock %}
 
 {% block content %}
-<article>
-    <header>
-        <h2>Job Status: {{ job.job_id }}</h2>
+<div class="page-wrapper">
+    <header class="status-header">
+        <h1>Job Status</h1>
+        <span class="status-badge" id="status-badge" data-status="{{ job.status }}">
+            {{ job.status }}
+        </span>
     </header>
 
-    <div id="status-display">
-        <dl class="metadata-grid">
-            <dt>Status</dt>
-            <dd><span id="job-status" data-status="{{ job.status }}">{{ job.status }}</span></dd>
+    <div class="bento-grid">
+        <!-- Job Summary (span-3) -->
+        <div class="bento-grid__item bento-grid__item--span-3">
+            <article class="glass-card">
+                <header class="glass-card__header">
+                    <h2 class="glass-card__title">Job Details</h2>
+                </header>
+                <div class="glass-card__body">
+                    <dl class="metadata-list">
+                        <div class="metadata-list__item">
+                            <dt>Job ID</dt>
+                            <dd><code>{{ job.job_id }}</code></dd>
+                        </div>
+                        <div class="metadata-list__item">
+                            <dt>Elapsed Time</dt>
+                            <dd id="elapsed-time">--</dd>
+                        </div>
+                        {% if job.input_name %}
+                        <div class="metadata-list__item">
+                            <dt>Molecule</dt>
+                            <dd>{{ job.input_name }}</dd>
+                        </div>
+                        {% endif %}
+                        <div class="metadata-list__item">
+                            <dt>SMILES</dt>
+                            <dd><code class="smiles-code">{{ job.input_smiles }}</code></dd>
+                        </div>
+                        <div class="metadata-list__item">
+                            <dt>Solvent</dt>
+                            <dd>{{ job.solvent }}</dd>
+                        </div>
+                        <div class="metadata-list__item">
+                            <dt>Preset</dt>
+                            <dd>{{ job.preset }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </article>
+        </div>
 
-            <dt>Total Elapsed</dt>
-            <dd><span id="elapsed-time">--</span></dd>
-
-            {% if job.input_name %}
-            <dt>Molecule</dt>
-            <dd>{{ job.input_name }}</dd>
-            {% endif %}
-
-            <dt>SMILES</dt>
-            <dd><code>{{ job.input_smiles }}</code></dd>
-
-            <dt>Solvent</dt>
-            <dd>{{ job.solvent }}</dd>
-
-            <dt>Preset</dt>
-            <dd>{{ job.preset }}</dd>
-        </dl>
-    </div>
-
-    <!-- 3D Molecule Viewer -->
-    <div id="viewer-section" style="margin-top: 1.5rem;">
-        <h4>Molecular Structure</h4>
-        <div id="viewer-container-3d"></div>
-        <small class="muted">RDKit-generated geometry. Final optimized structure available when complete.</small>
-    </div>
-
-    <!-- Step Progress Section -->
-    <div id="progress-section" style="display: none; margin-top: 1.5rem;">
-        <h4>Progress</h4>
-
-        <!-- Current Step -->
-        <div id="current-step-display" style="display: none; margin-bottom: 1rem;">
-            <div class="step-indicator">
-                <span class="status-indicator status-running"></span>
-                <strong id="current-step-label">--</strong>
-                <span class="muted"> - <span id="step-elapsed">--</span></span>
+        <!-- 3D Molecule Preview (span-3) -->
+        <div class="bento-grid__item bento-grid__item--span-3">
+            <div class="viewer-card viewer-card--compact">
+                <header class="viewer-card__header">
+                    <h3 class="viewer-card__title">Molecular Structure</h3>
+                </header>
+                <div id="viewer-container-3d" class="viewer-card__canvas">
+                    <!-- 3Dmol.js renders here -->
+                </div>
+                <footer class="viewer-card__footer">
+                    <small class="muted">RDKit-generated geometry</small>
+                </footer>
             </div>
         </div>
 
-        <!-- Completed Steps -->
-        <div id="completed-steps" style="display: none;">
-            <table role="grid" class="steps-table">
-                <thead>
-                    <tr>
-                        <th>Step</th>
-                        <th>Duration</th>
-                    </tr>
-                </thead>
-                <tbody id="steps-tbody">
-                </tbody>
-            </table>
+        <!-- Step Progress Tracker (span-6) -->
+        <div class="bento-grid__item bento-grid__item--span-6" id="progress-section">
+            <article class="glass-card">
+                <header class="glass-card__header">
+                    <h3 class="glass-card__title">Calculation Progress</h3>
+                </header>
+                <div class="glass-card__body">
+                    <div class="step-tracker" id="step-tracker">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <!-- Conformer Progress (span-6) - ONLY FOR ENSEMBLE -->
+        {% if job.conformer_mode == 'ensemble' %}
+        <div class="bento-grid__item bento-grid__item--span-6">
+            <article class="glass-card">
+                <header class="glass-card__header">
+                    <h3 class="glass-card__title">Conformer Progress</h3>
+                </header>
+                <div class="glass-card__body">
+                    <div class="conformer-progress">
+                        <div class="conformer-progress__header">
+                            <span class="conformer-progress__stage" id="conformer-stage">--</span>
+                            <span class="conformer-progress__count" id="conformer-count">--</span>
+                        </div>
+                        <progress
+                            class="conformer-progress__bar"
+                            id="conformer-progress-bar"
+                            value="0"
+                            max="100"
+                            aria-label="Conformer calculation progress">
+                        </progress>
+                        <div class="conformer-progress__eta" id="eta-display"></div>
+                    </div>
+
+                    <details class="conformer-details">
+                        <summary>Conformer Details</summary>
+                        <table class="conformer-table" id="conformer-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Status</th>
+                                    <th>Energy (kcal/mol)</th>
+                                    <th>Population</th>
+                                </tr>
+                            </thead>
+                            <tbody id="conformer-table-body">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </details>
+                </div>
+            </article>
+        </div>
+        {% endif %}
+
+        <!-- Error Display (span-6) - Hidden by default -->
+        <div class="bento-grid__item bento-grid__item--span-6" id="error-section" style="display: none;">
+            <article class="glass-card glass-card--error">
+                <header class="glass-card__header">
+                    <h3 class="glass-card__title">
+                        <span class="error-icon" aria-hidden="true">!</span>
+                        Job Failed
+                    </h3>
+                </header>
+                <div class="glass-card__body">
+                    <p class="error-message" id="error-message"></p>
+                    <div class="error-actions">
+                        <a href="/" class="btn">Submit New Job</a>
+                    </div>
+                </div>
+            </article>
         </div>
     </div>
 
-    <!-- Conformer Progress Section (for ensemble jobs) -->
-    <div id="conformer-progress" style="display: none; margin-top: 1.5rem;">
-        <h4>Conformer Progress</h4>
-        <div id="conformer-stage" style="margin-bottom: 0.5rem;"></div>
-        <progress id="conformer-progress-bar" value="0" max="100" style="width: 100%;"></progress>
-        <p id="conformer-count" style="margin-top: 0.5rem;"></p>
-        <p id="eta-display" class="muted"></p>
-
-        <!-- Per-conformer status table (collapsible) -->
-        <details style="margin-top: 1rem;">
-            <summary>Conformer Details</summary>
-            <table id="conformer-table" role="grid" style="margin-top: 0.5rem;">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Status</th>
-                        <th>Energy (kcal/mol)</th>
-                        <th>Population</th>
-                    </tr>
-                </thead>
-                <tbody id="conformer-table-body">
-                </tbody>
-            </table>
-        </details>
-    </div>
-
-    <div id="error-display" style="display: none;" role="alert">
-        <p id="error-message"></p>
-    </div>
-
-    <footer>
+    <footer class="status-footer">
         <small id="polling-status">Page refreshes automatically while job is running</small>
         <br>
         <a href="/">Submit another job</a>
     </footer>
-</article>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -128,30 +166,20 @@
     const JOB_ID = "{{ job.job_id }}";
     const CREATED_AT = new Date("{{ job.created_at }}");
     const POLL_INTERVAL = 3000; // 3 seconds
+    const CONFORMER_MODE = "{{ job.conformer_mode }}";
 
-    const statusSpan = document.getElementById('job-status');
     const elapsedSpan = document.getElementById('elapsed-time');
-    const errorDisplay = document.getElementById('error-display');
-    const errorMessage = document.getElementById('error-message');
     const pollingStatus = document.getElementById('polling-status');
+    const errorSection = document.getElementById('error-section');
+    const errorMessage = document.getElementById('error-message');
+    const statusBadge = document.getElementById('status-badge');
 
-    // Step progress elements
-    const progressSection = document.getElementById('progress-section');
-    const currentStepDisplay = document.getElementById('current-step-display');
-    const currentStepLabel = document.getElementById('current-step-label');
-    const stepElapsed = document.getElementById('step-elapsed');
-    const completedStepsDiv = document.getElementById('completed-steps');
-    const stepsTbody = document.getElementById('steps-tbody');
-
-    // Conformer progress elements
-    const conformerProgressDiv = document.getElementById('conformer-progress');
+    // Conformer progress elements (may not exist for single-conformer jobs)
     const conformerStage = document.getElementById('conformer-stage');
     const conformerProgressBar = document.getElementById('conformer-progress-bar');
     const conformerCount = document.getElementById('conformer-count');
     const etaDisplay = document.getElementById('eta-display');
     const conformerTableBody = document.getElementById('conformer-table-body');
-
-    let currentStepStartedAt = null;
 
     // 3D Viewer
     let viewer = null;
@@ -163,10 +191,10 @@
         viewer = $3Dmol.createViewer(container, {
             backgroundColor: 'white'
         });
-        loadGeometry(false);  // No labels for running job
+        loadGeometry();
     }
 
-    async function loadGeometry(showLabels) {
+    async function loadGeometry() {
         if (!viewer) return;
 
         try {
@@ -234,14 +262,55 @@
         return '~' + (seconds / 3600).toFixed(1) + ' hours';
     }
 
-    function updateConformerProgress(data) {
-        // Only show for ensemble jobs
-        if (data.conformer_mode !== 'ensemble') {
-            conformerProgressDiv.style.display = 'none';
-            return;
-        }
+    function updateStepTracker(data) {
+        const tracker = document.getElementById('step-tracker');
+        if (!tracker) return;
 
-        conformerProgressDiv.style.display = 'block';
+        // Define all possible steps in order (based on conformer mode)
+        const allSteps = data.conformer_mode === 'ensemble' ? [
+            { id: 'conformer_generation', label: 'Conformer Generation' },
+            { id: 'geometry_optimization', label: 'Geometry Optimization' },
+            { id: 'nmr_calculation', label: 'NMR Calculation' },
+            { id: 'averaging', label: 'Averaging' }
+        ] : [
+            { id: 'geometry_optimization', label: 'Geometry Optimization' },
+            { id: 'nmr_calculation', label: 'NMR Calculation' },
+            { id: 'post_processing', label: 'Post-processing' }
+        ];
+
+        const completedIds = (data.steps_completed || []).map(s => s.step);
+
+        let html = '<ol class="step-tracker__list">';
+        allSteps.forEach(step => {
+            let stateClass = 'step-tracker__item--pending';
+            let duration = '';
+
+            if (completedIds.includes(step.id)) {
+                stateClass = 'step-tracker__item--complete';
+                const completed = data.steps_completed.find(s => s.step === step.id);
+                if (completed) {
+                    duration = formatDuration(completed.duration_seconds);
+                }
+            } else if (data.current_step === step.id) {
+                stateClass = 'step-tracker__item--active';
+                duration = 'Running...';
+            }
+
+            html += `
+                <li class="step-tracker__item ${stateClass}">
+                    <span class="step-tracker__icon" aria-hidden="true"></span>
+                    <span class="step-tracker__label">${step.label}</span>
+                    ${duration ? `<span class="step-tracker__duration">${duration}</span>` : ''}
+                </li>
+            `;
+        });
+        html += '</ol>';
+        tracker.innerHTML = html;
+    }
+
+    function updateConformerProgress(data) {
+        // Only update for ensemble jobs (elements only exist then)
+        if (!conformerStage || !conformerProgressBar) return;
 
         // Update stage display
         if (data.current_step_label) {
@@ -258,7 +327,7 @@
                 c.status === 'failed'
             ).length;
 
-            let countText = 'Conformers: ' + completed + '/' + total;
+            let countText = completed + '/' + total;
             if (failed > 0) {
                 countText += ' (' + failed + ' failed)';
             }
@@ -269,27 +338,31 @@
             conformerProgressBar.value = progress;
 
             // Update per-conformer table
-            conformerTableBody.innerHTML = data.conformer_progress.map(c => {
-                const energyStr = c.energy_kcal !== null && c.energy_kcal !== undefined
-                    ? c.energy_kcal.toFixed(2)
-                    : '-';
-                const popStr = c.population !== null && c.population !== undefined
-                    ? (c.population * 100).toFixed(1) + '%'
-                    : '-';
-                return '<tr class="status-' + c.status + '">' +
-                    '<td>' + c.conformer_id + '</td>' +
-                    '<td>' + formatConformerStatus(c.status) + '</td>' +
-                    '<td>' + energyStr + '</td>' +
-                    '<td>' + popStr + '</td>' +
-                    '</tr>';
-            }).join('');
+            if (conformerTableBody) {
+                conformerTableBody.innerHTML = data.conformer_progress.map(c => {
+                    const energyStr = c.energy_kcal !== null && c.energy_kcal !== undefined
+                        ? c.energy_kcal.toFixed(2)
+                        : '-';
+                    const popStr = c.population !== null && c.population !== undefined
+                        ? (c.population * 100).toFixed(1) + '%'
+                        : '-';
+                    return `<tr data-status="${c.status}">
+                        <td>${c.conformer_id}</td>
+                        <td>${formatConformerStatus(c.status)}</td>
+                        <td>${energyStr}</td>
+                        <td>${popStr}</td>
+                    </tr>`;
+                }).join('');
+            }
         }
 
         // Update ETA
-        if (data.eta_seconds) {
-            etaDisplay.textContent = 'Estimated time remaining: ' + formatEta(data.eta_seconds);
-        } else {
-            etaDisplay.textContent = '';
+        if (etaDisplay) {
+            if (data.eta_seconds) {
+                etaDisplay.textContent = 'Estimated time remaining: ' + formatEta(data.eta_seconds);
+            } else {
+                etaDisplay.textContent = '';
+            }
         }
     }
 
@@ -297,40 +370,6 @@
         const now = new Date();
         const elapsed = Math.floor((now - CREATED_AT) / 1000);
         elapsedSpan.textContent = formatElapsed(elapsed);
-
-        // Update current step elapsed time
-        if (currentStepStartedAt) {
-            const stepSecs = (now - currentStepStartedAt) / 1000;
-            stepElapsed.textContent = formatElapsed(stepSecs);
-        }
-    }
-
-    function updateStepProgress(data) {
-        // Show progress section if there's any step info
-        if (data.current_step || data.steps_completed.length > 0) {
-            progressSection.style.display = 'block';
-        }
-
-        // Update current step
-        if (data.current_step_label) {
-            currentStepDisplay.style.display = 'block';
-            currentStepLabel.textContent = data.current_step_label;
-            currentStepStartedAt = data.step_started_at ? new Date(data.step_started_at) : null;
-        } else {
-            currentStepDisplay.style.display = 'none';
-            currentStepStartedAt = null;
-        }
-
-        // Update completed steps table
-        if (data.steps_completed && data.steps_completed.length > 0) {
-            completedStepsDiv.style.display = 'block';
-            stepsTbody.innerHTML = data.steps_completed.map(step =>
-                `<tr>
-                    <td><span class="status-indicator status-complete"></span>${step.label}</td>
-                    <td>${formatDuration(step.duration_seconds)}</td>
-                </tr>`
-            ).join('');
-        }
     }
 
     async function checkStatus() {
@@ -338,13 +377,16 @@
             const response = await fetch('/api/v1/jobs/' + JOB_ID);
             const data = await response.json();
 
-            // Update status display
-            statusSpan.textContent = data.status;
-            statusSpan.setAttribute('data-status', data.status);
+            // Update status badge
+            if (statusBadge) {
+                statusBadge.textContent = data.status;
+                statusBadge.setAttribute('data-status', data.status);
+            }
+
             updateElapsedTime();
 
-            // Update step progress
-            updateStepProgress(data);
+            // Update step tracker
+            updateStepTracker(data);
 
             // Update conformer progress (for ensemble jobs)
             updateConformerProgress(data);
@@ -354,9 +396,13 @@
                 pollingStatus.textContent = 'Job complete! Redirecting to results...';
                 window.location.href = '/results/' + JOB_ID;
             } else if (data.status === 'failed') {
-                // Show error message
-                errorDisplay.style.display = 'block';
-                errorMessage.textContent = data.error_message || 'An unknown error occurred';
+                // Show error section
+                if (errorSection) {
+                    errorSection.style.display = 'block';
+                }
+                if (errorMessage) {
+                    errorMessage.textContent = data.error_message || 'An unknown error occurred';
+                }
                 pollingStatus.textContent = 'Job failed. No automatic refresh.';
             } else {
                 // Continue polling
