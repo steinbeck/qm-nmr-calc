@@ -1,0 +1,97 @@
+/*
+ * Utility Classes
+ *
+ * @layer utilities has highest priority in cascade order.
+ * These are single-purpose classes for quick overrides.
+ *
+ * Keep utilities minimal and focused. This is NOT a full utility framework
+ * like Tailwind - only essential helpers for common patterns.
+ */
+
+@layer utilities {
+    /* ===== Text Utilities ===== */
+    .text-left { text-align: left; }
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+
+    .text-muted { color: var(--color-text-muted, hsl(220 13% 38%)); }
+
+    .text-sm { font-size: var(--text-sm, 0.875rem); }
+    .text-lg { font-size: var(--text-lg, 1.125rem); }
+    .text-xl { font-size: var(--text-xl, 1.25rem); }
+
+    .font-mono { font-family: var(--font-mono, 'Cascadia Code', 'Fira Code', 'Monaco', monospace); }
+
+    /* ===== Spacing Utilities ===== */
+
+    /* Margin-top */
+    .mt-0 { margin-top: 0; }
+    .mt-sm { margin-top: var(--space-sm, 0.5rem); }
+    .mt-md { margin-top: var(--space-md, 1rem); }
+    .mt-lg { margin-top: var(--space-lg, 1.5rem); }
+    .mt-xl { margin-top: var(--space-xl, 2rem); }
+
+    /* Margin-bottom */
+    .mb-0 { margin-bottom: 0; }
+    .mb-sm { margin-bottom: var(--space-sm, 0.5rem); }
+    .mb-md { margin-bottom: var(--space-md, 1rem); }
+    .mb-lg { margin-bottom: var(--space-lg, 1.5rem); }
+    .mb-xl { margin-bottom: var(--space-xl, 2rem); }
+
+    /* Padding */
+    .p-md { padding: var(--space-md, 1rem); }
+    .p-lg { padding: var(--space-lg, 1.5rem); }
+
+    /* ===== Display Utilities ===== */
+    .hidden { display: none; }
+    .flex { display: flex; }
+
+    .flex-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .flex-between {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* ===== Width Utilities ===== */
+    .w-full { width: 100%; }
+
+    /* ===== Visibility Utilities ===== */
+
+    /*
+     * Screen reader only - visually hidden but accessible to screen readers.
+     * Use for labels, descriptions, or content that provides context for assistive tech.
+     */
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+}
+
+/* ===== Reduced Motion Accessibility ===== */
+@media (prefers-reduced-motion: reduce) {
+    /*
+     * Respect user preference for reduced motion.
+     * Disables all animations and transitions globally.
+     * Note: Using !important here is appropriate since this is a user accessibility preference
+     * that should override all other styles.
+     */
+    .transition-none,
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
