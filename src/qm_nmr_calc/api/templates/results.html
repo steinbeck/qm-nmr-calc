@@ -4,6 +4,37 @@
 
 {% block head %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.5.3/3Dmol-min.js"></script>
+<style>
+    .warning-banner {
+        background-color: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 4px;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    #top-conformers-table {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    #ensemble-metadata h4 {
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    .ensemble-summary-note {
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background-color: #e8f4f8;
+        border-left: 4px solid #3498db;
+        font-style: italic;
+    }
+    .table-container {
+        overflow-x: auto;
+        margin-bottom: 1rem;
+    }
+    #shift-comparison-details {
+        margin-top: 1.5rem;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -29,6 +60,84 @@
         <code>{{ job.input_smiles }}</code>
     </details>
 </article>
+
+<!-- Ensemble Metadata Section (only for ensemble jobs) -->
+<article id="ensemble-metadata" style="display: none;">
+    <header>
+        <h3>Ensemble Averaging Summary</h3>
+    </header>
+
+    <!-- Warning banner if CREST fallback -->
+    <div id="ensemble-warning" class="warning-banner" style="display: none;">
+        <strong>Note:</strong> <span id="warning-text"></span>
+    </div>
+
+    <dl class="metadata-grid">
+        <dt>Conformers Used</dt>
+        <dd id="meta-conformer-count">-</dd>
+
+        <dt>Total Generated</dt>
+        <dd id="meta-total-generated">-</dd>
+
+        <dt>Generation Method</dt>
+        <dd id="meta-method">-</dd>
+
+        <dt>Temperature</dt>
+        <dd id="meta-temperature">-</dd>
+
+        <dt>Energy Range</dt>
+        <dd id="meta-energy-range">-</dd>
+    </dl>
+
+    <h4>Top Contributing Conformers</h4>
+    <table id="top-conformers-table">
+        <thead>
+            <tr>
+                <th>Conformer</th>
+                <th>Population</th>
+                <th>Relative Energy</th>
+            </tr>
+        </thead>
+        <tbody id="top-conformers-body">
+        </tbody>
+    </table>
+
+    <div class="ensemble-summary-note">
+        The chemical shifts displayed below are <strong>Boltzmann-weighted averages</strong> computed from all conformers listed above.
+        Each conformer contributes according to its population at the specified temperature.
+    </div>
+</article>
+
+<!-- Per-Conformer Shift Comparison (expandable) -->
+<details id="shift-comparison-details" style="display: none;">
+    <summary>View Shift Data Table</summary>
+
+    <div class="table-container">
+        <h4><sup>1</sup>H Chemical Shifts (ppm)</h4>
+        <table id="h1-comparison-table">
+            <thead id="h1-comparison-header">
+                <tr>
+                    <th>Atom</th>
+                    <th>Averaged Shift</th>
+                </tr>
+            </thead>
+            <tbody id="h1-comparison-body">
+            </tbody>
+        </table>
+
+        <h4><sup>13</sup>C Chemical Shifts (ppm)</h4>
+        <table id="c13-comparison-table">
+            <thead id="c13-comparison-header">
+                <tr>
+                    <th>Atom</th>
+                    <th>Averaged Shift</th>
+                </tr>
+            </thead>
+            <tbody id="c13-comparison-body">
+            </tbody>
+        </table>
+    </div>
+</details>
 
 <article class="results-container">
     <header>
@@ -60,14 +169,17 @@
         <div class="viewer-legend">
             <div class="viewer-legend-item">
                 <span class="viewer-legend-color h1"></span>
-                <span><sup>1</sup>H shifts (ppm)</span>
+                <span id="legend-h1-label"><sup>1</sup>H shifts (ppm)</span>
             </div>
             <div class="viewer-legend-item">
                 <span class="viewer-legend-color c13"></span>
-                <span><sup>13</sup>C shifts (ppm)</span>
+                <span id="legend-c13-label"><sup>13</sup>C shifts (ppm)</span>
             </div>
         </div>
         <small class="muted">Click and drag to rotate. Scroll to zoom.</small>
+        <div id="ensemble-viewer-note" style="display: none; margin-top: 0.5rem; padding: 0.5rem; background-color: #f0f7ff; border-radius: 4px; font-size: 0.85rem;">
+            <strong>Note:</strong> Shift labels show <em>Boltzmann-averaged</em> values. Use the dropdown to view different conformer geometries.
+        </div>
     </div>
 
     <div class="spectra-grid">
@@ -139,10 +251,84 @@ const JOB_ID = "{{ job.job_id }}";
 let viewer = null;
 let geometryData = null;
 let currentConformerIndex = 0;
+let jobData = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     initViewer();
+    loadJobMetadata();
 });
+
+async function loadJobMetadata() {
+    try {
+        const response = await fetch('/api/v1/jobs/' + JOB_ID);
+        jobData = await response.json();
+
+        if (jobData.conformer_mode === 'ensemble' && jobData.ensemble_metadata) {
+            displayEnsembleMetadata(jobData.ensemble_metadata, jobData.conformer_method_warning);
+            displayShiftTable(jobData);
+        }
+    } catch (error) {
+        console.error('Failed to load job metadata:', error);
+    }
+}
+
+function displayEnsembleMetadata(metadata, warning) {
+    const section = document.getElementById('ensemble-metadata');
+    section.style.display = 'block';
+
+    // Display warning if present
+    if (warning) {
+        document.getElementById('ensemble-warning').style.display = 'block';
+        document.getElementById('warning-text').textContent = warning;
+    }
+
+    // Populate metadata fields
+    document.getElementById('meta-conformer-count').textContent = metadata.conformer_count;
+    document.getElementById('meta-total-generated').textContent = metadata.total_generated;
+    document.getElementById('meta-method').textContent =
+        metadata.method === 'rdkit_kdg' ? 'RDKit KDG' : 'CREST/xTB';
+    document.getElementById('meta-temperature').textContent = metadata.temperature_k + ' K';
+    document.getElementById('meta-energy-range').textContent = metadata.energy_range_kcal.toFixed(2) + ' kcal/mol';
+
+    // Populate top conformers table
+    const tbody = document.getElementById('top-conformers-body');
+    tbody.innerHTML = metadata.top_populations.map(c => `
+        <tr>
+            <td>${c.id}</td>
+            <td>${(c.population * 100).toFixed(1)}%</td>
+            <td>${c.energy_kcal !== null ? c.energy_kcal.toFixed(2) + ' kcal/mol' : '-'}</td>
+        </tr>
+    `).join('');
+}
+
+function displayShiftTable(data) {
+    const details = document.getElementById('shift-comparison-details');
+    if (data.conformer_mode !== 'ensemble') {
+        details.style.display = 'none';
+        return;
+    }
+
+    details.style.display = 'block';
+
+    // Build averaged shifts table from API response
+    if (data.nmr_results) {
+        const h1Body = document.getElementById('h1-comparison-body');
+        h1Body.innerHTML = data.nmr_results.h1_shifts.map(s => `
+            <tr>
+                <td>H${s.index}</td>
+                <td>${s.shift.toFixed(2)}</td>
+            </tr>
+        `).join('');
+
+        const c13Body = document.getElementById('c13-comparison-body');
+        c13Body.innerHTML = data.nmr_results.c13_shifts.map(s => `
+            <tr>
+                <td>C${s.index}</td>
+                <td>${s.shift.toFixed(1)}</td>
+            </tr>
+        `).join('');
+    }
+}
 
 function initViewer() {
     const container = document.getElementById('viewer-container-3d');
@@ -168,9 +354,14 @@ async function loadGeometryData() {
 
         // Check if this is an ensemble job with conformers
         if (geometryData.conformer_mode === 'ensemble' && geometryData.conformers && geometryData.conformers.length > 0) {
-            // Show conformer selector
+            // Show conformer selector and ensemble-specific UI
             document.getElementById('conformer-selector-container').style.display = 'block';
+            document.getElementById('ensemble-viewer-note').style.display = 'block';
             populateConformerSelector(geometryData.conformers);
+
+            // Update legend to clarify these are averaged shifts
+            document.getElementById('legend-h1-label').innerHTML = '<sup>1</sup>H <em>averaged</em> shifts (ppm)';
+            document.getElementById('legend-c13-label').innerHTML = '<sup>13</sup>C <em>averaged</em> shifts (ppm)';
         }
 
         // Display first conformer (lowest energy) or single conformer
@@ -205,12 +396,12 @@ function displayConformer(index) {
         xyz = conf.xyz;
         sdf = conf.sdf;
 
-        // Update info display
+        // Update info display - clarify this is geometry only, shifts are averaged
         const info = document.getElementById('current-conformer-info');
         if (conf.population !== null) {
-            info.textContent = `Contributing ${(conf.population * 100).toFixed(1)}% to averaged shifts`;
+            info.textContent = `Geometry view — this conformer has ${(conf.population * 100).toFixed(1)}% population`;
         } else {
-            info.textContent = '';
+            info.textContent = 'Geometry view';
         }
     } else {
         // Single conformer mode

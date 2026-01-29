@@ -14,7 +14,7 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 **Codebase:** 5,432 LOC Python, 1,417 LOC tests, 892 LOC templates
 **Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Pico CSS
-**Test suite:** 95 tests (92 unit + 3 NWChem integration)
+**Test suite:** 229 tests (226 unit + 3 NWChem integration)
 
 **What works today:**
 - Submit molecules (SMILES/MOL/SDF) via REST API or web UI
@@ -125,9 +125,9 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 | 3Dmol.js from CDN | Minimal build complexity for 3D visualization | Good -- zero build step, works well |
 | Vacuum as solvent value | Cleaner than separate gas-phase parameter | Good -- consistent API surface |
 
-| KDG over ETKDG for conformers | Avoids crystal structure bias for solution-phase NMR | -- Pending |
-| CREST/xTB as optional deps | App works without them, enables when detected | -- Pending |
-| Boltzmann weight by DFT energies | Most accurate readily available energy level | -- Pending |
+| KDG over ETKDG for conformers | Avoids crystal structure bias for solution-phase NMR | Good -- E2E validated on 2-penten-1-ol |
+| CREST/xTB as optional deps | App works without them, enables when detected | Good -- RDKit-only pipeline works end-to-end |
+| Boltzmann weight by DFT energies | Most accurate readily available energy level | Good -- chemically reasonable shifts from E2E test |
 
 ---
-*Last updated: 2026-01-26 after v2.0 milestone initialization*
+*Last updated: 2026-01-28 after E2E validation of v2.0 ensemble pipeline*

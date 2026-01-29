@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-26)
 ## Current Position
 
 Phase: 17 of 17 (API Integration)
-Plan: 04 of 04 (Phase 17)
+Plan: 05 of 05 (Phase 17)
 Status: Complete
-Last activity: 2026-01-28 -- Completed 17-04-PLAN.md (Conformer geometry viewer)
+Last activity: 2026-01-29 -- Completed 17-05-PLAN.md (Ensemble results display)
 
-Progress: ████████████████████████████████████████████████████ 100% (54/54 plans complete)
+Progress: ████████████████████████████████████████████████████ 100% (55/55 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 54
+- Total plans completed: 55
 - Average duration: ~9 min
-- Total execution time: ~486 min (~8.1 hours)
+- Total execution time: ~500 min (~8.3 hours)
 
 **By Milestone:**
 
@@ -29,11 +29,11 @@ Progress: ███████████████████████�
 |-----------|--------|-------|----------|
 | v1.0 Core NMR Service | 6 | 16 | 2 days |
 | v1.1 Accurate Chemical Shifts | 8 | 21 | 5 days |
-| v2.0 Conformational Sampling | 6 | 17 | ~2 days |
+| v2.0 Conformational Sampling | 6 | 18 | ~2 days |
 
 **Recent Trend:**
-- Last 5 plans: 9-17 min
-- Trend: Consistent fast execution (16-02: 17 min, 16-03: 13 min, 17-01: ~15 min, 17-02: ~10 min, 17-04: 11 min)
+- Last 5 plans: 9-20 min
+- Trend: Consistent fast execution (17-01: ~15 min, 17-02: ~10 min, 17-03: ~15 min, 17-04: 11 min, 17-05: ~20 min)
 
 ## Accumulated Context
 
@@ -90,6 +90,8 @@ Recent v2.0 decisions affecting current work:
 - Helper function for XYZ to SDF: Extract _xyz_to_sdf to avoid duplication in geometry.json endpoint (17-04)
 - Sort conformers by energy: Lowest-energy first in geometry.json response (17-04)
 - Averaged shifts on all conformers: Labels show Boltzmann-weighted average, not per-conformer shifts (17-04)
+- Ensemble metadata section: Clear display of conformer count, populations, and averaging method (17-05)
+- Viewer legend clarification: Labels explicitly say "averaged shifts" for ensemble jobs (17-05)
 
 ### Roadmap Evolution
 
@@ -124,8 +126,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-01-28
-Stopped at: Completed 17-04-PLAN.md (Conformer geometry viewer)
+Last session: 2026-01-29
+Stopped at: Completed 17-05-PLAN.md (Ensemble results display)
 Resume file: None
-Next: v2.0 complete - final verification and release
-Tests: All tests passing (77 API tests verified, ~280+ total)
+Next: v2.0 complete - ready for release
+Tests: All tests passing (23 API tests, 94 conformer/ensemble tests verified)
