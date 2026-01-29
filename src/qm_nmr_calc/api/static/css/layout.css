@@ -1,0 +1,194 @@
+/*
+ * Bento Grid Layout System
+ *
+ * CSS Grid-based layout system in @layer layout.
+ * Provides asymmetric "bento box" layouts with responsive breakpoints.
+ *
+ * Grid structure:
+ * - Desktop: 6 columns
+ * - Tablet (768px-1024px): 3 columns
+ * - Mobile (<768px): 1 column
+ *
+ * BEM naming:
+ * - Block: .bento-grid
+ * - Elements: .bento-grid__item
+ * - Modifiers: --span-2, --span-3, --span-4, --span-6, --span-row-2, --feature, --dense
+ */
+
+@layer layout {
+    /* ===== Main Grid Container ===== */
+    .bento-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: var(--bento-gap);
+        width: 100%;
+    }
+
+    /* Dense packing fills gaps with smaller items */
+    .bento-grid--dense {
+        grid-auto-flow: dense;
+    }
+
+    /* ===== Grid Item Base ===== */
+    .bento-grid__item {
+        min-height: var(--bento-min-height);
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ===== Column Span Utilities ===== */
+    .bento-grid__item--span-2 {
+        grid-column: span 2;
+    }
+
+    .bento-grid__item--span-3 {
+        grid-column: span 3;
+    }
+
+    .bento-grid__item--span-4 {
+        grid-column: span 4;
+    }
+
+    .bento-grid__item--span-6 {
+        grid-column: span 6;
+    }
+
+    /* ===== Row Span Utilities ===== */
+    .bento-grid__item--span-row-2 {
+        grid-row: span 2;
+    }
+
+    /* ===== Feature Card (Hero Position) ===== */
+    /* Large 2x2 card for prominent content */
+    .bento-grid__item--feature {
+        grid-column: span 2;
+        grid-row: span 2;
+    }
+
+    /* ===== Page Layout Helpers ===== */
+
+    /* Page wrapper with consistent padding */
+    .page-wrapper {
+        padding: var(--space-lg);
+        width: 100%;
+    }
+
+    /* Vertical section with bottom margin */
+    .section {
+        margin-bottom: var(--space-2xl);
+    }
+
+    /* Section with glass background effect */
+    .section--glass {
+        padding: var(--space-lg);
+        border-radius: var(--glass-radius);
+    }
+
+    /* ===== Flex Layout Utilities ===== */
+
+    /* Flex row with gap */
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+        gap: var(--space-md);
+    }
+
+    /* Flex column with gap */
+    .flex-col {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    /* Align items center */
+    .items-center {
+        align-items: center;
+    }
+
+    /* Justify content between */
+    .justify-between {
+        justify-content: space-between;
+    }
+
+    /* Flex grow to fill available space */
+    .flex-grow {
+        flex-grow: 1;
+    }
+}
+
+/* ===== Tablet Breakpoint (768px - 1024px) ===== */
+@media (min-width: 768px) and (max-width: 1024px) {
+    @layer layout {
+        .bento-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* Feature card spans 2 of 3 columns on tablet */
+        .bento-grid__item--feature {
+            grid-column: span 2;
+        }
+
+        /* 4-column span becomes full width on tablet */
+        .bento-grid__item--span-4 {
+            grid-column: span 3;
+        }
+
+        /* 6-column span becomes full width on tablet */
+        .bento-grid__item--span-6 {
+            grid-column: span 3;
+        }
+    }
+}
+
+/* ===== Mobile Breakpoint (max-width: 767px) ===== */
+@media (max-width: 767px) {
+    @layer layout {
+        .bento-grid {
+            grid-template-columns: 1fr;
+            gap: var(--bento-gap);  /* Uses mobile override from tokens (0.75rem) */
+        }
+
+        /* Reset all spans to single column on mobile */
+        .bento-grid__item--span-2,
+        .bento-grid__item--span-3,
+        .bento-grid__item--span-4,
+        .bento-grid__item--span-6,
+        .bento-grid__item--feature {
+            grid-column: 1;
+            grid-row: auto;
+        }
+
+        /* Reduce page wrapper padding on mobile */
+        .page-wrapper {
+            padding: var(--space-md);
+        }
+
+        /* Reduce section spacing on mobile */
+        .section {
+            margin-bottom: var(--space-lg);
+        }
+
+        /* Stack flex rows on mobile */
+        .flex-row {
+            flex-direction: column;
+        }
+    }
+}
+
+/* ===== Print Styles ===== */
+@media print {
+    @layer layout {
+        .bento-grid {
+            display: block;
+        }
+
+        .bento-grid__item {
+            page-break-inside: avoid;
+            margin-bottom: var(--space-md);
+        }
+
+        .page-wrapper {
+            padding: 0;
+        }
+    }
+}
