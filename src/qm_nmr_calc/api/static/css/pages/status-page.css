@@ -1,0 +1,376 @@
+/*
+ * Status Page Components
+ *
+ * Page-specific styling for the job status/progress page.
+ * Uses design tokens from tokens.css and follows Phase 18 patterns.
+ *
+ * Key components:
+ * - .step-tracker: Horizontal progress steps with state indicators
+ * - .conformer-progress: Progress bar for ensemble job conformers
+ * - .status-badge: Inline badge showing job status with color + shape
+ * - .glass-card--error: Error state card variant
+ *
+ * Accessibility: Status indicators use color PLUS shape (not color only)
+ * to ensure visibility for users with color vision deficiency.
+ */
+
+@layer components {
+
+    /* ===== Status Header ===== */
+    .status-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-md);
+        margin-bottom: var(--space-xl);
+        flex-wrap: wrap;
+    }
+
+    .status-header h1 {
+        margin: 0;
+        font-size: var(--text-2xl);
+    }
+
+
+    /* ===== Status Badge ===== */
+    /*
+     * Inline badge with colored dot (::before) PLUS text for accessibility.
+     * Uses data-status attribute for styling variants.
+     */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-xs);
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--space-xs);
+        font-size: var(--text-sm);
+        font-weight: 500;
+        text-transform: capitalize;
+    }
+
+    /* Status indicator dot */
+    .status-badge::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    /* Queued state: gray */
+    .status-badge[data-status="queued"] {
+        background: var(--color-gray-100);
+        color: var(--color-gray-600);
+    }
+
+    /* Running state: blue with pulse animation */
+    .status-badge[data-status="running"] {
+        background: hsl(195 85% 95%);
+        color: var(--color-primary);
+    }
+
+    .status-badge[data-status="running"]::before {
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    /* Complete state: green */
+    .status-badge[data-status="complete"] {
+        background: hsl(142 76% 95%);
+        color: var(--color-success);
+    }
+
+    /* Failed state: red */
+    .status-badge[data-status="failed"] {
+        background: hsl(0 84% 95%);
+        color: var(--color-error);
+    }
+
+
+    /* ===== Step Tracker ===== */
+    /*
+     * Horizontal timeline component showing calculation progress.
+     * States: complete (checkmark), active (pulsing dot), pending (empty circle)
+     * Uses color PLUS shape for accessible state differentiation.
+     */
+    .step-tracker__list {
+        display: flex;
+        justify-content: space-between;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        position: relative;
+    }
+
+    /* Connecting line between steps */
+    .step-tracker__list::before {
+        content: '';
+        position: absolute;
+        top: 12px;
+        left: 24px;
+        right: 24px;
+        height: 2px;
+        background: var(--color-border);
+    }
+
+    .step-tracker__item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-xs);
+        position: relative;
+        z-index: 1;
+        flex: 1;
+        text-align: center;
+        min-width: 80px;
+    }
+
+    .step-tracker__icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        background: var(--color-white);
+        border: 2px solid var(--color-border);
+        transition: background var(--transition-fast),
+                    border-color var(--transition-fast);
+    }
+
+    /* Complete state: Green background with white checkmark */
+    .step-tracker__item--complete .step-tracker__icon {
+        background: var(--color-success);
+        border-color: var(--color-success);
+        color: var(--color-white);
+    }
+
+    .step-tracker__item--complete .step-tracker__icon::before {
+        content: '\2713';
+    }
+
+    /* Active state: Blue background with pulsing filled dot */
+    .step-tracker__item--active .step-tracker__icon {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: var(--color-white);
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .step-tracker__item--active .step-tracker__icon::before {
+        content: '\2022';
+        font-size: 16px;
+    }
+
+    /* Pending state: White background with gray empty circle */
+    .step-tracker__item--pending .step-tracker__icon::before {
+        content: '\25CB';
+        color: var(--color-gray-400);
+    }
+
+    .step-tracker__label {
+        font-size: var(--text-sm);
+        font-weight: 500;
+        color: var(--color-text);
+        max-width: 100px;
+    }
+
+    .step-tracker__item--pending .step-tracker__label {
+        color: var(--color-text-muted);
+    }
+
+    .step-tracker__duration {
+        font-size: var(--text-xs);
+        color: var(--color-text-muted);
+        font-variant-numeric: tabular-nums;
+    }
+
+
+    /* ===== Conformer Progress ===== */
+    /*
+     * Native progress element with cross-browser styling.
+     * Shows X/N conformers complete for ensemble jobs.
+     */
+    .conformer-progress__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: var(--space-sm);
+    }
+
+    .conformer-progress__stage {
+        font-weight: 600;
+        color: var(--color-text);
+    }
+
+    .conformer-progress__count {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* Progress bar styling - requires vendor prefixes for cross-browser */
+    .conformer-progress__bar {
+        width: 100%;
+        height: 1.5rem;
+        appearance: none;
+        -webkit-appearance: none;
+        border: none;
+        border-radius: var(--space-xs);
+        background: var(--color-gray-100);
+        overflow: hidden;
+    }
+
+    /* WebKit (Chrome, Safari, Edge) progress bar styling */
+    .conformer-progress__bar::-webkit-progress-bar {
+        background: var(--color-gray-100);
+        border-radius: var(--space-xs);
+    }
+
+    .conformer-progress__bar::-webkit-progress-value {
+        background: var(--color-primary);
+        border-radius: var(--space-xs);
+        transition: width var(--transition-base);
+    }
+
+    /* Firefox progress bar styling */
+    .conformer-progress__bar::-moz-progress-bar {
+        background: var(--color-primary);
+        border-radius: var(--space-xs);
+    }
+
+    .conformer-progress__eta {
+        margin-top: var(--space-sm);
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+    }
+
+
+    /* ===== Error Card Variant ===== */
+    /*
+     * Glass card variant for displaying job failure information.
+     * Pink background with red border for clear error indication.
+     */
+    .glass-card--error {
+        background: hsl(0 84% 97%);
+        border-color: hsl(0 84% 80%);
+    }
+
+    .glass-card--error .glass-card__header {
+        border-bottom-color: hsl(0 84% 80%);
+    }
+
+    .glass-card--error .glass-card__title {
+        color: var(--color-error);
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+
+    .error-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--color-error);
+        color: var(--color-white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: var(--text-sm);
+    }
+
+    .error-message {
+        color: var(--color-text);
+        line-height: 1.6;
+        margin-bottom: var(--space-lg);
+    }
+
+    .error-actions {
+        display: flex;
+        gap: var(--space-md);
+    }
+
+
+    /* ===== Compact Viewer Card Variant ===== */
+    /*
+     * Reduced height viewer card for status page.
+     * Uses 250px min-height vs 350px on results page.
+     */
+    .viewer-card--compact .viewer-card__canvas {
+        min-height: 250px;
+    }
+
+
+    /* ===== Status Footer ===== */
+    .status-footer {
+        margin-top: var(--space-xl);
+        text-align: center;
+    }
+
+
+    /* ===== Conformer Table Status Colors ===== */
+    /*
+     * Row styling by data-status attribute.
+     * Targets status column (2nd column) specifically.
+     */
+    .conformer-table tr[data-status="nmr_complete"] td:nth-child(2) {
+        color: var(--color-success);
+    }
+
+    .conformer-table tr[data-status="failed"] td:nth-child(2) {
+        color: var(--color-error);
+    }
+
+    .conformer-table tr[data-status="optimizing"] td:nth-child(2),
+    .conformer-table tr[data-status="nmr_running"] td:nth-child(2) {
+        color: var(--color-warning);
+    }
+
+
+    /* ===== Pulse Animation ===== */
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+}
+
+
+/* ===== Mobile Responsive: Stack Step Tracker Vertically ===== */
+@media (max-width: 767px) {
+    @layer components {
+        .step-tracker__list {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-md);
+        }
+
+        /* Reposition connecting line to left side for vertical layout */
+        .step-tracker__list::before {
+            top: 0;
+            bottom: 0;
+            left: 11px;
+            right: auto;
+            width: 2px;
+            height: auto;
+        }
+
+        .step-tracker__item {
+            flex-direction: row;
+            text-align: left;
+            gap: var(--space-sm);
+            min-width: auto;
+        }
+
+        .step-tracker__label {
+            max-width: none;
+        }
+
+        /* Stack status header vertically on mobile */
+        .status-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+}
