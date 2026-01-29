@@ -106,13 +106,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LAYOUT-03 | Phase 22 | Pending |
 | LAYOUT-04 | Phase 22 | Pending |
 | LAYOUT-05 | Phase 22 | Pending |
-| LAYOUT-06 | Phase 18 | Pending |
-| GLASS-01 | Phase 18 | Pending |
-| GLASS-02 | Phase 18 | Pending |
-| GLASS-03 | Phase 18 | Pending |
-| GLASS-04 | Phase 18 | Pending |
-| GLASS-05 | Phase 18 | Pending |
-| GLASS-06 | Phase 18 | Pending |
+| LAYOUT-06 | Phase 18 | Complete |
+| GLASS-01 | Phase 18 | Complete |
+| GLASS-02 | Phase 18 | Complete |
+| GLASS-03 | Phase 18 | Complete |
+| GLASS-04 | Phase 18 | Complete |
+| GLASS-05 | Phase 18 | Complete |
+| GLASS-06 | Phase 18 | Complete |
 | RESULTS-01 | Phase 19 | Pending |
 | RESULTS-02 | Phase 19 | Pending |
 | RESULTS-03 | Phase 19 | Pending |
@@ -135,11 +135,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | A11Y-03 | Phase 23 | Pending |
 | A11Y-04 | Phase 23 | Pending |
 | A11Y-05 | Phase 23 | Pending |
-| CSS-01 | Phase 18 | Pending |
-| CSS-02 | Phase 18 | Pending |
-| CSS-03 | Phase 18 | Pending |
-| CSS-04 | Phase 18 | Pending |
-| CSS-05 | Phase 18 | Pending |
+| CSS-01 | Phase 18 | Complete |
+| CSS-02 | Phase 18 | Complete |
+| CSS-03 | Phase 18 | Complete |
+| CSS-04 | Phase 18 | Complete |
+| CSS-05 | Phase 18 | Complete |
 
 **Coverage:**
 - v2.1 requirements: 35 total
@@ -156,4 +156,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-29*
-*Last updated: 2026-01-29 after roadmap creation*
+*Last updated: 2026-01-29 after Phase 18 completion*
