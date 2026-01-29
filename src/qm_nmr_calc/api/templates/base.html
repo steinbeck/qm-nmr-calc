@@ -1,12 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
     <title>{% block title %}QM NMR Calculator{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/custom.css') }}">
+    <!-- CSS Architecture: Layers must load first -->
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/layers.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/tokens.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/layout.css') }}">
+    <!-- Components -->
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/components/glass-card.css') }}">
+    <!-- Utilities (highest priority) -->
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/utilities.css') }}">
+    <!-- Legacy styles (transition period) -->
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/legacy.css') }}">
     {% block head %}{% endblock %}
 </head>
 <body>
