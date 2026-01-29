@@ -191,7 +191,13 @@ The roadmap follows a foundation-first strategy: establish design system and reu
   4. Bento grid system (CSS Grid with named areas) supports asymmetric card layouts
   5. Safari -webkit-backdrop-filter prefix and @supports fallbacks ensure cross-browser compatibility
   6. Pico CSS fully removed from base template, replaced with custom multi-file CSS
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 18-01-PLAN.md — CSS architecture foundation (layers, reset, tokens)
+- [ ] 18-02-PLAN.md — Base styles and bento grid layout system
+- [ ] 18-03-PLAN.md — Glass card component with BEM variants
+- [ ] 18-04-PLAN.md — Template integration and Pico CSS removal
 
 #### Phase 19: Results Page Redesign
 **Goal**: Bento grid layout for results page with prominent visualizations and clear data organization
@@ -281,7 +287,7 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 15. NWChem Integration | v2.0 | 3/3 | Complete | 2026-01-27 |
 | 16. CREST Integration | v2.0 | 3/3 | Complete | 2026-01-28 |
 | 17. API Integration | v2.0 | 5/5 | Complete | 2026-01-28 |
-| 18. CSS Foundation | v2.1 | 0/? | Not started | - |
+| 18. CSS Foundation | v2.1 | 0/4 | Ready | - |
 | 19. Results Redesign | v2.1 | 0/? | Not started | - |
 | 20. Submit Redesign | v2.1 | 0/? | Not started | - |
 | 21. Status Redesign | v2.1 | 0/? | Not started | - |
@@ -290,4 +296,4 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 
 ---
 
-*Last updated: 2026-01-29 after v2.1 roadmap creation*
+*Last updated: 2026-01-29 after Phase 18 planning*
