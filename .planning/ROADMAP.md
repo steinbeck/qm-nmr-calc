@@ -212,7 +212,12 @@ Plans:
   5. Download buttons grouped in compact card with clear affordances
   6. Calculation details (solvent, functional, basis set) visible in metadata card
   7. Conformer selector integrated with 3D viewer card (ensemble jobs only)
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 19-01-PLAN.md — Create results-page.css with viewer-card and page-specific components
+- [ ] 19-02-PLAN.md — Update results.html template with bento grid structure
+- [ ] 19-03-PLAN.md — Visual verification checkpoint
 
 #### Phase 20: Submit Page Redesign
 **Goal**: Clean form layout with logical grouping and solid backgrounds for usability
@@ -289,7 +294,7 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 16. CREST Integration | v2.0 | 3/3 | Complete | 2026-01-28 |
 | 17. API Integration | v2.0 | 5/5 | Complete | 2026-01-28 |
 | 18. CSS Foundation | v2.1 | 4/4 | Complete | 2026-01-29 |
-| 19. Results Redesign | v2.1 | 0/? | Not started | - |
+| 19. Results Redesign | v2.1 | 0/3 | Not started | - |
 | 20. Submit Redesign | v2.1 | 0/? | Not started | - |
 | 21. Status Redesign | v2.1 | 0/? | Not started | - |
 | 22. Responsive Polish | v2.1 | 0/? | Not started | - |
@@ -297,4 +302,4 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 
 ---
 
-*Last updated: 2026-01-29 after Phase 18 execution*
+*Last updated: 2026-01-29 after Phase 19 planning*
