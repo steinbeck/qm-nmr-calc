@@ -230,7 +230,11 @@ Plans:
   3. Molecule preview area provides visual feedback for SMILES/file input
   4. Required fields clearly distinguished from optional fields with visual indicators
   5. Conformer mode and method options presented with clear descriptions
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 20-01-PLAN.md — Create submit-page.css with form layout components
+- [ ] 20-02-PLAN.md — Update template with two-column layout and SmilesDrawer preview
 
 #### Phase 21: Status Page Redesign
 **Goal**: Job progress visualization with clear step tracking and status indicators
@@ -296,11 +300,11 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 17. API Integration | v2.0 | 5/5 | Complete | 2026-01-28 |
 | 18. CSS Foundation | v2.1 | 4/4 | Complete | 2026-01-29 |
 | 19. Results Redesign | v2.1 | 3/3 | Complete | 2026-01-29 |
-| 20. Submit Redesign | v2.1 | 0/? | Not started | - |
+| 20. Submit Redesign | v2.1 | 0/2 | Not started | - |
 | 21. Status Redesign | v2.1 | 0/? | Not started | - |
 | 22. Responsive Polish | v2.1 | 0/? | Not started | - |
 | 23. Accessibility | v2.1 | 0/? | Not started | - |
 
 ---
 
-*Last updated: 2026-01-29 after Phase 19 planning*
+*Last updated: 2026-01-29 after Phase 20 planning*
