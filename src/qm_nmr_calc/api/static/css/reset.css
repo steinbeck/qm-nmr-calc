@@ -1,0 +1,55 @@
+/*
+ * Minimal CSS Reset
+ *
+ * Provides basic normalization in the reset cascade layer.
+ * Kept minimal since Pico CSS previously handled this.
+ */
+
+@layer reset {
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    /* Remove default list styles for semantic markup */
+    ul[role="list"],
+    ol[role="list"] {
+        list-style: none;
+        padding: 0;
+    }
+
+    /* Improve media defaults */
+    img,
+    picture,
+    video,
+    canvas,
+    svg {
+        display: block;
+        max-width: 100%;
+    }
+
+    /* Remove default form typography */
+    input,
+    button,
+    textarea,
+    select {
+        font: inherit;
+    }
+
+    /* Avoid text overflow */
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        overflow-wrap: break-word;
+    }
+}

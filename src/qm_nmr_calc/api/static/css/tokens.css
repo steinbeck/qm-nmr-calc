@@ -1,0 +1,122 @@
+/*
+ * Design Tokens
+ *
+ * CSS custom properties for the design system.
+ * NOT layered - custom properties work globally.
+ *
+ * Token categories:
+ * - Glass: Glassmorphism effect values
+ * - Spacing: Consistent spacing scale
+ * - Bento: Grid layout configuration
+ * - Typography: Font stacks and sizes
+ * - Colors: Semantic color values
+ * - Transitions: Animation timing
+ */
+
+:root {
+    /* === Glassmorphism Tokens === */
+
+    /* Blur values (reduce on mobile for performance) */
+    --glass-blur-light: blur(8px);
+    --glass-blur-medium: blur(12px);
+    --glass-blur-heavy: blur(16px);
+
+    /* Backgrounds: HIGH opacity (85-95%) for WCAG contrast compliance */
+    --glass-bg-light: hsl(0 0% 100% / 0.85);
+    --glass-bg-medium: hsl(0 0% 100% / 0.90);
+    --glass-bg-subtle: hsl(0 0% 100% / 0.95);
+
+    /* Borders and effects */
+    --glass-border: 1px solid hsl(0 0% 100% / 0.3);
+    --glass-border-medium: 1px solid hsl(0 0% 100% / 0.5);
+    --glass-shadow: 0 8px 32px hsl(0 0% 0% / 0.1);
+    --glass-radius: 1rem;
+
+    /* === Spacing Scale === */
+    --space-xs: 0.25rem;    /* 4px */
+    --space-sm: 0.5rem;     /* 8px */
+    --space-md: 1rem;       /* 16px */
+    --space-lg: 1.5rem;     /* 24px */
+    --space-xl: 2rem;       /* 32px */
+    --space-2xl: 3rem;      /* 48px */
+
+    /* === Bento Grid === */
+    --bento-cols: 6;
+    --bento-gap: 1rem;
+    --bento-min-height: 120px;
+
+    /* === Typography === */
+    --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'Cascadia Code', 'Fira Code', 'Monaco', monospace;
+
+    --text-xs: 0.75rem;     /* 12px */
+    --text-sm: 0.875rem;    /* 14px */
+    --text-base: 1rem;      /* 16px */
+    --text-lg: 1.125rem;    /* 18px */
+    --text-xl: 1.25rem;     /* 20px */
+    --text-2xl: 1.5rem;     /* 24px */
+
+    /* === Colors === */
+
+    /* Base colors */
+    --color-white: hsl(0 0% 100%);
+    --color-gray-50: hsl(220 13% 98%);
+    --color-gray-100: hsl(220 13% 95%);
+    --color-gray-200: hsl(220 13% 90%);
+    --color-gray-300: hsl(220 13% 83%);
+    --color-gray-400: hsl(220 13% 65%);
+    --color-gray-500: hsl(220 13% 50%);
+    --color-gray-600: hsl(220 13% 38%);
+    --color-gray-700: hsl(220 13% 28%);
+    --color-gray-800: hsl(220 13% 18%);
+    --color-gray-900: hsl(220 13% 9%);
+
+    /* Semantic colors */
+    --color-text: hsl(220 13% 15%);
+    --color-text-muted: hsl(220 13% 38%);
+    --color-border: hsl(220 13% 83%);
+
+    /* Primary colors (blue from existing Pico theme) */
+    --color-primary: hsl(195 85% 41%);
+    --color-primary-hover: hsl(195 85% 35%);
+    --color-primary-light: hsl(195 85% 95%);
+
+    /* Status colors */
+    --color-success: hsl(142 76% 36%);
+    --color-warning: hsl(45 93% 47%);
+    --color-error: hsl(0 84% 60%);
+    --color-info: hsl(200 98% 39%);
+
+    /* === Transitions === */
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms ease;
+    --transition-slow: 350ms ease;
+}
+
+/* === Mobile Overrides === */
+/* Reduce blur for GPU performance on mobile devices */
+@media (max-width: 768px) {
+    :root {
+        /* Reduced blur values for mobile performance */
+        --glass-blur-light: blur(6px);
+        --glass-blur-medium: blur(8px);
+        --glass-blur-heavy: blur(10px);
+
+        /* Single column bento grid */
+        --bento-cols: 1;
+        --bento-gap: 0.75rem;
+    }
+}
+
+/* === Accessibility: Reduced Transparency === */
+/* Disable glass effects for users who request reduced transparency */
+@media (prefers-reduced-transparency: reduce) {
+    :root {
+        --glass-bg-light: hsl(0 0% 100%);
+        --glass-bg-medium: hsl(0 0% 100%);
+        --glass-bg-subtle: hsl(0 0% 100%);
+        --glass-blur-light: none;
+        --glass-blur-medium: none;
+        --glass-blur-heavy: none;
+    }
+}
