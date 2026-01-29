@@ -269,6 +269,7 @@ async def results_page(request: Request, job_id: str) -> HTMLResponse:
         "preset": job_status.input.preset,
         "solvent": get_solvent_display_name(job_status.input.solvent),
         "status": job_status.status,
+        "conformer_mode": job_status.input.conformer_mode,
     }
 
     results_context = {
