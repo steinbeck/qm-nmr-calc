@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/css/layout.css') }}">
     <!-- Components -->
     <link rel="stylesheet" href="{{ url_for('static', path='/css/components/glass-card.css') }}">
+    {% block page_css %}{% endblock %}
     <!-- Utilities (highest priority) -->
     <link rel="stylesheet" href="{{ url_for('static', path='/css/utilities.css') }}">
     <!-- Legacy styles (transition period) -->
