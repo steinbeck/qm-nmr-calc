@@ -1,74 +1,87 @@
-# Requirements: qm-nmr-calc v2.0
+# Requirements: qm-nmr-calc v2.1
 
-**Defined:** 2026-01-26
+**Defined:** 2026-01-29
 **Core Value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
 
-## v2.0 Requirements
+## v2.1 Requirements
 
-Requirements for v2.0 Conformational Sampling. Each maps to roadmap phases.
+Requirements for v2.1 UI Redesign. Each maps to roadmap phases.
 
-### Conformer Generation
+### Layout System
 
-- [ ] **CONF-01**: User can choose between single-conformer mode (v1.x behavior) and ensemble mode when submitting a job
-- [ ] **CONF-02**: User can choose RDKit KDG or CREST as conformer generation method in ensemble mode
-- [x] **CONF-03**: System generates conformers using RDKit KDG (pure distance geometry, no crystal bias)
-- [x] **CONF-04**: System generates conformers using CREST/xTB when CREST binary is available on PATH
-- [x] **CONF-05**: System auto-detects CREST/xTB availability and reports it in API health/status
-- [x] **CONF-06**: App works fully without CREST/xTB installed (RDKit-only mode)
+- [ ] **LAYOUT-01**: Page layouts use CSS Grid bento grid system with asymmetric card arrangements
+- [ ] **LAYOUT-02**: Cards support variable sizes (1x1, 2x1, 2x2, full-width)
+- [ ] **LAYOUT-03**: Consistent gutters (16-24px) between all cards
+- [ ] **LAYOUT-04**: Responsive breakpoints adapt layout for desktop, tablet, and mobile
+- [ ] **LAYOUT-05**: Cards have smooth hover state transitions (transform, shadow)
+- [ ] **LAYOUT-06**: Design tokens (CSS custom properties) for colors, spacing, and effects
 
-### Energy Filtering
+### Glassmorphism
 
-- [x] **FILT-01**: System applies pre-DFT energy window filter (default 6 kcal/mol) to conformer set
-- [x] **FILT-02**: System applies post-DFT energy window filter (default 3 kcal/mol) after geometry optimization
-- [x] **FILT-03**: User can configure energy window parameters (pre-DFT and post-DFT thresholds)
+- [ ] **GLASS-01**: Glass cards use backdrop-filter blur effect (8-12px)
+- [ ] **GLASS-02**: Cards have semi-transparent backgrounds (85-95% opacity for accessibility)
+- [ ] **GLASS-03**: Subtle border highlights on glass cards (1px light border)
+- [ ] **GLASS-04**: Safari compatibility with -webkit-backdrop-filter prefix
+- [ ] **GLASS-05**: Layered depth with multiple glass intensity levels
+- [ ] **GLASS-06**: Subtle box shadows for card elevation
 
-### DFT Calculations
+### Results Page
 
-- [x] **DFT-01**: System runs DFT geometry optimization on each conformer surviving pre-DFT filter
-- [x] **DFT-02**: System runs NMR shielding calculation on each conformer surviving post-DFT filter
-- [x] **DFT-03**: Each conformer uses isolated scratch directory to prevent NWChem file conflicts
-- [x] **DFT-04**: System extracts DFT energies from optimization step for Boltzmann weighting
-- [x] **DFT-05**: System handles partial conformer failures gracefully (continues with successful conformers)
+- [ ] **RESULTS-01**: 3D molecular viewer in hero card position (largest, prominent)
+- [ ] **RESULTS-02**: 1H and 13C spectrum images in medium cards
+- [ ] **RESULTS-03**: Ensemble metadata displayed in dedicated card (for ensemble jobs)
+- [ ] **RESULTS-04**: Chemical shift tables in organized card layout
+- [ ] **RESULTS-05**: Download buttons grouped in compact card
+- [ ] **RESULTS-06**: Calculation details (solvent, functional, basis set) visible
+- [ ] **RESULTS-07**: Conformer selector integrated with 3D viewer card
 
-### Boltzmann Averaging
+### Submit Page
 
-- [x] **BOLTZ-01**: System calculates Boltzmann weights from DFT optimization energies
-- [x] **BOLTZ-02**: System computes population-weighted average chemical shifts across conformer ensemble
-- [x] **BOLTZ-03**: Boltzmann implementation is numerically stable (handles wide energy ranges without overflow/underflow)
-- [x] **BOLTZ-04**: User can set temperature parameter for Boltzmann weighting (default 298.15 K)
+- [ ] **SUBMIT-01**: Clean form layout with logical grouping
+- [ ] **SUBMIT-02**: Form inputs use solid backgrounds (not glass) for usability
+- [ ] **SUBMIT-03**: Molecule preview area for visual feedback
+- [ ] **SUBMIT-04**: Clear visual hierarchy for required vs optional fields
+- [ ] **SUBMIT-05**: Conformer mode and method options clearly presented
 
-### API and Output
+### Status Page
 
-- [ ] **API-01**: API returns Boltzmann-weighted average shifts (not per-conformer detail)
-- [ ] **API-02**: API response includes ensemble metadata (conformer count, energy range, top 3 populations, method used, temperature)
-- [ ] **API-03**: 3D viewer shows lowest-energy conformer geometry with shift labels
-- [x] **API-04**: Existing v1.x single-conformer API behavior preserved when conformer_mode=single (backward compatible)
+- [ ] **STATUS-01**: Job progress displayed with visual indicators
+- [ ] **STATUS-02**: Step tracking shows completed and current steps
+- [ ] **STATUS-03**: 3D molecule preview during calculation
+- [ ] **STATUS-04**: Ensemble progress (X/N conformers) clearly visible
+- [ ] **STATUS-05**: Error states displayed clearly if job fails
 
-### Progress Tracking
+### Accessibility & Performance
 
-- [ ] **PROG-01**: Job status includes ensemble-specific states (generating_conformers, optimizing_conformers X/N, calculating_nmr X/N, averaging_shifts)
-- [ ] **PROG-02**: Web UI displays conformer progress for ensemble jobs
+- [ ] **A11Y-01**: All text meets WCAG 4.5:1 contrast ratio minimum
+- [ ] **A11Y-02**: Keyboard navigation works for all interactive elements
+- [ ] **A11Y-03**: Reduced motion support via prefers-reduced-motion media query
+- [ ] **A11Y-04**: Mobile performance optimized (reduced blur, limited glass elements)
+- [ ] **A11Y-05**: Focus indicators visible for keyboard users
+
+### CSS Architecture
+
+- [ ] **CSS-01**: Pico CSS replaced with custom CSS framework
+- [ ] **CSS-02**: CSS Cascade Layers for style priority management
+- [ ] **CSS-03**: BEM naming convention for component classes
+- [ ] **CSS-04**: Multi-file CSS organization (no build step required)
+- [ ] **CSS-05**: Base template updated with new stylesheet loading
 
 ## v2.x Requirements
 
 Deferred to future release. Tracked but not in current roadmap.
 
-### Performance
+### Enhanced Interactivity
 
-- **PERF-01**: Parallel conformer DFT processing within single Huey task
-- **PERF-02**: Conformer ensemble caching by (SMILES, method, energy_window)
-- **PERF-03**: Adaptive post-DFT filtering by cumulative Boltzmann population (95% threshold)
+- **INTERACT-01**: Card expansion to focus mode (full-screen view)
+- **INTERACT-02**: Drag-and-drop card reordering
+- **INTERACT-03**: User preference persistence (card states)
 
-### Enhanced Output
+### Dark Mode
 
-- **OUT-01**: Per-conformer detail export endpoint (/jobs/{job_id}/conformers)
-- **OUT-02**: Rotatable bond count display in web UI
-- **OUT-03**: Multi-temperature Boltzmann weighting
-
-### Accuracy
-
-- **ACC-01**: GFN2-xTB quasi-RRHO entropy corrections for Boltzmann weighting
-- **ACC-02**: Solvent-specific CREST conformer generation (ALPB matching NMR solvent)
+- **DARK-01**: Dark mode color scheme
+- **DARK-02**: System preference detection (prefers-color-scheme)
+- **DARK-03**: Manual toggle between light and dark modes
 
 ## Out of Scope
 
@@ -76,13 +89,11 @@ Explicitly excluded. Documented to prevent scope creep.
 
 | Feature | Reason |
 |---------|--------|
-| DP4+ probability scoring | Requires experimental spectrum input, scope change for v3.0 |
-| Real-time WebSocket progress | Marginal UX improvement over polling, adds infrastructure complexity |
-| Automatic rigidity detection | User explicit choice sufficient; heuristics misclassify too often |
-| Per-conformer shifts in default API | Overwhelming data, rarely actionable for typical use case |
-| MMFF energy Boltzmann weighting | Anticorrelates with DFT, would give wrong conformer populations |
-| Automatic method selection by molecule size | Size is poor proxy for flexibility |
-| WP04 functional | NWChem doesn't support WP04 without custom compilation |
+| JavaScript framework (React, Vue) | Keeps stack simple, Jinja2 templates work well |
+| CSS preprocessor (Sass, Less) | Modern CSS has variables and nesting, no build step needed |
+| Animation library | CSS transitions sufficient for hover effects |
+| Dark mode | Adds complexity, defer to v2.2 |
+| Card drag-and-drop | Nice-to-have, not essential for v2.1 |
 
 ## Traceability
 
@@ -90,44 +101,51 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CONF-01 | Phase 17 | Pending |
-| CONF-02 | Phase 17 | Pending |
-| CONF-03 | Phase 13 | Complete |
-| CONF-04 | Phase 16 | Complete |
-| CONF-05 | Phase 16 | Complete |
-| CONF-06 | Phase 13 | Complete |
-| FILT-01 | Phase 13 | Complete |
-| FILT-02 | Phase 15 | Complete |
-| FILT-03 | Phase 15 | Complete |
-| DFT-01 | Phase 15 | Complete |
-| DFT-02 | Phase 15 | Complete |
-| DFT-03 | Phase 12 | Complete |
-| DFT-04 | Phase 15 | Complete |
-| DFT-05 | Phase 15 | Complete |
-| BOLTZ-01 | Phase 14 | Complete |
-| BOLTZ-02 | Phase 14 | Complete |
-| BOLTZ-03 | Phase 14 | Complete |
-| BOLTZ-04 | Phase 14 | Complete |
-| API-01 | Phase 17 | Pending |
-| API-02 | Phase 17 | Pending |
-| API-03 | Phase 17 | Pending |
-| API-04 | Phase 12 | Complete |
-| PROG-01 | Phase 17 | Pending |
-| PROG-02 | Phase 17 | Pending |
+| LAYOUT-01 | TBD | Pending |
+| LAYOUT-02 | TBD | Pending |
+| LAYOUT-03 | TBD | Pending |
+| LAYOUT-04 | TBD | Pending |
+| LAYOUT-05 | TBD | Pending |
+| LAYOUT-06 | TBD | Pending |
+| GLASS-01 | TBD | Pending |
+| GLASS-02 | TBD | Pending |
+| GLASS-03 | TBD | Pending |
+| GLASS-04 | TBD | Pending |
+| GLASS-05 | TBD | Pending |
+| GLASS-06 | TBD | Pending |
+| RESULTS-01 | TBD | Pending |
+| RESULTS-02 | TBD | Pending |
+| RESULTS-03 | TBD | Pending |
+| RESULTS-04 | TBD | Pending |
+| RESULTS-05 | TBD | Pending |
+| RESULTS-06 | TBD | Pending |
+| RESULTS-07 | TBD | Pending |
+| SUBMIT-01 | TBD | Pending |
+| SUBMIT-02 | TBD | Pending |
+| SUBMIT-03 | TBD | Pending |
+| SUBMIT-04 | TBD | Pending |
+| SUBMIT-05 | TBD | Pending |
+| STATUS-01 | TBD | Pending |
+| STATUS-02 | TBD | Pending |
+| STATUS-03 | TBD | Pending |
+| STATUS-04 | TBD | Pending |
+| STATUS-05 | TBD | Pending |
+| A11Y-01 | TBD | Pending |
+| A11Y-02 | TBD | Pending |
+| A11Y-03 | TBD | Pending |
+| A11Y-04 | TBD | Pending |
+| A11Y-05 | TBD | Pending |
+| CSS-01 | TBD | Pending |
+| CSS-02 | TBD | Pending |
+| CSS-03 | TBD | Pending |
+| CSS-04 | TBD | Pending |
+| CSS-05 | TBD | Pending |
 
 **Coverage:**
-- v2.0 requirements: 24 total
-- Mapped to phases: 24 (100%)
-- Unmapped: 0
-
-**Phase distribution:**
-- Phase 12 (Data Model): 2 requirements
-- Phase 13 (RDKit Generation): 3 requirements
-- Phase 14 (Boltzmann): 4 requirements
-- Phase 15 (NWChem Integration): 6 requirements
-- Phase 16 (CREST): 2 requirements
-- Phase 17 (API): 7 requirements
+- v2.1 requirements: 35 total
+- Mapped to phases: 0 (pending roadmap)
+- Unmapped: 35
 
 ---
-*Requirements defined: 2026-01-26*
-*Last updated: 2026-01-28 after Phase 16 complete*
+*Requirements defined: 2026-01-29*
+*Last updated: 2026-01-29 after initial definition*
