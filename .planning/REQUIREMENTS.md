@@ -120,11 +120,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RESULTS-05 | Phase 19 | Pending |
 | RESULTS-06 | Phase 19 | Pending |
 | RESULTS-07 | Phase 19 | Pending |
-| SUBMIT-01 | Phase 20 | Pending |
-| SUBMIT-02 | Phase 20 | Pending |
-| SUBMIT-03 | Phase 20 | Pending |
-| SUBMIT-04 | Phase 20 | Pending |
-| SUBMIT-05 | Phase 20 | Pending |
+| SUBMIT-01 | Phase 20 | Complete |
+| SUBMIT-02 | Phase 20 | Complete |
+| SUBMIT-03 | Phase 20 | Complete |
+| SUBMIT-04 | Phase 20 | Complete |
+| SUBMIT-05 | Phase 20 | Complete |
 | STATUS-01 | Phase 21 | Pending |
 | STATUS-02 | Phase 21 | Pending |
 | STATUS-03 | Phase 21 | Pending |

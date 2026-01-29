@@ -31,7 +31,7 @@ Progress: █████░ Phase 20 complete, ready for Phase 21
 | v1.0 Core NMR Service | 6 | 16 | 2 days | Shipped 2026-01-20 |
 | v1.1 Accurate Chemical Shifts | 8 | 21 | 5 days | Shipped 2026-01-25 |
 | v2.0 Conformational Sampling | 6 | 18 | ~2 days | Shipped 2026-01-28 |
-| v2.1 UI Redesign | 6 | 7 | - | In progress |
+| v2.1 UI Redesign | 6 | 9 | - | In progress |
 
 **Recent Trend:**
 - Last 5 plans: 9-20 min (v2.0 Phase 17)
