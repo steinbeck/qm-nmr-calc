@@ -2,96 +2,71 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-01-26)
+See: .planning/PROJECT.md (updated 2026-01-29)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.1 UI Redesign -- Defining requirements
+**Current focus:** v2.1 UI Redesign -- Modern bento grid layout with glassmorphism effects
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-01-29 -- Started milestone v2.1 UI Redesign
+Milestone: v2.1 UI Redesign
+Phase: 18 - CSS Foundation and Design System
+Plan: Not started (roadmap created)
+Status: Ready to begin Phase 18
+Last activity: 2026-01-29 -- Created v2.1 roadmap (6 phases, 35 requirements)
 
-Progress: Researching...
+Progress: ▓░░░░░ Phase 18 of 23 (22%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 55
+- Total plans completed: 55 (all from v1.0, v1.1, v2.0)
 - Average duration: ~9 min
 - Total execution time: ~500 min (~8.3 hours)
 
 **By Milestone:**
 
-| Milestone | Phases | Plans | Duration |
-|-----------|--------|-------|----------|
-| v1.0 Core NMR Service | 6 | 16 | 2 days |
-| v1.1 Accurate Chemical Shifts | 8 | 21 | 5 days |
-| v2.0 Conformational Sampling | 6 | 18 | ~2 days |
+| Milestone | Phases | Plans | Duration | Status |
+|-----------|--------|-------|----------|--------|
+| v1.0 Core NMR Service | 6 | 16 | 2 days | Shipped 2026-01-20 |
+| v1.1 Accurate Chemical Shifts | 8 | 21 | 5 days | Shipped 2026-01-25 |
+| v2.0 Conformational Sampling | 6 | 18 | ~2 days | Shipped 2026-01-28 |
+| v2.1 UI Redesign | 6 | 0 | - | In progress |
 
 **Recent Trend:**
-- Last 5 plans: 9-20 min
-- Trend: Consistent fast execution (17-01: ~15 min, 17-02: ~10 min, 17-03: ~15 min, 17-04: 11 min, 17-05: ~20 min)
+- Last 5 plans: 9-20 min (v2.0 Phase 17)
+- Trend: Consistent fast execution
 
 ## Accumulated Context
 
 ### Decisions
 
 All decisions logged in PROJECT.md Key Decisions table.
-Recent v2.0 decisions affecting current work:
+
+**v2.1 UI Redesign decisions:**
+
+- Pure CSS approach: No build tools, frameworks, or preprocessors needed
+- Replace Pico CSS entirely: Custom CSS simpler than overriding framework for bento grids
+- CSS Grid with grid-template-areas: Semantic bento layouts with named regions
+- Native backdrop-filter: 92% browser support, 96% with fallbacks (webkit prefix)
+- CSS Cascade Layers: Architectural organization without specificity wars
+- BEM naming convention: Component boundaries prevent naming conflicts
+- Multi-file CSS: HTTP/2 makes multiple files performant without concatenation
+- Design tokens as CSS custom properties: Replaces preprocessor variables
+- Glass opacity 85-95%: Higher opacity for WCAG contrast compliance
+- Mobile performance budget: 2-3 glass elements max, 6px blur vs 10px desktop
+
+**v2.0 Conformational Sampling decisions (inherited context):**
 
 - KDG over ETKDG: Avoids crystal structure bias for solution-phase NMR
 - CREST/xTB optional: App works without them, enables high-accuracy mode when detected
 - Boltzmann weight by DFT energies: Most accurate readily available energy level for weighting
-- RDKit CanonicalRankAtoms for atom ordering: Built-in deterministic canonicalization (12-02)
-- Mapping as metadata not transformation: Don't physically reorder atoms (breaks RDKit ops) (12-02)
-- Per-conformer scratch directory isolation: Each conformer gets unique scratch dir to prevent NWChem database conflicts (12-01)
-- Explicit energy unit tracking: ConformerData stores energy_unit alongside energy to prevent conversion bugs (12-01)
-- str type for API conformer_mode: API schemas use str (not Literal) for flexibility, validation at service layer (12-03)
-- KDG params for solution-phase: pruneRmsThresh=-1.0 (no pre-opt pruning), numThreads=0 (all threads), random coords fallback (13-01)
-- 8 rotatable bonds threshold: Separates rigid (50 confs) from flexible (200 confs) based on conformational space needs (13-01)
-- MMFF native units: Return energies in kcal/mol without conversion (13-01)
-- Dedup before energy filter: Run RMSD deduplication first, then energy window filter on deduped subset (13-03)
-- Sequential 1-based conformer IDs: conf_001, conf_002, ... for user-facing consistency (13-03)
-- Relative geometry_file paths: Stored relative to job dir for portability (13-03)
-- exp-normalize trick for Boltzmann: Subtract min energy before exp to prevent overflow/underflow (14-01)
-- Pure Python math.exp: No numpy dependency for Boltzmann weights, sufficient performance for typical conformer counts (14-01)
-- Weighted averaging by atom index: Cross-conformer matching via index field (NWChem 1-based), not implicit ordering (14-02)
-- Descending shift sort: NMR convention (highest shift first) for all returned results (14-02)
-- In-place weight population: average_ensemble_nmr mutates ConformerData.weight for tracking (14-02)
-- re.findall last-occurrence for optimization: Takes final energy from multi-cycle NWChem optimization (15-01)
-- Hartree native units for DFT energy: No conversion from NWChem output, matches Boltzmann functions (15-01)
-- Sequential conformer processing: Process conformers one at a time for simplicity, parallelize later if needed (15-02)
-- 50% success threshold: Fail if more than half of conformers fail DFT optimization (15-02)
-- smiles=None support: Allow geometry-file-only input for conformer optimization path (15-02)
-- No NMR minimum success threshold: Any successful NMR results usable since DFT already caught systematic failures (15-03)
-- nmr_basis_set substitution: NMR step uses nmr_basis_set instead of optimization basis_set for higher accuracy (15-03)
-- In-place ensemble mutation: Conformer status fields updated by reference during pipeline (15-03)
-- Accept both `=` and `:` in DFT energy regex: NWChem version compatibility (E2E fix)
-- Case-normalize all scaling factor lookup keys: functional, solvent, basis_set (E2E fix)
-- lru_cache(maxsize=1) for CREST binary detection: Binary availability immutable during process lifetime (16-01)
-- Require both crest and xtb binaries: CREST depends on xTB for functionality (16-01)
-- ALPB solvent map for chcl3/dmso: Only supported solvents, extensible for future additions (16-01)
-- Case-insensitive solvent matching: Normalize to lowercase before ALPB lookup (16-01)
-- CREST timeout default 7200s (2 hours): Balances macrocycle completeness vs responsiveness (16-02)
-- RDKit fallback in timeout message: User-facing guidance when CREST too slow (16-02)
-- CREST energies as relative kcal/mol: Consistency with RDKit path for pre-DFT filtering (16-02)
-- Skip RMSD dedup after CREST: CREST handles deduplication internally (16-02)
-- Defensive directory creation: mkdir(parents=True, exist_ok=True) before XYZ write (16-02)
-- conformer_method parameter for dispatch: "rdkit_kdg" (default) or "crest" with fail-fast validation (16-03)
-- CREST as informational health field: Non-blocking capability reporting in health endpoint (16-03)
-- Energy display in relative kcal/mol: User-friendly display units in API responses (17-02)
-- Top 3 conformers in ensemble metadata: Quick summary without overwhelming detail (17-02)
-- Progress callback pattern: Callback with (step, current, total) tuple for conformer processing (17-01)
-- CREST fallback warning: Store warning in job status, continue with RDKit (17-01)
-- Web default to ensemble: Users opt OUT to single-conformer mode (17-01)
-- Helper function for XYZ to SDF: Extract _xyz_to_sdf to avoid duplication in geometry.json endpoint (17-04)
-- Sort conformers by energy: Lowest-energy first in geometry.json response (17-04)
-- Averaged shifts on all conformers: Labels show Boltzmann-weighted average, not per-conformer shifts (17-04)
-- Ensemble metadata section: Clear display of conformer count, populations, and averaging method (17-05)
-- Viewer legend clarification: Labels explicitly say "averaged shifts" for ensemble jobs (17-05)
+- RDKit CanonicalRankAtoms for atom ordering: Built-in deterministic canonicalization
+- Per-conformer scratch directory isolation: Each conformer gets unique scratch dir to prevent NWChem database conflicts
+- Explicit energy unit tracking: ConformerData stores energy_unit alongside energy to prevent conversion bugs
+- exp-normalize trick for Boltzmann: Subtract min energy before exp to prevent overflow/underflow
+- Sequential conformer processing: Process conformers one at a time for simplicity
+- 50% success threshold: Fail if more than half of conformers fail DFT optimization
 
 ### Roadmap Evolution
 
@@ -100,25 +75,29 @@ Recent v2.0 decisions affecting current work:
 - v2.0: 6 phases (12-17), shipped 2026-01-28
   - Phase structure: Data Model -> RDKit -> Boltzmann -> NWChem -> CREST -> API
   - Risk mitigation: RDKit-only path (12-15, 17) complete before CREST complexity (16)
+- v2.1: 6 phases (18-23), in progress
+  - Phase structure: CSS Foundation -> Results -> Submit -> Status -> Responsive -> Accessibility
+  - Foundation-first: Design system before page implementations
+  - Complexity order: Results (most complex) -> Submit -> Status (simplest)
 
 ### Pending Todos
 
-None.
+None. Ready to start Phase 18.
 
 ### Blockers/Concerns
 
 **None.**
 
 **Resolved (v2.0):**
-- Ensemble filtering before averaging: run_ensemble_nmr_task now filters to nmr_complete conformers before calling average_ensemble_nmr (17-01)
-- CREST timeouts: Implemented subprocess timeout with user-friendly fallback message (16-02)
-- Numerical stability: Boltzmann weighting implemented with exp-normalize trick, tested with extreme ranges (14-01)
-- Atom ordering consistency: Canonical indexing established via CanonicalRankAtoms (12-02)
-- Scratch directory isolation: Per-conformer directories prevent NWChem database corruption (12-01)
-- Backward compatibility: v1.x JSON loads verified with 8 fixture tests (12-03)
-- DFT energy regex mismatch: Real NWChem 7.x uses `=` not `:` in "Total DFT energy" line. Fixed to accept both. Test fixtures had wrong format. (E2E testing)
-- Functional case sensitivity: Presets store "b3lyp" lowercase but scaling factors use "B3LYP". Added `.upper()` normalization in `get_scaling_factor`. (E2E testing)
-- Shared optimized geometry path: `run_calculation` writes to shared `output/optimized.xyz`, overwritten by each conformer. Fixed: copy to per-conformer output dir after each optimization. (E2E testing)
+- Ensemble filtering before averaging: run_ensemble_nmr_task now filters to nmr_complete conformers before calling average_ensemble_nmr
+- CREST timeouts: Implemented subprocess timeout with user-friendly fallback message
+- Numerical stability: Boltzmann weighting implemented with exp-normalize trick, tested with extreme ranges
+- Atom ordering consistency: Canonical indexing established via CanonicalRankAtoms
+- Scratch directory isolation: Per-conformer directories prevent NWChem database corruption
+- Backward compatibility: v1.x JSON loads verified with 8 fixture tests
+- DFT energy regex mismatch: Fixed to accept both `=` and `:` in "Total DFT energy" line
+- Functional case sensitivity: Added `.upper()` normalization in `get_scaling_factor`
+- Shared optimized geometry path: Fixed by copying to per-conformer output dir after each optimization
 
 **Resolved (v1.x):**
 - RDKit stderr capture limitation (known, fallback messages used)
@@ -127,7 +106,8 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-29
-Stopped at: Starting v2.1 UI Redesign milestone
+Stopped at: v2.1 roadmap created, ready to plan Phase 18
 Resume file: None
-Next: Complete research, define requirements, create roadmap
-Tests: All tests passing
+Next: `/gsd:plan-phase 18` to begin CSS Foundation and Design System
+Tests: All tests passing (226 unit + 3 integration = 229 tests)
+Codebase: 5,432 LOC Python, 1,417 LOC tests, 892 LOC templates

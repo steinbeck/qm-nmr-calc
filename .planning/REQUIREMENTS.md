@@ -101,51 +101,59 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LAYOUT-01 | TBD | Pending |
-| LAYOUT-02 | TBD | Pending |
-| LAYOUT-03 | TBD | Pending |
-| LAYOUT-04 | TBD | Pending |
-| LAYOUT-05 | TBD | Pending |
-| LAYOUT-06 | TBD | Pending |
-| GLASS-01 | TBD | Pending |
-| GLASS-02 | TBD | Pending |
-| GLASS-03 | TBD | Pending |
-| GLASS-04 | TBD | Pending |
-| GLASS-05 | TBD | Pending |
-| GLASS-06 | TBD | Pending |
-| RESULTS-01 | TBD | Pending |
-| RESULTS-02 | TBD | Pending |
-| RESULTS-03 | TBD | Pending |
-| RESULTS-04 | TBD | Pending |
-| RESULTS-05 | TBD | Pending |
-| RESULTS-06 | TBD | Pending |
-| RESULTS-07 | TBD | Pending |
-| SUBMIT-01 | TBD | Pending |
-| SUBMIT-02 | TBD | Pending |
-| SUBMIT-03 | TBD | Pending |
-| SUBMIT-04 | TBD | Pending |
-| SUBMIT-05 | TBD | Pending |
-| STATUS-01 | TBD | Pending |
-| STATUS-02 | TBD | Pending |
-| STATUS-03 | TBD | Pending |
-| STATUS-04 | TBD | Pending |
-| STATUS-05 | TBD | Pending |
-| A11Y-01 | TBD | Pending |
-| A11Y-02 | TBD | Pending |
-| A11Y-03 | TBD | Pending |
-| A11Y-04 | TBD | Pending |
-| A11Y-05 | TBD | Pending |
-| CSS-01 | TBD | Pending |
-| CSS-02 | TBD | Pending |
-| CSS-03 | TBD | Pending |
-| CSS-04 | TBD | Pending |
-| CSS-05 | TBD | Pending |
+| LAYOUT-01 | Phase 22 | Pending |
+| LAYOUT-02 | Phase 22 | Pending |
+| LAYOUT-03 | Phase 22 | Pending |
+| LAYOUT-04 | Phase 22 | Pending |
+| LAYOUT-05 | Phase 22 | Pending |
+| LAYOUT-06 | Phase 18 | Pending |
+| GLASS-01 | Phase 18 | Pending |
+| GLASS-02 | Phase 18 | Pending |
+| GLASS-03 | Phase 18 | Pending |
+| GLASS-04 | Phase 18 | Pending |
+| GLASS-05 | Phase 18 | Pending |
+| GLASS-06 | Phase 18 | Pending |
+| RESULTS-01 | Phase 19 | Pending |
+| RESULTS-02 | Phase 19 | Pending |
+| RESULTS-03 | Phase 19 | Pending |
+| RESULTS-04 | Phase 19 | Pending |
+| RESULTS-05 | Phase 19 | Pending |
+| RESULTS-06 | Phase 19 | Pending |
+| RESULTS-07 | Phase 19 | Pending |
+| SUBMIT-01 | Phase 20 | Pending |
+| SUBMIT-02 | Phase 20 | Pending |
+| SUBMIT-03 | Phase 20 | Pending |
+| SUBMIT-04 | Phase 20 | Pending |
+| SUBMIT-05 | Phase 20 | Pending |
+| STATUS-01 | Phase 21 | Pending |
+| STATUS-02 | Phase 21 | Pending |
+| STATUS-03 | Phase 21 | Pending |
+| STATUS-04 | Phase 21 | Pending |
+| STATUS-05 | Phase 21 | Pending |
+| A11Y-01 | Phase 23 | Pending |
+| A11Y-02 | Phase 23 | Pending |
+| A11Y-03 | Phase 23 | Pending |
+| A11Y-04 | Phase 23 | Pending |
+| A11Y-05 | Phase 23 | Pending |
+| CSS-01 | Phase 18 | Pending |
+| CSS-02 | Phase 18 | Pending |
+| CSS-03 | Phase 18 | Pending |
+| CSS-04 | Phase 18 | Pending |
+| CSS-05 | Phase 18 | Pending |
 
 **Coverage:**
 - v2.1 requirements: 35 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 35
+- Mapped to phases: 35/35 (100%)
+- Unmapped: 0
+
+**Phase coverage:**
+- Phase 18 (CSS Foundation): 12 requirements (CSS-01 through CSS-05, LAYOUT-06, GLASS-01 through GLASS-06)
+- Phase 19 (Results Page): 7 requirements (RESULTS-01 through RESULTS-07)
+- Phase 20 (Submit Page): 5 requirements (SUBMIT-01 through SUBMIT-05)
+- Phase 21 (Status Page): 5 requirements (STATUS-01 through STATUS-05)
+- Phase 22 (Responsive Polish): 5 requirements (LAYOUT-01 through LAYOUT-05)
+- Phase 23 (Accessibility): 5 requirements (A11Y-01 through A11Y-05)
 
 ---
 *Requirements defined: 2026-01-29*
-*Last updated: 2026-01-29 after initial definition*
+*Last updated: 2026-01-29 after roadmap creation*
