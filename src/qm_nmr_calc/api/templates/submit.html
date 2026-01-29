@@ -2,111 +2,232 @@
 
 {% block title %}Submit Job | QM NMR Calculator{% endblock %}
 
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='/css/pages/submit-page.css') }}">
+{% endblock %}
+
 {% block content %}
-<article>
-    <header>
-        <h2>NMR Calculation</h2>
-        <p>Submit a molecule for quantum mechanical NMR prediction.</p>
-    </header>
+<header>
+    <h2>NMR Calculation</h2>
+    <p>Submit a molecule for quantum mechanical NMR prediction.</p>
+</header>
 
-    {% if error %}
-    <div role="alert">{{ error }}</div>
-    {% endif %}
+{% if error %}
+<div role="alert" class="alert alert--error">{{ error }}</div>
+{% endif %}
 
-    <form action="/submit" method="post" enctype="multipart/form-data">
-        <fieldset>
-            <legend>Molecule Input</legend>
+<div class="submit-layout">
+    <div class="submit-form">
+        <form action="/submit" method="post" enctype="multipart/form-data">
+            <p class="form-instructions">
+                Fields marked with <span class="required-indicator" aria-hidden="true">*</span> are required.
+            </p>
 
-            <label for="smiles">SMILES String</label>
-            <input type="text" id="smiles" name="smiles" placeholder="e.g., CCO for ethanol" value="{{ form_data.smiles or '' }}">
-            <small>Enter the SMILES representation of your molecule</small>
+            <fieldset class="form-group">
+                <legend>Molecule Input</legend>
 
-            <label for="file">Or Upload MOL/SDF File</label>
-            <input type="file" id="file" name="file" accept=".mol,.sdf">
-            <small>Upload a .mol or .sdf file (single molecule)</small>
-        </fieldset>
+                <div class="form-group__field">
+                    <label for="smiles">SMILES String</label>
+                    <input type="text" id="smiles" name="smiles"
+                           placeholder="e.g., CCO for ethanol"
+                           value="{{ form_data.smiles or '' }}"
+                           autocomplete="off">
+                    <small class="field-help">Enter the SMILES representation of your molecule</small>
+                </div>
 
-        <fieldset>
-            <legend>Calculation Settings</legend>
-
-            <label for="solvent">
-                Solvent
-                <span aria-label="Required field" style="color: var(--color-error);">*</span>
-            </label>
-            <select id="solvent" name="solvent" required>
-                <option value="" disabled {% if not form_data.solvent %}selected{% endif %}>Select a solvent...</option>
-                {% for solvent in solvents %}
-                <option value="{{ solvent.value }}" {% if form_data.solvent == solvent.value %}selected{% endif %}>{{ solvent.label }}</option>
-                {% endfor %}
-            </select>
-
-            <label for="preset">Calculation Preset</label>
-            <select id="preset" name="preset">
-                {% for preset in presets %}
-                <option value="{{ preset.value }}" {% if (form_data.preset == preset.value) or (not form_data.preset and preset.value == 'production') %}selected{% endif %}>{{ preset.label }}</option>
-                {% endfor %}
-            </select>
-        </fieldset>
-
-        <fieldset>
-            <legend>Conformer Mode</legend>
-
-            <label for="conformer_mode">Calculation Mode</label>
-            <select id="conformer_mode" name="conformer_mode" required>
-                <option value="ensemble" {% if form_data.get('conformer_mode', 'ensemble') == 'ensemble' %}selected{% endif %}>
-                    Ensemble (multi-conformer, recommended)
-                </option>
-                <option value="single" {% if form_data.get('conformer_mode') == 'single' %}selected{% endif %}>
-                    Single conformer (faster, v1.x behavior)
-                </option>
-            </select>
-            <small>Ensemble mode generates multiple conformers for more accurate predictions on flexible molecules.</small>
-
-            <label for="conformer_method">Conformer Method</label>
-            <select id="conformer_method" name="conformer_method">
-                <option value="rdkit_kdg" {% if form_data.get('conformer_method', 'rdkit_kdg') == 'rdkit_kdg' %}selected{% endif %}>
-                    RDKit KDG (fast, always available)
-                </option>
-                <option value="crest" {% if not crest_available %}disabled{% endif %}
-                        {% if form_data.get('conformer_method') == 'crest' %}selected{% endif %}>
-                    CREST/xTB (thorough){% if not crest_available %} - not installed{% endif %}
-                </option>
-            </select>
-            <small>CREST provides better conformer sampling for complex molecules but requires external installation.</small>
-        </fieldset>
-
-        <details>
-            <summary>Advanced Options</summary>
-            <fieldset>
-                <label for="max_conformers">Max Conformers (optional)</label>
-                <input type="number" id="max_conformers" name="max_conformers"
-                       value="{{ form_data.get('max_conformers', '') }}"
-                       min="1" max="500" placeholder="Auto (based on flexibility)">
-                <small>Leave empty for automatic selection based on molecular flexibility.</small>
+                <div class="form-group__field">
+                    <label for="file">Or Upload MOL/SDF File</label>
+                    <input type="file" id="file" name="file" accept=".mol,.sdf">
+                    <small class="field-help">Upload a .mol or .sdf file (single molecule)</small>
+                </div>
             </fieldset>
-        </details>
 
-        <fieldset>
-            <legend>Optional Details</legend>
+            <fieldset class="form-group">
+                <legend>Calculation Settings</legend>
 
-            <label for="name">Molecule Name (optional)</label>
-            <input type="text" id="name" name="name" placeholder="e.g., Caffeine" value="{{ form_data.name or '' }}">
+                <div class="form-group__field">
+                    <label for="solvent">
+                        Solvent
+                        <span class="required-indicator" aria-hidden="true">*</span>
+                    </label>
+                    <select id="solvent" name="solvent" required aria-required="true">
+                        <option value="" disabled {% if not form_data.solvent %}selected{% endif %}>Select a solvent...</option>
+                        {% for solvent in solvents %}
+                        <option value="{{ solvent.value }}" {% if form_data.solvent == solvent.value %}selected{% endif %}>{{ solvent.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-            <label for="notification_email">Email Notification (optional)</label>
-            <input type="email" id="notification_email" name="notification_email" placeholder="your@email.com" value="{{ form_data.notification_email or '' }}">
-            <small>Leave blank if you don't want email notification</small>
-        </fieldset>
+                <div class="form-group__field">
+                    <label for="preset">Calculation Preset</label>
+                    <select id="preset" name="preset">
+                        {% for preset in presets %}
+                        <option value="{{ preset.value }}" {% if (form_data.preset == preset.value) or (not form_data.preset and preset.value == 'production') %}selected{% endif %}>{{ preset.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </fieldset>
 
-        <button type="submit">Calculate NMR</button>
-    </form>
-</article>
+            <fieldset class="form-group">
+                <legend>Conformer Settings</legend>
 
+                <div class="form-group__field">
+                    <label for="conformer_mode">
+                        Calculation Mode
+                        <span class="required-indicator" aria-hidden="true">*</span>
+                    </label>
+                    <select id="conformer_mode" name="conformer_mode" required aria-required="true">
+                        <option value="ensemble" {% if form_data.get('conformer_mode', 'ensemble') == 'ensemble' %}selected{% endif %}>
+                            Ensemble (multi-conformer, recommended)
+                        </option>
+                        <option value="single" {% if form_data.get('conformer_mode') == 'single' %}selected{% endif %}>
+                            Single conformer (faster, v1.x behavior)
+                        </option>
+                    </select>
+                    <small class="field-help">Ensemble mode generates multiple conformers for more accurate predictions on flexible molecules.</small>
+                </div>
+
+                <div class="form-group__field">
+                    <label for="conformer_method">Conformer Method</label>
+                    <select id="conformer_method" name="conformer_method">
+                        <option value="rdkit_kdg" {% if form_data.get('conformer_method', 'rdkit_kdg') == 'rdkit_kdg' %}selected{% endif %}>
+                            RDKit KDG (fast, always available)
+                        </option>
+                        <option value="crest" {% if not crest_available %}disabled{% endif %}
+                                {% if form_data.get('conformer_method') == 'crest' %}selected{% endif %}>
+                            CREST/xTB (thorough){% if not crest_available %} - not installed{% endif %}
+                        </option>
+                    </select>
+                    <small class="field-help">RDKit is fast and always available. CREST provides better sampling for complex molecules.</small>
+                </div>
+
+                <details>
+                    <summary>Advanced Options</summary>
+                    <div class="form-group__field">
+                        <label for="max_conformers">Max Conformers (optional)</label>
+                        <input type="number" id="max_conformers" name="max_conformers"
+                               value="{{ form_data.get('max_conformers', '') }}"
+                               min="1" max="500" placeholder="Auto (based on flexibility)">
+                        <small class="field-help">Leave empty for automatic selection based on molecular flexibility.</small>
+                    </div>
+                </details>
+            </fieldset>
+
+            <fieldset class="form-group">
+                <legend>Optional Details</legend>
+
+                <div class="form-group__field">
+                    <label for="name">Molecule Name</label>
+                    <input type="text" id="name" name="name" placeholder="e.g., Caffeine" value="{{ form_data.name or '' }}">
+                </div>
+
+                <div class="form-group__field">
+                    <label for="notification_email">Email Notification</label>
+                    <input type="email" id="notification_email" name="notification_email" placeholder="your@email.com" value="{{ form_data.notification_email or '' }}">
+                    <small class="field-help">Leave blank if you don't want email notification</small>
+                </div>
+            </fieldset>
+
+            <button type="submit" class="submit-form__button">Calculate NMR</button>
+        </form>
+    </div>
+
+    <div class="submit-layout__preview">
+        <div class="preview-card">
+            <h3 class="preview-card__title">Molecule Preview</h3>
+            <canvas id="molecule-preview" class="preview-card__canvas"></canvas>
+            <p id="preview-status" class="preview-card__status preview-card__status--empty">
+                Enter a SMILES string to preview
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/smiles-drawer@1.2.0/dist/smiles-drawer.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // SmilesDrawer configuration
+    const smilesDrawer = new SmilesDrawer.Drawer({
+        width: 350,
+        height: 350,
+        bondThickness: 0.6,
+        bondLength: 15,
+        terminalCarbons: true,
+        explicitHydrogens: false,
+        themes: {
+            light: {
+                C: '#222',
+                O: '#e74c3c',
+                N: '#3498db',
+                S: '#f1c40f',
+                P: '#e67e22',
+                F: '#1abc9c',
+                CL: '#1abc9c',
+                BR: '#e74c3c',
+                I: '#9b59b6',
+                H: '#aaa'
+            }
+        }
+    });
+
+    const canvas = document.getElementById('molecule-preview');
+    const status = document.getElementById('preview-status');
     const smilesInput = document.getElementById('smiles');
     const fileInput = document.getElementById('file');
 
-    // Visual feedback for active input mode
+    // Handle canvas sizing for retina displays
+    function setupCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+    }
+
+    // Update molecule preview
+    function updateMoleculePreview(smiles) {
+        setupCanvas();
+
+        if (!smiles || smiles.trim() === '') {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            status.textContent = 'Enter a SMILES string to preview';
+            status.className = 'preview-card__status preview-card__status--empty';
+            return;
+        }
+
+        SmilesDrawer.parse(smiles, function(tree) {
+            // Valid SMILES - draw molecule
+            smilesDrawer.draw(tree, 'molecule-preview', 'light', false);
+            status.textContent = 'Valid SMILES';
+            status.className = 'preview-card__status preview-card__status--valid';
+        }, function(err) {
+            // Invalid SMILES - show error
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            status.textContent = 'Invalid SMILES syntax';
+            status.className = 'preview-card__status preview-card__status--invalid';
+        });
+    }
+
+    // Debounce function
+    let debounceTimer;
+    function debounce(func, delay) {
+        return function(...args) {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    // Debounced preview update (400ms delay)
+    const debouncedPreview = debounce(function(value) {
+        updateMoleculePreview(value);
+    }, 400);
+
+    // Input mutual exclusion
     function updateInputStates() {
         const smilesHasValue = smilesInput.value.trim().length > 0;
         const fileHasValue = fileInput.files && fileInput.files.length > 0;
@@ -117,8 +238,12 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (fileHasValue) {
             smilesInput.disabled = true;
             smilesInput.style.opacity = '0.5';
+            // Clear preview when file selected
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            status.textContent = 'File selected (no preview available)';
+            status.className = 'preview-card__status preview-card__status--empty';
         } else {
-            // Both empty - enable both
             smilesInput.disabled = false;
             fileInput.disabled = false;
             smilesInput.style.opacity = '1';
@@ -126,26 +251,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // When SMILES input changes
+    // SMILES input handler - debounced preview + mutual exclusion
     smilesInput.addEventListener('input', function() {
         if (this.value.trim().length > 0) {
-            // Clear file selection when typing SMILES
             fileInput.value = '';
         }
         updateInputStates();
+        debouncedPreview(this.value);
     });
 
-    // When file selection changes
+    // File input handler
     fileInput.addEventListener('change', function() {
         if (this.files && this.files.length > 0) {
-            // Clear SMILES when selecting file
             smilesInput.value = '';
         }
         updateInputStates();
     });
-
-    // Initial state check
-    updateInputStates();
 
     // Conformer mode/method interaction
     const modeSelect = document.getElementById('conformer_mode');
@@ -157,7 +278,6 @@ document.addEventListener('DOMContentLoaded', function() {
             methodSelect.value = 'rdkit_kdg';
             methodSelect.style.opacity = '0.5';
         } else {
-            // Only enable if not CREST-disabled
             const crestOption = methodSelect.querySelector('option[value="crest"]');
             if (crestOption && !crestOption.disabled) {
                 methodSelect.disabled = false;
@@ -170,8 +290,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     modeSelect.addEventListener('change', updateMethodState);
 
-    // Initialize conformer method state
+    // Initialize on page load
+    setupCanvas();
+    updateInputStates();
     updateMethodState();
+
+    // Re-render preview if SMILES pre-filled (form resubmission)
+    if (smilesInput.value.trim()) {
+        updateMoleculePreview(smilesInput.value);
+    }
 });
 </script>
 {% endblock %}
