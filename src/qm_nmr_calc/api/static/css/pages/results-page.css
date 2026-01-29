@@ -1,0 +1,299 @@
+/*
+ * Results Page Components
+ *
+ * Page-specific styling for the NMR calculation results page.
+ * Uses design tokens from tokens.css and integrates with Phase 18's
+ * glass-card and bento-grid components.
+ *
+ * Key differences from generic glass-card:
+ * - Viewer card uses SOLID white background (not glass) for WebGL performance
+ * - Shift tables use tabular-nums for aligned number columns
+ * - Download buttons have 44px min-height for touch accessibility
+ */
+
+@layer components {
+
+    /* ===== Results Header ===== */
+    .results-header {
+        margin-bottom: var(--space-xl);
+    }
+
+    .results-header h1 {
+        margin: 0;
+        font-size: var(--text-2xl);
+    }
+
+
+    /* ===== Viewer Card ===== */
+    /*
+     * CRITICAL: Uses solid white background instead of glass effect.
+     * Glass/blur effects cause severe performance issues with WebGL rendering
+     * in 3Dmol.js. The solid background ensures smooth 3D rotation.
+     */
+    .viewer-card {
+        background: var(--color-white);
+        border: 1px solid var(--color-border);
+        border-radius: var(--glass-radius);
+        box-shadow: var(--glass-shadow);
+        padding: var(--space-lg);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .viewer-card__header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-md);
+        margin-bottom: var(--space-md);
+        padding-bottom: var(--space-md);
+        border-bottom: 1px solid var(--color-border);
+        flex-wrap: wrap;
+    }
+
+    .viewer-card__title {
+        font-size: var(--text-xl);
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .viewer-card__controls {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+
+    /*
+     * Canvas container for 3Dmol.js viewer.
+     * - position: relative is REQUIRED for 3Dmol.js to size correctly
+     * - isolation: isolate prevents compositing issues with backdrop-filter
+     * - Solid white background for consistent molecular rendering
+     */
+    .viewer-card__canvas {
+        flex: 1;
+        min-height: 350px;
+        position: relative;
+        isolation: isolate;
+        background: white;
+        border-radius: var(--space-xs);
+        border: 1px solid var(--color-gray-200);
+    }
+
+    .viewer-card__footer {
+        margin-top: var(--space-md);
+        padding-top: var(--space-md);
+        border-top: 1px solid var(--color-border);
+    }
+
+
+    /* ===== Conformer Selector ===== */
+    /*
+     * Solid background for accessibility - ensures high contrast
+     * in the dropdown regardless of background.
+     */
+    .conformer-select {
+        background: var(--color-white);
+        border: 1px solid var(--color-border);
+        border-radius: var(--space-xs);
+        padding: var(--space-xs) var(--space-sm);
+        font-size: var(--text-sm);
+        min-width: 200px;
+        cursor: pointer;
+    }
+
+    .conformer-select:focus {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+
+
+    /* ===== Conformer Info ===== */
+    .conformer-info {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        font-style: italic;
+    }
+
+
+    /* ===== Spectrum Figure ===== */
+    .spectrum-figure {
+        margin: 0;
+        text-align: center;
+    }
+
+    .spectrum-figure__image {
+        max-width: 100%;
+        height: auto;
+        max-height: 280px;
+        object-fit: contain;
+        border-radius: var(--space-xs);
+        cursor: pointer;
+        transition: transform var(--transition-fast),
+                    box-shadow var(--transition-fast);
+    }
+
+    /* Hover effect only on devices that support hover */
+    @media (hover: hover) {
+        .spectrum-figure__image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+    }
+
+
+    /* ===== Shift Table ===== */
+    /*
+     * Data table for chemical shift values.
+     * Uses tabular-nums for aligned decimal points in shift column.
+     */
+    .shift-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .shift-table th,
+    .shift-table td {
+        padding: var(--space-sm) var(--space-md);
+        text-align: left;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .shift-table th {
+        font-weight: 600;
+        color: var(--color-text-muted);
+        font-size: var(--text-sm);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Right-align numeric columns with tabular figures for alignment */
+    .shift-table td:last-child,
+    .shift-table th:last-child {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .shift-table td:last-child {
+        font-family: var(--font-mono);
+    }
+
+    .shift-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+
+    /* ===== Metadata List ===== */
+    .metadata-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+    }
+
+    .metadata-list__item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .metadata-list dt {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-xs);
+    }
+
+    .metadata-list dd {
+        margin: 0;
+        font-weight: 500;
+    }
+
+
+    /* ===== Download Grid ===== */
+    .download-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: var(--space-sm);
+    }
+
+    /*
+     * Download button with 44px min-height for touch accessibility.
+     * WCAG 2.5.5 recommends minimum 44x44px touch targets.
+     */
+    .download-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-xs);
+        padding: var(--space-md);
+        background: var(--color-gray-50);
+        border: 1px solid var(--color-border);
+        border-radius: var(--space-sm);
+        text-decoration: none;
+        color: var(--color-text);
+        min-height: 44px;
+        transition: background var(--transition-fast),
+                    border-color var(--transition-fast);
+    }
+
+    .download-btn:hover {
+        background: var(--color-gray-100);
+        border-color: var(--color-primary);
+    }
+
+    .download-btn__label {
+        font-size: var(--text-sm);
+        text-align: center;
+    }
+
+
+    /* ===== Conformer Table ===== */
+    /*
+     * Compact table for showing top conformer contributors.
+     * Smaller than shift-table for secondary information display.
+     */
+    .conformer-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: var(--space-sm);
+        font-size: var(--text-sm);
+    }
+
+    .conformer-table th,
+    .conformer-table td {
+        padding: var(--space-xs) var(--space-sm);
+        text-align: left;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .conformer-table th {
+        font-weight: 600;
+        color: var(--color-text-muted);
+    }
+
+    /* Right-align numeric columns (energy, weight) with tabular figures */
+    .conformer-table td:nth-child(2),
+    .conformer-table td:nth-child(3) {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+
+
+    /* ===== Ensemble Note ===== */
+    .ensemble-note {
+        padding: var(--space-md);
+        background: var(--color-primary-light);
+        border-left: 4px solid var(--color-primary);
+        border-radius: var(--space-xs);
+        font-size: var(--text-sm);
+        margin-top: var(--space-md);
+    }
+
+
+    /* ===== Back Link ===== */
+    .back-link {
+        margin-top: var(--space-xl);
+        text-align: center;
+    }
+
+}
