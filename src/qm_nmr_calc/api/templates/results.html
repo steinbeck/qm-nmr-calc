@@ -4,216 +4,262 @@
 
 {% block head %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.5.3/3Dmol-min.js"></script>
-<style>
-    .warning-banner {
-        background-color: #fff3cd;
-        border: 1px solid #ffc107;
-        border-radius: 4px;
-        padding: 0.75rem;
-        margin-bottom: 1rem;
-    }
-    #top-conformers-table {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-    #ensemble-metadata h4 {
-        margin-top: 1.5rem;
-        margin-bottom: 0.75rem;
-    }
-    .ensemble-summary-note {
-        margin-top: 1rem;
-        padding: 0.75rem;
-        background-color: #e8f4f8;
-        border-left: 4px solid #3498db;
-        font-style: italic;
-    }
-    .table-container {
-        overflow-x: auto;
-        margin-bottom: 1rem;
-    }
-    #shift-comparison-details {
-        margin-top: 1.5rem;
-    }
-</style>
+{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='/css/pages/results-page.css') }}">
 {% endblock %}
 
 {% block content %}
-<h2>NMR Calculation Results</h2>
-<p class="muted">{{ job.input_name or job.job_id }}</p>
-
-<article>
-    <header>
-        <h3>Calculation Details</h3>
-    </header>
-    <dl class="metadata-grid">
-        <dt>Preset</dt>
-        <dd>{{ job.preset }}</dd>
-        <dt>Solvent</dt>
-        <dd>{{ job.solvent }}</dd>
-        <dt>Functional</dt>
-        <dd>{{ results.functional }}</dd>
-        <dt>Basis Set</dt>
-        <dd>{{ results.basis_set }}</dd>
-    </dl>
-    <details>
-        <summary>SMILES</summary>
-        <code>{{ job.input_smiles }}</code>
-    </details>
-</article>
-
-<!-- Ensemble Metadata Section (only for ensemble jobs) -->
-<article id="ensemble-metadata" style="display: none;">
-    <header>
-        <h3>Ensemble Averaging Summary</h3>
+<div class="page-wrapper">
+    <header class="results-header">
+        <h1>NMR Calculation Results</h1>
+        <p class="muted">{{ job.input_name or job.job_id }}</p>
     </header>
 
-    <!-- Warning banner if CREST fallback -->
-    <div id="ensemble-warning" class="warning-banner" style="display: none;">
-        <strong>Note:</strong> <span id="warning-text"></span>
-    </div>
-
-    <dl class="metadata-grid">
-        <dt>Conformers Used</dt>
-        <dd id="meta-conformer-count">-</dd>
-
-        <dt>Total Generated</dt>
-        <dd id="meta-total-generated">-</dd>
-
-        <dt>Generation Method</dt>
-        <dd id="meta-method">-</dd>
-
-        <dt>Temperature</dt>
-        <dd id="meta-temperature">-</dd>
-
-        <dt>Energy Range</dt>
-        <dd id="meta-energy-range">-</dd>
-    </dl>
-
-    <h4>Top Contributing Conformers</h4>
-    <table id="top-conformers-table">
-        <thead>
-            <tr>
-                <th>Conformer</th>
-                <th>Population</th>
-                <th>Relative Energy</th>
-            </tr>
-        </thead>
-        <tbody id="top-conformers-body">
-        </tbody>
-    </table>
-
-    <div class="ensemble-summary-note">
-        The chemical shifts displayed below are <strong>Boltzmann-weighted averages</strong> computed from all conformers listed above.
-        Each conformer contributes according to its population at the specified temperature.
-    </div>
-</article>
-
-<!-- Per-Conformer Shift Comparison (expandable) -->
-<details id="shift-comparison-details" style="display: none;">
-    <summary>View Shift Data Table</summary>
-
-    <div class="table-container">
-        <h4><sup>1</sup>H Chemical Shifts (ppm)</h4>
-        <table id="h1-comparison-table">
-            <thead id="h1-comparison-header">
-                <tr>
-                    <th>Atom</th>
-                    <th>Averaged Shift</th>
-                </tr>
-            </thead>
-            <tbody id="h1-comparison-body">
-            </tbody>
-        </table>
-
-        <h4><sup>13</sup>C Chemical Shifts (ppm)</h4>
-        <table id="c13-comparison-table">
-            <thead id="c13-comparison-header">
-                <tr>
-                    <th>Atom</th>
-                    <th>Averaged Shift</th>
-                </tr>
-            </thead>
-            <tbody id="c13-comparison-body">
-            </tbody>
-        </table>
-    </div>
-</details>
-
-<article class="results-container">
-    <header>
-        <h3>Visualizations</h3>
-        <small>Click any image to enlarge</small>
-    </header>
-
-    <div class="structure-container">
-        <figure>
-            <img src="/api/v1/jobs/{{ job.job_id }}/structure.png"
-                 alt="Annotated molecular structure"
-                 onclick="openModal(this.src)">
-            <figcaption>Annotated Structure with Chemical Shifts (ppm)</figcaption>
-        </figure>
-    </div>
-
-    <!-- Interactive 3D Structure -->
-    <div class="structure-3d-container">
-        <h4>Interactive 3D Structure</h4>
-        <!-- Conformer selector (only visible for ensemble jobs) -->
-        <div id="conformer-selector-container" style="display: none; margin-bottom: 1rem;">
-            <label for="conformer-selector" style="margin-right: 0.5rem;">View Conformer:</label>
-            <select id="conformer-selector" style="min-width: 280px;">
-                <!-- Populated by JavaScript -->
-            </select>
-            <span id="current-conformer-info" style="margin-left: 1rem; font-style: italic; color: #666;"></span>
-        </div>
-        <div id="viewer-container-3d"></div>
-        <div class="viewer-legend">
-            <div class="viewer-legend-item">
-                <span class="viewer-legend-color h1"></span>
-                <span id="legend-h1-label"><sup>1</sup>H shifts (ppm)</span>
-            </div>
-            <div class="viewer-legend-item">
-                <span class="viewer-legend-color c13"></span>
-                <span id="legend-c13-label"><sup>13</sup>C shifts (ppm)</span>
+    <div class="bento-grid">
+        <!-- 3D Viewer (Hero Position - span-4, row-span-2) -->
+        <div class="bento-grid__item bento-grid__item--span-4 bento-grid__item--span-row-2">
+            <div class="viewer-card">
+                <header class="viewer-card__header">
+                    <h3 class="viewer-card__title">Interactive 3D Structure</h3>
+                    {% if job.conformer_mode == 'ensemble' %}
+                    <div class="viewer-card__controls">
+                        <label for="conformer-selector" class="sr-only">View Conformer</label>
+                        <select id="conformer-selector" class="conformer-select">
+                            <!-- Populated by JavaScript -->
+                        </select>
+                        <span id="current-conformer-info" class="conformer-info"></span>
+                    </div>
+                    {% endif %}
+                </header>
+                <div id="viewer-container-3d" class="viewer-card__canvas">
+                    <!-- 3Dmol.js renders here -->
+                </div>
+                <footer class="viewer-card__footer">
+                    <div class="viewer-legend">
+                        <div class="viewer-legend-item">
+                            <span class="viewer-legend-color h1"></span>
+                            <span id="legend-h1-label"><sup>1</sup>H shifts (ppm)</span>
+                        </div>
+                        <div class="viewer-legend-item">
+                            <span class="viewer-legend-color c13"></span>
+                            <span id="legend-c13-label"><sup>13</sup>C shifts (ppm)</span>
+                        </div>
+                    </div>
+                    <small class="muted">Click and drag to rotate. Scroll to zoom.</small>
+                    {% if job.conformer_mode == 'ensemble' %}
+                    <div id="ensemble-viewer-note" class="ensemble-note">
+                        <strong>Note:</strong> Shift labels show <em>Boltzmann-averaged</em> values. Use the dropdown to view different conformer geometries.
+                    </div>
+                    {% endif %}
+                </footer>
             </div>
         </div>
-        <small class="muted">Click and drag to rotate. Scroll to zoom.</small>
-        <div id="ensemble-viewer-note" style="display: none; margin-top: 0.5rem; padding: 0.5rem; background-color: #f0f7ff; border-radius: 4px; font-size: 0.85rem;">
-            <strong>Note:</strong> Shift labels show <em>Boltzmann-averaged</em> values. Use the dropdown to view different conformer geometries.
+
+        <!-- 1H Spectrum Card (span-2) -->
+        <div class="bento-grid__item bento-grid__item--span-2">
+            <article class="glass-card glass-card--interactive">
+                <header class="glass-card__header">
+                    <h3 class="glass-card__title"><sup>1</sup>H NMR Spectrum</h3>
+                </header>
+                <div class="glass-card__body">
+                    <figure class="spectrum-figure">
+                        <img src="/api/v1/jobs/{{ job.job_id }}/spectrum/1h.png"
+                             alt="1H NMR spectrum"
+                             class="spectrum-figure__image"
+                             onclick="openModal(this.src)">
+                    </figure>
+                    <small class="muted">Click to enlarge</small>
+                </div>
+            </article>
+        </div>
+
+        <!-- 13C Spectrum Card (span-2) -->
+        <div class="bento-grid__item bento-grid__item--span-2">
+            <article class="glass-card glass-card--interactive">
+                <header class="glass-card__header">
+                    <h3 class="glass-card__title"><sup>13</sup>C NMR Spectrum</h3>
+                </header>
+                <div class="glass-card__body">
+                    <figure class="spectrum-figure">
+                        <img src="/api/v1/jobs/{{ job.job_id }}/spectrum/13c.png"
+                             alt="13C NMR spectrum"
+                             class="spectrum-figure__image"
+                             onclick="openModal(this.src)">
+                    </figure>
+                    <small class="muted">Click to enlarge</small>
+                </div>
+            </article>
+        </div>
+
+        <!-- Ensemble Metadata Card (span-2) - ONLY FOR ENSEMBLE JOBS -->
+        {% if job.conformer_mode == 'ensemble' %}
+        <div class="bento-grid__item bento-grid__item--span-2">
+            <article class="glass-card glass-card--featured" id="ensemble-metadata">
+                <header class="glass-card__header">
+                    <h3 class="glass-card__title">Ensemble Summary</h3>
+                </header>
+                <div class="glass-card__body">
+                    <!-- Warning banner if CREST fallback -->
+                    <div id="ensemble-warning" class="warning-banner" style="display: none;">
+                        <strong>Note:</strong> <span id="warning-text"></span>
+                    </div>
+
+                    <dl class="metadata-list">
+                        <div class="metadata-list__item">
+                            <dt>Conformers Used</dt>
+                            <dd id="meta-conformer-count">-</dd>
+                        </div>
+                        <div class="metadata-list__item">
+                            <dt>Total Generated</dt>
+                            <dd id="meta-total-generated">-</dd>
+                        </div>
+                        <div class="metadata-list__item">
+                            <dt>Method</dt>
+                            <dd id="meta-method">-</dd>
+                        </div>
+                        <div class="metadata-list__item">
+                            <dt>Temperature</dt>
+                            <dd id="meta-temperature">-</dd>
+                        </div>
+                        <div class="metadata-list__item">
+                            <dt>Energy Range</dt>
+                            <dd id="meta-energy-range">-</dd>
+                        </div>
+                    </dl>
+
+                    <h4>Top Contributors</h4>
+                    <table class="conformer-table" id="top-conformers-table">
+                        <thead>
+                            <tr>
+                                <th>Conformer</th>
+                                <th>Population</th>
+                                <th>Rel. Energy</th>
+                            </tr>
+                        </thead>
+                        <tbody id="top-conformers-body">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </div>
+        {% endif %}
+
+        <!-- Calculation Details Card (span-2) -->
+        <div class="bento-grid__item bento-grid__item--span-2">
+            <article class="glass-card">
+                <header class="glass-card__header">
+                    <h3 class="glass-card__title">Calculation Details</h3>
+                </header>
+                <div class="glass-card__body">
+                    <dl class="metadata-list">
+                        <div class="metadata-list__item">
+                            <dt>Preset</dt>
+                            <dd>{{ job.preset }}</dd>
+                        </div>
+                        <div class="metadata-list__item">
+                            <dt>Solvent</dt>
+                            <dd>{{ job.solvent }}</dd>
+                        </div>
+                        <div class="metadata-list__item">
+                            <dt>Functional</dt>
+                            <dd>{{ results.functional }}</dd>
+                        </div>
+                        <div class="metadata-list__item">
+                            <dt>Basis Set</dt>
+                            <dd>{{ results.basis_set }}</dd>
+                        </div>
+                    </dl>
+                    <details>
+                        <summary>SMILES</summary>
+                        <code>{{ job.input_smiles }}</code>
+                    </details>
+                </div>
+            </article>
+        </div>
+
+        <!-- 1H Shifts Table Card (span-2) -->
+        <div class="bento-grid__item bento-grid__item--span-2">
+            <article class="glass-card">
+                <header class="glass-card__header">
+                    <h3 class="glass-card__title"><sup>1</sup>H Chemical Shifts</h3>
+                </header>
+                <div class="glass-card__body">
+                    <table class="shift-table">
+                        <thead>
+                            <tr>
+                                <th>Atom</th>
+                                <th>Shift (ppm)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="h1-shifts-body">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </div>
+
+        <!-- 13C Shifts Table Card (span-2) -->
+        <div class="bento-grid__item bento-grid__item--span-2">
+            <article class="glass-card">
+                <header class="glass-card__header">
+                    <h3 class="glass-card__title"><sup>13</sup>C Chemical Shifts</h3>
+                </header>
+                <div class="glass-card__body">
+                    <table class="shift-table">
+                        <thead>
+                            <tr>
+                                <th>Atom</th>
+                                <th>Shift (ppm)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="c13-shifts-body">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </div>
+
+        <!-- Downloads Card (span-6 full width) -->
+        <div class="bento-grid__item bento-grid__item--span-6">
+            <article class="glass-card glass-card--subtle">
+                <header class="glass-card__header">
+                    <h3 class="glass-card__title">Downloads</h3>
+                </header>
+                <div class="glass-card__body">
+                    <div class="download-grid">
+                        <a href="/api/v1/jobs/{{ job.job_id }}/geometry" class="download-btn">
+                            <span class="download-btn__label">Geometry (XYZ)</span>
+                        </a>
+                        <a href="/api/v1/jobs/{{ job.job_id }}/geometry.sdf" class="download-btn">
+                            <span class="download-btn__label">Geometry (SDF)</span>
+                        </a>
+                        <a href="/api/v1/jobs/{{ job.job_id }}/output" class="download-btn">
+                            <span class="download-btn__label">Raw Output (ZIP)</span>
+                        </a>
+                        <a href="/api/v1/jobs/{{ job.job_id }}/spectrum/1h.png" class="download-btn" download>
+                            <span class="download-btn__label">1H Spectrum (PNG)</span>
+                        </a>
+                        <a href="/api/v1/jobs/{{ job.job_id }}/spectrum/13c.png" class="download-btn" download>
+                            <span class="download-btn__label">13C Spectrum (PNG)</span>
+                        </a>
+                        <a href="/api/v1/jobs/{{ job.job_id }}/structure.png" class="download-btn" download>
+                            <span class="download-btn__label">Structure (PNG)</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
         </div>
     </div>
 
-    <div class="spectra-grid">
-        <figure>
-            <img src="/api/v1/jobs/{{ job.job_id }}/spectrum/1h.png"
-                 alt="1H NMR spectrum"
-                 onclick="openModal(this.src)">
-            <figcaption>1H NMR Spectrum</figcaption>
-        </figure>
-        <figure>
-            <img src="/api/v1/jobs/{{ job.job_id }}/spectrum/13c.png"
-                 alt="13C NMR spectrum"
-                 onclick="openModal(this.src)">
-            <figcaption>13C NMR Spectrum</figcaption>
-        </figure>
-    </div>
-</article>
+    <p class="back-link"><a href="/">Submit another job</a></p>
+</div>
 
-<article class="results-container">
-    <header>
-        <h3>Downloads</h3>
-    </header>
-    <div class="download-grid">
-        <a href="/api/v1/jobs/{{ job.job_id }}/geometry" role="button" class="secondary">Geometry (XYZ)</a>
-        <a href="/api/v1/jobs/{{ job.job_id }}/geometry.sdf" role="button" class="secondary">Geometry (SDF)</a>
-        <a href="/api/v1/jobs/{{ job.job_id }}/output" role="button" class="secondary">Raw Output (ZIP)</a>
-        <a href="/api/v1/jobs/{{ job.job_id }}/spectrum/1h.png" role="button" class="secondary" download>1H Spectrum (PNG)</a>
-        <a href="/api/v1/jobs/{{ job.job_id }}/spectrum/13c.png" role="button" class="secondary" download>13C Spectrum (PNG)</a>
-        <a href="/api/v1/jobs/{{ job.job_id }}/structure.png" role="button" class="secondary" download>Structure (PNG)</a>
-    </div>
-</article>
-
-<p><a href="/">Submit another job</a></p>
-
+<!-- Image Modal (reuse existing) -->
 <dialog id="image-modal">
     <article>
         <header>
@@ -263,68 +309,72 @@ async function loadJobMetadata() {
         const response = await fetch('/api/v1/jobs/' + JOB_ID);
         jobData = await response.json();
 
+        // Always populate shift tables
+        if (jobData.nmr_results) {
+            populateShiftTables(jobData.nmr_results);
+        }
+
+        // Ensemble-specific metadata (only if ensemble card exists in DOM)
         if (jobData.conformer_mode === 'ensemble' && jobData.ensemble_metadata) {
             displayEnsembleMetadata(jobData.ensemble_metadata, jobData.conformer_method_warning);
-            displayShiftTable(jobData);
         }
     } catch (error) {
         console.error('Failed to load job metadata:', error);
     }
 }
 
-function displayEnsembleMetadata(metadata, warning) {
-    const section = document.getElementById('ensemble-metadata');
-    section.style.display = 'block';
-
-    // Display warning if present
-    if (warning) {
-        document.getElementById('ensemble-warning').style.display = 'block';
-        document.getElementById('warning-text').textContent = warning;
-    }
-
-    // Populate metadata fields
-    document.getElementById('meta-conformer-count').textContent = metadata.conformer_count;
-    document.getElementById('meta-total-generated').textContent = metadata.total_generated;
-    document.getElementById('meta-method').textContent =
-        metadata.method === 'rdkit_kdg' ? 'RDKit KDG' : 'CREST/xTB';
-    document.getElementById('meta-temperature').textContent = metadata.temperature_k + ' K';
-    document.getElementById('meta-energy-range').textContent = metadata.energy_range_kcal.toFixed(2) + ' kcal/mol';
-
-    // Populate top conformers table
-    const tbody = document.getElementById('top-conformers-body');
-    tbody.innerHTML = metadata.top_populations.map(c => `
-        <tr>
-            <td>${c.id}</td>
-            <td>${(c.population * 100).toFixed(1)}%</td>
-            <td>${c.energy_kcal !== null ? c.energy_kcal.toFixed(2) + ' kcal/mol' : '-'}</td>
-        </tr>
-    `).join('');
-}
-
-function displayShiftTable(data) {
-    const details = document.getElementById('shift-comparison-details');
-    if (data.conformer_mode !== 'ensemble') {
-        details.style.display = 'none';
-        return;
-    }
-
-    details.style.display = 'block';
-
-    // Build averaged shifts table from API response
-    if (data.nmr_results) {
-        const h1Body = document.getElementById('h1-comparison-body');
-        h1Body.innerHTML = data.nmr_results.h1_shifts.map(s => `
+function populateShiftTables(nmrResults) {
+    const h1Body = document.getElementById('h1-shifts-body');
+    if (h1Body && nmrResults.h1_shifts) {
+        h1Body.innerHTML = nmrResults.h1_shifts.map(s => `
             <tr>
                 <td>H${s.index}</td>
                 <td>${s.shift.toFixed(2)}</td>
             </tr>
         `).join('');
+    }
 
-        const c13Body = document.getElementById('c13-comparison-body');
-        c13Body.innerHTML = data.nmr_results.c13_shifts.map(s => `
+    const c13Body = document.getElementById('c13-shifts-body');
+    if (c13Body && nmrResults.c13_shifts) {
+        c13Body.innerHTML = nmrResults.c13_shifts.map(s => `
             <tr>
                 <td>C${s.index}</td>
                 <td>${s.shift.toFixed(1)}</td>
+            </tr>
+        `).join('');
+    }
+}
+
+function displayEnsembleMetadata(metadata, warning) {
+    // Display warning if present
+    if (warning) {
+        const warningEl = document.getElementById('ensemble-warning');
+        if (warningEl) {
+            warningEl.style.display = 'block';
+            document.getElementById('warning-text').textContent = warning;
+        }
+    }
+
+    // Populate metadata fields (check existence first - Jinja2 may not render)
+    const setIfExists = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    };
+
+    setIfExists('meta-conformer-count', metadata.conformer_count);
+    setIfExists('meta-total-generated', metadata.total_generated);
+    setIfExists('meta-method', metadata.method === 'rdkit_kdg' ? 'RDKit KDG' : 'CREST/xTB');
+    setIfExists('meta-temperature', metadata.temperature_k + ' K');
+    setIfExists('meta-energy-range', metadata.energy_range_kcal.toFixed(2) + ' kcal/mol');
+
+    // Populate top conformers table
+    const tbody = document.getElementById('top-conformers-body');
+    if (tbody) {
+        tbody.innerHTML = metadata.top_populations.map(c => `
+            <tr>
+                <td>${c.id}</td>
+                <td>${(c.population * 100).toFixed(1)}%</td>
+                <td>${c.energy_kcal !== null ? c.energy_kcal.toFixed(2) : '-'}</td>
             </tr>
         `).join('');
     }
@@ -354,14 +404,13 @@ async function loadGeometryData() {
 
         // Check if this is an ensemble job with conformers
         if (geometryData.conformer_mode === 'ensemble' && geometryData.conformers && geometryData.conformers.length > 0) {
-            // Show conformer selector and ensemble-specific UI
-            document.getElementById('conformer-selector-container').style.display = 'block';
-            document.getElementById('ensemble-viewer-note').style.display = 'block';
             populateConformerSelector(geometryData.conformers);
 
             // Update legend to clarify these are averaged shifts
-            document.getElementById('legend-h1-label').innerHTML = '<sup>1</sup>H <em>averaged</em> shifts (ppm)';
-            document.getElementById('legend-c13-label').innerHTML = '<sup>13</sup>C <em>averaged</em> shifts (ppm)';
+            const h1Label = document.getElementById('legend-h1-label');
+            const c13Label = document.getElementById('legend-c13-label');
+            if (h1Label) h1Label.innerHTML = '<sup>1</sup>H <em>averaged</em> shifts (ppm)';
+            if (c13Label) c13Label.innerHTML = '<sup>13</sup>C <em>averaged</em> shifts (ppm)';
         }
 
         // Display first conformer (lowest energy) or single conformer
@@ -373,6 +422,8 @@ async function loadGeometryData() {
 
 function populateConformerSelector(conformers) {
     const selector = document.getElementById('conformer-selector');
+    if (!selector) return;
+
     selector.innerHTML = conformers.map((c, i) => {
         const energyStr = c.energy_kcal !== null ? c.energy_kcal.toFixed(2) : '?';
         const popStr = c.population !== null ? (c.population * 100).toFixed(1) : '?';
@@ -396,12 +447,10 @@ function displayConformer(index) {
         xyz = conf.xyz;
         sdf = conf.sdf;
 
-        // Update info display - clarify this is geometry only, shifts are averaged
+        // Update info display
         const info = document.getElementById('current-conformer-info');
-        if (conf.population !== null) {
-            info.textContent = `Geometry view — this conformer has ${(conf.population * 100).toFixed(1)}% population`;
-        } else {
-            info.textContent = 'Geometry view';
+        if (info && conf.population !== null) {
+            info.textContent = `Geometry view - ${(conf.population * 100).toFixed(1)}% population`;
         }
     } else {
         // Single conformer mode
