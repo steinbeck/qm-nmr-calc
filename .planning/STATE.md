@@ -10,12 +10,12 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Milestone: v2.1 UI Redesign
-Phase: 18 - CSS Foundation and Design System (COMPLETE)
-Plan: 04 of 4 complete (18-01, 18-02, 18-03, 18-04 done)
-Status: Phase complete
-Last activity: 2026-01-29 -- Completed 18-04-PLAN.md (base template integration)
+Phase: 19 - Results Page Redesign
+Plan: 01 of 3 complete (19-01 done)
+Status: In progress
+Last activity: 2026-01-29 -- Completed 19-01-PLAN.md (results page CSS components)
 
-Progress: ████░░ Phase 18 of 23 (26%) - Phase 18 complete, ready for Phase 19
+Progress: ████░░ Phase 19 of 23 (30%) - Plan 19-01 complete, ready for 19-02
 
 ## Performance Metrics
 
@@ -57,6 +57,10 @@ All decisions logged in PROJECT.md Key Decisions table.
 - Mobile performance budget: 2-3 glass elements max, 6px blur vs 10px desktop
 - CSS load order: layers.css -> reset -> tokens -> base -> layout -> components -> utilities -> legacy
 - Legacy styles in @layer components: Controlled migration path for existing custom.css
+- Solid white background for viewer-card: WebGL/3Dmol.js has performance issues with glass/blur effects
+- 44px min-height for download buttons: WCAG 2.5.5 touch target recommendation
+- tabular-nums for shift tables: Ensures decimal points align in numeric columns
+- Page-specific CSS in pages/ subdirectory: Separates page-level from generic components
 
 **v2.0 Conformational Sampling decisions (inherited context):**
 
@@ -84,7 +88,7 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
-None. Phase 18 complete, ready for Phase 19.
+None. Plan 19-01 complete, ready for 19-02 (template update).
 
 ### Blockers/Concerns
 
@@ -107,9 +111,9 @@ None. Phase 18 complete, ready for Phase 19.
 
 ## Session Continuity
 
-Last session: 2026-01-29
-Stopped at: Phase 19 planned, ready to execute
-Resume file: .planning/phases/19-results-redesign/.continue-here.md
-Next: `/gsd:execute-phase 19`
+Last session: 2026-01-29T14:12:58Z
+Stopped at: Completed 19-01-PLAN.md (results page CSS components)
+Resume file: None
+Next: Execute 19-02-PLAN.md (template update)
 Tests: All tests passing (226 unit + 3 integration = 229 tests)
-Codebase: 5,432 LOC Python, 1,417 LOC tests, 892 LOC templates
+Codebase: 5,432 LOC Python, 1,417 LOC tests, 892 LOC templates + 299 lines CSS (results-page.css)
