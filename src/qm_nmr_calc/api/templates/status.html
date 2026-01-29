@@ -267,14 +267,15 @@
         if (!tracker) return;
 
         // Define all possible steps in order (based on conformer mode)
+        // Step IDs must match what backend uses in tasks.py start_step() calls
         const allSteps = data.conformer_mode === 'ensemble' ? [
-            { id: 'conformer_generation', label: 'Conformer Generation' },
-            { id: 'geometry_optimization', label: 'Geometry Optimization' },
-            { id: 'nmr_calculation', label: 'NMR Calculation' },
-            { id: 'averaging', label: 'Averaging' }
+            { id: 'generating_conformers', label: 'Conformer Generation' },
+            { id: 'optimizing_conformers', label: 'Geometry Optimization' },
+            { id: 'averaging_shifts', label: 'Boltzmann Averaging' },
+            { id: 'post_processing', label: 'Post-processing' }
         ] : [
             { id: 'geometry_optimization', label: 'Geometry Optimization' },
-            { id: 'nmr_calculation', label: 'NMR Calculation' },
+            { id: 'nmr_shielding', label: 'NMR Calculation' },
             { id: 'post_processing', label: 'Post-processing' }
         ];
 
