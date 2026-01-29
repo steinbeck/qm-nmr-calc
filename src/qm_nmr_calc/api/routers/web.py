@@ -218,6 +218,7 @@ async def job_status_page(request: Request, job_id: str) -> HTMLResponse:
         "solvent": get_solvent_display_name(job_status.input.solvent),
         "preset": job_status.input.preset,
         "error_message": job_status.error_message,
+        "conformer_mode": job_status.input.conformer_mode,
     }
 
     return templates.TemplateResponse(
