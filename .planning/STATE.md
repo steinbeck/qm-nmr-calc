@@ -10,12 +10,12 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Milestone: v2.1 UI Redesign
-Phase: 20 - Submit Page Redesign
-Plan: 01 of 2 complete
-Status: In progress
-Last activity: 2026-01-29 -- Completed 20-01-PLAN.md (submit page CSS)
+Phase: 20 - Submit Page Redesign (COMPLETE)
+Plan: 02 of 2 complete
+Status: Phase complete
+Last activity: 2026-01-29 -- Completed 20-02-PLAN.md (submit template and SmilesDrawer)
 
-Progress: █████░ Phase 20 of 23 in progress
+Progress: █████░ Phase 20 complete, ready for Phase 21
 
 ## Performance Metrics
 
@@ -63,6 +63,9 @@ All decisions logged in PROJECT.md Key Decisions table.
 - Page-specific CSS in pages/ subdirectory: Separates page-level from generic components
 - Jinja2 conditional rendering for ensemble elements: Cleaner than JS style.display toggles
 - page_css block in base.html: Child templates inject page-specific CSS after components
+- SmilesDrawer CDN via unpkg: Simple deployment without npm build complexity
+- 400ms debounce delay: Balances responsiveness with preview performance
+- devicePixelRatio canvas handling: Crisp rendering on retina displays
 
 **v2.0 Conformational Sampling decisions (inherited context):**
 
@@ -90,7 +93,7 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
-- Plan 20-02: Submit page template and JavaScript integration
+None - Phase 20 complete.
 
 ### Blockers/Concerns
 
@@ -113,9 +116,9 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 ## Session Continuity
 
-Last session: 2026-01-29T15:25:00Z
-Stopped at: Completed 20-01-PLAN.md
+Last session: 2026-01-29T15:31:00Z
+Stopped at: Completed 20-02-PLAN.md (Phase 20 complete)
 Resume file: None
-Next: Execute 20-02-PLAN.md (template and JavaScript)
+Next: Plan Phase 21 (Status Page Redesign)
 Tests: All tests passing (226 unit + 3 integration = 229 tests)
-Codebase: 5,432 LOC Python, 1,417 LOC tests, 941 LOC templates + 514 lines CSS (results-page.css + submit-page.css)
+Codebase: 5,432 LOC Python, 1,417 LOC tests, 941 LOC templates + 514 lines CSS + SmilesDrawer integration
