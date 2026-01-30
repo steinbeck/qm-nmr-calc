@@ -5,7 +5,8 @@
 - ✅ **v1.0 MVP** - Phases 1-6 (shipped 2026-01-20)
 - ✅ **v1.1 Accurate Chemical Shifts** - Phases 7-11.2 (shipped 2026-01-25)
 - ✅ **v2.0 Conformational Sampling** - Phases 12-17 (shipped 2026-01-28)
-- 🚧 **v2.1 UI Redesign** - Phases 18-23 (in progress)
+- ✅ **v2.0.1 Conformer Pre-selection** - Phase 24 (shipped 2026-01-30)
+- ⏸️ **v2.1 UI Redesign** - Phases 18-23 (paused at Phase 21)
 
 ## Overview
 
@@ -277,6 +278,31 @@ Plans:
   5. Cross-browser testing passes on Chrome, Firefox, Safari, Edge with webkit prefix verification
 **Plans**: TBD
 
+<details>
+<summary>✅ v2.0.1 Conformer Pre-selection Hotfix - SHIPPED 2026-01-30</summary>
+
+**Hotfix Goal:** Reduce conformers sent to expensive DFT optimization from ~40 to ~8 using RMSD clustering and xTB energy ranking.
+
+### Phase 24: Conformer Pre-selection with xTB
+**Goal**: Efficient conformer filtering using RMSD clustering and xTB semi-empirical ranking
+**Depends on**: Phase 17 (v2.0 complete)
+**Requirements**: Performance optimization for ensemble calculations
+**Success Criteria** (what must be TRUE):
+  1. RMSD-based Butina clustering reduces redundant conformers (40 → ~8-12 clusters)
+  2. xTB (GFN2) single-point energy ranking available when xTB binary detected
+  3. System selects ~8 diverse, low-energy conformers for DFT optimization
+  4. Fallback to MMFF ranking when xTB not available (RDKit-only mode works)
+  5. Flexible molecules (hexanol, decane) complete in <3 hours instead of 10+ hours
+**Plans**: 3 plans
+
+Plans:
+- [x] 24-01-PLAN.md — RMSD clustering with Butina algorithm (RDKit)
+- [x] 24-02-PLAN.md — xTB integration for energy ranking
+- [x] 24-03-PLAN.md — Pipeline integration and testing
+**Status**: Complete
+
+</details>
+
 ## Progress
 
 **Execution Order:**
@@ -306,10 +332,11 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 18. CSS Foundation | v2.1 | 4/4 | Complete | 2026-01-29 |
 | 19. Results Redesign | v2.1 | 3/3 | Complete | 2026-01-29 |
 | 20. Submit Redesign | v2.1 | 2/2 | Complete | 2026-01-29 |
-| 21. Status Redesign | v2.1 | 0/2 | Not started | - |
+| 21. Status Redesign | v2.1 | 2/2 | Paused | - |
 | 22. Responsive Polish | v2.1 | 0/? | Not started | - |
 | 23. Accessibility | v2.1 | 0/? | Not started | - |
+| 24. Conformer Pre-selection | v2.0.1 | 3/3 | Complete | 2026-01-30 |
 
 ---
 
-*Last updated: 2026-01-29 after Phase 21 planning*
+*Last updated: 2026-01-30 after v2.0.1 Phase 24 completion*
