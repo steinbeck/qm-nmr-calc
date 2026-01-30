@@ -5,24 +5,29 @@
 See: .planning/PROJECT.md (updated 2026-01-29)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.1 UI Redesign -- Modern bento grid layout with glassmorphism effects
+**Current focus:** v2.0.1 Conformer Pre-selection Hotfix -- Reduce DFT calculations to ~8 conformers
 
 ## Current Position
 
-Milestone: v2.1 UI Redesign
-Phase: 20 - Submit Page Redesign (COMPLETE)
-Plan: 02 of 2 complete
+Milestone: v2.0.1 Conformer Pre-selection Hotfix (NEW)
+Phase: 24 of 1 (Conformer Preselection)
+Plan: 1 of 1 in current phase
 Status: Phase complete
-Last activity: 2026-01-29 -- Completed 20-02-PLAN.md (submit template and SmilesDrawer)
+Last activity: 2026-01-30 -- Completed 24-01-PLAN.md
 
-Progress: █████░ Phase 20 complete, ready for Phase 21
+**v2.1 UI Redesign:** PAUSED at Phase 21 (Status Page Redesign)
+- Phase 21 code complete (21-01, 21-02 executed)
+- Pending: SUMMARY, verification, ROADMAP update
+- Will resume after v2.0.1 hotfix
+
+Progress: ████████████████████ 100% (1/1 plan)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 55 (all from v1.0, v1.1, v2.0)
+- Total plans completed: 58 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 1, v2.1: 2)
 - Average duration: ~9 min
-- Total execution time: ~500 min (~8.3 hours)
+- Total execution time: ~523 min (~8.7 hours)
 
 **By Milestone:**
 
@@ -31,17 +36,21 @@ Progress: █████░ Phase 20 complete, ready for Phase 21
 | v1.0 Core NMR Service | 6 | 16 | 2 days | Shipped 2026-01-20 |
 | v1.1 Accurate Chemical Shifts | 8 | 21 | 5 days | Shipped 2026-01-25 |
 | v2.0 Conformational Sampling | 6 | 18 | ~2 days | Shipped 2026-01-28 |
-| v2.1 UI Redesign | 6 | 9 | - | In progress |
-
-**Recent Trend:**
-- Last 5 plans: 9-20 min (v2.0 Phase 17)
-- Trend: Consistent fast execution
+| v2.0.1 Conformer Pre-selection | 1 | 1 | 3 min | Complete |
+| v2.1 UI Redesign | 6 | 2/9 | - | Paused |
 
 ## Accumulated Context
 
 ### Decisions
 
 All decisions logged in PROJECT.md Key Decisions table.
+
+**v2.0.1 Conformer Pre-selection (complete):**
+
+- Target: ~8 conformers for DFT optimization (down from 40-50)
+- Butina algorithm for RMSD clustering: Handles symmetry via GetBestRMS
+- Default threshold 1.5 Angstrom: Aggressive reduction, balanced diversity
+- Lowest-energy conformer per cluster: Best representative of conformational basin
 
 **v2.1 UI Redesign decisions:**
 
@@ -86,18 +95,24 @@ All decisions logged in PROJECT.md Key Decisions table.
 - v2.0: 6 phases (12-17), shipped 2026-01-28
   - Phase structure: Data Model -> RDKit -> Boltzmann -> NWChem -> CREST -> API
   - Risk mitigation: RDKit-only path (12-15, 17) complete before CREST complexity (16)
-- v2.1: 6 phases (18-23), in progress
+- v2.0.1: Hotfix for conformer pre-selection efficiency (in progress)
+- v2.1: 6 phases (18-23), paused at Phase 21
   - Phase structure: CSS Foundation -> Results -> Submit -> Status -> Responsive -> Accessibility
   - Foundation-first: Design system before page implementations
   - Complexity order: Results (most complex) -> Submit -> Status (simplest)
 
 ### Pending Todos
 
-None - Phase 20 complete.
+- Complete v2.0.1 conformer pre-selection hotfix
+- Resume v2.1 Phase 21 after hotfix
 
 ### Blockers/Concerns
 
-**None.**
+**Active:**
+- Need to integrate clustering into conformer workflow (Phase 25)
+  - clustering.py module complete and tested
+  - Requires integration after MMFF optimization, before DFT
+  - Should reduce DFT workload from 40-50 to 8-12 conformers
 
 **Resolved (v2.0):**
 - Ensemble filtering before averaging: run_ensemble_nmr_task now filters to nmr_complete conformers before calling average_ensemble_nmr
@@ -116,9 +131,9 @@ None - Phase 20 complete.
 
 ## Session Continuity
 
-Last session: 2026-01-29T15:31:00Z
-Stopped at: Completed 20-02-PLAN.md (Phase 20 complete)
+Last session: 2026-01-30T08:46:43Z
+Stopped at: Completed 24-01-PLAN.md (Phase 24 complete)
 Resume file: None
-Next: Plan Phase 21 (Status Page Redesign)
-Tests: All tests passing (226 unit + 3 integration = 229 tests)
-Codebase: 5,432 LOC Python, 1,417 LOC tests, 941 LOC templates + 514 lines CSS + SmilesDrawer integration
+Next: Integrate clustering into conformer workflow (Phase 25) or resume v2.1 UI redesign
+Tests: All tests passing (237 unit + 3 integration = 240 tests)
+Codebase: 5,545 LOC Python, 1,587 LOC tests, 941 LOC templates + 514 lines CSS + SmilesDrawer integration
