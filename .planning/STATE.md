@@ -11,23 +11,23 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 
 Milestone: v2.0.1 Conformer Pre-selection Hotfix (NEW)
 Phase: 24 of 1 (Conformer Preselection)
-Plan: 1 of 1 in current phase
+Plan: 2 of 2 in current phase
 Status: Phase complete
-Last activity: 2026-01-30 -- Completed 24-01-PLAN.md
+Last activity: 2026-01-30 -- Completed 24-02-PLAN.md
 
 **v2.1 UI Redesign:** PAUSED at Phase 21 (Status Page Redesign)
 - Phase 21 code complete (21-01, 21-02 executed)
 - Pending: SUMMARY, verification, ROADMAP update
 - Will resume after v2.0.1 hotfix
 
-Progress: ████████████████████ 100% (1/1 plan)
+Progress: ████████████████████ 100% (2/2 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 58 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 1, v2.1: 2)
+- Total plans completed: 59 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 2, v2.1: 2)
 - Average duration: ~9 min
-- Total execution time: ~523 min (~8.7 hours)
+- Total execution time: ~525 min (~8.75 hours)
 
 **By Milestone:**
 
@@ -36,7 +36,7 @@ Progress: ████████████████████ 100% (1/1
 | v1.0 Core NMR Service | 6 | 16 | 2 days | Shipped 2026-01-20 |
 | v1.1 Accurate Chemical Shifts | 8 | 21 | 5 days | Shipped 2026-01-25 |
 | v2.0 Conformational Sampling | 6 | 18 | ~2 days | Shipped 2026-01-28 |
-| v2.0.1 Conformer Pre-selection | 1 | 1 | 3 min | Complete |
+| v2.0.1 Conformer Pre-selection | 1 | 2 | 5 min | Complete |
 | v2.1 UI Redesign | 6 | 2/9 | - | Paused |
 
 ## Accumulated Context
@@ -51,6 +51,11 @@ All decisions logged in PROJECT.md Key Decisions table.
 - Butina algorithm for RMSD clustering: Handles symmetry via GetBestRMS
 - Default threshold 1.5 Angstrom: Aggressive reduction, balanced diversity
 - Lowest-energy conformer per cluster: Best representative of conformational basin
+- xTB as optional dependency: App works without it, uses MMFF fallback
+- GFN2-xTB method: Balance of speed and accuracy for conformer ranking
+- ALPB implicit solvation: Faster than full solvent models, adequate for ranking
+- Subprocess with timeout: Prevent hanging on problematic structures
+- Relative energies in kcal/mol: Consistent with MMFF output format
 
 **v2.1 UI Redesign decisions:**
 
@@ -103,16 +108,18 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
-- Complete v2.0.1 conformer pre-selection hotfix
-- Resume v2.1 Phase 21 after hotfix
+- Integrate clustering and xTB ranking into conformer workflow (Phase 25)
+- Resume v2.1 Phase 21 after v2.0.1 complete
 
 ### Blockers/Concerns
 
 **Active:**
-- Need to integrate clustering into conformer workflow (Phase 25)
-  - clustering.py module complete and tested
+- Need to integrate clustering and xTB ranking into conformer workflow (Phase 25)
+  - clustering.py module complete and tested (plan 24-01)
+  - xtb_ranking.py module complete and tested (plan 24-02)
   - Requires integration after MMFF optimization, before DFT
-  - Should reduce DFT workload from 40-50 to 8-12 conformers
+  - Should reduce DFT workload from 40-50 to ~8 conformers
+  - xTB ranking improves selection quality (0.4-0.5 correlation vs -0.1 to -0.45 for MMFF)
 
 **Resolved (v2.0):**
 - Ensemble filtering before averaging: run_ensemble_nmr_task now filters to nmr_complete conformers before calling average_ensemble_nmr
@@ -131,9 +138,9 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 ## Session Continuity
 
-Last session: 2026-01-30T08:46:43Z
-Stopped at: Completed 24-01-PLAN.md (Phase 24 complete)
+Last session: 2026-01-30T08:52:08Z
+Stopped at: Completed 24-02-PLAN.md (Phase 24 complete - clustering and xTB ranking modules ready)
 Resume file: None
-Next: Integrate clustering into conformer workflow (Phase 25) or resume v2.1 UI redesign
-Tests: All tests passing (237 unit + 3 integration = 240 tests)
-Codebase: 5,545 LOC Python, 1,587 LOC tests, 941 LOC templates + 514 lines CSS + SmilesDrawer integration
+Next: Integrate clustering and xTB ranking into conformer workflow (Phase 25) or resume v2.1 UI redesign
+Tests: All tests passing (251 unit + 3 integration = 254 tests)
+Codebase: 5,797 LOC Python, 1,775 LOC tests, 941 LOC templates + 514 lines CSS + SmilesDrawer integration
