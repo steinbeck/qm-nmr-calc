@@ -8,12 +8,14 @@ from rdkit.Chem import rdmolfiles
 
 from ..models import ConformerData, ConformerEnsemble
 from ..storage import create_conformer_directories, get_conformer_output_dir
+from .clustering import cluster_and_select
 from .filters import deduplicate_by_rmsd, filter_by_energy_window
 from .generator import (
     calculate_num_conformers,
     generate_conformers_kdg,
     optimize_conformers_mmff,
 )
+from .xtb_ranking import detect_xtb_available, rank_conformers_by_xtb
 
 
 def generate_conformer_ensemble(
@@ -27,6 +29,8 @@ def generate_conformer_ensemble(
     solvent: str = "chcl3",
     charge: int = 0,
     timeout_seconds: int = 7200,
+    target_conformers_for_dft: int = 8,
+    clustering_rmsd_threshold: float = 1.5,
 ) -> ConformerEnsemble:
     """Generate, optimize, filter, and write conformer ensemble from SMILES.
 
@@ -51,6 +55,10 @@ def generate_conformer_ensemble(
         solvent: Solvent for CREST ALPB solvation (default: "chcl3", CREST only)
         charge: Molecular charge (default: 0, CREST only)
         timeout_seconds: CREST timeout in seconds (default: 7200 = 2 hours, CREST only)
+        target_conformers_for_dft: Target number of conformers to send to DFT (default: 8).
+            After clustering, select up to this many diverse representatives.
+        clustering_rmsd_threshold: RMSD threshold for diversity clustering (default: 1.5 Å).
+            Larger than deduplication threshold to group similar conformations.
 
     Returns:
         ConformerEnsemble with populated conformers, energies, and file paths
@@ -130,13 +138,53 @@ def generate_conformer_ensemble(
         deduped_conf_ids, deduped_energies, energy_window_kcal
     )
 
-    # Step 8: Create conformer string IDs (1-based, zero-padded)
+    # Step 8: Cluster conformers by RMSD for diversity selection
+    # Only cluster if we have more conformers than the target
+    if len(final_conf_ids) > target_conformers_for_dft:
+        # Build energy lookup for ranking within clusters
+        # Try xTB for better ranking correlation with DFT
+        if detect_xtb_available():
+            try:
+                ranking_energies = rank_conformers_by_xtb(
+                    mol, final_conf_ids,
+                    charge=charge,
+                    solvent=solvent,
+                )
+                ranking_method = "xtb_gfn2"
+            except Exception:
+                # Fall back to MMFF if xTB fails
+                ranking_energies = dict(zip(final_conf_ids, final_energies))
+                ranking_method = "mmff94s"
+        else:
+            ranking_energies = dict(zip(final_conf_ids, final_energies))
+            ranking_method = "mmff94s"
+
+        # Cluster and select representatives
+        selected_conf_ids, num_clusters = cluster_and_select(
+            mol, ranking_energies,
+            rmsd_threshold=clustering_rmsd_threshold,
+            max_conformers=target_conformers_for_dft,
+        )
+
+        # Filter to selected conformers
+        selected_energies = [ranking_energies[cid] for cid in selected_conf_ids]
+
+        # Track statistics
+        pre_cluster_count = len(final_conf_ids)
+        final_conf_ids = selected_conf_ids
+        final_energies = selected_energies
+    else:
+        num_clusters = len(final_conf_ids)
+        pre_cluster_count = len(final_conf_ids)
+        ranking_method = "mmff94s"
+
+    # Step 9: Create conformer string IDs (1-based, zero-padded)
     conformer_string_ids = [f"conf_{i+1:03d}" for i in range(len(final_conf_ids))]
 
-    # Step 9: Create per-conformer storage directories
+    # Step 10: Create per-conformer storage directories
     create_conformer_directories(job_id, conformer_string_ids)
 
-    # Step 10: Write XYZ files and build ConformerData list
+    # Step 11: Write XYZ files and build ConformerData list
     conformer_data_list = []
     for string_id, conf_id, energy in zip(
         conformer_string_ids, final_conf_ids, final_energies
@@ -159,13 +207,13 @@ def generate_conformer_ensemble(
         )
         conformer_data_list.append(conformer_data)
 
-    # Step 11: Build and return ConformerEnsemble
+    # Step 12: Build and return ConformerEnsemble
     ensemble = ConformerEnsemble(
         method="rdkit_kdg",
         conformers=conformer_data_list,
         pre_dft_energy_window_kcal=energy_window_kcal,
         total_generated=total_generated,
-        total_after_pre_filter=len(final_conf_ids),
+        total_after_pre_filter=pre_cluster_count,
     )
 
     return ensemble
