@@ -365,7 +365,16 @@ function displayEnsembleMetadata(metadata, warning) {
     setIfExists('meta-total-generated', metadata.total_generated);
     setIfExists('meta-method', metadata.method === 'rdkit_kdg' ? 'RDKit KDG' : 'CREST/xTB');
     setIfExists('meta-temperature', metadata.temperature_k + ' K');
-    setIfExists('meta-energy-range', metadata.energy_range_kcal.toFixed(2) + ' kcal/mol');
+
+    // Hide energy range when only 1 conformer (no meaningful range)
+    const energyRangeEl = document.getElementById('meta-energy-range');
+    if (energyRangeEl) {
+        if (metadata.conformer_count <= 1) {
+            energyRangeEl.closest('.metadata-list__item').style.display = 'none';
+        } else {
+            setIfExists('meta-energy-range', metadata.energy_range_kcal.toFixed(2) + ' kcal/mol');
+        }
+    }
 
     // Populate top conformers table
     const tbody = document.getElementById('top-conformers-body');
