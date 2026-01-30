@@ -129,19 +129,21 @@
                         </div>
                     </dl>
 
-                    <h4>Top Contributors</h4>
-                    <table class="conformer-table" id="top-conformers-table">
-                        <thead>
-                            <tr>
-                                <th>Conformer</th>
-                                <th>Population</th>
-                                <th>Rel. Energy</th>
-                            </tr>
-                        </thead>
-                        <tbody id="top-conformers-body">
-                            <!-- Populated by JavaScript -->
-                        </tbody>
-                    </table>
+                    <div id="top-contributors-section">
+                        <h4>Top Contributors</h4>
+                        <table class="conformer-table" id="top-conformers-table">
+                            <thead>
+                                <tr>
+                                    <th>Conformer</th>
+                                    <th>Population</th>
+                                    <th>Rel. Energy</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-conformers-body">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </article>
         </div>
@@ -376,16 +378,23 @@ function displayEnsembleMetadata(metadata, warning) {
         }
     }
 
-    // Populate top conformers table
-    const tbody = document.getElementById('top-conformers-body');
-    if (tbody) {
-        tbody.innerHTML = metadata.top_populations.map(c => `
-            <tr>
-                <td>${c.id}</td>
-                <td>${(c.population * 100).toFixed(1)}%</td>
-                <td>${c.energy_kcal !== null ? c.energy_kcal.toFixed(2) : '-'}</td>
-            </tr>
-        `).join('');
+    // Populate top conformers table (hide if only 1 conformer)
+    const topContributorsSection = document.getElementById('top-contributors-section');
+    if (topContributorsSection) {
+        if (metadata.conformer_count <= 1) {
+            topContributorsSection.style.display = 'none';
+        } else {
+            const tbody = document.getElementById('top-conformers-body');
+            if (tbody) {
+                tbody.innerHTML = metadata.top_populations.map(c => `
+                    <tr>
+                        <td>${c.id}</td>
+                        <td>${(c.population * 100).toFixed(1)}%</td>
+                        <td>${c.energy_kcal !== null ? c.energy_kcal.toFixed(2) : '-'}</td>
+                    </tr>
+                `).join('');
+            }
+        }
     }
 }
 
