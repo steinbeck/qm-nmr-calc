@@ -9,25 +9,25 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 
 ## Current Position
 
-Milestone: v2.0.1 Conformer Pre-selection Hotfix (NEW)
+Milestone: v2.0.1 Conformer Pre-selection Hotfix (COMPLETE)
 Phase: 24 of 1 (Conformer Preselection)
-Plan: 2 of 2 in current phase
-Status: Phase complete
-Last activity: 2026-01-30 -- Completed 24-02-PLAN.md
+Plan: 3 of 3 in current phase
+Status: Milestone complete
+Last activity: 2026-01-30 -- Completed 24-03-PLAN.md (pipeline integration)
 
 **v2.1 UI Redesign:** PAUSED at Phase 21 (Status Page Redesign)
 - Phase 21 code complete (21-01, 21-02 executed)
 - Pending: SUMMARY, verification, ROADMAP update
-- Will resume after v2.0.1 hotfix
+- Can resume after v2.0.1 deployment
 
-Progress: ████████████████████ 100% (2/2 plans)
+Progress: ████████████████████ 100% (3/3 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 59 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 2, v2.1: 2)
+- Total plans completed: 60 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 2)
 - Average duration: ~9 min
-- Total execution time: ~525 min (~8.75 hours)
+- Total execution time: ~538 min (~9 hours)
 
 **By Milestone:**
 
@@ -36,7 +36,7 @@ Progress: ████████████████████ 100% (2/2
 | v1.0 Core NMR Service | 6 | 16 | 2 days | Shipped 2026-01-20 |
 | v1.1 Accurate Chemical Shifts | 8 | 21 | 5 days | Shipped 2026-01-25 |
 | v2.0 Conformational Sampling | 6 | 18 | ~2 days | Shipped 2026-01-28 |
-| v2.0.1 Conformer Pre-selection | 1 | 2 | 5 min | Complete |
+| v2.0.1 Conformer Pre-selection | 1 | 3 | 18 min | Complete 2026-01-30 |
 | v2.1 UI Redesign | 6 | 2/9 | - | Paused |
 
 ## Accumulated Context
@@ -45,7 +45,7 @@ Progress: ████████████████████ 100% (2/2
 
 All decisions logged in PROJECT.md Key Decisions table.
 
-**v2.0.1 Conformer Pre-selection (complete):**
+**v2.0.1 Conformer Pre-selection (complete 2026-01-30):**
 
 - Target: ~8 conformers for DFT optimization (down from 40-50)
 - Butina algorithm for RMSD clustering: Handles symmetry via GetBestRMS
@@ -56,6 +56,9 @@ All decisions logged in PROJECT.md Key Decisions table.
 - ALPB implicit solvation: Faster than full solvent models, adequate for ranking
 - Subprocess with timeout: Prevent hanging on problematic structures
 - Relative energies in kcal/mol: Consistent with MMFF output format
+- Conditional clustering: Only cluster if conformer count exceeds target (avoid over-reduction)
+- Graceful xTB fallback: Try xTB ranking first, catch exceptions and fall back to MMFF
+- Metadata preservation: Track pre-clustering count in total_after_pre_filter field
 
 **v2.1 UI Redesign decisions:**
 
@@ -100,7 +103,7 @@ All decisions logged in PROJECT.md Key Decisions table.
 - v2.0: 6 phases (12-17), shipped 2026-01-28
   - Phase structure: Data Model -> RDKit -> Boltzmann -> NWChem -> CREST -> API
   - Risk mitigation: RDKit-only path (12-15, 17) complete before CREST complexity (16)
-- v2.0.1: Hotfix for conformer pre-selection efficiency (in progress)
+- v2.0.1: Hotfix for conformer pre-selection efficiency (complete 2026-01-30, 3 plans, 18 min)
 - v2.1: 6 phases (18-23), paused at Phase 21
   - Phase structure: CSS Foundation -> Results -> Submit -> Status -> Responsive -> Accessibility
   - Foundation-first: Design system before page implementations
@@ -108,18 +111,21 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
-- Integrate clustering and xTB ranking into conformer workflow (Phase 25)
-- Resume v2.1 Phase 21 after v2.0.1 complete
+- Resume v2.1 Phase 21 (Status Page Redesign) - SUMMARY and verification
+- Consider v2.0.1 deployment and testing with production workloads
 
 ### Blockers/Concerns
 
 **Active:**
-- Need to integrate clustering and xTB ranking into conformer workflow (Phase 25)
-  - clustering.py module complete and tested (plan 24-01)
-  - xtb_ranking.py module complete and tested (plan 24-02)
-  - Requires integration after MMFF optimization, before DFT
-  - Should reduce DFT workload from 40-50 to ~8 conformers
-  - xTB ranking improves selection quality (0.4-0.5 correlation vs -0.1 to -0.45 for MMFF)
+None
+
+**Resolved (v2.0.1):**
+- Conformer pre-selection integration: Complete (plan 24-03)
+  - Pipeline successfully integrates clustering and xTB ranking
+  - Reduces DFT workload from 40-50 to ~8 conformers
+  - Real-world test: hexanol reduced from 28 to 3 conformers
+  - xTB ranking with graceful MMFF fallback
+  - All tests passing (11 clustering + 14 xTB + 3 integration = 28 new tests)
 
 **Resolved (v2.0):**
 - Ensemble filtering before averaging: run_ensemble_nmr_task now filters to nmr_complete conformers before calling average_ensemble_nmr
@@ -138,9 +144,9 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 ## Session Continuity
 
-Last session: 2026-01-30T08:52:08Z
-Stopped at: Completed 24-02-PLAN.md (Phase 24 complete - clustering and xTB ranking modules ready)
+Last session: 2026-01-30T09:08:44Z
+Stopped at: Completed 24-03-PLAN.md (v2.0.1 Conformer Pre-selection Hotfix complete)
 Resume file: None
-Next: Integrate clustering and xTB ranking into conformer workflow (Phase 25) or resume v2.1 UI redesign
-Tests: All tests passing (251 unit + 3 integration = 254 tests)
+Next: Resume v2.1 UI Redesign (Phase 21 SUMMARY and verification) or deploy v2.0.1
+Tests: All tests passing (251 unit + 6 integration + 28 clustering/xTB = 285 tests)
 Codebase: 5,797 LOC Python, 1,775 LOC tests, 941 LOC templates + 514 lines CSS + SmilesDrawer integration
