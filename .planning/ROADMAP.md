@@ -290,8 +290,8 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 **Plans**: 1 plan
 
 Plans:
-- [ ] 25-01-PLAN.md — README overhaul and docs/ structure
-**Status**: Not Started
+- [x] 25-01-PLAN.md — README overhaul and docs/ structure
+**Status**: Complete
 
 ### Phase 26: Installation Guide
 **Goal**: Comprehensive installation documentation covering all dependencies and configurations
@@ -373,4 +373,4 @@ Plans:
 
 ---
 
-*Last updated: 2026-01-31 - Phase 25 planned*
+*Last updated: 2026-01-31 - Phase 25 complete*
