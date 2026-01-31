@@ -308,21 +308,45 @@
         // Update conformer count and progress
         if (data.conformer_progress && data.conformer_progress.length > 0) {
             const total = data.conformer_progress.length;
-            const completed = data.conformer_progress.filter(c =>
-                c.status === 'nmr_complete' || c.status === 'optimized'
+
+            // Count conformers by status
+            const optimized = data.conformer_progress.filter(c =>
+                c.status === 'optimized'
+            ).length;
+            const nmrComplete = data.conformer_progress.filter(c =>
+                c.status === 'nmr_complete'
+            ).length;
+            const inProgress = data.conformer_progress.filter(c =>
+                c.status === 'optimizing' || c.status === 'nmr_running'
             ).length;
             const failed = data.conformer_progress.filter(c =>
                 c.status === 'failed'
             ).length;
 
+            // Calculate completed count based on current step
+            let completed;
+            if (data.current_step === 'calculating_nmr' || data.current_step === 'averaging_shifts') {
+                // In NMR phase: count only nmr_complete as done
+                completed = nmrComplete;
+            } else {
+                // In optimization phase: count optimized + nmr_complete
+                completed = optimized + nmrComplete;
+            }
+
+            // Build count text with in-progress indicator
             let countText = completed + '/' + total;
+            if (inProgress > 0) {
+                countText += ' (' + inProgress + ' running)';
+            }
             if (failed > 0) {
                 countText += ' (' + failed + ' failed)';
             }
             conformerCount.textContent = countText;
 
-            // Update progress bar
-            const progress = (completed / total) * 100;
+            // Progress bar: count completed + partial credit for in-progress
+            // This prevents 0% showing when first conformer is being processed
+            const progressValue = completed + (inProgress * 0.5);
+            const progress = (progressValue / total) * 100;
             conformerProgressBar.value = progress;
 
         }
