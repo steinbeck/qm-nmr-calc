@@ -11,11 +11,11 @@ Requirements for v2.2 comprehensive documentation milestone.
 
 ## Installation Guide
 
-- [ ] **INSTALL-01**: Installation guide covers all system dependencies (NWChem, MPI, Python)
-- [ ] **INSTALL-02**: Installation guide includes uv package manager setup
-- [ ] **INSTALL-03**: Installation guide includes optional CREST/xTB setup for ensemble mode
-- [ ] **INSTALL-04**: Installation guide includes environment validation steps
-- [ ] **INSTALL-05**: Installation guide covers troubleshooting common installation issues
+- [x] **INSTALL-01**: Installation guide covers all system dependencies (NWChem, MPI, Python)
+- [x] **INSTALL-02**: Installation guide includes uv package manager setup
+- [x] **INSTALL-03**: Installation guide includes optional CREST/xTB setup for ensemble mode
+- [x] **INSTALL-04**: Installation guide includes environment validation steps
+- [x] **INSTALL-05**: Installation guide covers troubleshooting common installation issues
 
 ## Usage Guide
 
@@ -71,11 +71,11 @@ Requirements for v2.2 comprehensive documentation milestone.
 | README-02 | Phase 25 | Complete |
 | README-03 | Phase 25 | Complete |
 | README-04 | Phase 25 | Complete |
-| INSTALL-01 | Phase 26 | Pending |
-| INSTALL-02 | Phase 26 | Pending |
-| INSTALL-03 | Phase 26 | Pending |
-| INSTALL-04 | Phase 26 | Pending |
-| INSTALL-05 | Phase 26 | Pending |
+| INSTALL-01 | Phase 26 | Complete |
+| INSTALL-02 | Phase 26 | Complete |
+| INSTALL-03 | Phase 26 | Complete |
+| INSTALL-04 | Phase 26 | Complete |
+| INSTALL-05 | Phase 26 | Complete |
 | USAGE-01 | Phase 27 | Pending |
 | USAGE-02 | Phase 27 | Pending |
 | USAGE-03 | Phase 27 | Pending |
