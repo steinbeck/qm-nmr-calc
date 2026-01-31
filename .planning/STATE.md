@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-01-29)
 ## Current Position
 
 Milestone: v2.1 UI Redesign
-Phase: 21 of 23 (Status Page Redesign) - COMPLETE
-Plan: 2 of 2 in current phase
-Status: Phase complete, verified
-Last activity: 2026-01-31 -- Completed Phase 21 (Status Page Redesign)
+Phase: 22 of 23 (Responsive and Layout Polish) - IN PROGRESS
+Plan: 1 of 2 in current phase
+Status: Plan 22-01 complete
+Last activity: 2026-01-31 -- Completed 22-01-PLAN.md (touch-safe hover and GPU shadows)
 
-Progress: ██████████████░░░░░░ 70% (4/6 v2.1 phases complete)
+Progress: ██████████████████░░ 83% (5/6 v2.1 phases, 67/70 total plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 60 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 2)
-- Average duration: ~9 min
-- Total execution time: ~538 min (~9 hours)
+- Total plans completed: 67 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 12)
+- Average duration: ~8 min
+- Total execution time: ~536 min (~9 hours)
 
 **By Milestone:**
 
@@ -32,7 +32,7 @@ Progress: ██████████████░░░░░░ 70% (4/6 
 | v1.1 Accurate Chemical Shifts | 8 | 21 | 5 days | Shipped 2026-01-25 |
 | v2.0 Conformational Sampling | 6 | 18 | ~2 days | Shipped 2026-01-28 |
 | v2.0.1 Conformer Pre-selection | 1 | 3 | 18 min | Complete 2026-01-30 |
-| v2.1 UI Redesign | 6 | 11/? | - | In Progress |
+| v2.1 UI Redesign | 6 | 12/? | - | In Progress |
 
 ## Accumulated Context
 
@@ -78,6 +78,11 @@ All decisions logged in PROJECT.md Key Decisions table.
 - SmilesDrawer CDN via unpkg: Simple deployment without npm build complexity
 - 400ms debounce delay: Balances responsiveness with preview performance
 - devicePixelRatio canvas handling: Crisp rendering on retina displays
+- Touch-safe hover uses (pointer: fine) to prevent sticky hover on tap
+- Shadow animation via pseudo-element opacity instead of box-shadow for 60fps performance
+- Reduced motion keeps opacity transitions but disables transform animations
+- Tablet breakpoint 768-1024px uses 16px gap (between 12px mobile and 24px desktop)
+- Desktop breakpoint 1025px+ uses full 24px gap for spacious layout
 
 **v2.0 Conformational Sampling decisions (inherited context):**
 
@@ -106,9 +111,9 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
-- Plan and execute Phase 22 (Responsive and Layout Polish)
+- Complete Phase 22 (Responsive and Layout Polish) - 1 of 2 plans complete
 - Plan and execute Phase 23 (Accessibility and Testing)
-- Consider v2.0.1/v2.1 deployment and testing with production workloads
+- Consider v2.1 deployment and testing with production workloads
 
 ### Blockers/Concerns
 
@@ -141,8 +146,8 @@ None
 ## Session Continuity
 
 Last session: 2026-01-31
-Stopped at: Completed Phase 21 (Status Page Redesign)
+Stopped at: Completed 22-01-PLAN.md (touch-safe hover and GPU shadows)
 Resume file: None
-Next: Plan Phase 22 (Responsive and Layout Polish)
+Next: Continue Phase 22 (1 more plan remaining)
 Tests: All tests passing (251 unit + 6 integration + 28 clustering/xTB = 285 tests)
-Codebase: 5,797 LOC Python, 1,775 LOC tests, 941 LOC templates + 514+ lines CSS + SmilesDrawer integration
+Codebase: 5,797 LOC Python, 1,775 LOC tests, 941 LOC templates + ~550 lines CSS (tokens + components + pages)
