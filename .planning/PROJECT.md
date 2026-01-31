@@ -10,7 +10,8 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 ## Current State
 
-**Shipped:** v2.1 UI Redesign (2026-01-31)
+**Active:** v2.2 Documentation (started 2026-01-31)
+**Last shipped:** v2.1 UI Redesign (2026-01-31)
 
 **Codebase:** ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS
 **Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Custom CSS
@@ -33,7 +34,19 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 ## Next Milestone
 
-No active milestone. Future considerations tracked in `.planning/BACKLOG.md`:
+**v2.2 Documentation** (7 phases, 25-31)
+
+Comprehensive documentation including:
+- README overhaul with clear introduction and architecture overview
+- Installation guide (system deps, uv, optional CREST/xTB)
+- Usage guide (web UI, REST API, result interpretation)
+- Technical architecture (stack, data flow, job lifecycle)
+- Library documentation (RDKit, NWChem, Huey, 3Dmol.js, CREST/xTB)
+- DP4+ science writeup with full derivation (DFT, scaling factors, Boltzmann)
+
+Audience: Both academic researchers and developers/contributors.
+
+Future considerations tracked in `.planning/BACKLOG.md`:
 - Dark mode (color scheme, system preference detection)
 - Enhanced interactivity (card expansion, drag-and-drop)
 - User accounts and calculation history
@@ -141,4 +154,4 @@ No active milestone. Future considerations tracked in `.planning/BACKLOG.md`:
 | xTB for conformer ranking | Better than MMFF, faster than DFT | Good -- optional with MMFF fallback |
 
 ---
-*Last updated: 2026-01-31 after v2.1 UI Redesign milestone complete*
+*Last updated: 2026-01-31 after v2.2 Documentation milestone started*
