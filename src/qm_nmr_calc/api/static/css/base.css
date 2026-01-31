@@ -79,8 +79,8 @@
     }
 
     a:focus-visible {
-        outline: 2px solid var(--color-primary);
-        outline-offset: 2px;
+        outline: var(--focus-ring-width) solid var(--color-focus);
+        outline-offset: var(--focus-ring-offset);
         border-radius: 2px;
     }
 
@@ -179,11 +179,11 @@
                     box-shadow var(--transition-fast);
     }
 
-    input:focus,
-    select:focus,
-    textarea:focus {
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
         outline: none;
-        border-color: var(--color-primary);
+        border-color: var(--color-focus);
         box-shadow: 0 0 0 3px var(--color-primary-light);
     }
 
@@ -256,8 +256,8 @@
 
     button:focus-visible,
     .btn:focus-visible {
-        outline: 2px solid var(--color-primary);
-        outline-offset: 2px;
+        outline: var(--focus-ring-width) solid var(--color-focus);
+        outline-offset: var(--focus-ring-offset);
     }
 
     button:active,
@@ -323,5 +323,19 @@
         background-color: var(--color-warning);
         padding: 0.125rem 0.25rem;
         border-radius: 0.125rem;
+    }
+
+    /* ===== Focus Indicators (Keyboard Navigation) ===== */
+    /* Using :focus-visible for keyboard-only indicators (not mouse clicks) */
+
+    summary:focus-visible {
+        outline: var(--focus-ring-width) solid var(--color-focus);
+        outline-offset: var(--focus-ring-offset);
+        border-radius: 2px;
+    }
+
+    details:focus-within summary {
+        /* Highlight summary when details content is focused */
+        color: var(--color-primary);
     }
 }

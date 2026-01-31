@@ -55,6 +55,8 @@
     --text-lg: 1.125rem;    /* 18px */
     --text-xl: 1.25rem;     /* 20px */
     --text-2xl: 1.5rem;     /* 24px */
+    --text-3xl: 1.875rem;   /* 30px */
+    --text-4xl: 2.25rem;    /* 36px */
 
     /* === Colors === */
 
@@ -80,6 +82,11 @@
     --color-primary: hsl(195 85% 41%);
     --color-primary-hover: hsl(195 85% 35%);
     --color-primary-light: hsl(195 85% 95%);
+
+    /* Focus indicator (matches primary for consistency) */
+    --color-focus: var(--color-primary);
+    --focus-ring-width: 2px;
+    --focus-ring-offset: 2px;
 
     /* Status colors */
     --color-success: hsl(142 76% 36%);
