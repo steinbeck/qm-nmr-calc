@@ -275,6 +275,7 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 22. Responsive Polish | v2.1 | 2/2 | Complete | 2026-01-31 |
 | 23. Accessibility | v2.1 | 2/2 | Complete | 2026-01-31 |
 | 24. Conformer Pre-selection | v2.0.1 | 3/3 | Complete | 2026-01-30 |
+| 25. README & Docs Structure | v2.2 | 1/1 | Complete | 2026-01-31 |
 
 ## v2.2 Documentation (Phases 25-31)
 
