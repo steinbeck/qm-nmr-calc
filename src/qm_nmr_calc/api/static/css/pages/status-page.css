@@ -370,6 +370,30 @@
         50% { transform: scale(1.1); opacity: 0.8; }
     }
 
+    /* Dissolve animation for reduced motion - opacity only, no scale */
+    @keyframes dissolve {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+
+    /* ===== Accessibility: Reduced Motion ===== */
+    @media (prefers-reduced-motion: reduce) {
+        /* Replace pulse with dissolve (opacity-only) */
+        .status-badge[data-status="running"]::before {
+            animation: dissolve 2s ease-in-out infinite;
+        }
+
+        .step-tracker__item--active .step-tracker__icon {
+            animation: dissolve 2s ease-in-out infinite;
+        }
+
+        /* Remove icon transitions */
+        .step-tracker__icon {
+            transition: none;
+        }
+    }
+
 }
 
 
