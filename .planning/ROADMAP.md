@@ -303,7 +303,10 @@ Plans:
   3. Optional CREST/xTB setup documented for ensemble mode
   4. Environment validation steps included
   5. Common installation issues and troubleshooting covered
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 26-01-PLAN.md — Complete installation documentation
 **Status**: Not Started
 
 ### Phase 27: Usage Guide
@@ -374,4 +377,4 @@ Plans:
 
 ---
 
-*Last updated: 2026-01-31 - Phase 25 complete*
+*Last updated: 2026-01-31 - Phase 26 planned*
