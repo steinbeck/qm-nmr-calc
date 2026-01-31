@@ -91,6 +91,9 @@
     --transition-fast: 150ms ease;
     --transition-base: 250ms ease;
     --transition-slow: 350ms ease;
+
+    /* Reduced motion transition - faster, no transform-based motion */
+    --transition-reduced: 200ms ease;
 }
 
 /* === Mobile Overrides === */
@@ -105,6 +108,22 @@
         /* Single column bento grid */
         --bento-cols: 1;
         --bento-gap: 0.75rem;
+    }
+}
+
+/* === Tablet Overrides === */
+@media (min-width: 768px) and (max-width: 1024px) {
+    :root {
+        --bento-gap: 1rem;  /* 16px tablet (between 12px mobile and 24px desktop) */
+        --glass-blur-light: blur(8px);
+        --glass-blur-medium: blur(10px);
+    }
+}
+
+/* === Desktop Overrides === */
+@media (min-width: 1025px) {
+    :root {
+        --bento-gap: 1.5rem;  /* 24px desktop - full spacing */
     }
 }
 
