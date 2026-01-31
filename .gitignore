@@ -44,6 +44,7 @@ htmlcov/
 
 # NWChem scratch files
 molecule.*
+molecule_geom-*.xyz
 *.movecs
 *.db
 *.gridpts.*
