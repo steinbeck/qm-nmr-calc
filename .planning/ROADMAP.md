@@ -287,7 +287,10 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
   3. docs/ directory created with logical organization
   4. README links to all detailed documentation pages
   5. Quick start section enables users to get running immediately
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 25-01-PLAN.md — README overhaul and docs/ structure
 **Status**: Not Started
 
 ### Phase 26: Installation Guide
@@ -370,4 +373,4 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 
 ---
 
-*Last updated: 2026-01-31 - v2.2 Documentation milestone started*
+*Last updated: 2026-01-31 - Phase 25 planned*
