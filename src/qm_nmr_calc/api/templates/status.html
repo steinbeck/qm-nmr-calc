@@ -112,22 +112,6 @@
                         <div class="conformer-progress__eta" id="eta-display"></div>
                     </div>
 
-                    <details class="conformer-details">
-                        <summary>Conformer Details</summary>
-                        <table class="conformer-table" id="conformer-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Status</th>
-                                    <th>Energy (kcal/mol)</th>
-                                    <th>Population</th>
-                                </tr>
-                            </thead>
-                            <tbody id="conformer-table-body">
-                                <!-- Populated by JavaScript -->
-                            </tbody>
-                        </table>
-                    </details>
                 </div>
             </article>
         </div>
@@ -179,7 +163,6 @@
     const conformerProgressBar = document.getElementById('conformer-progress-bar');
     const conformerCount = document.getElementById('conformer-count');
     const etaDisplay = document.getElementById('eta-display');
-    const conformerTableBody = document.getElementById('conformer-table-body');
 
     // 3D Viewer
     let viewer = null;
@@ -271,7 +254,8 @@
         const allSteps = data.conformer_mode === 'ensemble' ? [
             { id: 'generating_conformers', label: 'Conformer Generation' },
             { id: 'optimizing_conformers', label: 'Geometry Optimization' },
-            { id: 'averaging_shifts', label: 'Boltzmann Averaging' },
+            { id: 'calculating_nmr', label: 'NMR Calculation' },
+            { id: 'averaging_shifts', label: 'Averaging Shifts' },
             { id: 'post_processing', label: 'Post-processing' }
         ] : [
             { id: 'geometry_optimization', label: 'Geometry Optimization' },
@@ -288,9 +272,12 @@
 
             if (completedIds.includes(step.id)) {
                 stateClass = 'step-tracker__item--complete';
-                const completed = data.steps_completed.find(s => s.step === step.id);
-                if (completed) {
-                    duration = formatDuration(completed.duration_seconds);
+                // Sum durations for all entries with this step ID (e.g., multiple conformers)
+                const totalDuration = data.steps_completed
+                    .filter(s => s.step === step.id)
+                    .reduce((sum, s) => sum + (s.duration_seconds || 0), 0);
+                if (totalDuration > 0) {
+                    duration = formatDuration(totalDuration);
                 }
             } else if (data.current_step === step.id) {
                 stateClass = 'step-tracker__item--active';
@@ -338,23 +325,6 @@
             const progress = (completed / total) * 100;
             conformerProgressBar.value = progress;
 
-            // Update per-conformer table
-            if (conformerTableBody) {
-                conformerTableBody.innerHTML = data.conformer_progress.map(c => {
-                    const energyStr = c.energy_kcal !== null && c.energy_kcal !== undefined
-                        ? c.energy_kcal.toFixed(2)
-                        : '-';
-                    const popStr = c.population !== null && c.population !== undefined
-                        ? (c.population * 100).toFixed(1) + '%'
-                        : '-';
-                    return `<tr data-status="${c.status}">
-                        <td>${c.conformer_id}</td>
-                        <td>${formatConformerStatus(c.status)}</td>
-                        <td>${energyStr}</td>
-                        <td>${popStr}</td>
-                    </tr>`;
-                }).join('');
-            }
         }
 
         // Update ETA
