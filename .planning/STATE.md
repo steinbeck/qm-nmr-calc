@@ -5,22 +5,17 @@
 See: .planning/PROJECT.md (updated 2026-01-29)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.0.1 Conformer Pre-selection Hotfix -- Reduce DFT calculations to ~8 conformers
+**Current focus:** v2.1 UI Redesign -- Modern bento grid layout with glassmorphism effects
 
 ## Current Position
 
-Milestone: v2.0.1 Conformer Pre-selection Hotfix (COMPLETE)
-Phase: 24 of 1 (Conformer Preselection)
-Plan: 3 of 3 in current phase
-Status: Milestone complete
-Last activity: 2026-01-30 -- Completed 24-03-PLAN.md (pipeline integration)
+Milestone: v2.1 UI Redesign
+Phase: 21 of 23 (Status Page Redesign) - COMPLETE
+Plan: 2 of 2 in current phase
+Status: Phase complete, verified
+Last activity: 2026-01-31 -- Completed Phase 21 (Status Page Redesign)
 
-**v2.1 UI Redesign:** PAUSED at Phase 21 (Status Page Redesign)
-- Phase 21 code complete (21-01, 21-02 executed)
-- Pending: SUMMARY, verification, ROADMAP update
-- Can resume after v2.0.1 deployment
-
-Progress: ████████████████████ 100% (3/3 plans)
+Progress: ██████████████░░░░░░ 70% (4/6 v2.1 phases complete)
 
 ## Performance Metrics
 
@@ -37,7 +32,7 @@ Progress: ████████████████████ 100% (3/3
 | v1.1 Accurate Chemical Shifts | 8 | 21 | 5 days | Shipped 2026-01-25 |
 | v2.0 Conformational Sampling | 6 | 18 | ~2 days | Shipped 2026-01-28 |
 | v2.0.1 Conformer Pre-selection | 1 | 3 | 18 min | Complete 2026-01-30 |
-| v2.1 UI Redesign | 6 | 2/9 | - | Paused |
+| v2.1 UI Redesign | 6 | 11/? | - | In Progress |
 
 ## Accumulated Context
 
@@ -111,8 +106,9 @@ All decisions logged in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
-- Resume v2.1 Phase 21 (Status Page Redesign) - SUMMARY and verification
-- Consider v2.0.1 deployment and testing with production workloads
+- Plan and execute Phase 22 (Responsive and Layout Polish)
+- Plan and execute Phase 23 (Accessibility and Testing)
+- Consider v2.0.1/v2.1 deployment and testing with production workloads
 
 ### Blockers/Concerns
 
@@ -144,9 +140,9 @@ None
 
 ## Session Continuity
 
-Last session: 2026-01-30T09:08:44Z
-Stopped at: Completed 24-03-PLAN.md (v2.0.1 Conformer Pre-selection Hotfix complete)
+Last session: 2026-01-31
+Stopped at: Completed Phase 21 (Status Page Redesign)
 Resume file: None
-Next: Resume v2.1 UI Redesign (Phase 21 SUMMARY and verification) or deploy v2.0.1
+Next: Plan Phase 22 (Responsive and Layout Polish)
 Tests: All tests passing (251 unit + 6 integration + 28 clustering/xTB = 285 tests)
-Codebase: 5,797 LOC Python, 1,775 LOC tests, 941 LOC templates + 514 lines CSS + SmilesDrawer integration
+Codebase: 5,797 LOC Python, 1,775 LOC tests, 941 LOC templates + 514+ lines CSS + SmilesDrawer integration
