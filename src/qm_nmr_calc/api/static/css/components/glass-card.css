@@ -36,9 +36,24 @@
         /* Spacing */
         padding: var(--space-lg, 1.5rem);
 
-        /* Performance-friendly animations (transform and box-shadow only) */
-        transition: transform var(--transition-base, 250ms ease),
-                    box-shadow var(--transition-base, 250ms ease);
+        /* Performance-friendly animations */
+        transition: transform var(--transition-base, 250ms ease);
+        will-change: transform;
+
+        /* Pseudo-element for GPU-accelerated shadow animation */
+        position: relative;
+    }
+
+    .glass-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        box-shadow: 0 12px 48px hsl(0 0% 0% / 0.2);
+        opacity: 0;
+        transition: opacity var(--transition-base, 250ms ease);
+        pointer-events: none;
+        z-index: -1;
     }
 
     /* ===== Elements ===== */
@@ -92,11 +107,43 @@
     /* Note: Hover styles defined in media query below for desktop detection */
 }
 
-/* ===== Interactive hover (desktop only) ===== */
-@media (hover: hover) {
+/* ===== Interactive hover (desktop only - touch-safe) ===== */
+@media (hover: hover) and (pointer: fine) {
     .glass-card--interactive:hover {
         transform: translateY(-4px);
-        box-shadow: 0 12px 48px hsl(0 0% 0% / 0.2);
+        cursor: pointer;
+    }
+
+    .glass-card--interactive:hover::after {
+        opacity: 1;
+    }
+
+    .glass-card--interactive:active {
+        transform: translateY(-2px);
+    }
+}
+
+/* ===== Touch device press feedback ===== */
+@media (hover: none) {
+    .glass-card--interactive:active {
+        transform: scale(0.98);
+        opacity: 0.95;
+    }
+}
+
+/* ===== Accessibility: Reduced motion ===== */
+@media (prefers-reduced-motion: reduce) {
+    .glass-card {
+        transition: none;
+    }
+
+    .glass-card::after {
+        transition: opacity var(--transition-reduced, 200ms ease);
+    }
+
+    .glass-card--interactive:hover,
+    .glass-card--interactive:active {
+        transform: none;
     }
 }
 
