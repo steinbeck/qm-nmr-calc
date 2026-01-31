@@ -10,36 +10,33 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 ## Current State
 
-**Shipped:** v1.1 Accurate Chemical Shifts (2026-01-25)
+**Shipped:** v2.1 UI Redesign (2026-01-31)
 
-**Codebase:** 5,432 LOC Python, 1,417 LOC tests, 892 LOC templates
-**Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Pico CSS
-**Test suite:** 229 tests (226 unit + 3 NWChem integration)
+**Codebase:** ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS
+**Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Custom CSS
+**Test suite:** 285 tests (257 unit + 28 conformer/xTB)
 
 **What works today:**
-- Submit molecules (SMILES/MOL/SDF) via REST API or web UI
+- Submit molecules (SMILES/MOL/SDF) via REST API or modern web UI
+- Single-conformer or ensemble (Boltzmann-weighted) NMR predictions
+- RDKit KDG conformer generation, optional CREST/xTB for production quality
+- RMSD clustering + xTB ranking for efficient conformer pre-selection
 - NWChem DFT calculations with B3LYP/6-311+G(2d,p)
 - COSMO solvation for CHCl3, DMSO, or vacuum (gas phase)
 - DELTA50-derived scaling factors (1H MAE: 0.12 ppm, 13C MAE: 2.0 ppm)
-- Interactive 3D molecule viewer with shift annotations (3Dmol.js)
+- Modern glassmorphism UI with bento grid layouts
+- Interactive 3D molecule viewer with shift annotations
 - Spectrum plots, annotated structure drawings, file downloads
-- Calculation presets (draft/production)
-- Job status polling + email notifications
+- Step tracker with conformer progress visualization
+- WCAG-compliant accessibility (keyboard nav, reduced motion, contrast)
+- Mobile-optimized responsive design
 
-**Known limitation:** Single-conformer predictions only (being addressed in v2.0). Flexible molecules may have inaccurate predictions because the experimental NMR spectrum is a population-weighted average across all thermally accessible conformers.
+## Next Milestone
 
-## Current Milestone: v2.1 UI Redesign
-
-**Goal:** Modern bento grid layout with glassmorphism effects -- visually appealing, clear component separation, professional scientific aesthetic.
-
-**Target features:**
-- Bento grid layout system with asymmetric card arrangements
-- Glassmorphism effects (frosted glass, backdrop blur, subtle borders)
-- Light mode with depth (white/gray backgrounds, layered cards)
-- Full redesign of Results, Submit, and Status pages
-- Custom CSS replacing Pico CSS framework
-- Responsive design maintaining usability on tablet/mobile
-- Smooth transitions and hover interactions
+No active milestone. Future considerations tracked in `.planning/BACKLOG.md`:
+- Dark mode (color scheme, system preference detection)
+- Enhanced interactivity (card expansion, drag-and-drop)
+- User accounts and calculation history
 
 ## Requirements
 
@@ -74,16 +71,17 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - Ensemble metadata in API responses (conformer count, populations) -- v2.0
 - Conformer progress tracking in web UI -- v2.0
 
-### Active
-
-- [ ] Bento grid layout system for all pages
-- [ ] Glassmorphism card styling (backdrop blur, transparency, borders)
-- [ ] Results page redesign with prominent 3D viewer and spectra
-- [ ] Submit page redesign with clean form layout
-- [ ] Status page redesign with progress visualization
-- [ ] Custom CSS framework replacing Pico CSS
-- [ ] Responsive breakpoints for tablet and mobile
-- [ ] Hover states and smooth transitions
+- Bento grid layout system for all pages -- v2.1
+- Glassmorphism card styling (backdrop blur, transparency, borders) -- v2.1
+- Results page redesign with prominent 3D viewer and spectra -- v2.1
+- Submit page redesign with clean form layout -- v2.1
+- Status page redesign with progress visualization -- v2.1
+- Custom CSS framework replacing Pico CSS -- v2.1
+- Responsive breakpoints for tablet and mobile -- v2.1
+- Hover states and smooth transitions -- v2.1
+- WCAG accessibility (contrast, focus, reduced motion) -- v2.1
+- RMSD clustering for conformer pre-selection -- v2.0.1
+- xTB energy ranking for conformer filtering -- v2.0.1
 
 ### Out of Scope
 
@@ -117,7 +115,7 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - **Deployment**: Single cloud VM -- architecture should work without distributed infrastructure
 - **Storage**: Filesystem-based -- no database requirement, job metadata in JSON files
 - **Python ecosystem**: Backend stays in Python for NWChem/RDKit integration
-- **Single conformer**: Being addressed in v2.0 -- conformational sampling with Boltzmann weighting
+- **Conformer sampling addressed**: v2.0 added Boltzmann-weighted ensemble predictions
 - **CREST/xTB optional**: App must work without CREST/xTB installed (RDKit-only fallback)
 
 ## Key Decisions
@@ -136,6 +134,11 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 | KDG over ETKDG for conformers | Avoids crystal structure bias for solution-phase NMR | Good -- E2E validated on 2-penten-1-ol |
 | CREST/xTB as optional deps | App works without them, enables when detected | Good -- RDKit-only pipeline works end-to-end |
 | Boltzmann weight by DFT energies | Most accurate readily available energy level | Good -- chemically reasonable shifts from E2E test |
+| Pure CSS (no framework) | Modern CSS has variables, grid, layers | Good -- 2,400 LOC, no build step |
+| CSS Cascade Layers | Organize styles without specificity wars | Good -- clean architecture |
+| Glassmorphism with high opacity | 85-95% for WCAG contrast compliance | Good -- accessible and attractive |
+| RMSD clustering for conformers | Reduce redundant DFT calculations | Good -- 40→8 conformers, 10x faster |
+| xTB for conformer ranking | Better than MMFF, faster than DFT | Good -- optional with MMFF fallback |
 
 ---
-*Last updated: 2026-01-29 after starting v2.1 UI Redesign milestone*
+*Last updated: 2026-01-31 after v2.1 UI Redesign milestone complete*

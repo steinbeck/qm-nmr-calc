@@ -2,20 +2,20 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-01-29)
+See: .planning/PROJECT.md (updated 2026-01-31)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.1 UI Redesign -- Modern bento grid layout with glassmorphism effects
+**Current focus:** Production deployment -- all milestones complete
 
 ## Current Position
 
-Milestone: v2.1 UI Redesign
-Phase: 23 of 23 (Accessibility and Testing) - COMPLETE
-Plan: 2 of 2 in current phase
-Status: Phase complete - v2.1 UI Redesign milestone ready for deployment
-Last activity: 2026-01-31 -- Completed plan 23-02 (accessibility testing and validation)
+Milestone: v2.1 UI Redesign - SHIPPED 2026-01-31
+Phase: All complete (23 phases across 5 milestones)
+Plan: All complete
+Status: Ready for production deployment
+Last activity: 2026-01-31 -- v2.1 milestone archived
 
-Progress: ████████████████████ 100% (6/6 v2.1 phases, 72/72 total plans)
+Progress: ████████████████████ 100% (all milestones shipped)
 
 ## Performance Metrics
 
@@ -159,8 +159,8 @@ None
 ## Session Continuity
 
 Last session: 2026-01-31
-Stopped at: Completed plan 23-02 (accessibility testing and validation) - Phase 23 COMPLETE, v2.1 milestone COMPLETE
+Stopped at: v2.1 milestone archived and tagged
 Resume file: None
-Next: Deploy v2.1 UI Redesign or plan new features/improvements
-Tests: All tests passing (251 unit + 6 integration + 28 clustering/xTB = 285 tests)
-Codebase: 5,797 LOC Python, 1,775 LOC tests, 941 LOC templates + ~580 lines CSS (tokens + components + pages)
+Next: Deploy to production or start new milestone (/gsd:new-milestone)
+Tests: All tests passing (257 unit + 28 conformer/xTB = 285 tests)
+Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS

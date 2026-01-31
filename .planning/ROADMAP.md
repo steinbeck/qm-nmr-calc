@@ -10,9 +10,9 @@
 
 ## Overview
 
-v2.1 modernizes the web interface with bento grid layouts and glassmorphism effects. Pure CSS approach using native backdrop-filter and CSS Grid provides sophisticated visual design without build tools or frameworks. Delivers professional scientific aesthetic with clear component separation while maintaining accessibility and mobile performance.
+All major milestones complete. Current state: Production-ready NMR prediction service with conformational sampling, modern UI, and accessibility compliance.
 
-The roadmap follows a foundation-first strategy: establish design system and reusable components (Phase 18), then apply to each page in complexity order (Results most complex, Status simplest), wrap with responsive implementation, and validate with accessibility testing. Critical decisions implemented early: design tokens prevent inconsistency, glass opacity ranges ensure WCAG contrast compliance, mobile performance budgets prevent GPU-intensive effects on devices.
+**Next milestone:** TBD - see `.planning/BACKLOG.md` for future considerations (dark mode, enhanced interactivity, user accounts).
 
 ## Phases
 
@@ -177,117 +177,42 @@ The roadmap follows a foundation-first strategy: establish design system and reu
 
 </details>
 
-### v2.1 UI Redesign (In Progress)
+<details>
+<summary>✅ v2.1 UI Redesign (Phases 18-23) - SHIPPED 2026-01-31</summary>
 
-**Milestone Goal:** Modern bento grid layout with glassmorphism effects -- visually appealing interface with clear component separation, professional scientific aesthetic, and accessible design.
-
-#### Phase 18: CSS Foundation and Design System
+### Phase 18: CSS Foundation and Design System
 **Goal**: Reusable CSS architecture with design tokens, glass components, and bento grid utilities
-**Depends on**: Phase 17
-**Requirements**: CSS-01, CSS-02, CSS-03, CSS-04, CSS-05, LAYOUT-06, GLASS-01, GLASS-02, GLASS-03, GLASS-04, GLASS-05, GLASS-06
-**Success Criteria** (what must be TRUE):
-  1. Design token system defines all colors, spacing, glass effects, and transitions as CSS custom properties
-  2. CSS Cascade Layers architecture (reset, base, layout, components, utilities) manages style priority
-  3. Reusable .glass-card component with BEM variants delivers glassmorphism without duplication
-  4. Bento grid system (CSS Grid with named areas) supports asymmetric card layouts
-  5. Safari -webkit-backdrop-filter prefix and @supports fallbacks ensure cross-browser compatibility
-  6. Pico CSS fully removed from base template, replaced with custom multi-file CSS
 **Plans**: 4 plans
-
-Plans:
-- [x] 18-01-PLAN.md — CSS architecture foundation (layers, reset, tokens)
-- [x] 18-02-PLAN.md — Base styles and bento grid layout system
-- [x] 18-03-PLAN.md — Glass card component with BEM variants
-- [x] 18-04-PLAN.md — Template integration and Pico CSS removal
 **Status**: Complete
 
-#### Phase 19: Results Page Redesign
-**Goal**: Bento grid layout for results page with prominent visualizations and clear data organization
-**Depends on**: Phase 18
-**Requirements**: RESULTS-01, RESULTS-02, RESULTS-03, RESULTS-04, RESULTS-05, RESULTS-06, RESULTS-07
-**Success Criteria** (what must be TRUE):
-  1. 3D molecular viewer displayed in hero card position (largest, most prominent)
-  2. 1H and 13C spectrum images displayed in medium-sized cards with clear labels
-  3. Ensemble metadata (conformer count, populations) displayed in dedicated card for ensemble jobs
-  4. Chemical shift tables organized in cards with right-aligned numbers and proper formatting
-  5. Download buttons grouped in compact card with clear affordances
-  6. Calculation details (solvent, functional, basis set) visible in metadata card
-  7. Conformer selector integrated with 3D viewer card (ensemble jobs only)
+### Phase 19: Results Page Redesign
+**Goal**: Bento grid layout for results page with prominent visualizations
 **Plans**: 3 plans
-
-Plans:
-- [x] 19-01-PLAN.md — Create results-page.css with viewer-card and page-specific components
-- [x] 19-02-PLAN.md — Update results.html template with bento grid structure
-- [x] 19-03-PLAN.md — Visual verification checkpoint
 **Status**: Complete
 
-#### Phase 20: Submit Page Redesign
-**Goal**: Clean form layout with logical grouping and solid backgrounds for usability
-**Depends on**: Phase 18
-**Requirements**: SUBMIT-01, SUBMIT-02, SUBMIT-03, SUBMIT-04, SUBMIT-05
-**Success Criteria** (what must be TRUE):
-  1. Form inputs organized in logical groups with clear visual hierarchy
-  2. Form inputs use solid backgrounds (not glassmorphic) for usability and contrast
-  3. Molecule preview area provides visual feedback for SMILES/file input
-  4. Required fields clearly distinguished from optional fields with visual indicators
-  5. Conformer mode and method options presented with clear descriptions
+### Phase 20: Submit Page Redesign
+**Goal**: Clean form layout with logical grouping and solid backgrounds
 **Plans**: 2 plans
-
-Plans:
-- [x] 20-01-PLAN.md — Create submit-page.css with form layout components
-- [x] 20-02-PLAN.md — Update template with two-column layout and SmilesDrawer preview
 **Status**: Complete
 
-#### Phase 21: Status Page Redesign
-**Goal**: Job progress visualization with clear step tracking and status indicators
-**Depends on**: Phase 18
-**Requirements**: STATUS-01, STATUS-02, STATUS-03, STATUS-04, STATUS-05
-**Success Criteria** (what must be TRUE):
-  1. Job progress displayed with visual progress indicators (bars, percentages)
-  2. Step tracking shows completed, current, and pending steps with clear states
-  3. 3D molecule preview displayed during calculation (if geometry available)
-  4. Ensemble progress (X/N conformers) clearly visible for ensemble jobs
-  5. Error states displayed clearly if job fails with actionable messages
+### Phase 21: Status Page Redesign
+**Goal**: Job progress visualization with step tracking
 **Plans**: 2 plans
-
-Plans:
-- [x] 21-01-PLAN.md — Create status-page.css with step tracker and progress components
-- [x] 21-02-PLAN.md — Update template with bento layout and JavaScript for step tracker
 **Status**: Complete
 
-#### Phase 22: Responsive and Layout Polish
-**Goal**: Mobile-first breakpoints with performance-optimized glass effects and responsive card layouts
-**Depends on**: Phase 19, Phase 20, Phase 21
-**Requirements**: LAYOUT-01, LAYOUT-02, LAYOUT-03, LAYOUT-04, LAYOUT-05
-**Success Criteria** (what must be TRUE):
-  1. Page layouts use CSS Grid bento system with asymmetric card arrangements on desktop
-  2. Cards support variable sizes (1x1, 2x1, 2x2, full-width) that adapt responsively
-  3. Consistent gutters (16-24px) between all cards at all breakpoints
-  4. Responsive breakpoints collapse complex grids: desktop asymmetric → tablet 2-3 columns → mobile single column
-  5. Cards have smooth hover state transitions (transform, shadow) with reduced motion support
+### Phase 22: Responsive and Layout Polish
+**Goal**: Mobile-first breakpoints with performance-optimized glass effects
 **Plans**: 2 plans
-
-Plans:
-- [x] 22-01-PLAN.md — Touch-safe hover, GPU shadow animation, reduced motion for cards
-- [x] 22-02-PLAN.md — Status page reduced motion and visual verification
 **Status**: Complete
 
-#### Phase 23: Accessibility and Testing
+### Phase 23: Accessibility and Testing
 **Goal**: WCAG compliance, cross-browser validation, and performance optimization
-**Depends on**: Phase 22
-**Requirements**: A11Y-01, A11Y-02, A11Y-03, A11Y-04, A11Y-05
-**Success Criteria** (what must be TRUE):
-  1. All text on glass backgrounds meets WCAG 4.5:1 contrast ratio minimum (validated with tools)
-  2. Keyboard navigation works for all interactive elements with visible focus indicators
-  3. Reduced motion support via prefers-reduced-motion media query disables animations
-  4. Mobile performance optimized (2-3 glass elements max, 6px blur vs 10px desktop, Lighthouse 90+ score)
-  5. Cross-browser testing passes on Chrome, Firefox, Safari, Edge with webkit prefix verification
 **Plans**: 2 plans
-
-Plans:
-- [x] 23-01-PLAN.md — Add focus tokens and comprehensive :focus-visible rules
-- [x] 23-02-PLAN.md — Validate accessibility, performance, and cross-browser compliance
 **Status**: Complete
+
+*Full details: .planning/milestones/v2.1-ROADMAP.md*
+
+</details>
 
 <details>
 <summary>✅ v2.0.1 Conformer Pre-selection Hotfix - SHIPPED 2026-01-30</summary>
