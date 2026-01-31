@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 ## Current Position
 
 Milestone: v2.2 Documentation
-Phase: 25 of 7 (README and Documentation Structure)
+Phase: 26 of 7 (Installation Guide)
 Plan: 1 of 1 in current phase
 Status: Phase complete
-Last activity: 2026-01-31 -- Completed 25-01-PLAN.md
+Last activity: 2026-01-31 -- Completed 26-01-PLAN.md
 
-Progress: ███░░░░░░░░░░░░░░░░░ 14% (1/7 phases)
+Progress: ████░░░░░░░░░░░░░░░░ 29% (2/7 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 75 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17)
-- Average duration: ~8 min
-- Total execution time: ~564 min (~9.4 hours)
+- Total plans completed: 76 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 1)
+- Average duration: ~7 min
+- Total execution time: ~567 min (~9.5 hours)
 
 **By Milestone:**
 
@@ -48,6 +48,9 @@ All prior decisions logged in PROJECT.md Key Decisions table.
 - Version: v2.2 (next minor after v2.1)
 - Research approach: Leverage planning docs + web research for DP4+ content
 - Documentation structure: docs/ directory with README linking to detailed pages
+- Installation guide: Multi-distro instructions, conda + manual CREST/xTB paths
+- Validation approach: Health endpoint as primary environment check
+- Troubleshooting: Problem/Symptom/Fix format for common issues
 
 ### Roadmap Evolution
 
@@ -76,9 +79,9 @@ None
 
 ## Session Continuity
 
-Last session: 2026-01-31T16:01:10Z
-Stopped at: Completed 25-01-PLAN.md (Phase 25 complete)
+Last session: 2026-01-31T22:31:01Z
+Stopped at: Completed 26-01-PLAN.md (Phase 26 complete)
 Resume file: None
-Next: Plan Phase 26 (/gsd:plan-phase 26) - Installation Guide
+Next: Plan Phase 27 (/gsd:plan-phase 27) - Usage Guide
 Tests: All tests passing (257 unit + 28 conformer/xTB = 285 tests)
-Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS
+Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~660 LOC docs
