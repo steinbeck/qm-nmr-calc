@@ -9,63 +9,63 @@ Requirements for v2.1 UI Redesign. Each maps to roadmap phases.
 
 ### Layout System
 
-- [ ] **LAYOUT-01**: Page layouts use CSS Grid bento grid system with asymmetric card arrangements
-- [ ] **LAYOUT-02**: Cards support variable sizes (1x1, 2x1, 2x2, full-width)
-- [ ] **LAYOUT-03**: Consistent gutters (16-24px) between all cards
-- [ ] **LAYOUT-04**: Responsive breakpoints adapt layout for desktop, tablet, and mobile
-- [ ] **LAYOUT-05**: Cards have smooth hover state transitions (transform, shadow)
-- [ ] **LAYOUT-06**: Design tokens (CSS custom properties) for colors, spacing, and effects
+- [x] **LAYOUT-01**: Page layouts use CSS Grid bento grid system with asymmetric card arrangements
+- [x] **LAYOUT-02**: Cards support variable sizes (1x1, 2x1, 2x2, full-width)
+- [x] **LAYOUT-03**: Consistent gutters (16-24px) between all cards
+- [x] **LAYOUT-04**: Responsive breakpoints adapt layout for desktop, tablet, and mobile
+- [x] **LAYOUT-05**: Cards have smooth hover state transitions (transform, shadow)
+- [x] **LAYOUT-06**: Design tokens (CSS custom properties) for colors, spacing, and effects
 
 ### Glassmorphism
 
-- [ ] **GLASS-01**: Glass cards use backdrop-filter blur effect (8-12px)
-- [ ] **GLASS-02**: Cards have semi-transparent backgrounds (85-95% opacity for accessibility)
-- [ ] **GLASS-03**: Subtle border highlights on glass cards (1px light border)
-- [ ] **GLASS-04**: Safari compatibility with -webkit-backdrop-filter prefix
-- [ ] **GLASS-05**: Layered depth with multiple glass intensity levels
-- [ ] **GLASS-06**: Subtle box shadows for card elevation
+- [x] **GLASS-01**: Glass cards use backdrop-filter blur effect (8-12px)
+- [x] **GLASS-02**: Cards have semi-transparent backgrounds (85-95% opacity for accessibility)
+- [x] **GLASS-03**: Subtle border highlights on glass cards (1px light border)
+- [x] **GLASS-04**: Safari compatibility with -webkit-backdrop-filter prefix
+- [x] **GLASS-05**: Layered depth with multiple glass intensity levels
+- [x] **GLASS-06**: Subtle box shadows for card elevation
 
 ### Results Page
 
-- [ ] **RESULTS-01**: 3D molecular viewer in hero card position (largest, prominent)
-- [ ] **RESULTS-02**: 1H and 13C spectrum images in medium cards
-- [ ] **RESULTS-03**: Ensemble metadata displayed in dedicated card (for ensemble jobs)
-- [ ] **RESULTS-04**: Chemical shift tables in organized card layout
-- [ ] **RESULTS-05**: Download buttons grouped in compact card
-- [ ] **RESULTS-06**: Calculation details (solvent, functional, basis set) visible
-- [ ] **RESULTS-07**: Conformer selector integrated with 3D viewer card
+- [x] **RESULTS-01**: 3D molecular viewer in hero card position (largest, prominent)
+- [x] **RESULTS-02**: 1H and 13C spectrum images in medium cards
+- [x] **RESULTS-03**: Ensemble metadata displayed in dedicated card (for ensemble jobs)
+- [x] **RESULTS-04**: Chemical shift tables in organized card layout
+- [x] **RESULTS-05**: Download buttons grouped in compact card
+- [x] **RESULTS-06**: Calculation details (solvent, functional, basis set) visible
+- [x] **RESULTS-07**: Conformer selector integrated with 3D viewer card
 
 ### Submit Page
 
-- [ ] **SUBMIT-01**: Clean form layout with logical grouping
-- [ ] **SUBMIT-02**: Form inputs use solid backgrounds (not glass) for usability
-- [ ] **SUBMIT-03**: Molecule preview area for visual feedback
-- [ ] **SUBMIT-04**: Clear visual hierarchy for required vs optional fields
-- [ ] **SUBMIT-05**: Conformer mode and method options clearly presented
+- [x] **SUBMIT-01**: Clean form layout with logical grouping
+- [x] **SUBMIT-02**: Form inputs use solid backgrounds (not glass) for usability
+- [x] **SUBMIT-03**: Molecule preview area for visual feedback
+- [x] **SUBMIT-04**: Clear visual hierarchy for required vs optional fields
+- [x] **SUBMIT-05**: Conformer mode and method options clearly presented
 
 ### Status Page
 
-- [ ] **STATUS-01**: Job progress displayed with visual indicators
-- [ ] **STATUS-02**: Step tracking shows completed and current steps
-- [ ] **STATUS-03**: 3D molecule preview during calculation
-- [ ] **STATUS-04**: Ensemble progress (X/N conformers) clearly visible
-- [ ] **STATUS-05**: Error states displayed clearly if job fails
+- [x] **STATUS-01**: Job progress displayed with visual indicators
+- [x] **STATUS-02**: Step tracking shows completed and current steps
+- [x] **STATUS-03**: 3D molecule preview during calculation
+- [x] **STATUS-04**: Ensemble progress (X/N conformers) clearly visible
+- [x] **STATUS-05**: Error states displayed clearly if job fails
 
 ### Accessibility & Performance
 
-- [ ] **A11Y-01**: All text meets WCAG 4.5:1 contrast ratio minimum
-- [ ] **A11Y-02**: Keyboard navigation works for all interactive elements
-- [ ] **A11Y-03**: Reduced motion support via prefers-reduced-motion media query
-- [ ] **A11Y-04**: Mobile performance optimized (reduced blur, limited glass elements)
-- [ ] **A11Y-05**: Focus indicators visible for keyboard users
+- [x] **A11Y-01**: All text meets WCAG 4.5:1 contrast ratio minimum
+- [x] **A11Y-02**: Keyboard navigation works for all interactive elements
+- [x] **A11Y-03**: Reduced motion support via prefers-reduced-motion media query
+- [x] **A11Y-04**: Mobile performance optimized (reduced blur, limited glass elements)
+- [x] **A11Y-05**: Focus indicators visible for keyboard users
 
 ### CSS Architecture
 
-- [ ] **CSS-01**: Pico CSS replaced with custom CSS framework
-- [ ] **CSS-02**: CSS Cascade Layers for style priority management
-- [ ] **CSS-03**: BEM naming convention for component classes
-- [ ] **CSS-04**: Multi-file CSS organization (no build step required)
-- [ ] **CSS-05**: Base template updated with new stylesheet loading
+- [x] **CSS-01**: Pico CSS replaced with custom CSS framework
+- [x] **CSS-02**: CSS Cascade Layers for style priority management
+- [x] **CSS-03**: BEM naming convention for component classes
+- [x] **CSS-04**: Multi-file CSS organization (no build step required)
+- [x] **CSS-05**: Base template updated with new stylesheet loading
 
 ## v2.x Requirements
 
@@ -101,11 +101,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LAYOUT-01 | Phase 22 | Pending |
-| LAYOUT-02 | Phase 22 | Pending |
-| LAYOUT-03 | Phase 22 | Pending |
-| LAYOUT-04 | Phase 22 | Pending |
-| LAYOUT-05 | Phase 22 | Pending |
+| LAYOUT-01 | Phase 22 | Complete |
+| LAYOUT-02 | Phase 22 | Complete |
+| LAYOUT-03 | Phase 22 | Complete |
+| LAYOUT-04 | Phase 22 | Complete |
+| LAYOUT-05 | Phase 22 | Complete |
 | LAYOUT-06 | Phase 18 | Complete |
 | GLASS-01 | Phase 18 | Complete |
 | GLASS-02 | Phase 18 | Complete |
@@ -113,28 +113,28 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GLASS-04 | Phase 18 | Complete |
 | GLASS-05 | Phase 18 | Complete |
 | GLASS-06 | Phase 18 | Complete |
-| RESULTS-01 | Phase 19 | Pending |
-| RESULTS-02 | Phase 19 | Pending |
-| RESULTS-03 | Phase 19 | Pending |
-| RESULTS-04 | Phase 19 | Pending |
-| RESULTS-05 | Phase 19 | Pending |
-| RESULTS-06 | Phase 19 | Pending |
-| RESULTS-07 | Phase 19 | Pending |
+| RESULTS-01 | Phase 19 | Complete |
+| RESULTS-02 | Phase 19 | Complete |
+| RESULTS-03 | Phase 19 | Complete |
+| RESULTS-04 | Phase 19 | Complete |
+| RESULTS-05 | Phase 19 | Complete |
+| RESULTS-06 | Phase 19 | Complete |
+| RESULTS-07 | Phase 19 | Complete |
 | SUBMIT-01 | Phase 20 | Complete |
 | SUBMIT-02 | Phase 20 | Complete |
 | SUBMIT-03 | Phase 20 | Complete |
 | SUBMIT-04 | Phase 20 | Complete |
 | SUBMIT-05 | Phase 20 | Complete |
-| STATUS-01 | Phase 21 | Pending |
-| STATUS-02 | Phase 21 | Pending |
-| STATUS-03 | Phase 21 | Pending |
-| STATUS-04 | Phase 21 | Pending |
-| STATUS-05 | Phase 21 | Pending |
-| A11Y-01 | Phase 23 | Pending |
-| A11Y-02 | Phase 23 | Pending |
-| A11Y-03 | Phase 23 | Pending |
-| A11Y-04 | Phase 23 | Pending |
-| A11Y-05 | Phase 23 | Pending |
+| STATUS-01 | Phase 21 | Complete |
+| STATUS-02 | Phase 21 | Complete |
+| STATUS-03 | Phase 21 | Complete |
+| STATUS-04 | Phase 21 | Complete |
+| STATUS-05 | Phase 21 | Complete |
+| A11Y-01 | Phase 23 | Complete |
+| A11Y-02 | Phase 23 | Complete |
+| A11Y-03 | Phase 23 | Complete |
+| A11Y-04 | Phase 23 | Complete |
+| A11Y-05 | Phase 23 | Complete |
 | CSS-01 | Phase 18 | Complete |
 | CSS-02 | Phase 18 | Complete |
 | CSS-03 | Phase 18 | Complete |
@@ -156,4 +156,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-29*
-*Last updated: 2026-01-29 after Phase 18 completion*
+*Last updated: 2026-01-31 after v2.1 UI Redesign milestone complete (all 35 requirements satisfied)*

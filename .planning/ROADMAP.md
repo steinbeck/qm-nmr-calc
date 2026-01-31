@@ -6,7 +6,7 @@
 - ✅ **v1.1 Accurate Chemical Shifts** - Phases 7-11.2 (shipped 2026-01-25)
 - ✅ **v2.0 Conformational Sampling** - Phases 12-17 (shipped 2026-01-28)
 - ✅ **v2.0.1 Conformer Pre-selection** - Phase 24 (shipped 2026-01-30)
-- ⏸️ **v2.1 UI Redesign** - Phases 18-23 (paused at Phase 21)
+- ✅ **v2.1 UI Redesign** - Phases 18-23 (shipped 2026-01-31)
 
 ## Overview
 
@@ -285,8 +285,9 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 23-01-PLAN.md — Add focus tokens and comprehensive :focus-visible rules
-- [ ] 23-02-PLAN.md — Validate accessibility, performance, and cross-browser compliance
+- [x] 23-01-PLAN.md — Add focus tokens and comprehensive :focus-visible rules
+- [x] 23-02-PLAN.md — Validate accessibility, performance, and cross-browser compliance
+**Status**: Complete
 
 <details>
 <summary>✅ v2.0.1 Conformer Pre-selection Hotfix - SHIPPED 2026-01-30</summary>
@@ -344,9 +345,9 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 20. Submit Redesign | v2.1 | 2/2 | Complete | 2026-01-29 |
 | 21. Status Redesign | v2.1 | 2/2 | Complete | 2026-01-31 |
 | 22. Responsive Polish | v2.1 | 2/2 | Complete | 2026-01-31 |
-| 23. Accessibility | v2.1 | 0/2 | Not started | - |
+| 23. Accessibility | v2.1 | 2/2 | Complete | 2026-01-31 |
 | 24. Conformer Pre-selection | v2.0.1 | 3/3 | Complete | 2026-01-30 |
 
 ---
 
-*Last updated: 2026-01-31 after Phase 23 planning complete*
+*Last updated: 2026-01-31 after v2.1 UI Redesign milestone complete*
