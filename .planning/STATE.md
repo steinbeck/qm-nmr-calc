@@ -122,8 +122,11 @@ All decisions logged in PROJECT.md Key Decisions table.
 ### Pending Todos
 
 - Deploy v2.1 UI Redesign to production and test with real workloads
-- UX: Conformer progress bar shows 0% until first conformer completes (should show intermediate progress during optimization)
 - Consider future enhancements: user accounts, calculation history, batch processing
+
+### Recently Fixed
+
+- UX: Conformer progress bar shows 0% until first conformer completes (fixed in bf27668)
 
 ### Blockers/Concerns
 

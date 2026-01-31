@@ -6,7 +6,7 @@ Items discovered during development but deferred from current milestones. Tracke
 
 | ID | Item | Priority | Origin | Notes |
 |----|------|----------|--------|-------|
-| ~~UX-01~~ | ~~Conformer progress shows 0% until first completes~~ | ~~High~~ | ~~v2.1~~ | ~~Fixed in v2.1.1~~ |
+| ~~UX-01~~ | ~~Conformer progress shows 0% until first completes~~ | ~~High~~ | ~~v2.1~~ | ~~Fixed in bf27668~~ |
 | UX-02 | Card expansion to focus mode | Medium | v2.1 | Full-screen view for 3D viewer, spectra |
 | UX-03 | Drag-and-drop card reordering | Low | v2.1 | User customization of layout |
 | UX-04 | User preference persistence | Low | v2.1 | Remember card states, layout choices |
