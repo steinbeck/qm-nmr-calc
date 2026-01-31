@@ -282,7 +282,11 @@ Plans:
   3. Reduced motion support via prefers-reduced-motion media query disables animations
   4. Mobile performance optimized (2-3 glass elements max, 6px blur vs 10px desktop, Lighthouse 90+ score)
   5. Cross-browser testing passes on Chrome, Firefox, Safari, Edge with webkit prefix verification
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 23-01-PLAN.md — Add focus tokens and comprehensive :focus-visible rules
+- [ ] 23-02-PLAN.md — Validate accessibility, performance, and cross-browser compliance
 
 <details>
 <summary>✅ v2.0.1 Conformer Pre-selection Hotfix - SHIPPED 2026-01-30</summary>
@@ -340,9 +344,9 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 20. Submit Redesign | v2.1 | 2/2 | Complete | 2026-01-29 |
 | 21. Status Redesign | v2.1 | 2/2 | Complete | 2026-01-31 |
 | 22. Responsive Polish | v2.1 | 2/2 | Complete | 2026-01-31 |
-| 23. Accessibility | v2.1 | 0/? | Not started | - |
+| 23. Accessibility | v2.1 | 0/2 | Not started | - |
 | 24. Conformer Pre-selection | v2.0.1 | 3/3 | Complete | 2026-01-30 |
 
 ---
 
-*Last updated: 2026-01-31 after Phase 22 complete*
+*Last updated: 2026-01-31 after Phase 23 planning complete*
