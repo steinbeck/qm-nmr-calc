@@ -7,7 +7,7 @@
 - ✅ **v2.0 Conformational Sampling** - Phases 12-17 (shipped 2026-01-28)
 - ✅ **v2.0.1 Conformer Pre-selection** - Phase 24 (shipped 2026-01-30)
 - ✅ **v2.1 UI Redesign** - Phases 18-23 (shipped 2026-01-31)
-- 🔄 **v2.2 Documentation** - Phases 25-31
+- ✅ **v2.2 Documentation** - Phases 25-31 (shipped 2026-02-01)
 
 ## Overview
 
@@ -281,6 +281,7 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 28. Technical Architecture | v2.2 | 2/2 | Complete | 2026-02-01 |
 | 29. Library Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
 | 30. DP4+ Science Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
+| 31. Documentation Polish | v2.2 | 1/1 | Complete | 2026-02-01 |
 
 ## v2.2 Documentation (Phases 25-31)
 
@@ -396,9 +397,9 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 31-01-PLAN.md — Cross-references, link verification, and ToC update
-**Status**: Not Started
+- [x] 31-01-PLAN.md — Cross-references, link verification, and ToC update
+**Status**: Complete
 
 ---
 
-*Last updated: 2026-02-01 - Phase 31 planned*
+*Last updated: 2026-02-01 - v2.2 Documentation milestone complete*

@@ -60,8 +60,8 @@ Requirements for v2.2 comprehensive documentation milestone.
 
 - [x] **STRUCT-01**: Documentation uses docs/ directory with logical organization
 - [x] **STRUCT-02**: All docs linked from main README.md
-- [ ] **STRUCT-03**: Cross-references between related documentation pages
-- [ ] **STRUCT-04**: Consistent formatting and heading structure across all docs
+- [x] **STRUCT-03**: Cross-references between related documentation pages
+- [x] **STRUCT-04**: Consistent formatting and heading structure across all docs
 
 ## Traceability
 
@@ -105,8 +105,8 @@ Requirements for v2.2 comprehensive documentation milestone.
 | DP4-09 | Phase 30 | Complete |
 | STRUCT-01 | Phase 25 | Complete |
 | STRUCT-02 | Phase 25 | Complete |
-| STRUCT-03 | Phase 31 | Pending |
-| STRUCT-04 | Phase 31 | Pending |
+| STRUCT-03 | Phase 31 | Complete |
+| STRUCT-04 | Phase 31 | Complete |
 
 ---
 
