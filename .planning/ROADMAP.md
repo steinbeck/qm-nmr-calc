@@ -338,7 +338,11 @@ Plans:
   4. File storage structure and job directory layout explained
   5. Conformer ensemble pipeline stages documented
   6. CSS architecture (layers, components, tokens) explained
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Core architecture (stack, data flow, job lifecycle, file storage)
+- [ ] 28-02-PLAN.md — Conformer pipeline and CSS architecture
 **Status**: Not Started
 
 ### Phase 29: Library Documentation
@@ -383,4 +387,4 @@ Plans:
 
 ---
 
-*Last updated: 2026-02-01 - Phase 27 complete*
+*Last updated: 2026-02-01 - Phase 28 planned*
