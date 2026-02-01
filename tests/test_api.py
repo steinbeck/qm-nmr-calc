@@ -351,3 +351,125 @@ class TestNMReDataEndpoint:
         data = response.json()["detail"]
         assert data["status"] == 409
         assert "title" in data  # RFC 7807
+
+
+@pytest.fixture
+def mock_complete_job_with_nmr(tmp_path):
+    """Fixture providing mock complete job status with NMR results for testing."""
+    from datetime import datetime, timezone
+    from pathlib import Path
+
+    from qm_nmr_calc.models import (
+        AtomShift,
+        JobInput,
+        JobStatus,
+        NMRResults,
+    )
+
+    # Create mock job status for ethanol
+    job_status = JobStatus(
+        job_id="test-nmredata-123",
+        status="complete",
+        created_at=datetime.now(timezone.utc),
+        nwchem_version="7.2.0",
+        input=JobInput(smiles="CCO", solvent="chcl3", preset="production"),
+        conformer_mode="single",
+        nmr_results=NMRResults(
+            functional="b3lyp",
+            basis_set="6-311G(2d,p)",
+            solvent="chcl3",
+            h1_shifts=[
+                AtomShift(index=4, atom="H", shielding=30.0, shift=1.18),
+                AtomShift(index=5, atom="H", shielding=30.0, shift=1.18),
+                AtomShift(index=6, atom="H", shielding=30.0, shift=1.18),
+                AtomShift(index=7, atom="H", shielding=28.0, shift=3.65),
+                AtomShift(index=8, atom="H", shielding=28.0, shift=3.65),
+                AtomShift(index=9, atom="H", shielding=29.0, shift=2.45),
+            ],
+            c13_shifts=[
+                AtomShift(index=1, atom="C", shielding=160.0, shift=18.2),
+                AtomShift(index=2, atom="C", shielding=120.0, shift=58.3),
+            ],
+        ),
+        steps_completed=[],
+    )
+
+    # Create temp XYZ file (ethanol optimized geometry)
+    xyz_content = """9
+ethanol optimized
+C    0.0000    0.0000    0.0000
+C    1.5000    0.0000    0.0000
+O    2.0000    1.2000    0.0000
+H   -0.3500   -0.5000   -0.9000
+H   -0.3500   -0.5000    0.9000
+H   -0.3500    1.0000    0.0000
+H    1.8500   -0.5000   -0.9000
+H    1.8500   -0.5000    0.9000
+H    2.9000    1.2000    0.0000
+"""
+    xyz_file = tmp_path / "optimized.xyz"
+    xyz_file.write_text(xyz_content)
+
+    return {
+        "job_status": job_status,
+        "xyz_file": xyz_file,
+        "job_id": "test-nmredata-123",
+    }
+
+
+class TestNMReDataEndpointSuccess:
+    """Tests for successful NMReData SDF download with mocked job."""
+
+    def test_nmredata_endpoint_returns_200_for_complete_job(self, mock_complete_job_with_nmr):
+        """GET /api/v1/jobs/{id}/nmredata.sdf returns 200 for complete job."""
+        job_data = mock_complete_job_with_nmr
+
+        with mock.patch("qm_nmr_calc.api.routers.jobs.load_job_status") as mock_load, \
+             mock.patch("qm_nmr_calc.api.routers.jobs.get_geometry_file") as mock_geom:
+            mock_load.return_value = job_data["job_status"]
+            mock_geom.return_value = job_data["xyz_file"]
+
+            response = client.get(f"/api/v1/jobs/{job_data['job_id']}/nmredata.sdf")
+            assert response.status_code == 200
+
+    def test_nmredata_endpoint_content_disposition_header(self, mock_complete_job_with_nmr):
+        """Response includes Content-Disposition header with filename."""
+        job_data = mock_complete_job_with_nmr
+
+        with mock.patch("qm_nmr_calc.api.routers.jobs.load_job_status") as mock_load, \
+             mock.patch("qm_nmr_calc.api.routers.jobs.get_geometry_file") as mock_geom:
+            mock_load.return_value = job_data["job_status"]
+            mock_geom.return_value = job_data["xyz_file"]
+
+            response = client.get(f"/api/v1/jobs/{job_data['job_id']}/nmredata.sdf")
+
+            assert "Content-Disposition" in response.headers
+            assert "attachment" in response.headers["Content-Disposition"]
+            assert "nmredata.sdf" in response.headers["Content-Disposition"]
+
+    def test_nmredata_endpoint_media_type(self, mock_complete_job_with_nmr):
+        """Response has correct media type chemical/x-mdl-sdfile."""
+        job_data = mock_complete_job_with_nmr
+
+        with mock.patch("qm_nmr_calc.api.routers.jobs.load_job_status") as mock_load, \
+             mock.patch("qm_nmr_calc.api.routers.jobs.get_geometry_file") as mock_geom:
+            mock_load.return_value = job_data["job_status"]
+            mock_geom.return_value = job_data["xyz_file"]
+
+            response = client.get(f"/api/v1/jobs/{job_data['job_id']}/nmredata.sdf")
+
+            assert response.headers["content-type"] == "chemical/x-mdl-sdfile"
+
+    def test_nmredata_endpoint_response_contains_assignment_tag(self, mock_complete_job_with_nmr):
+        """Response contains NMREDATA_ASSIGNMENT and NMREDATA_VERSION tags."""
+        job_data = mock_complete_job_with_nmr
+
+        with mock.patch("qm_nmr_calc.api.routers.jobs.load_job_status") as mock_load, \
+             mock.patch("qm_nmr_calc.api.routers.jobs.get_geometry_file") as mock_geom:
+            mock_load.return_value = job_data["job_status"]
+            mock_geom.return_value = job_data["xyz_file"]
+
+            response = client.get(f"/api/v1/jobs/{job_data['job_id']}/nmredata.sdf")
+
+            assert "NMREDATA_ASSIGNMENT" in response.text
+            assert "NMREDATA_VERSION" in response.text
