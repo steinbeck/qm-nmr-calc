@@ -9,6 +9,7 @@ from fastapi.responses import FileResponse, JSONResponse, Response
 from rdkit import Chem
 
 from ..schemas import JobStatusResponse, JobSubmitRequest, NMRResultsResponse, ProblemDetail
+from ...nmredata import generate_nmredata_sdf
 from ...nwchem import get_nwchem_version
 from ...models import JobStatus
 from ...shifts import get_scaling_factor
@@ -742,6 +743,114 @@ async def download_geometry_sdf(job_id: str):
         content=sdf_content,
         media_type="chemical/x-mdl-sdfile",
         headers={"Content-Disposition": f'attachment; filename="{job_id}_optimized.sdf"'},
+    )
+
+
+@router.get(
+    "/{job_id}/nmredata.sdf",
+    response_class=Response,
+    responses={
+        200: {"description": "NMReData file with predicted shifts (SDF)", "content": {"chemical/x-mdl-sdfile": {}}},
+        404: {"model": ProblemDetail, "description": "Job not found"},
+        409: {"model": ProblemDetail, "description": "Job not complete"},
+    },
+)
+async def download_nmredata(job_id: str):
+    """Download NMReData SDF file with predicted chemical shifts.
+
+    Contains optimized 3D geometry plus NMReData tags with:
+    - ASSIGNMENT: 1H and 13C chemical shifts with atom indices
+    - SOLVENT, TEMPERATURE, VERSION metadata
+    - Provenance (method, basis set, scaling factors)
+    """
+    job_status = load_job_status(job_id)
+    if job_status is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-found",
+                "title": "Job Not Found",
+                "status": 404,
+                "detail": f"No job exists with ID '{job_id}'",
+            },
+        )
+
+    if job_status.status != "complete":
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/job-not-complete",
+                "title": "Job Not Complete",
+                "status": 409,
+                "detail": f"Job '{job_id}' is in '{job_status.status}' state. NMReData available when complete.",
+            },
+        )
+
+    if job_status.nmr_results is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/results-not-found",
+                "title": "Results Not Found",
+                "status": 404,
+                "detail": f"Job '{job_id}' completed but no NMR results available.",
+            },
+        )
+
+    geometry_file = get_geometry_file(job_id)
+    if geometry_file is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "type": "https://qm-nmr-calc.example/problems/geometry-not-found",
+                "title": "Geometry File Not Found",
+                "status": 404,
+                "detail": f"Optimized geometry file not found for job '{job_id}'.",
+            },
+        )
+
+    # Read XYZ content
+    xyz_content = geometry_file.read_text()
+
+    # Extract shift data from job_status.nmr_results
+    h1_shifts = [
+        {"index": s.index, "atom": s.atom, "shift": s.shift}
+        for s in job_status.nmr_results.h1_shifts
+    ]
+    c13_shifts = [
+        {"index": s.index, "atom": s.atom, "shift": s.shift}
+        for s in job_status.nmr_results.c13_shifts
+    ]
+
+    # Determine ensemble metadata for provenance
+    is_ensemble = job_status.conformer_mode == "ensemble"
+    conformer_count = None
+    if is_ensemble and job_status.conformer_ensemble:
+        conformer_count = len([c for c in job_status.conformer_ensemble.conformers if c.status == "nmr_complete"])
+
+    # Get temperature (default 298.15 K, or from ensemble if available)
+    temperature_k = 298.15
+    if is_ensemble and job_status.conformer_ensemble:
+        temperature_k = job_status.conformer_ensemble.temperature_k
+
+    # Generate NMReData SDF
+    sdf_content = generate_nmredata_sdf(
+        smiles=job_status.input.smiles,
+        geometry_xyz=xyz_content,
+        h1_shifts=h1_shifts,
+        c13_shifts=c13_shifts,
+        solvent=job_status.nmr_results.solvent,
+        temperature_k=temperature_k,
+        functional=job_status.nmr_results.functional.upper(),
+        basis_set=job_status.nmr_results.basis_set,
+        is_ensemble=is_ensemble,
+        conformer_count=conformer_count,
+    )
+
+    return Response(
+        content=sdf_content,
+        media_type="chemical/x-mdl-sdfile",
+        headers={"Content-Disposition": f'attachment; filename="{job_id}_nmredata.sdf"'},
     )
 
 
