@@ -1,0 +1,93 @@
+# Requirements: qm-nmr-calc v2.3 NMReData Export
+
+**Defined:** 2026-02-01
+**Core Value:** Enable machine-readable export of NMR prediction results in the NMReData standard format.
+
+## v2.3 Requirements
+
+Requirements for NMReData export feature. Each maps to roadmap phases.
+
+### NMReData Format
+
+- [ ] **NMRD-01**: Generated file contains valid MOL block with optimized 3D coordinates
+- [ ] **NMRD-02**: File includes `NMREDATA_VERSION` tag (1.1 or 2.0)
+- [ ] **NMRD-03**: File includes `NMREDATA_LEVEL` tag (0 for predicted data)
+- [ ] **NMRD-04**: File includes `NMREDATA_SOLVENT` tag with proper mapping (CHCl3→CDCl3, DMSO→(CD3)2SO, vacuum→vacuum)
+- [ ] **NMRD-05**: File includes `NMREDATA_TEMPERATURE` tag (298.15 K or ensemble temperature)
+- [ ] **NMRD-06**: File includes `NMREDATA_ASSIGNMENT` tag with 1H and 13C chemical shifts mapped to 1-indexed atom numbers
+- [ ] **NMRD-07**: File includes `NMREDATA_FORMULA` tag with molecular formula
+- [ ] **NMRD-08**: File includes `NMREDATA_SMILES` tag with input SMILES
+- [ ] **NMRD-09**: File includes provenance metadata (calculation method, basis set, scaling factors applied)
+
+### REST API
+
+- [ ] **API-01**: User can download NMReData file via `GET /api/v1/jobs/{job_id}/nmredata.sdf`
+- [ ] **API-02**: Response includes proper HTTP headers (media type `chemical/x-mdl-sdfile`, filename `{job_id}_nmredata.sdf`)
+- [ ] **API-03**: Endpoint returns 404 if job not found, 409 if job not complete
+
+### Web UI
+
+- [ ] **UI-01**: Results page includes download button for NMReData file alongside existing PNG/XYZ downloads
+
+### Testing
+
+- [ ] **TEST-01**: Unit tests validate NMReData tag formatting (separators, atom numbering)
+- [ ] **TEST-02**: Integration tests validate complete endpoint flow
+- [ ] **TEST-03**: Exported file can be parsed by RDKit SDMolSupplier and atom assignments verified
+
+## Future Requirements
+
+Deferred to later milestones.
+
+### Enhanced NMReData
+
+- **NMRD-10**: File includes `NMREDATA_INCHI` tag for structure matching
+- **NMRD-11**: File includes `NMREDATA_1D_1H` and `NMREDATA_1D_13C` pseudo-spectrum tags for visualization tool compatibility
+- **NMRD-12**: Per-conformer export option for ensemble calculations
+
+### J-coupling
+
+- **NMRD-13**: File includes `NMREDATA_J` tag with calculated coupling constants (requires additional computation)
+
+## Out of Scope
+
+Explicitly excluded from v2.3. Documented to prevent scope creep.
+
+| Feature | Reason |
+|---------|--------|
+| J-coupling constants | Not computed by qm-nmr-calc; would require additional QM calculation |
+| 2D correlation data | Experimental technique only; not applicable to predictions |
+| Per-conformer export | NMReData format has limited multi-conformer support; use Boltzmann-averaged shifts |
+| External validation tools | Java parser requires JRE; RDKit round-trip sufficient for v2.3 |
+
+## Traceability
+
+Which phases cover which requirements. Updated during roadmap creation.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| NMRD-01 | TBD | Pending |
+| NMRD-02 | TBD | Pending |
+| NMRD-03 | TBD | Pending |
+| NMRD-04 | TBD | Pending |
+| NMRD-05 | TBD | Pending |
+| NMRD-06 | TBD | Pending |
+| NMRD-07 | TBD | Pending |
+| NMRD-08 | TBD | Pending |
+| NMRD-09 | TBD | Pending |
+| API-01 | TBD | Pending |
+| API-02 | TBD | Pending |
+| API-03 | TBD | Pending |
+| UI-01 | TBD | Pending |
+| TEST-01 | TBD | Pending |
+| TEST-02 | TBD | Pending |
+| TEST-03 | TBD | Pending |
+
+**Coverage:**
+- v2.3 requirements: 16 total
+- Mapped to phases: 0
+- Unmapped: 16 ⚠️
+
+---
+*Requirements defined: 2026-02-01*
+*Last updated: 2026-02-01 after initial definition*
