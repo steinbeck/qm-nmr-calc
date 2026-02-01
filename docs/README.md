@@ -4,17 +4,17 @@ Comprehensive guides for qm-nmr-calc users, developers, and researchers.
 
 ## For Users
 
-- **[Installation Guide](installation.md)** - System dependencies, uv package manager setup, and optional CREST/xTB configuration for ensemble calculations
+- **[Installation Guide](installation.md)** - System dependencies, uv package manager setup, and optional CREST/xTB configuration
 - **[Usage Guide](usage.md)** - Web interface workflow and REST API reference with practical examples
 
 ## For Developers
 
-- **[Technical Architecture](architecture.md)** - System design, data flow diagrams, and job lifecycle management
-- **[Library Documentation](libraries.md)** - Integration guides for RDKit, NWChem, Huey, and other dependencies
+- **[Technical Architecture](architecture.md)** - System design, data flow diagrams, job lifecycle, and CSS architecture
+- **[Library Documentation](libraries.md)** - Integration guides for RDKit, NWChem, Huey, 3Dmol.js, SmilesDrawer, and CREST/xTB
 
 ## For Scientists
 
-- **[NMR Methodology](science.md)** - DP4+ probability analysis, linear scaling methodology, Boltzmann weighting, and literature references
+- **[NMR Methodology](science.md)** - DP4+ methodology, linear scaling, Boltzmann weighting, and literature references
 
 ---
 
