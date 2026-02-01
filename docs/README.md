@@ -20,4 +20,4 @@ Comprehensive guides for qm-nmr-calc users, developers, and researchers.
 
 Documentation is organized by audience and topic. Each guide provides focused coverage of its domain, with cross-references to related content where applicable.
 
-For quick setup, see the [Quick Start](../README.md#quick-start) section in the main README.
+For quick setup, see the [Getting Started](../README.md#getting-started) section in the main README.
