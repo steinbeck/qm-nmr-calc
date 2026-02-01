@@ -893,3 +893,9 @@ H   1.089000   0.000000   0.000000
 - After parsing, energies are converted to relative kcal/mol for filtering and Boltzmann weighting
 - Conversion factor: 1 Hartree = 627.509 kcal/mol
 
+---
+
+**Navigation:** [Documentation Index](README.md) | [Technical Architecture](architecture.md)
+
+**Dependencies:** See [pyproject.toml](../pyproject.toml) for library versions.
+
