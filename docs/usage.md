@@ -360,6 +360,582 @@ Presets control the level of theory used for DFT calculations, trading accuracy 
 2. **Use single conformer for large molecules** - 50+ atoms benefit from faster single conformer mode
 3. **Monitor job status** - Long-running jobs can be checked via the status page
 
+## REST API Reference
+
+The REST API provides programmatic access for automation and integration with other tools.
+
+### Overview
+
+| Property | Value |
+|----------|-------|
+| Base URL | `http://localhost:8000/api/v1` |
+| Authentication | None required (local deployment) |
+| Content-Type | `application/json` (requests and responses) |
+| Workflow | Asynchronous: submit returns 202, poll for completion |
+
+### Health Endpoints
+
+**Liveness Probe:**
+
+```bash
+curl http://localhost:8000/health
+```
+
+Response:
+```json
+{"status": "alive"}
+```
+
+**Readiness Probe:**
+
+```bash
+curl http://localhost:8000/health/ready
+```
+
+Response:
+```json
+{
+  "status": "ready",
+  "checks": {
+    "data_directory": "ok",
+    "task_queue": "ok",
+    "crest_available": true
+  },
+  "crest_available": true,
+  "timestamp": "2026-02-01T12:00:00Z"
+}
+```
+
+If any component is unavailable, returns HTTP 503 with `"status": "not ready"`.
+
+### Job Submission
+
+**Submit via SMILES (POST /api/v1/jobs):**
+
+```bash
+curl -X POST http://localhost:8000/api/v1/jobs \
+  -H "Content-Type: application/json" \
+  -d '{
+    "smiles": "CCO",
+    "solvent": "chcl3",
+    "preset": "production",
+    "name": "Ethanol",
+    "conformer_mode": "ensemble",
+    "conformer_method": "rdkit_kdg",
+    "max_conformers": null,
+    "notification_email": null
+  }'
+```
+
+Request body fields:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `smiles` | string | Yes | SMILES representation of molecule |
+| `solvent` | string | Yes | NMR solvent: `chcl3`, `dmso`, or `vacuum` |
+| `preset` | string | No | `draft` or `production` (default: `production`) |
+| `name` | string | No | Optional molecule label (max 100 chars) |
+| `conformer_mode` | string | No | `single` or `ensemble` (default: `single`) |
+| `conformer_method` | string | No | `rdkit_kdg` or `crest` (ensemble only) |
+| `max_conformers` | int | No | Override automatic conformer count |
+| `notification_email` | string | No | Email for completion notification |
+
+Response (HTTP 202 Accepted):
+```json
+{
+  "job_id": "a1b2c3d4e5f6",
+  "status": "queued",
+  "created_at": "2026-02-01T12:00:00Z",
+  "input_smiles": "CCO",
+  "input_name": "Ethanol",
+  "preset": "production",
+  "solvent": "chcl3",
+  "conformer_mode": "ensemble"
+}
+```
+
+Headers:
+- `Location: /api/v1/jobs/a1b2c3d4e5f6` - URL for status polling
+- `Retry-After: 30` - Suggested polling interval
+
+**Submit via File Upload (POST /api/v1/jobs/upload):**
+
+```bash
+curl -X POST http://localhost:8000/api/v1/jobs/upload \
+  -F "file=@molecule.mol" \
+  -F "solvent=chcl3" \
+  -F "preset=production" \
+  -F "conformer_mode=single"
+```
+
+Accepts `.mol` and `.sdf` files with a single molecule. Returns same response format as SMILES submission.
+
+**List Available Solvents (GET /api/v1/jobs/solvents):**
+
+```bash
+curl http://localhost:8000/api/v1/jobs/solvents
+```
+
+Response:
+```json
+["chcl3", "dmso", "vacuum"]
+```
+
+### Job Status
+
+**Get Job Status (GET /api/v1/jobs/{job_id}):**
+
+```bash
+curl http://localhost:8000/api/v1/jobs/a1b2c3d4e5f6
+```
+
+Response varies by job status:
+
+**Queued job:**
+```json
+{
+  "job_id": "a1b2c3d4e5f6",
+  "status": "queued",
+  "created_at": "2026-02-01T12:00:00Z",
+  "started_at": null,
+  "current_step": null,
+  "steps_completed": []
+}
+```
+
+**Running job (single conformer):**
+```json
+{
+  "job_id": "a1b2c3d4e5f6",
+  "status": "running",
+  "created_at": "2026-02-01T12:00:00Z",
+  "started_at": "2026-02-01T12:00:05Z",
+  "current_step": "geometry_optimization",
+  "current_step_label": "Geometry Optimization",
+  "step_started_at": "2026-02-01T12:00:05Z",
+  "steps_completed": [],
+  "conformer_mode": "single"
+}
+```
+
+**Running job (ensemble with progress):**
+```json
+{
+  "job_id": "a1b2c3d4e5f6",
+  "status": "running",
+  "current_step": "nmr_calculation",
+  "current_step_label": "NMR Calculation",
+  "conformer_mode": "ensemble",
+  "conformer_method": "rdkit_kdg",
+  "conformer_count": 5,
+  "conformer_progress": [
+    {"conformer_id": "conf_001", "status": "nmr_complete", "energy_kcal": 0.0, "population": 0.45},
+    {"conformer_id": "conf_002", "status": "nmr_running", "energy_kcal": 0.82, "population": null},
+    {"conformer_id": "conf_003", "status": "optimized", "energy_kcal": 1.15, "population": null}
+  ]
+}
+```
+
+**Complete job:**
+```json
+{
+  "job_id": "a1b2c3d4e5f6",
+  "status": "complete",
+  "completed_at": "2026-02-01T12:15:00Z",
+  "nmr_results": {
+    "h1_shifts": [
+      {"index": 1, "atom": "H", "shift": 3.65},
+      {"index": 2, "atom": "H", "shift": 1.18}
+    ],
+    "c13_shifts": [
+      {"index": 1, "atom": "C", "shift": 57.8},
+      {"index": 2, "atom": "C", "shift": 18.2}
+    ],
+    "functional": "b3lyp",
+    "basis_set": "6-311+G(2d,p)",
+    "solvent": "chcl3",
+    "scaling_factor_source": "DELTA50",
+    "h1_expected_mae": "+/- 0.12 ppm",
+    "c13_expected_mae": "+/- 1.95 ppm"
+  }
+}
+```
+
+**Failed job:**
+```json
+{
+  "job_id": "a1b2c3d4e5f6",
+  "status": "failed",
+  "error_message": "NWChem geometry optimization failed: SCF did not converge"
+}
+```
+
+**Polling pattern:**
+
+```bash
+# Poll every 30 seconds until complete
+while true; do
+  STATUS=$(curl -s http://localhost:8000/api/v1/jobs/a1b2c3d4e5f6 | jq -r '.status')
+  echo "Status: $STATUS"
+  if [ "$STATUS" = "complete" ] || [ "$STATUS" = "failed" ]; then
+    break
+  fi
+  sleep 30
+done
+```
+
+### Results Retrieval
+
+All result endpoints require `status=complete`. Returns HTTP 409 if job is still running.
+
+**NMR Shifts (GET /api/v1/jobs/{job_id}/results):**
+
+```bash
+curl http://localhost:8000/api/v1/jobs/a1b2c3d4e5f6/results
+```
+
+Response:
+```json
+{
+  "h1_shifts": [
+    {"index": 1, "atom": "H", "shift": 3.65},
+    {"index": 2, "atom": "H", "shift": 1.18}
+  ],
+  "c13_shifts": [
+    {"index": 1, "atom": "C", "shift": 57.8},
+    {"index": 2, "atom": "C", "shift": 18.2}
+  ],
+  "functional": "b3lyp",
+  "basis_set": "6-311+G(2d,p)",
+  "solvent": "chcl3",
+  "scaling_factor_source": "DELTA50",
+  "h1_expected_mae": "+/- 0.12 ppm",
+  "c13_expected_mae": "+/- 1.95 ppm",
+  "ensemble_metadata": {
+    "conformer_count": 5,
+    "total_generated": 12,
+    "method": "rdkit_kdg",
+    "temperature_k": 298.15,
+    "energy_range_kcal": 2.34,
+    "top_populations": [
+      {"id": "conf_001", "population": 0.45, "energy_kcal": 0.0},
+      {"id": "conf_003", "population": 0.28, "energy_kcal": 0.52}
+    ]
+  }
+}
+```
+
+**Optimized Geometry (XYZ format):**
+
+```bash
+curl http://localhost:8000/api/v1/jobs/a1b2c3d4e5f6/geometry \
+  -o ethanol_optimized.xyz
+```
+
+**Optimized Geometry (SDF format with bonds):**
+
+```bash
+curl http://localhost:8000/api/v1/jobs/a1b2c3d4e5f6/geometry.sdf \
+  -o ethanol_optimized.sdf
+```
+
+**3D Viewer Data (JSON with SDF + shift assignments):**
+
+```bash
+curl http://localhost:8000/api/v1/jobs/a1b2c3d4e5f6/geometry.json
+```
+
+Response includes XYZ, SDF, and atom-to-shift mappings for 3D visualization.
+
+**Raw NWChem Output (ZIP archive):**
+
+```bash
+curl http://localhost:8000/api/v1/jobs/a1b2c3d4e5f6/output \
+  -o nwchem_output.zip
+```
+
+**Spectrum Images:**
+
+```bash
+# 1H NMR spectrum
+curl http://localhost:8000/api/v1/jobs/a1b2c3d4e5f6/spectrum/1h.png -o spectrum_1h.png
+curl http://localhost:8000/api/v1/jobs/a1b2c3d4e5f6/spectrum/1h.svg -o spectrum_1h.svg
+
+# 13C NMR spectrum
+curl http://localhost:8000/api/v1/jobs/a1b2c3d4e5f6/spectrum/13c.png -o spectrum_13c.png
+curl http://localhost:8000/api/v1/jobs/a1b2c3d4e5f6/spectrum/13c.svg -o spectrum_13c.svg
+```
+
+**Annotated Structure Images:**
+
+```bash
+curl http://localhost:8000/api/v1/jobs/a1b2c3d4e5f6/structure.png -o structure.png
+curl http://localhost:8000/api/v1/jobs/a1b2c3d4e5f6/structure.svg -o structure.svg
+```
+
+### Error Handling
+
+**HTTP Status Codes:**
+
+| Code | Meaning | Example |
+|------|---------|---------|
+| 200 | Success | GET /jobs/{id}/results for complete job |
+| 202 | Accepted | POST /jobs (job queued) |
+| 404 | Not Found | Job ID doesn't exist |
+| 409 | Conflict | Requesting results for incomplete job |
+| 422 | Validation Error | Invalid SMILES or solvent |
+
+**Error Response Format (RFC 7807 Problem Details):**
+
+```json
+{
+  "type": "https://qm-nmr-calc.example/problems/invalid-smiles",
+  "title": "Invalid SMILES String",
+  "status": 422,
+  "detail": "RDKit failed to parse SMILES: 'invalid-smiles'"
+}
+```
+
+Common error types:
+- `invalid-smiles` - SMILES string could not be parsed
+- `invalid-solvent` - Unknown solvent name
+- `invalid-file-type` - Uploaded file is not .mol or .sdf
+- `job-not-found` - No job exists with that ID
+- `job-not-complete` - Results requested before job finished
+
+### Complete Workflow Example
+
+This bash script submits a job, polls for completion, and downloads all results:
+
+```bash
+#!/bin/bash
+# nmr_calculate.sh - Submit NMR calculation and download results
+# Usage: ./nmr_calculate.sh "CCO" "ethanol"
+
+SMILES="$1"
+NAME="${2:-molecule}"
+BASE_URL="http://localhost:8000"
+TIMEOUT=3600  # 1 hour max
+
+# Submit job
+echo "Submitting $NAME ($SMILES)..."
+RESPONSE=$(curl -s -X POST "$BASE_URL/api/v1/jobs" \
+  -H "Content-Type: application/json" \
+  -d "{\"smiles\": \"$SMILES\", \"solvent\": \"chcl3\", \"preset\": \"production\", \"name\": \"$NAME\"}")
+
+JOB_ID=$(echo "$RESPONSE" | jq -r '.job_id')
+if [ "$JOB_ID" = "null" ]; then
+  echo "Error: $(echo "$RESPONSE" | jq -r '.detail')"
+  exit 1
+fi
+echo "Job ID: $JOB_ID"
+
+# Poll for completion
+START_TIME=$(date +%s)
+while true; do
+  STATUS_RESPONSE=$(curl -s "$BASE_URL/api/v1/jobs/$JOB_ID")
+  STATUS=$(echo "$STATUS_RESPONSE" | jq -r '.status')
+  STEP=$(echo "$STATUS_RESPONSE" | jq -r '.current_step_label // "Waiting"')
+
+  echo "Status: $STATUS - $STEP"
+
+  if [ "$STATUS" = "complete" ]; then
+    echo "Calculation complete!"
+    break
+  elif [ "$STATUS" = "failed" ]; then
+    ERROR=$(echo "$STATUS_RESPONSE" | jq -r '.error_message')
+    echo "Job failed: $ERROR"
+    exit 1
+  fi
+
+  # Check timeout
+  ELAPSED=$(($(date +%s) - START_TIME))
+  if [ $ELAPSED -gt $TIMEOUT ]; then
+    echo "Timeout after $TIMEOUT seconds"
+    exit 1
+  fi
+
+  sleep 30
+done
+
+# Download results
+mkdir -p "results_$NAME"
+cd "results_$NAME"
+
+echo "Downloading results..."
+curl -s "$BASE_URL/api/v1/jobs/$JOB_ID/results" > nmr_shifts.json
+curl -s "$BASE_URL/api/v1/jobs/$JOB_ID/geometry" -o optimized.xyz
+curl -s "$BASE_URL/api/v1/jobs/$JOB_ID/geometry.sdf" -o optimized.sdf
+curl -s "$BASE_URL/api/v1/jobs/$JOB_ID/spectrum/1h.png" -o spectrum_1h.png
+curl -s "$BASE_URL/api/v1/jobs/$JOB_ID/spectrum/13c.png" -o spectrum_13c.png
+curl -s "$BASE_URL/api/v1/jobs/$JOB_ID/output" -o nwchem_output.zip
+
+# Display shifts
+echo ""
+echo "1H Chemical Shifts:"
+jq -r '.h1_shifts[] | "  H\(.index): \(.shift) ppm"' nmr_shifts.json
+
+echo ""
+echo "13C Chemical Shifts:"
+jq -r '.c13_shifts[] | "  C\(.index): \(.shift) ppm"' nmr_shifts.json
+
+echo ""
+echo "Results saved to results_$NAME/"
+```
+
+## Result Interpretation
+
+Understanding how to interpret NMR calculation results is essential for making effective use of predicted chemical shifts.
+
+### Chemical Shift Tables
+
+The results page displays separate tables for 1H and 13C chemical shifts:
+
+**1H (Proton) Shifts:**
+- Typical range: 0-12 ppm for most organic molecules
+- Downfield shifts (higher ppm): deshielded protons near electronegative atoms
+- Upfield shifts (lower ppm): shielded protons in alkyl groups
+- TMS reference: all shifts are relative to tetramethylsilane (0.0 ppm)
+
+**13C (Carbon) Shifts:**
+- Typical range: 0-220 ppm
+- Carbonyl carbons: 160-220 ppm
+- Aromatic/alkene carbons: 100-160 ppm
+- Alkyl carbons: 0-60 ppm
+- TMS reference: relative to tetramethylsilane (0.0 ppm)
+
+**Atom Indexing:**
+- Indices (H1, H2, C1, C2...) correspond to the canonical SMILES atom order
+- For complex molecules, compare with the 3D viewer where shift labels are overlaid on atoms
+
+### Expected Accuracy
+
+The calculator provides Mean Absolute Error (MAE) estimates based on the DELTA50 benchmark dataset:
+
+| Preset | 1H MAE | 13C MAE |
+|--------|--------|---------|
+| Production | ~0.12-0.15 ppm | ~1.9-2.5 ppm |
+| Draft | ~0.3-0.5 ppm | ~4-6 ppm |
+
+**Factors affecting accuracy:**
+- **Molecule class:** MAE values derived from typical organic molecules; unusual functional groups may differ
+- **Conformational flexibility:** Ensemble mode improves accuracy for flexible molecules
+- **Solvent matching:** Use the same solvent as your experimental NMR
+- **Scaling factors:** Applied automatically using DELTA50 regression parameters
+
+**Interpreting MAE:**
+- The displayed `+/- X.XX ppm` indicates typical deviation from experimental values
+- Individual atom shifts may deviate more or less than the average
+- Relative shift ordering is often more reliable than absolute values
+
+### Spectrum Visualizations
+
+The simulated spectra provide a visual representation of predicted NMR patterns:
+
+**Spectrum Features:**
+- X-axis: Chemical shift in ppm (reversed: high to low, left to right)
+- Y-axis: Relative intensity (arbitrary units)
+- Peak shape: Lorentzian line broadening centered at each predicted shift
+- 1H spectrum: Typically displayed 0-12 ppm range
+- 13C spectrum: Typically displayed 0-220 ppm range
+
+**Using Spectra:**
+- Compare overall pattern with experimental spectrum
+- Peak positions should align within expected MAE
+- Relative spacing between peaks is often more reliable than absolute positions
+- Click spectrum images in web UI to enlarge
+
+**Download Options:**
+- PNG (300 DPI): Good for presentations and documents
+- SVG: Vector format, ideal for publications and scaling
+
+### 3D Structure Viewer
+
+The interactive 3D viewer displays the optimized molecular geometry with shift labels:
+
+**Viewer Controls:**
+- **Rotate:** Click and drag
+- **Zoom:** Scroll wheel
+- **Reset view:** Double-click
+
+**Shift Labels:**
+- Blue labels: 1H chemical shifts in ppm
+- Orange labels: 13C chemical shifts in ppm
+- Labels positioned near corresponding atoms
+- Ball-and-stick model with Jmol-style element colors
+
+**For Ensemble Calculations:**
+- Conformer dropdown: Select different conformer geometries to view
+- Shift labels: Always show Boltzmann-averaged values (not per-conformer shifts)
+- Default view: Lowest-energy conformer geometry
+- Population percentages: Shown in conformer selector
+
+### Ensemble Results
+
+For ensemble calculations, shifts represent population-weighted averages across conformers:
+
+**Boltzmann Averaging:**
+- Each conformer contributes proportionally to its Boltzmann population
+- Population = exp(-E/RT) / sum(exp(-E/RT)) where E is relative energy
+- Temperature: 298.15 K (room temperature)
+- Higher population conformers have larger influence on final shifts
+
+**Ensemble Metadata Panel:**
+- **Conformers used:** Number of conformers included in averaging
+- **Total generated:** Conformers created before energy filtering
+- **Energy range:** Spread of DFT energies in kcal/mol
+- **Top contributors:** Highest-population conformers with their percentages
+- **Conformer method:** RDKit KDG or CREST
+
+**When to use ensemble:**
+- Molecules with 3+ rotatable bonds
+- When single-conformer result seems inconsistent with experiment
+- For publication-quality predictions of flexible molecules
+
+### Downloading Results
+
+**Recommended file formats for different purposes:**
+
+| Purpose | Format | Why |
+|---------|--------|-----|
+| Further calculations | XYZ | Universal, simple coordinates |
+| Visualization tools | SDF | Contains bonds, opens in ChemDraw/Avogadro |
+| Publications | SVG | Vector graphics, scales without pixelation |
+| Presentations | PNG | Raster format, widely compatible |
+| Reproducibility | ZIP | Full NWChem output for debugging |
+
+**Structure files:**
+- **XYZ:** Cartesian coordinates only (element + x, y, z)
+- **SDF:** Includes bond connectivity from original SMILES
+
+**For ensemble jobs:**
+- Geometry files contain the lowest-energy conformer
+- Full conformer ensemble available via geometry.json endpoint
+
+### Troubleshooting Results
+
+**Unexpected chemical shifts:**
+1. Check solvent matches your experimental conditions
+2. Try ensemble mode for flexible molecules
+3. Verify SMILES correctly represents your structure
+4. Consider that some functional groups have higher errors
+
+**Missing atoms in 3D viewer:**
+- Ensure SMILES includes all atoms (explicit hydrogens if needed)
+- Check for disconnected fragments in SMILES
+
+**Large MAE values:**
+- Normal for unusual functional groups (phosphorus, sulfur, halogens)
+- Consider that benchmark MAE was derived from specific molecule types
+- Use relative shift ordering rather than absolute values
+
+**Calculation failures:**
+- Very large molecules may exceed memory limits
+- Unusual bonding patterns may fail geometry optimization
+- Check NWChem output (ZIP download) for specific error messages
+
+For detailed methodology and scientific references, see the [Science documentation](science.md).
+
 ## Related Documentation
 
 - [Installation Guide](installation.md) - System setup and dependencies
