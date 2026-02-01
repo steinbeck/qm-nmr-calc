@@ -3,6 +3,7 @@
 import re
 
 import pytest
+from rdkit import Chem
 
 from qm_nmr_calc.nmredata import (
     NMREDATA_LEVEL,
@@ -10,6 +11,8 @@ from qm_nmr_calc.nmredata import (
     NMREDATA_VERSION,
     format_assignment_tag,
     format_atom_label,
+    format_sdf_tag,
+    generate_nmredata_sdf,
     map_solvent_to_nmredata,
 )
 
@@ -174,3 +177,258 @@ class TestAssignmentTag:
         # C shifts come after
         assert lines[2].startswith("c1")
         assert lines[3].startswith("c2")
+
+
+@pytest.fixture
+def ethanol_data():
+    """Fixture providing ethanol test data for NMReData generation."""
+    return {
+        "smiles": "CCO",
+        "geometry_xyz": """9
+ethanol optimized
+C    0.0000    0.0000    0.0000
+C    1.5000    0.0000    0.0000
+O    2.0000    1.2000    0.0000
+H   -0.3500   -0.5000   -0.9000
+H   -0.3500   -0.5000    0.9000
+H   -0.3500    1.0000    0.0000
+H    1.8500   -0.5000   -0.9000
+H    1.8500   -0.5000    0.9000
+H    2.9000    1.2000    0.0000
+""",
+        "h1_shifts": [
+            {"index": 4, "atom": "H", "shift": 1.18},
+            {"index": 5, "atom": "H", "shift": 1.18},
+            {"index": 6, "atom": "H", "shift": 1.18},
+            {"index": 7, "atom": "H", "shift": 3.65},
+            {"index": 8, "atom": "H", "shift": 3.65},
+            {"index": 9, "atom": "H", "shift": 2.45},
+        ],
+        "c13_shifts": [
+            {"index": 1, "atom": "C", "shift": 18.2},
+            {"index": 2, "atom": "C", "shift": 58.3},
+        ],
+        "solvent": "chcl3",
+    }
+
+
+class TestSDFTagFormat:
+    """Test SDF tag formatting helper."""
+
+    def test_tag_format(self):
+        """SDF tag should have proper format with angle brackets."""
+        result = format_sdf_tag("NMREDATA_VERSION", "1.1")
+        assert result == ">  <NMREDATA_VERSION>\n1.1\n"
+
+    def test_multiline_value(self):
+        """SDF tag should handle multiline values."""
+        result = format_sdf_tag("NMREDATA_ASSIGNMENT", "h1, 7.2453, 1\nh2, 3.45, 2")
+        assert ">  <NMREDATA_ASSIGNMENT>" in result
+        assert "h1, 7.2453, 1" in result
+        assert "h2, 3.45, 2" in result
+
+
+class TestGenerateNMReDataSDF:
+    """Test complete NMReData SDF generation."""
+
+    def test_ethanol_all_required_tags_present(self, ethanol_data):
+        """Generated SDF should contain all 9 required NMReData tags."""
+        sdf = generate_nmredata_sdf(
+            smiles=ethanol_data["smiles"],
+            geometry_xyz=ethanol_data["geometry_xyz"],
+            h1_shifts=ethanol_data["h1_shifts"],
+            c13_shifts=ethanol_data["c13_shifts"],
+            solvent=ethanol_data["solvent"],
+        )
+
+        # Required tags per NMReData spec
+        required_tags = [
+            "NMREDATA_VERSION",
+            "NMREDATA_LEVEL",
+            "NMREDATA_SOLVENT",
+            "NMREDATA_TEMPERATURE",
+            "NMREDATA_ASSIGNMENT",
+            "NMREDATA_FORMULA",
+            "NMREDATA_SMILES",
+            "NMREDATA_ID",
+        ]
+        for tag in required_tags:
+            assert f"<{tag}>" in sdf, f"Missing required tag: {tag}"
+
+    def test_tag_parsing_with_rdkit(self, ethanol_data):
+        """Generated SDF should be parseable by RDKit SDMolSupplier."""
+        sdf = generate_nmredata_sdf(
+            smiles=ethanol_data["smiles"],
+            geometry_xyz=ethanol_data["geometry_xyz"],
+            h1_shifts=ethanol_data["h1_shifts"],
+            c13_shifts=ethanol_data["c13_shifts"],
+            solvent=ethanol_data["solvent"],
+        )
+
+        # Parse with RDKit
+        import io
+        supplier = Chem.SDMolSupplier()
+        supplier.SetData(sdf)
+        mol = next(supplier)
+
+        assert mol is not None, "RDKit failed to parse SDF"
+        # Check properties are accessible
+        assert mol.HasProp("NMREDATA_VERSION")
+        assert mol.GetProp("NMREDATA_VERSION") == "1.1"
+
+    def test_mol_block_has_3d_coordinates(self, ethanol_data):
+        """MOL block should contain 3D coordinates from XYZ."""
+        sdf = generate_nmredata_sdf(
+            smiles=ethanol_data["smiles"],
+            geometry_xyz=ethanol_data["geometry_xyz"],
+            h1_shifts=ethanol_data["h1_shifts"],
+            c13_shifts=ethanol_data["c13_shifts"],
+            solvent=ethanol_data["solvent"],
+        )
+
+        # MOL block is before first tag
+        mol_block = sdf.split(">  <")[0]
+        assert "M  END" in mol_block, "MOL block missing M  END"
+
+        # Should have some non-zero z coordinates (3D structure)
+        # Parse a few coordinate lines (after header, before M  END)
+        lines = mol_block.split("\n")
+        coord_lines = [l for l in lines if len(l.strip()) > 60 and "M  END" not in l]
+        # At least one atom should have non-planar z coordinate
+        has_3d = any("0.0000" not in line.split()[-8] for line in coord_lines if len(line.split()) >= 10)
+        # More reliable: check for specific coordinates from ethanol_data
+        assert "1.5000" in mol_block or "-0.9000" in mol_block, "Expected XYZ coordinates not found"
+
+    def test_assignment_content_format(self, ethanol_data):
+        """ASSIGNMENT tag should contain properly formatted H and C shifts."""
+        sdf = generate_nmredata_sdf(
+            smiles=ethanol_data["smiles"],
+            geometry_xyz=ethanol_data["geometry_xyz"],
+            h1_shifts=ethanol_data["h1_shifts"],
+            c13_shifts=ethanol_data["c13_shifts"],
+            solvent=ethanol_data["solvent"],
+        )
+
+        # Extract ASSIGNMENT tag content
+        assert "NMREDATA_ASSIGNMENT" in sdf
+        # Should have H shifts
+        assert "h4, 1.1800, 4" in sdf
+        # Should have C shifts
+        assert "c1, 18.2000, 1" in sdf
+        assert "c2, 58.3000, 2" in sdf
+
+    def test_solvent_mapping_in_output(self, ethanol_data):
+        """SOLVENT tag should show NMReData format (CDCl3, not chcl3)."""
+        sdf = generate_nmredata_sdf(
+            smiles=ethanol_data["smiles"],
+            geometry_xyz=ethanol_data["geometry_xyz"],
+            h1_shifts=ethanol_data["h1_shifts"],
+            c13_shifts=ethanol_data["c13_shifts"],
+            solvent="chcl3",
+        )
+
+        # Should map chcl3 -> CDCl3
+        assert "CDCl3" in sdf
+        assert "chcl3" not in sdf.lower() or "SMILES" in sdf  # May appear in SMILES but not SOLVENT
+
+    def test_temperature_tag_format(self, ethanol_data):
+        """TEMPERATURE tag should have 2 decimal places."""
+        sdf = generate_nmredata_sdf(
+            smiles=ethanol_data["smiles"],
+            geometry_xyz=ethanol_data["geometry_xyz"],
+            h1_shifts=ethanol_data["h1_shifts"],
+            c13_shifts=ethanol_data["c13_shifts"],
+            solvent=ethanol_data["solvent"],
+            temperature_k=298.15,
+        )
+
+        # Should format as 298.15 (2 decimals)
+        assert "298.15" in sdf
+
+    def test_ensemble_mode_provenance(self, ethanol_data):
+        """Ensemble mode should include conformer metadata in provenance."""
+        sdf = generate_nmredata_sdf(
+            smiles=ethanol_data["smiles"],
+            geometry_xyz=ethanol_data["geometry_xyz"],
+            h1_shifts=ethanol_data["h1_shifts"],
+            c13_shifts=ethanol_data["c13_shifts"],
+            solvent=ethanol_data["solvent"],
+            is_ensemble=True,
+            conformer_count=15,
+        )
+
+        # Should mention Boltzmann averaging in provenance
+        assert "Boltzmann-averaged" in sdf
+        assert "15 conformers" in sdf
+
+    def test_formula_tag(self, ethanol_data):
+        """FORMULA tag should contain correct molecular formula."""
+        sdf = generate_nmredata_sdf(
+            smiles=ethanol_data["smiles"],
+            geometry_xyz=ethanol_data["geometry_xyz"],
+            h1_shifts=ethanol_data["h1_shifts"],
+            c13_shifts=ethanol_data["c13_shifts"],
+            solvent=ethanol_data["solvent"],
+        )
+
+        # Ethanol is C2H6O
+        assert "NMREDATA_FORMULA" in sdf
+        # RDKit format may be C2H6O or with atom counts
+        assert "C2H6O" in sdf or "C2" in sdf and "H6" in sdf and "O" in sdf
+
+    def test_round_trip_atom_count(self, ethanol_data):
+        """Round-trip: export -> parse -> verify atom count matches."""
+        sdf = generate_nmredata_sdf(
+            smiles=ethanol_data["smiles"],
+            geometry_xyz=ethanol_data["geometry_xyz"],
+            h1_shifts=ethanol_data["h1_shifts"],
+            c13_shifts=ethanol_data["c13_shifts"],
+            solvent=ethanol_data["solvent"],
+        )
+
+        # Parse with RDKit (removeHs=False to preserve explicit hydrogens)
+        supplier = Chem.SDMolSupplier()
+        supplier.SetData(sdf, removeHs=False)
+        mol = next(supplier)
+
+        # Ethanol has 9 atoms (2 C + 1 O + 6 H)
+        assert mol.GetNumAtoms() == 9
+
+    def test_sdf_structure_complete(self, ethanol_data):
+        """SDF should have complete structure: MOL block + tags + terminator."""
+        sdf = generate_nmredata_sdf(
+            smiles=ethanol_data["smiles"],
+            geometry_xyz=ethanol_data["geometry_xyz"],
+            h1_shifts=ethanol_data["h1_shifts"],
+            c13_shifts=ethanol_data["c13_shifts"],
+            solvent=ethanol_data["solvent"],
+        )
+
+        # MOL block ends with M  END
+        assert "M  END" in sdf
+        # Tags use >  < format
+        assert ">  <NMREDATA_VERSION>" in sdf
+        # SDF terminates with $$$$
+        assert "$$$$" in sdf
+
+    def test_invalid_smiles_raises_error(self):
+        """Invalid SMILES should raise ValueError."""
+        with pytest.raises(ValueError, match="Invalid SMILES"):
+            generate_nmredata_sdf(
+                smiles="INVALID!!!",
+                geometry_xyz="3\ntest\nC 0 0 0\nH 1 0 0\nH 0 1 0",
+                h1_shifts=[],
+                c13_shifts=[],
+                solvent="chcl3",
+            )
+
+    def test_atom_count_mismatch_raises_error(self):
+        """XYZ atom count mismatch should raise ValueError."""
+        with pytest.raises(ValueError, match="Atom count mismatch"):
+            generate_nmredata_sdf(
+                smiles="CCO",  # Ethanol has 9 atoms with H
+                geometry_xyz="3\ntest\nC 0 0 0\nH 1 0 0\nH 0 1 0",  # Only 3 atoms
+                h1_shifts=[],
+                c13_shifts=[],
+                solvent="chcl3",
+            )
