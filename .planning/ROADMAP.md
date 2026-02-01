@@ -356,7 +356,11 @@ Plans:
   4. 3Dmol.js integration documented (viewer, shift labels)
   5. CREST/xTB integration documented (optional ensemble mode)
   6. SmilesDrawer usage documented
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 29-01-PLAN.md — Python libraries (RDKit, NWChem, Huey)
+- [ ] 29-02-PLAN.md — JavaScript libraries and CREST/xTB (3Dmol.js, SmilesDrawer, CREST)
 **Status**: Not Started
 
 ### Phase 30: DP4+ Science Documentation
@@ -388,4 +392,4 @@ Plans:
 
 ---
 
-*Last updated: 2026-02-01 - Phase 28 complete*
+*Last updated: 2026-02-01 - Phase 29 planned*
