@@ -11,18 +11,18 @@ See: .planning/PROJECT.md (updated 2026-02-01)
 
 Milestone: v2.3 NMReData Export
 Phase: Phase 32 - Core NMReData Generation Module
-Plan: —
-Status: Roadmap created, ready to begin Phase 32
-Last activity: 2026-02-01 — Milestone v2.3 roadmap created
+Plan: 01 of 01 (complete)
+Status: Phase 32 complete - ready for Phase 33
+Last activity: 2026-02-01 — Completed 32-01-PLAN.md
 
-Progress: ░░░░░░░░░░░░░░░░░░░░ 0% (Phase 32/34)
+Progress: █████░░░░░░░░░░░░░░░ 33% (Phase 32/34 complete, Phase 33/34 next)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 85 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10)
+- Total plans completed: 86 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 1)
 - Average duration: ~7 min
-- Total execution time: ~580 min (~9.7 hours)
+- Total execution time: ~590 min (~9.8 hours)
 
 **By Milestone:**
 
@@ -34,7 +34,7 @@ Progress: ░░░░░░░░░░░░░░░░░░░░ 0% (Phase
 | v2.0.1 Conformer Pre-selection | 1 | 3 | 18 min | Shipped 2026-01-30 |
 | v2.1 UI Redesign | 6 | 17 | ~3 days | Shipped 2026-01-31 |
 | v2.2 Documentation | 7 | 10 | 2 days | Shipped 2026-02-01 |
-| v2.3 NMReData Export | 3 | TBD | In progress | Active |
+| v2.3 NMReData Export | 3 | 1 (so far) | In progress | Active |
 
 ## Accumulated Context
 
@@ -42,6 +42,12 @@ Progress: ░░░░░░░░░░░░░░░░░░░░ 0% (Phase
 
 All prior decisions logged in PROJECT.md Key Decisions table.
 v2.2 decisions archived to milestones/v2.2-ROADMAP.md.
+
+**Phase 32 decisions:**
+- Lowercase atom labels (h5, c3) for NMReData format
+- Preserve 1-based atom indices from NWChem (no conversion)
+- Solvent mapping: chcl3→CDCl3, dmso→(CD3)2SO
+- 4 decimal precision for shifts per NMReData spec
 
 ### Roadmap Evolution
 
@@ -88,8 +94,8 @@ None
 ## Session Continuity
 
 Last session: 2026-02-01
-Stopped at: v2.3 roadmap created
+Stopped at: Completed Phase 32 Plan 01 (NMReData core module)
 Resume file: None
-Next: `/gsd:plan-phase 32` to begin Phase 32 implementation
-Tests: All tests passing (257 unit + 28 conformer/xTB = 285 tests)
-Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs
+Next: `/gsd:plan-phase 33` to begin Phase 33 (API and UI Integration)
+Tests: All tests passing (285 prior + 36 nmredata = 321 tests)
+Codebase: ~6,270 LOC Python, ~2,230 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs
