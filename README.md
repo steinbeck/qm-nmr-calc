@@ -9,7 +9,7 @@ Built for chemists and researchers who need reliable NMR predictions without man
 
 ## Features
 
-- **Accurate predictions** using DFT calculations with linear scaling calibration
+- **NMR chemical shift predictions** using DFT calculations with linear scaling calibration
 - **Conformer ensembles** with Boltzmann-weighted averaging (via optional CREST)
 - **Multiple solvents** including CHCl3, DMSO, and gas phase
 - **Web interface** for chemists - no command line required
