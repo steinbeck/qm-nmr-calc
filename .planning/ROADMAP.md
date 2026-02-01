@@ -331,7 +331,11 @@ Plans:
   3. Exported file can be parsed by RDKit SDMolSupplier without errors
   4. Round-trip test verifies atom assignments match original predictions after re-import
   5. Test coverage includes edge cases (ensemble vs single-conformer, different solvents, molecules with implicit hydrogens)
+**Plans**: 1 plan
 **Status**: Pending
+
+Plans:
+- [ ] 34-01-PLAN.md — NMReData endpoint integration tests
 
 </details>
 
@@ -377,8 +381,8 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 31. Documentation Polish | v2.2 | 1/1 | Complete | 2026-02-01 |
 | **32. NMReData Module** | **v2.3** | **1/1** | **Complete** | 2026-02-01 |
 | **33. API/UI Integration** | **v2.3** | **1/1** | **Complete** | 2026-02-01 |
-| **34. Testing & Validation** | **v2.3** | **0/0** | **Pending** | — |
+| **34. Testing & Validation** | **v2.3** | **0/1** | **Pending** | — |
 
 ---
 
-*Last updated: 2026-02-01 - Phase 33 complete*
+*Last updated: 2026-02-01 - Phase 34 planned*
