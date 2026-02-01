@@ -895,7 +895,10 @@ H   1.089000   0.000000   0.000000
 
 ---
 
-**Navigation:** [Documentation Index](README.md) | [Technical Architecture](architecture.md)
+## Related Documentation
 
-**Dependencies:** See [pyproject.toml](../pyproject.toml) for library versions.
+- [Technical Architecture](architecture.md) - System design and data flow diagrams
+- [NMR Methodology](science.md) - DP4+, linear scaling, Boltzmann averaging
+- [Usage Guide](usage.md) - Web UI workflow and REST API reference
+- [Installation Guide](installation.md) - CREST/xTB setup instructions
 

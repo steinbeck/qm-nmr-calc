@@ -675,9 +675,9 @@ If you encounter problems not covered here:
    - Steps to reproduce
    - System info (OS, Python version, NWChem version)
 
-### Further Documentation
+## Related Documentation
 
 - [Usage Guide](usage.md) - How to run calculations
-- [Architecture](architecture.md) - System design details
-- [Science](science.md) - NMR methodology and DP4+
+- [Architecture](architecture.md) - System design and data flow
+- [NMR Methodology](science.md) - Scientific methodology and DP4+
 

@@ -752,6 +752,9 @@ This section provides complete literature citations for the methodologies used i
 
 ---
 
-*Last updated: 2026-02-01*
+## Related Documentation
 
-*[Back to main documentation](./README.md)*
+- [Technical Architecture](architecture.md) - System design, data flow, and CSS architecture
+- [Library Documentation](libraries.md) - RDKit, NWChem, Huey integration details
+- [Usage Guide](usage.md) - Web UI and REST API reference
+- [Installation Guide](installation.md) - System setup and dependencies
