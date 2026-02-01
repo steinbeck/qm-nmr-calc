@@ -316,10 +316,10 @@ Plans:
   4. Results page includes NMReData download button alongside existing PNG/XYZ downloads
   5. Download button follows existing glassmorphism design system from v2.1
 **Plans**: 1 plan
-**Status**: Planned
+**Status**: Complete
 
 Plans:
-- [ ] 33-01-PLAN.md — NMReData endpoint and download button
+- [x] 33-01-PLAN.md — NMReData endpoint and download button
 
 ### Phase 34: Testing and Validation
 **Goal**: Comprehensive testing of NMReData format compliance and round-trip validation
@@ -376,9 +376,9 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 30. DP4+ Science Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
 | 31. Documentation Polish | v2.2 | 1/1 | Complete | 2026-02-01 |
 | **32. NMReData Module** | **v2.3** | **1/1** | **Complete** | 2026-02-01 |
-| **33. API/UI Integration** | **v2.3** | **0/1** | **Planned** | — |
+| **33. API/UI Integration** | **v2.3** | **1/1** | **Complete** | 2026-02-01 |
 | **34. Testing & Validation** | **v2.3** | **0/0** | **Pending** | — |
 
 ---
 
-*Last updated: 2026-02-01 - Phase 33 planned*
+*Last updated: 2026-02-01 - Phase 33 complete*

@@ -21,13 +21,13 @@ Requirements for NMReData export feature. Each maps to roadmap phases.
 
 ### REST API
 
-- [ ] **API-01**: User can download NMReData file via `GET /api/v1/jobs/{job_id}/nmredata.sdf`
-- [ ] **API-02**: Response includes proper HTTP headers (media type `chemical/x-mdl-sdfile`, filename `{job_id}_nmredata.sdf`)
-- [ ] **API-03**: Endpoint returns 404 if job not found, 409 if job not complete
+- [x] **API-01**: User can download NMReData file via `GET /api/v1/jobs/{job_id}/nmredata.sdf`
+- [x] **API-02**: Response includes proper HTTP headers (media type `chemical/x-mdl-sdfile`, filename `{job_id}_nmredata.sdf`)
+- [x] **API-03**: Endpoint returns 404 if job not found, 409 if job not complete
 
 ### Web UI
 
-- [ ] **UI-01**: Results page includes download button for NMReData file alongside existing PNG/XYZ downloads
+- [x] **UI-01**: Results page includes download button for NMReData file alongside existing PNG/XYZ downloads
 
 ### Testing
 
@@ -75,10 +75,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | NMRD-07 | Phase 32 | Complete |
 | NMRD-08 | Phase 32 | Complete |
 | NMRD-09 | Phase 32 | Complete |
-| API-01 | Phase 33 | Pending |
-| API-02 | Phase 33 | Pending |
-| API-03 | Phase 33 | Pending |
-| UI-01 | Phase 33 | Pending |
+| API-01 | Phase 33 | Complete |
+| API-02 | Phase 33 | Complete |
+| API-03 | Phase 33 | Complete |
+| UI-01 | Phase 33 | Complete |
 | TEST-01 | Phase 34 | Pending |
 | TEST-02 | Phase 34 | Pending |
 | TEST-03 | Phase 34 | Pending |
@@ -90,4 +90,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-01*
-*Last updated: 2026-02-01 after Phase 32 completion*
+*Last updated: 2026-02-01 after Phase 33 completion*
