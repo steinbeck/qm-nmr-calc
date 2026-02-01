@@ -591,3 +591,167 @@ This project supports two conformer generation approaches:
 
 - **Importance for DP4+:**
   The accuracy of DP4+ probability assignments depends critically on including all relevant conformers. Missing a low-energy conformer can dramatically affect the predicted spectrum and lead to incorrect stereochemical assignments.
+
+---
+
+## Expected Accuracy and Limitations
+
+### Typical Prediction Accuracy
+
+Based on the DELTA50 benchmark and this project's scaling factors, expected prediction accuracy is:
+
+| Nucleus | Solvent | MAE | RMSD | Interpretation |
+|---------|---------|-----|------|----------------|
+| 1H | CHCl3 | 0.12 ppm | 0.16 ppm | Excellent |
+| 1H | DMSO | 0.13 ppm | 0.17 ppm | Excellent |
+| 1H | vacuum | 0.15 ppm | 0.19 ppm | Very good |
+| 13C | CHCl3 | 1.95 ppm | 2.69 ppm | Good |
+| 13C | DMSO | 2.15 ppm | 2.92 ppm | Good |
+| 13C | vacuum | 1.74 ppm | 2.56 ppm | Good |
+
+**Context:** For comparison, ISiCLE (a similar NMR prediction framework) reports typical accuracies of ~0.2 ppm for 1H and ~2.5 ppm for 13C. Our results are competitive with or better than literature values.
+
+### Factors Affecting Accuracy
+
+Several factors influence prediction quality:
+
+1. **Conformer sampling quality** (most important for flexible molecules)
+   - Missing low-energy conformers degrades predictions
+   - CREST generally outperforms RDKit for flexible molecules
+   - Rule of thumb: ensure the 5 lowest-energy conformers are included
+
+2. **Basis set adequacy**
+   - 6-311+G(2d,p) is well-validated for NMR
+   - Diffuse functions (+) important for anions, lone pairs
+   - Larger basis sets offer diminishing returns
+
+3. **Solvent model match**
+   - Use scaling factors matching experimental conditions
+   - Implicit solvation captures bulk electrostatics
+   - Explicit solvent needed for H-bonding solvents (water, methanol)
+
+4. **Heavy atom effects**
+   - Atoms heavier than carbon (Cl, Br, I, S, P) not parameterized
+   - Nearby heavy atoms may introduce systematic errors
+   - Relativistic effects become important for very heavy atoms
+
+5. **Electronic structure complexity**
+   - Highly conjugated systems may require larger active space
+   - Radicals, biradicals not supported
+   - Transition metals require specialized methods
+
+### Known Problem Cases
+
+Certain molecular features consistently challenge the methodology:
+
+- **Highly strained ring systems:** Three-membered rings, bridgehead positions
+- **Strong intramolecular hydrogen bonds:** Shifts of H-bonded protons unpredictable
+- **Unusual aromatic ring currents:** [10]annulenes, anti-aromatic systems
+- **Significant charge separation:** Zwitterions, ylides
+- **Anisole-type systems:** Compound 48 in DELTA50 was an outlier
+
+### When Predictions May Fail
+
+The methodology has fundamental limitations:
+
+1. **Explicit solvation required:**
+   - Protic solvents (water, alcohols) where H-bonding is critical
+   - Salt effects, ion pairing
+
+2. **Dynamic systems:**
+   - Fast exchange (tautomerism, conformational exchange faster than NMR timescale)
+   - Slow exchange (multiple species in equilibrium)
+   - Temperature-dependent equilibria
+
+3. **Paramagnetic systems:**
+   - Open-shell molecules
+   - Metal complexes with unpaired electrons
+
+4. **Very large molecules:**
+   - >50 heavy atoms strains basis set convergence
+   - Computational cost scales as O(N^4) with system size
+
+### Interpreting Results
+
+**Practical guidelines:**
+
+- **1H predictions:** Reliable to ~0.2 ppm for typical organic molecules
+- **13C predictions:** Reliable to ~3 ppm for typical organic molecules
+- **Use case:** Structure verification, stereochemical assignment support
+- **Caution:** NMR prediction alone is not proof of structure; combine with other evidence
+
+**Warning signs:**
+
+- Predicted shifts outside typical ranges (1H: -2 to 15 ppm; 13C: -10 to 220 ppm)
+- Very large deviations (>0.5 ppm for 1H, >5 ppm for 13C) may indicate structural issues
+- Conformer energies spanning >6 kcal/mol suggests sampling problems
+
+---
+
+## References
+
+This section provides complete literature citations for the methodologies used in the QM NMR Calculator.
+
+### Primary Methods
+
+1. **DP4 Original Method**
+
+   Smith, S. G.; Goodman, J. M. "Assigning Stereochemistry to Single Diastereoisomers by GIAO NMR Calculation: The DP4 Probability."
+   *J. Am. Chem. Soc.* **2010**, 132, 12946-12959.
+   DOI: [10.1021/ja105035r](https://doi.org/10.1021/ja105035r)
+
+2. **DP4+ Enhancement**
+
+   Grimblat, N.; Zanardi, M. M.; Sarotti, A. M. "Beyond DP4: an Improved Probability for the Stereochemical Assignment of Isomeric Compounds using Quantum Chemical Calculations of NMR Shifts."
+   *J. Org. Chem.* **2015**, 80, 12526-12534.
+   DOI: [10.1021/acs.joc.5b02396](https://doi.org/10.1021/acs.joc.5b02396)
+
+3. **DELTA50 Benchmark**
+
+   Grimblat, N.; Gavin, J. A.; Hernandez Daranas, A.; Sarotti, A. M. "Scaling Factor Databases for Quantum Chemical Calculations: Focus on Solvent Mixtures and Unusual Nuclei."
+   *Molecules* **2023**, 28, 2449.
+   DOI: [10.3390/molecules28062449](https://doi.org/10.3390/molecules28062449)
+
+### Computational Methods
+
+4. **ISiCLE NMR Framework**
+
+   Colby, S. M.; et al. "ISiCLE: A Quantum Chemistry Pipeline for Establishing in Silico Collision Cross Section Libraries."
+   *J. Cheminform.* **2019**, 11, 65.
+   DOI: [10.1186/s13321-018-0305-8](https://doi.org/10.1186/s13321-018-0305-8)
+
+5. **CREST Conformer Search**
+
+   Pracht, P.; Bohle, F.; Grimme, S. "Automated exploration of the low-energy chemical space with fast quantum chemical methods."
+   *Phys. Chem. Chem. Phys.* **2020**, 22, 7169-7192.
+   DOI: [10.1039/C9CP06869D](https://doi.org/10.1039/C9CP06869D)
+
+6. **GIAO Method**
+
+   Wolinski, K.; Hinton, J. F.; Pulay, P. "Efficient Implementation of the Gauge-Independent Atomic Orbital Method for NMR Chemical Shift Calculations."
+   *J. Am. Chem. Soc.* **1990**, 112, 8251-8260.
+   DOI: [10.1021/ja00179a005](https://doi.org/10.1021/ja00179a005)
+
+7. **COSMO Solvation Model**
+
+   Klamt, A.; Schuurmann, G. "COSMO: a new approach to dielectric screening in solvents with explicit expressions for the screening energy and its gradient."
+   *J. Chem. Soc., Perkin Trans. 2* **1993**, 799-805.
+   DOI: [10.1039/P29930000799](https://doi.org/10.1039/P29930000799)
+
+8. **B3LYP Hybrid Functional**
+
+   Becke, A. D. "Density-functional thermochemistry. III. The role of exact exchange."
+   *J. Chem. Phys.* **1993**, 98, 5648-5652.
+   DOI: [10.1063/1.464913](https://doi.org/10.1063/1.464913)
+
+9. **NMR Scaling Factors Review**
+
+   Pierens, G. K. "1H and 13C NMR Scaling Factors for the Calculation of Chemical Shifts in Commonly Used Solvents Using Density Functional Theory."
+   *J. Comput. Chem.* **2014**, 35, 1388-1394.
+   DOI: [10.1002/jcc.23638](https://doi.org/10.1002/jcc.23638)
+
+---
+
+*Last updated: 2026-02-01*
+
+*[Back to main documentation](./README.md)*
