@@ -289,3 +289,135 @@ The QM NMR Calculator supports the following solvents via NWChem's COSMO impleme
 - **vacuum** - Gas-phase calculation (no solvation)
 
 Scaling factors are currently available for **CHCl3**, **DMSO**, and **vacuum**.
+
+---
+
+## Linear Scaling Methodology
+
+### The Reference Compound Problem
+
+The traditional approach to converting calculated shielding constants to chemical shifts uses a single reference compound (typically TMS):
+
+$$\delta = \sigma_{ref} - \sigma_{sample}$$
+
+However, this approach has significant limitations:
+
+1. **TMS shielding varies:** The calculated shielding of TMS depends on the DFT method, basis set, and solvation model. A value calculated with one approach cannot be used with another.
+
+2. **Systematic errors accumulate:** DFT methods have systematic biases that affect all calculated shieldings. A single-point reference cannot correct for these trends.
+
+3. **Method-specific calibration needed:** Each combination of functional/basis set/solvent produces different systematic errors, requiring separate calibration.
+
+### Empirical Regression Approach
+
+Rather than relying on a single reference compound, **empirical linear scaling** fits a regression across many compounds with known experimental shifts. This approach:
+
+- Uses a benchmark dataset of diverse organic molecules
+- Fits method-specific scaling factors (slope and intercept)
+- Implicitly handles the reference and corrects systematic errors
+- Provides error statistics (MAE, RMSD) for quality assessment
+
+The key insight is that DFT shielding errors are largely **systematic**, not random. A linear correction captures most of this systematic error.
+
+### Mathematical Derivation
+
+Given:
+- $\sigma_{calc,i}$ = calculated shielding for atom $i$
+- $\delta_{exp,i}$ = experimental chemical shift for atom $i$
+
+We assume a linear relationship:
+
+$$\delta_{calc} = m \cdot \sigma_{calc} + b$$
+
+where $m$ is the slope and $b$ is the intercept. We find optimal values by minimizing the sum of squared errors (ordinary least squares):
+
+$$\chi^2 = \sum_i \left(\delta_{exp,i} - (m \cdot \sigma_{calc,i} + b)\right)^2$$
+
+Taking partial derivatives and setting to zero gives the **normal equations**. The solution is:
+
+$$m = \frac{n\sum(\sigma \cdot \delta) - \sum\sigma \sum\delta}{n\sum\sigma^2 - (\sum\sigma)^2}$$
+
+$$b = \frac{\sum\delta - m\sum\sigma}{n}$$
+
+where $n$ is the number of data points and summations run over all benchmark compounds.
+
+### Physical Interpretation
+
+The scaling factors have clear physical meaning:
+
+- **Slope near -1.0:** Indicates the DFT method is reasonably accurate. A slope of exactly -1.0 would mean no systematic scaling error.
+
+- **Deviations from -1.0:** Reflect systematic over/underestimation by the DFT method. For example, a slope of -0.937 (as in our 1H CHCl3 factors) indicates the method slightly underestimates shielding changes.
+
+- **Intercept:** Represents the offset from the TMS reference point. This value corresponds approximately to the calculated TMS shielding, corrected for systematic effects.
+
+- **Example from this project:** The 1H slope of -0.9375 indicates a ~6% systematic correction. Calculated shielding differences are multiplied by 0.9375 when converting to shifts, compressing the predicted shift range slightly.
+
+### Implementation
+
+The linear scaling formula is implemented in [`shifts.py`](../src/qm_nmr_calc/shifts.py):
+
+```python
+# From shifts.py shielding_to_shift function
+shift = slope * shielding + intercept
+```
+
+The function `get_scaling_factor()` retrieves the appropriate factors based on the DFT method, basis set, nucleus type, and solvent used in the calculation.
+
+---
+
+## DELTA50 Benchmark
+
+### Dataset Description
+
+The **DELTA50 benchmark** is a curated dataset of 50 organic molecules with diverse functional groups, used to derive empirical scaling factors for NMR chemical shift prediction.
+
+**Key characteristics:**
+- **50 molecules** spanning alcohols, ethers, ketones, amines, aromatics, and heterocycles
+- **Known experimental shifts** in CDCl3 and DMSO-d6 solvents
+- **~335 1H data points** and **~219 13C data points** per solvent
+- **Source:** Grimblat et al. *Molecules* **2023**, 28, 2449
+- **DOI:** [10.3390/molecules28062449](https://doi.org/10.3390/molecules28062449)
+
+The dataset was designed to be representative of typical organic chemistry, avoiding problematic cases (highly strained systems, paramagnetic compounds, dynamic exchange) that would require specialized treatment.
+
+### Derivation of Scaling Factors
+
+The scaling factors used in this project were derived as follows:
+
+1. **DFT calculations:** All 50 molecules computed with B3LYP/6-311+G(2d,p) and COSMO solvation (CHCl3 or DMSO)
+
+2. **Linear regression:** Calculated shieldings regressed against experimental shifts for each nucleus type (1H, 13C) and each solvent
+
+3. **Outlier removal:** 3-sigma criterion applied to remove significant outliers (7 for 1H, 2 for 13C in CHCl3). These typically represent problematic functional groups or experimental errors.
+
+4. **Quality metrics:** R-squared, MAE, and RMSD computed on the remaining data
+
+### Project Scaling Factors
+
+The following scaling factors are used in this project, stored in [`scaling_factors.json`](../src/qm_nmr_calc/data/scaling_factors.json):
+
+| Parameter | 1H (CHCl3) | 13C (CHCl3) | 1H (DMSO) | 13C (DMSO) | 1H (vacuum) | 13C (vacuum) |
+|-----------|------------|-------------|-----------|------------|-------------|--------------|
+| Slope | -0.9375 | -0.9497 | -0.9323 | -0.9429 | -0.9554 | -0.9726 |
+| Intercept | 29.92 | 172.69 | 29.73 | 171.77 | 30.54 | 175.71 |
+| R^2 | 0.9952 | 0.9978 | 0.9951 | 0.9974 | 0.9934 | 0.9980 |
+| MAE | 0.12 ppm | 1.95 ppm | 0.13 ppm | 2.15 ppm | 0.15 ppm | 1.74 ppm |
+| RMSD | 0.16 ppm | 2.69 ppm | 0.17 ppm | 2.92 ppm | 0.19 ppm | 2.56 ppm |
+| N points | 335 | 219 | 335 | 219 | 336 | 219 |
+| Outliers removed | 7 | 2 | 7 | 2 | 6 | 2 |
+
+**Interpreting the table:**
+
+- **High R-squared (>0.99):** Indicates excellent linear correlation between calculated and experimental values
+- **Low MAE:** Mean absolute error represents typical prediction accuracy (0.12-0.15 ppm for 1H, 1.7-2.2 ppm for 13C)
+- **RMSD > MAE:** Indicates some larger errors exist, but the distribution is not highly skewed
+
+### Comparison Across Solvents
+
+The scaling factors vary slightly between solvents:
+
+- **Vacuum vs solvated:** Vacuum calculations show steeper slopes (closer to -1.0) and larger intercepts, reflecting the absence of solvation screening
+- **CHCl3 vs DMSO:** Small differences (<1%) in slope, with DMSO showing slightly larger MAE (expected for the more polar solvent with stronger solute-solvent interactions)
+
+**Important:** Always use scaling factors that match your calculation conditions. Using CHCl3 factors for a DMSO calculation will introduce systematic errors.
