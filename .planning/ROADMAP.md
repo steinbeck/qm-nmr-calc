@@ -11,11 +11,9 @@
 
 ## Overview
 
-**Current milestone:** v2.2 Documentation - Comprehensive documentation including README overhaul, installation/usage guides, technical architecture, library documentation, and thorough DP4+/NMR science writeup with full derivation.
+**Current milestone:** None active - run `/gsd:new-milestone` to plan next milestone
 
-**Audience:** Both academic researchers and developers/contributors.
-
-See `.planning/REQUIREMENTS.md` for detailed requirements.
+**Last shipped:** v2.2 Documentation (2026-02-01) - Comprehensive documentation for academic researchers and developers.
 
 ## Phases
 
@@ -283,123 +281,48 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 30. DP4+ Science Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
 | 31. Documentation Polish | v2.2 | 1/1 | Complete | 2026-02-01 |
 
-## v2.2 Documentation (Phases 25-31)
+<details>
+<summary>v2.2 Documentation (Phases 25-31) - SHIPPED 2026-02-01</summary>
 
 ### Phase 25: README and Documentation Structure
 **Goal**: Overhaul README.md with clear introduction, architecture overview, and links to detailed docs
-**Requirements**: README-01, README-02, README-03, README-04, STRUCT-01, STRUCT-02
-**Success Criteria** (what must be TRUE):
-  1. README.md provides compelling introduction explaining what the app does and its value
-  2. High-level architecture diagram shows system components and data flow
-  3. docs/ directory created with logical organization
-  4. README links to all detailed documentation pages
-  5. Quick start section enables users to get running immediately
 **Plans**: 1 plan
-
-Plans:
-- [x] 25-01-PLAN.md — README overhaul and docs/ structure
 **Status**: Complete
 
 ### Phase 26: Installation Guide
 **Goal**: Comprehensive installation documentation covering all dependencies and configurations
-**Requirements**: INSTALL-01, INSTALL-02, INSTALL-03, INSTALL-04, INSTALL-05
-**Success Criteria** (what must be TRUE):
-  1. System dependencies (NWChem, MPI, Python) fully documented with version requirements
-  2. uv package manager installation explained
-  3. Optional CREST/xTB setup documented for ensemble mode
-  4. Environment validation steps included
-  5. Common installation issues and troubleshooting covered
 **Plans**: 1 plan
-
-Plans:
-- [x] 26-01-PLAN.md — Complete installation documentation
 **Status**: Complete
 
 ### Phase 27: Usage Guide
 **Goal**: User-facing documentation for web UI and REST API workflows
-**Requirements**: USAGE-01, USAGE-02, USAGE-03, USAGE-04, USAGE-05, USAGE-06
-**Success Criteria** (what must be TRUE):
-  1. Web UI workflow documented with descriptions of each page
-  2. REST API fully documented with curl examples for all endpoints
-  3. Single-conformer vs ensemble mode selection explained
-  4. Solvent selection and implications documented
-  5. Preset differences (draft vs production) explained
-  6. Result interpretation guide (shifts, spectra, 3D viewer)
 **Plans**: 2 plans
-
-Plans:
-- [x] 27-01-PLAN.md — Web UI workflow and calculation concepts
-- [x] 27-02-PLAN.md — REST API reference and result interpretation
 **Status**: Complete
 
 ### Phase 28: Technical Architecture
 **Goal**: Developer-facing documentation of system architecture and data flows
-**Requirements**: TECH-01, TECH-02, TECH-03, TECH-04, TECH-05, TECH-06
-**Success Criteria** (what must be TRUE):
-  1. Full stack explained (FastAPI, Huey, NWChem, RDKit, 3Dmol.js, CSS)
-  2. Data flow diagram from job submission to results
-  3. Job lifecycle states and transitions documented
-  4. File storage structure and job directory layout explained
-  5. Conformer ensemble pipeline stages documented
-  6. CSS architecture (layers, components, tokens) explained
 **Plans**: 2 plans
-
-Plans:
-- [x] 28-01-PLAN.md — Core architecture (stack, data flow, job lifecycle, file storage)
-- [x] 28-02-PLAN.md — Conformer pipeline and CSS architecture
 **Status**: Complete
 
 ### Phase 29: Library Documentation
 **Goal**: Documentation of third-party library integrations and usage patterns
-**Requirements**: LIB-01, LIB-02, LIB-03, LIB-04, LIB-05, LIB-06
-**Success Criteria** (what must be TRUE):
-  1. RDKit usage documented (SMILES, conformers, visualization)
-  2. NWChem integration documented (input generation, output parsing)
-  3. Huey task queue usage documented
-  4. 3Dmol.js integration documented (viewer, shift labels)
-  5. CREST/xTB integration documented (optional ensemble mode)
-  6. SmilesDrawer usage documented
 **Plans**: 2 plans
-
-Plans:
-- [x] 29-01-PLAN.md — Python libraries (RDKit, NWChem, Huey)
-- [x] 29-02-PLAN.md — JavaScript libraries and CREST/xTB (3Dmol.js, SmilesDrawer, CREST)
 **Status**: Complete
 
 ### Phase 30: DP4+ Science Documentation
 **Goal**: Thorough scientific writeup of NMR prediction methodology with full derivations
-**Requirements**: DP4-01, DP4-02, DP4-03, DP4-04, DP4-05, DP4-06, DP4-07, DP4-08, DP4-09
-**Success Criteria** (what must be TRUE):
-  1. NMR chemical shift prediction fundamentals explained
-  2. DFT theory basis (B3LYP, basis sets, GIAO) documented
-  3. COSMO solvation model explained
-  4. Linear scaling methodology fully derived
-  5. DELTA50 benchmark and scaling factor derivation documented
-  6. Boltzmann weighting mathematically derived
-  7. Conformational sampling importance explained with references
-  8. Literature citations included (ISiCLE, DELTA50, CREST, Grimblat)
-  9. Expected accuracy (MAE values) and limitations documented
 **Plans**: 2 plans
-
-Plans:
-- [x] 30-01-PLAN.md — NMR fundamentals, DFT theory, and COSMO solvation
-- [x] 30-02-PLAN.md — Linear scaling, DELTA50, Boltzmann, conformational sampling, accuracy, and references
 **Status**: Complete
 
 ### Phase 31: Documentation Polish and Cross-References
 **Goal**: Final review ensuring consistency and proper cross-linking
-**Requirements**: STRUCT-03, STRUCT-04
-**Success Criteria** (what must be TRUE):
-  1. All docs cross-reference related pages appropriately
-  2. Consistent formatting and heading structure across all docs
-  3. All links verified working
-  4. Table of contents accurate
 **Plans**: 1 plan
-
-Plans:
-- [x] 31-01-PLAN.md — Cross-references, link verification, and ToC update
 **Status**: Complete
+
+*Full details: .planning/milestones/v2.2-ROADMAP.md*
+
+</details>
 
 ---
 
-*Last updated: 2026-02-01 - v2.2 Documentation milestone complete*
+*Last updated: 2026-02-01 - v2.2 Documentation milestone shipped*

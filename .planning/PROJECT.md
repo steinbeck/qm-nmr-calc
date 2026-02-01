@@ -10,8 +10,8 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 ## Current State
 
-**Active:** v2.2 Documentation (started 2026-01-31)
-**Last shipped:** v2.1 UI Redesign (2026-01-31)
+**Active:** Planning next milestone
+**Last shipped:** v2.2 Documentation (2026-02-01)
 
 **Codebase:** ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS
 **Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Custom CSS
@@ -34,22 +34,13 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 ## Next Milestone
 
-**v2.2 Documentation** (7 phases, 25-31)
-
-Comprehensive documentation including:
-- README overhaul with clear introduction and architecture overview
-- Installation guide (system deps, uv, optional CREST/xTB)
-- Usage guide (web UI, REST API, result interpretation)
-- Technical architecture (stack, data flow, job lifecycle)
-- Library documentation (RDKit, NWChem, Huey, 3Dmol.js, CREST/xTB)
-- DP4+ science writeup with full derivation (DFT, scaling factors, Boltzmann)
-
-Audience: Both academic researchers and developers/contributors.
+**TBD** — run `/gsd:new-milestone` to plan next milestone
 
 Future considerations tracked in `.planning/BACKLOG.md`:
 - Dark mode (color scheme, system preference detection)
 - Enhanced interactivity (card expansion, drag-and-drop)
 - User accounts and calculation history
+- Deploy to production and test with real workloads
 
 ## Requirements
 
@@ -95,6 +86,8 @@ Future considerations tracked in `.planning/BACKLOG.md`:
 - WCAG accessibility (contrast, focus, reduced motion) -- v2.1
 - RMSD clustering for conformer pre-selection -- v2.0.1
 - xTB energy ranking for conformer filtering -- v2.0.1
+- Comprehensive documentation (README, installation, usage, architecture, libraries, science) -- v2.2
+- DP4+ methodology writeup with full derivations and literature citations -- v2.2
 
 ### Out of Scope
 
@@ -154,4 +147,4 @@ Future considerations tracked in `.planning/BACKLOG.md`:
 | xTB for conformer ranking | Better than MMFF, faster than DFT | Good -- optional with MMFF fallback |
 
 ---
-*Last updated: 2026-01-31 after v2.2 Documentation milestone started*
+*Last updated: 2026-02-01 after v2.2 Documentation milestone shipped*

@@ -1,5 +1,33 @@
 # Project Milestones: qm-nmr-calc
 
+## v2.2 Documentation (Shipped: 2026-02-01)
+
+**Delivered:** Comprehensive documentation for academic researchers and developers, including DP4+ science writeup with full derivations.
+
+**Phases completed:** 25-31 (7 phases, 10 plans total)
+
+**Key accomplishments:**
+
+- README overhaul with Mermaid architecture diagram and quick start section
+- Comprehensive installation guide with multi-distro instructions and CREST/xTB setup
+- Usage guide with web UI workflow and 26 curl API examples
+- Technical architecture docs with 7 Mermaid diagrams (stack, data flow, job lifecycle)
+- Library documentation for RDKit, NWChem, Huey, 3Dmol.js, SmilesDrawer, CREST/xTB
+- DP4+ science writeup with full derivations, 9 DOI citations, and accuracy metrics
+- Standardized cross-references and verified links across all documentation
+
+**Stats:**
+
+- ~4,100 lines of documentation
+- 7 phases, 10 plans
+- 2 days from start to ship (2026-01-31 to 2026-02-01)
+
+**Git range:** `feat(25-01)` -> `feat(31-01)`
+
+**What's next:** Deploy to production. Future considerations: dark mode, enhanced interactivity, user accounts.
+
+---
+
 ## v2.1 UI Redesign (Shipped: 2026-01-31)
 
 **Delivered:** Modern bento grid layout with glassmorphism effects, WCAG-compliant accessibility, and mobile-optimized performance.
