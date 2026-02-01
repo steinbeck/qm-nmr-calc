@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 ## Current Position
 
 Milestone: v2.2 Documentation
-Phase: 29 of 7 (Library Documentation)
-Plan: 2 of 2 in current phase
-Status: Phase 29 complete
-Last activity: 2026-02-01 -- Completed 29-02-PLAN.md (JavaScript libraries + CREST/xTB)
+Phase: 30 of 7 (DP4+ Science Documentation)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-01 -- Completed 30-01-PLAN.md (NMR fundamentals, DFT theory, COSMO)
 
-Progress: ████████████████░░░░ 71% (6/7 phases complete)
+Progress: ████████████████░░░░ 78% (6.5/7 phases complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 82 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 7)
+- Total plans completed: 83 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 8)
 - Average duration: ~7 min
-- Total execution time: ~571 min (~9.5 hours)
+- Total execution time: ~573 min (~9.5 hours)
 
 **By Milestone:**
 
@@ -33,7 +33,7 @@ Progress: ████████████████░░░░ 71% (6/7 
 | v2.0 Conformational Sampling | 6 | 18 | ~2 days | Shipped 2026-01-28 |
 | v2.0.1 Conformer Pre-selection | 1 | 3 | 18 min | Complete 2026-01-30 |
 | v2.1 UI Redesign | 6 | 17 | ~8 min avg | Complete 2026-01-31 |
-| v2.2 Documentation | 7 | 2+ | - | In Progress |
+| v2.2 Documentation | 7 | 8+ | - | In Progress |
 
 ## Accumulated Context
 
@@ -58,6 +58,7 @@ All prior decisions logged in PROJECT.md Key Decisions table.
 - CSS architecture: Cascade layers, design tokens, BEM naming, file organization
 - Library docs: Code-first documentation with source file references, integration points tables
 - Library docs: Index conversion warning (3Dmol.js 0-based vs NWChem 1-based)
+- Science docs: MathJax equations, DOI citations, code-to-theory links
 
 ### Roadmap Evolution
 
@@ -87,8 +88,8 @@ None
 ## Session Continuity
 
 Last session: 2026-02-01
-Stopped at: Completed 29-02-PLAN.md (JavaScript libraries + CREST/xTB)
+Stopped at: Completed 30-01-PLAN.md (NMR fundamentals, DFT theory, COSMO)
 Resume file: None
-Next: Phase 30 (DP4+ Science Documentation)
+Next: Phase 30 Plan 02 (Linear scaling, Boltzmann, conformers, accuracy)
 Tests: All tests passing (257 unit + 28 conformer/xTB = 285 tests)
-Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~2,900 LOC docs
+Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~3,200 LOC docs
