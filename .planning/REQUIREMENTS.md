@@ -19,12 +19,12 @@ Requirements for v2.2 comprehensive documentation milestone.
 
 ## Usage Guide
 
-- [ ] **USAGE-01**: Usage guide covers web UI workflow with screenshots/descriptions
-- [ ] **USAGE-02**: Usage guide covers REST API with curl examples for all endpoints
-- [ ] **USAGE-03**: Usage guide explains single-conformer vs ensemble mode selection
-- [ ] **USAGE-04**: Usage guide explains solvent selection and implications
-- [ ] **USAGE-05**: Usage guide explains calculation preset differences (draft vs production)
-- [ ] **USAGE-06**: Usage guide covers result interpretation (shifts, spectra, 3D viewer)
+- [x] **USAGE-01**: Usage guide covers web UI workflow with screenshots/descriptions
+- [x] **USAGE-02**: Usage guide covers REST API with curl examples for all endpoints
+- [x] **USAGE-03**: Usage guide explains single-conformer vs ensemble mode selection
+- [x] **USAGE-04**: Usage guide explains solvent selection and implications
+- [x] **USAGE-05**: Usage guide explains calculation preset differences (draft vs production)
+- [x] **USAGE-06**: Usage guide covers result interpretation (shifts, spectra, 3D viewer)
 
 ## Technical Architecture
 
@@ -76,12 +76,12 @@ Requirements for v2.2 comprehensive documentation milestone.
 | INSTALL-03 | Phase 26 | Complete |
 | INSTALL-04 | Phase 26 | Complete |
 | INSTALL-05 | Phase 26 | Complete |
-| USAGE-01 | Phase 27 | Pending |
-| USAGE-02 | Phase 27 | Pending |
-| USAGE-03 | Phase 27 | Pending |
-| USAGE-04 | Phase 27 | Pending |
-| USAGE-05 | Phase 27 | Pending |
-| USAGE-06 | Phase 27 | Pending |
+| USAGE-01 | Phase 27 | Complete |
+| USAGE-02 | Phase 27 | Complete |
+| USAGE-03 | Phase 27 | Complete |
+| USAGE-04 | Phase 27 | Complete |
+| USAGE-05 | Phase 27 | Complete |
+| USAGE-06 | Phase 27 | Complete |
 | TECH-01 | Phase 28 | Pending |
 | TECH-02 | Phase 28 | Pending |
 | TECH-03 | Phase 28 | Pending |
