@@ -473,3 +473,60 @@ class TestNMReDataEndpointSuccess:
 
             assert "NMREDATA_ASSIGNMENT" in response.text
             assert "NMREDATA_VERSION" in response.text
+
+    def test_nmredata_endpoint_ensemble_mode_includes_provenance(self, mock_complete_job_with_nmr):
+        """Ensemble mode response includes Boltzmann-averaged provenance metadata."""
+        job_data = mock_complete_job_with_nmr
+        job_status = job_data["job_status"]
+
+        # Modify job status for ensemble mode
+        from qm_nmr_calc.models import ConformerData, ConformerEnsemble
+
+        job_status.conformer_mode = "ensemble"
+        job_status.conformer_ensemble = ConformerEnsemble(
+            method="rdkit_kdg",
+            temperature_k=298.15,
+            total_generated=20,
+            conformers=[
+                ConformerData(
+                    conformer_id="conf_001",
+                    status="nmr_complete",
+                    energy=-154.123,
+                    energy_unit="hartree",
+                    weight=0.65,
+                ),
+                ConformerData(
+                    conformer_id="conf_002",
+                    status="nmr_complete",
+                    energy=-154.120,
+                    energy_unit="hartree",
+                    weight=0.35,
+                ),
+            ],
+        )
+
+        with mock.patch("qm_nmr_calc.api.routers.jobs.load_job_status") as mock_load, \
+             mock.patch("qm_nmr_calc.api.routers.jobs.get_geometry_file") as mock_geom:
+            mock_load.return_value = job_status
+            mock_geom.return_value = job_data["xyz_file"]
+
+            response = client.get(f"/api/v1/jobs/{job_data['job_id']}/nmredata.sdf")
+
+            assert response.status_code == 200
+            assert "Boltzmann-averaged" in response.text
+            assert "conformers" in response.text
+
+    def test_nmredata_endpoint_returns_404_when_no_geometry(self, mock_complete_job_with_nmr):
+        """Response is 404 when geometry file is missing for complete job."""
+        job_data = mock_complete_job_with_nmr
+
+        with mock.patch("qm_nmr_calc.api.routers.jobs.load_job_status") as mock_load, \
+             mock.patch("qm_nmr_calc.api.routers.jobs.get_geometry_file") as mock_geom:
+            mock_load.return_value = job_data["job_status"]
+            mock_geom.return_value = None  # No geometry file
+
+            response = client.get(f"/api/v1/jobs/{job_data['job_id']}/nmredata.sdf")
+
+            assert response.status_code == 404
+            data = response.json()["detail"]
+            assert "Geometry" in data["title"]
