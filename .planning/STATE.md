@@ -89,6 +89,6 @@ None
 Last session: 2026-02-01
 Stopped at: Completed 29-02-PLAN.md (JavaScript libraries + CREST/xTB)
 Resume file: None
-Next: Phase 30 (API Documentation)
+Next: Phase 30 (DP4+ Science Documentation)
 Tests: All tests passing (257 unit + 28 conformer/xTB = 285 tests)
 Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~2,900 LOC docs

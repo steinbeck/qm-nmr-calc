@@ -279,6 +279,7 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 26. Installation Guide | v2.2 | 1/1 | Complete | 2026-01-31 |
 | 27. Usage Guide | v2.2 | 2/2 | Complete | 2026-02-01 |
 | 28. Technical Architecture | v2.2 | 2/2 | Complete | 2026-02-01 |
+| 29. Library Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
 
 ## v2.2 Documentation (Phases 25-31)
 
@@ -359,9 +360,9 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 29-01-PLAN.md — Python libraries (RDKit, NWChem, Huey)
-- [ ] 29-02-PLAN.md — JavaScript libraries and CREST/xTB (3Dmol.js, SmilesDrawer, CREST)
-**Status**: Not Started
+- [x] 29-01-PLAN.md — Python libraries (RDKit, NWChem, Huey)
+- [x] 29-02-PLAN.md — JavaScript libraries and CREST/xTB (3Dmol.js, SmilesDrawer, CREST)
+**Status**: Complete
 
 ### Phase 30: DP4+ Science Documentation
 **Goal**: Thorough scientific writeup of NMR prediction methodology with full derivations
@@ -392,4 +393,4 @@ Plans:
 
 ---
 
-*Last updated: 2026-02-01 - Phase 29 planned*
+*Last updated: 2026-02-01 - Phase 29 complete*

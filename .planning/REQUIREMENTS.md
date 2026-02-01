@@ -37,12 +37,12 @@ Requirements for v2.2 comprehensive documentation milestone.
 
 ## Library Documentation
 
-- [ ] **LIB-01**: Library doc covers RDKit usage (SMILES parsing, conformer generation, visualization)
-- [ ] **LIB-02**: Library doc covers NWChem integration (input generation, output parsing)
-- [ ] **LIB-03**: Library doc covers Huey task queue (job submission, status tracking)
-- [ ] **LIB-04**: Library doc covers 3Dmol.js integration (molecule viewer, shift labels)
-- [ ] **LIB-05**: Library doc covers CREST/xTB integration (optional ensemble mode)
-- [ ] **LIB-06**: Library doc covers SmilesDrawer for molecule preview
+- [x] **LIB-01**: Library doc covers RDKit usage (SMILES parsing, conformer generation, visualization)
+- [x] **LIB-02**: Library doc covers NWChem integration (input generation, output parsing)
+- [x] **LIB-03**: Library doc covers Huey task queue (job submission, status tracking)
+- [x] **LIB-04**: Library doc covers 3Dmol.js integration (molecule viewer, shift labels)
+- [x] **LIB-05**: Library doc covers CREST/xTB integration (optional ensemble mode)
+- [x] **LIB-06**: Library doc covers SmilesDrawer for molecule preview
 
 ## DP4+ Science Documentation
 
@@ -88,12 +88,12 @@ Requirements for v2.2 comprehensive documentation milestone.
 | TECH-04 | Phase 28 | Complete |
 | TECH-05 | Phase 28 | Complete |
 | TECH-06 | Phase 28 | Complete |
-| LIB-01 | Phase 29 | Pending |
-| LIB-02 | Phase 29 | Pending |
-| LIB-03 | Phase 29 | Pending |
-| LIB-04 | Phase 29 | Pending |
-| LIB-05 | Phase 29 | Pending |
-| LIB-06 | Phase 29 | Pending |
+| LIB-01 | Phase 29 | Complete |
+| LIB-02 | Phase 29 | Complete |
+| LIB-03 | Phase 29 | Complete |
+| LIB-04 | Phase 29 | Complete |
+| LIB-05 | Phase 29 | Complete |
+| LIB-06 | Phase 29 | Complete |
 | DP4-01 | Phase 30 | Pending |
 | DP4-02 | Phase 30 | Pending |
 | DP4-03 | Phase 30 | Pending |
