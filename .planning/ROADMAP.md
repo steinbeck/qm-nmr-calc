@@ -278,6 +278,7 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 25. README & Docs Structure | v2.2 | 1/1 | Complete | 2026-01-31 |
 | 26. Installation Guide | v2.2 | 1/1 | Complete | 2026-01-31 |
 | 27. Usage Guide | v2.2 | 2/2 | Complete | 2026-02-01 |
+| 28. Technical Architecture | v2.2 | 2/2 | Complete | 2026-02-01 |
 
 ## v2.2 Documentation (Phases 25-31)
 
@@ -341,9 +342,9 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 28-01-PLAN.md — Core architecture (stack, data flow, job lifecycle, file storage)
-- [ ] 28-02-PLAN.md — Conformer pipeline and CSS architecture
-**Status**: Not Started
+- [x] 28-01-PLAN.md — Core architecture (stack, data flow, job lifecycle, file storage)
+- [x] 28-02-PLAN.md — Conformer pipeline and CSS architecture
+**Status**: Complete
 
 ### Phase 29: Library Documentation
 **Goal**: Documentation of third-party library integrations and usage patterns
@@ -387,4 +388,4 @@ Plans:
 
 ---
 
-*Last updated: 2026-02-01 - Phase 28 planned*
+*Last updated: 2026-02-01 - Phase 28 complete*

@@ -28,12 +28,12 @@ Requirements for v2.2 comprehensive documentation milestone.
 
 ## Technical Architecture
 
-- [ ] **TECH-01**: Architecture doc explains full stack (FastAPI, Huey, NWChem, RDKit, 3Dmol.js)
-- [ ] **TECH-02**: Architecture doc includes data flow diagram from submission to results
-- [ ] **TECH-03**: Architecture doc explains job lifecycle states and transitions
-- [ ] **TECH-04**: Architecture doc covers file storage structure and job directory layout
-- [ ] **TECH-05**: Architecture doc explains conformer ensemble pipeline stages
-- [ ] **TECH-06**: Architecture doc covers CSS architecture (layers, components, tokens)
+- [x] **TECH-01**: Architecture doc explains full stack (FastAPI, Huey, NWChem, RDKit, 3Dmol.js)
+- [x] **TECH-02**: Architecture doc includes data flow diagram from submission to results
+- [x] **TECH-03**: Architecture doc explains job lifecycle states and transitions
+- [x] **TECH-04**: Architecture doc covers file storage structure and job directory layout
+- [x] **TECH-05**: Architecture doc explains conformer ensemble pipeline stages
+- [x] **TECH-06**: Architecture doc covers CSS architecture (layers, components, tokens)
 
 ## Library Documentation
 
@@ -82,12 +82,12 @@ Requirements for v2.2 comprehensive documentation milestone.
 | USAGE-04 | Phase 27 | Complete |
 | USAGE-05 | Phase 27 | Complete |
 | USAGE-06 | Phase 27 | Complete |
-| TECH-01 | Phase 28 | Pending |
-| TECH-02 | Phase 28 | Pending |
-| TECH-03 | Phase 28 | Pending |
-| TECH-04 | Phase 28 | Pending |
-| TECH-05 | Phase 28 | Pending |
-| TECH-06 | Phase 28 | Pending |
+| TECH-01 | Phase 28 | Complete |
+| TECH-02 | Phase 28 | Complete |
+| TECH-03 | Phase 28 | Complete |
+| TECH-04 | Phase 28 | Complete |
+| TECH-05 | Phase 28 | Complete |
+| TECH-06 | Phase 28 | Complete |
 | LIB-01 | Phase 29 | Pending |
 | LIB-02 | Phase 29 | Pending |
 | LIB-03 | Phase 29 | Pending |
