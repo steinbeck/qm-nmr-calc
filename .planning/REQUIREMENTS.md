@@ -9,15 +9,15 @@ Requirements for NMReData export feature. Each maps to roadmap phases.
 
 ### NMReData Format
 
-- [ ] **NMRD-01**: Generated file contains valid MOL block with optimized 3D coordinates
-- [ ] **NMRD-02**: File includes `NMREDATA_VERSION` tag (1.1 or 2.0)
-- [ ] **NMRD-03**: File includes `NMREDATA_LEVEL` tag (0 for predicted data)
-- [ ] **NMRD-04**: File includes `NMREDATA_SOLVENT` tag with proper mapping (CHCl3→CDCl3, DMSO→(CD3)2SO, vacuum→vacuum)
-- [ ] **NMRD-05**: File includes `NMREDATA_TEMPERATURE` tag (298.15 K or ensemble temperature)
-- [ ] **NMRD-06**: File includes `NMREDATA_ASSIGNMENT` tag with 1H and 13C chemical shifts mapped to 1-indexed atom numbers
-- [ ] **NMRD-07**: File includes `NMREDATA_FORMULA` tag with molecular formula
-- [ ] **NMRD-08**: File includes `NMREDATA_SMILES` tag with input SMILES
-- [ ] **NMRD-09**: File includes provenance metadata (calculation method, basis set, scaling factors applied)
+- [x] **NMRD-01**: Generated file contains valid MOL block with optimized 3D coordinates
+- [x] **NMRD-02**: File includes `NMREDATA_VERSION` tag (1.1 or 2.0)
+- [x] **NMRD-03**: File includes `NMREDATA_LEVEL` tag (0 for predicted data)
+- [x] **NMRD-04**: File includes `NMREDATA_SOLVENT` tag with proper mapping (CHCl3→CDCl3, DMSO→(CD3)2SO, vacuum→vacuum)
+- [x] **NMRD-05**: File includes `NMREDATA_TEMPERATURE` tag (298.15 K or ensemble temperature)
+- [x] **NMRD-06**: File includes `NMREDATA_ASSIGNMENT` tag with 1H and 13C chemical shifts mapped to 1-indexed atom numbers
+- [x] **NMRD-07**: File includes `NMREDATA_FORMULA` tag with molecular formula
+- [x] **NMRD-08**: File includes `NMREDATA_SMILES` tag with input SMILES
+- [x] **NMRD-09**: File includes provenance metadata (calculation method, basis set, scaling factors applied)
 
 ### REST API
 
@@ -66,15 +66,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NMRD-01 | Phase 32 | Pending |
-| NMRD-02 | Phase 32 | Pending |
-| NMRD-03 | Phase 32 | Pending |
-| NMRD-04 | Phase 32 | Pending |
-| NMRD-05 | Phase 32 | Pending |
-| NMRD-06 | Phase 32 | Pending |
-| NMRD-07 | Phase 32 | Pending |
-| NMRD-08 | Phase 32 | Pending |
-| NMRD-09 | Phase 32 | Pending |
+| NMRD-01 | Phase 32 | Complete |
+| NMRD-02 | Phase 32 | Complete |
+| NMRD-03 | Phase 32 | Complete |
+| NMRD-04 | Phase 32 | Complete |
+| NMRD-05 | Phase 32 | Complete |
+| NMRD-06 | Phase 32 | Complete |
+| NMRD-07 | Phase 32 | Complete |
+| NMRD-08 | Phase 32 | Complete |
+| NMRD-09 | Phase 32 | Complete |
 | API-01 | Phase 33 | Pending |
 | API-02 | Phase 33 | Pending |
 | API-03 | Phase 33 | Pending |
@@ -90,4 +90,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-01*
-*Last updated: 2026-02-01 after roadmap creation*
+*Last updated: 2026-02-01 after Phase 32 completion*

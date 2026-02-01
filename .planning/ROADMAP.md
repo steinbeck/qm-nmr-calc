@@ -300,10 +300,10 @@ Plans:
   7. Tag separator format (", " comma+space) compliant with NMReData specification
   8. Ensemble calculations export Boltzmann-weighted average shifts with lowest-energy conformer geometry
 **Plans**: 1 plan
-**Status**: Pending
+**Status**: Complete
 
 Plans:
-- [ ] 32-01-PLAN.md — Core NMReData module with tag formatting and generate_nmredata_sdf()
+- [x] 32-01-PLAN.md — Core NMReData module with tag formatting and generate_nmredata_sdf()
 
 ### Phase 33: API and UI Integration
 **Goal**: Enable NMReData file download via REST API endpoint and web UI button
@@ -371,10 +371,10 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 29. Library Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
 | 30. DP4+ Science Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
 | 31. Documentation Polish | v2.2 | 1/1 | Complete | 2026-02-01 |
-| **32. NMReData Module** | **v2.3** | **0/1** | **Pending** | — |
+| **32. NMReData Module** | **v2.3** | **1/1** | **Complete** | 2026-02-01 |
 | **33. API/UI Integration** | **v2.3** | **0/0** | **Pending** | — |
 | **34. Testing & Validation** | **v2.3** | **0/0** | **Pending** | — |
 
 ---
 
-*Last updated: 2026-02-01 - Phase 32 plan created*
+*Last updated: 2026-02-01 - Phase 32 complete*
