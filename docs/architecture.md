@@ -412,6 +412,302 @@ Key functions in `storage.py`:
 
 ---
 
+## Conformer Ensemble Pipeline
+
+The conformer ensemble pipeline generates multiple low-energy conformations of a molecule, optimizes them with DFT, and computes Boltzmann-weighted NMR shifts.
+
+### Why Conformer Sampling Matters
+
+Flexible molecules exist as ensembles of interconverting conformations. Since NMR chemical shifts depend on 3D geometry:
+
+- **Rigid molecules** (benzene, naphthalene): Single conformer is sufficient
+- **Flexible molecules** (alkyl chains, rotatable bonds): Multiple conformers needed
+- **Boltzmann averaging**: Population-weighted shifts match experimental NMR
+
+For molecules with rotatable bonds, conformer sampling significantly improves prediction accuracy compared to single-conformer calculations.
+
+### Pipeline Stages
+
+The pipeline consists of 9 stages, progressively filtering from hundreds of initial conformers to a handful of high-quality candidates for DFT:
+
+```mermaid
+flowchart TB
+    A[SMILES Input] --> B[Conformer Generation]
+    B --> C[MMFF Optimization]
+    C --> D[RMSD Deduplication]
+    D --> E[Pre-DFT Energy Filter]
+    E --> F[Diversity Clustering]
+    F --> G[DFT Optimization]
+    G --> H[Post-DFT Energy Filter]
+    H --> I[NMR Calculation]
+    I --> J[Boltzmann Averaging]
+
+    B -- "RDKit ETKDGv3<br/>or CREST" --> C
+    C -- "MMFF94" --> D
+    D -- "GetBestRMS" --> E
+    E -- "6 kcal/mol" --> F
+    F -- "Butina" --> G
+    G -- "B3LYP/6-31G*" --> H
+    H -- "3 kcal/mol" --> I
+    I -- "GIAO" --> J
+```
+
+### Stage Descriptions
+
+| Stage | Purpose | Method | Typical Output |
+|-------|---------|--------|----------------|
+| Conformer Generation | Generate initial ensemble | RDKit ETKDGv3 or CREST | 50-500 conformers |
+| MMFF Optimization | Force field pre-optimization | RDKit MMFF94 | Same count |
+| RMSD Deduplication | Remove structurally similar | RDKit GetBestRMS (0.5 A) | ~20-40 conformers |
+| Pre-DFT Energy Filter | Remove high-energy conformers | 6 kcal/mol window | ~15-30 conformers |
+| Diversity Clustering | Select representative subset | Butina algorithm (1.5 A) | ~8-12 conformers |
+| DFT Optimization | Quantum mechanical geometry opt | NWChem B3LYP/6-31G* | ~8-12 conformers |
+| Post-DFT Energy Filter | Remove high-energy conformers | 3 kcal/mol window | ~4-8 conformers |
+| NMR Calculation | Compute shielding tensors | NWChem GIAO | Same count |
+| Boltzmann Averaging | Population-weighted shifts | exp(-E/RT) weighting | 1 result set |
+
+### Conformer State Machine
+
+Each conformer in the ensemble tracks its own state through the DFT/NMR pipeline:
+
+```mermaid
+stateDiagram-v2
+    [*] --> pending: Conformer generated
+    pending --> optimizing: DFT started
+    optimizing --> optimized: DFT complete
+    optimizing --> failed: DFT error
+    optimized --> filtered: Energy filter rejected
+    optimized --> nmr_running: NMR started
+    nmr_running --> nmr_complete: NMR complete
+    nmr_running --> failed: NMR error
+    filtered --> [*]
+    nmr_complete --> [*]
+    failed --> [*]
+```
+
+| State | Description |
+|-------|-------------|
+| `pending` | Awaiting DFT optimization |
+| `optimizing` | DFT geometry optimization in progress |
+| `optimized` | DFT complete, geometry available |
+| `filtered` | Removed by post-DFT energy filter |
+| `nmr_running` | NMR shielding calculation in progress |
+| `nmr_complete` | NMR complete, ready for averaging |
+| `failed` | Error occurred during processing |
+
+### RDKit vs CREST Comparison
+
+Two methods are available for conformer generation:
+
+| Feature | RDKit ETKDGv3 | CREST |
+|---------|---------------|-------|
+| Availability | Always (bundled) | Optional (requires install) |
+| Speed | Fast (~seconds) | Slow (~minutes to hours) |
+| Quality | Good for rigid molecules | Best for flexible molecules |
+| Sampling | Distance geometry | Metadynamics (GFN2-xTB) |
+| Solvation | None | ALPB implicit solvent |
+| **Use when** | CREST unavailable, quick results | Production, flexible molecules |
+
+**Method Selection Logic:**
+- If `conformer_method=crest` requested but CREST not installed: Error
+- If CREST requested but solvent not ALPB-compatible: Error
+- Default: RDKit ETKDGv3 (always available)
+
+### xTB Pre-ranking
+
+When xTB is available, conformers are re-ranked using GFN2-xTB single-point energies before clustering. This provides better correlation with DFT than MMFF94, reducing the chance of discarding important conformers.
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `conformers/pipeline.py` | Main orchestration, dispatches to RDKit or CREST |
+| `conformers/generator.py` | RDKit ETKDGv3 conformer generation |
+| `conformers/crest_generator.py` | CREST GFN2-xTB integration |
+| `conformers/filters.py` | RMSD deduplication, energy filtering |
+| `conformers/clustering.py` | Butina algorithm, representative selection |
+| `conformers/xtb_ranking.py` | Optional xTB energy ranking |
+| `conformers/boltzmann.py` | Boltzmann population weighting |
+
+---
+
+## CSS Architecture
+
+The CSS uses modern cascade layers for predictable specificity and a design token system for consistent theming.
+
+### Design Principles
+
+- **No `!important`** - Layer order determines cascade priority
+- **Design tokens** - CSS custom properties for colors, spacing, typography
+- **BEM naming** - Block__Element--Modifier convention for components
+- **Accessibility first** - Reduced motion/transparency media queries
+
+### Cascade Layers
+
+Layers are declared in `layers.css` (must be loaded first). Styles in later layers override earlier layers regardless of specificity:
+
+```css
+@layer reset, base, layout, components, utilities;
+```
+
+**Priority Order (lowest to highest):**
+
+| Layer | Purpose | Example Styles |
+|-------|---------|----------------|
+| `reset` | Browser normalization | box-sizing, margin reset |
+| `base` | Element defaults | body font, link colors, headings |
+| `layout` | Page structure | .container, .bento-grid |
+| `components` | Reusable UI | .glass-card, .btn, .form-group |
+| `utilities` | Single-purpose overrides | .sr-only, .hidden |
+
+### Design Tokens
+
+All design values are defined as CSS custom properties in `tokens.css`:
+
+**Spacing Scale:**
+```css
+--space-xs: 0.25rem;   /* 4px */
+--space-sm: 0.5rem;    /* 8px */
+--space-md: 1rem;      /* 16px */
+--space-lg: 1.5rem;    /* 24px */
+--space-xl: 2rem;      /* 32px */
+--space-2xl: 3rem;     /* 48px */
+```
+
+**Glass Effects:**
+```css
+--glass-blur-medium: blur(12px);
+--glass-bg-medium: hsl(0 0% 100% / 0.90);
+--glass-border: 1px solid hsl(0 0% 100% / 0.3);
+--glass-shadow: 0 8px 32px hsl(0 0% 0% / 0.1);
+```
+
+**Colors:**
+```css
+--color-primary: hsl(195 85% 41%);
+--color-text: hsl(220 13% 15%);
+--color-text-muted: hsl(220 13% 38%);
+--color-success: hsl(142 76% 36%);
+--color-error: hsl(0 84% 60%);
+```
+
+**Typography:**
+```css
+--font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+--font-mono: 'Cascadia Code', 'Fira Code', 'Monaco', monospace;
+--text-sm: 0.875rem;   /* 14px */
+--text-base: 1rem;     /* 16px */
+--text-lg: 1.125rem;   /* 18px */
+```
+
+**Transitions:**
+```css
+--transition-fast: 150ms ease;
+--transition-base: 250ms ease;
+--transition-reduced: 200ms ease;  /* For reduced motion */
+```
+
+### Component Naming (BEM)
+
+Components follow Block__Element--Modifier convention:
+
+```css
+/* Block */
+.glass-card { }
+
+/* Element (part of block) */
+.glass-card__header { }
+.glass-card__content { }
+
+/* Modifier (variant) */
+.glass-card--highlighted { }
+.glass-card--compact { }
+```
+
+**Key Components:**
+
+| Component | Purpose |
+|-----------|---------|
+| `glass-card` | Frosted glass container with blur effect |
+| `btn` | Button variants (primary, secondary, ghost) |
+| `form-group` | Form field with label and validation |
+| `result-grid` | Bento grid layout for results page |
+| `progress-bar` | Calculation progress indicator |
+
+### File Organization
+
+```
+static/css/
+├── layers.css           # Layer order declaration (load first!)
+├── tokens.css           # Design tokens (colors, spacing, typography)
+├── reset.css            # Browser normalization (@layer reset)
+├── base.css             # Element defaults (@layer base)
+├── layout.css           # Page structure (@layer layout)
+├── components/          # Reusable components (@layer components)
+│   └── glass-card.css   # Glass morphism card component
+├── pages/               # Page-specific styles (@layer components)
+│   ├── submit-page.css  # Job submission form
+│   ├── status-page.css  # Job status and progress
+│   └── results-page.css # NMR results display
+├── utilities.css        # Utility classes (@layer utilities)
+└── legacy.css           # Deprecated styles (do not extend)
+```
+
+### Adding New Components
+
+1. **Create file** in `components/` folder
+2. **Wrap styles** in `@layer components { }`
+3. **Use design tokens** for spacing, colors, typography
+4. **Follow BEM naming** convention
+5. **Import in base template** (`<link>` in `base.html`)
+
+**Example:**
+```css
+/* components/new-component.css */
+@layer components {
+    .new-component {
+        padding: var(--space-md);
+        background: var(--glass-bg-medium);
+        border-radius: var(--glass-radius);
+    }
+
+    .new-component__title {
+        font-size: var(--text-lg);
+        color: var(--color-text);
+    }
+
+    .new-component--highlighted {
+        border-left: 3px solid var(--color-primary);
+    }
+}
+```
+
+### Accessibility Features
+
+**Reduced Motion:**
+```css
+@media (prefers-reduced-motion: reduce) {
+    /* Disable animations, use opacity transitions */
+}
+```
+
+**Reduced Transparency:**
+```css
+@media (prefers-reduced-transparency: reduce) {
+    :root {
+        --glass-bg-medium: hsl(0 0% 100%);  /* Solid white */
+        --glass-blur-medium: none;
+    }
+}
+```
+
+**Mobile Performance:**
+- Glass blur reduced on mobile (GPU intensive)
+- Bento grid collapses to single column
+- Reduced animation complexity
+
+---
+
 ## Related Documentation
 
 - [README](../README.md) - High-level overview and quick start
