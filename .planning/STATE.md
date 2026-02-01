@@ -10,17 +10,17 @@ See: .planning/PROJECT.md (updated 2026-02-01)
 ## Current Position
 
 Milestone: v2.3 NMReData Export
-Phase: Phase 32 - Core NMReData Generation Module
+Phase: Phase 33 - API and UI Integration
 Plan: 01 of 01 (complete)
-Status: Phase 32 complete - ready for Phase 33
-Last activity: 2026-02-01 — Completed 32-01-PLAN.md
+Status: Phase 33 complete - ready for Phase 34
+Last activity: 2026-02-01 — Completed 33-01-PLAN.md
 
-Progress: █████░░░░░░░░░░░░░░░ 33% (Phase 32/34 complete, Phase 33/34 next)
+Progress: ██████████░░░░░░░░░░ 67% (Phase 33/34 complete, Phase 34/34 next)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 86 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 1)
+- Total plans completed: 87 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 2)
 - Average duration: ~7 min
 - Total execution time: ~590 min (~9.8 hours)
 
@@ -48,6 +48,11 @@ v2.2 decisions archived to milestones/v2.2-ROADMAP.md.
 - Preserve 1-based atom indices from NWChem (no conversion)
 - Solvent mapping: chcl3→CDCl3, dmso→(CD3)2SO
 - 4 decimal precision for shifts per NMReData spec
+
+**Phase 33 decisions:**
+- NMReData button placed after Geometry (SDF) to group SDF downloads together
+- Download attribute added for proper browser download behavior
+- Temperature defaults to 298.15 K (single) or ensemble temperature (ensemble mode)
 
 ### Roadmap Evolution
 
@@ -94,8 +99,8 @@ None
 ## Session Continuity
 
 Last session: 2026-02-01
-Stopped at: Completed Phase 32 Plan 01 (NMReData core module)
+Stopped at: Completed Phase 33 Plan 01 (API and UI Integration)
 Resume file: None
-Next: `/gsd:plan-phase 33` to begin Phase 33 (API and UI Integration)
+Next: `/gsd:plan-phase 34` to begin Phase 34 (Testing and Validation)
 Tests: All tests passing (285 prior + 36 nmredata = 321 tests)
-Codebase: ~6,270 LOC Python, ~2,230 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs
+Codebase: ~6,380 LOC Python, ~2,230 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs
