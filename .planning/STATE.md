@@ -9,13 +9,13 @@ See: .planning/PROJECT.md (updated 2026-02-01)
 
 ## Current Position
 
-Milestone: None active
-Phase: N/A
-Plan: N/A
-Status: Ready for next milestone
-Last activity: 2026-02-01 -- Shipped v2.2 Documentation milestone
+Milestone: v2.3 NMReData Export
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-01 — Milestone v2.3 started
 
-Progress: ████████████████████ 100% (v2.2 shipped)
+Progress: ░░░░░░░░░░░░░░░░░░░░ 0%
 
 ## Performance Metrics
 
@@ -66,8 +66,8 @@ None
 ## Session Continuity
 
 Last session: 2026-02-01
-Stopped at: Shipped v2.2 Documentation milestone
+Stopped at: Defining v2.3 requirements
 Resume file: None
-Next: Run `/gsd:new-milestone` to plan next milestone
+Next: Complete requirements and roadmap creation
 Tests: All tests passing (257 unit + 28 conformer/xTB = 285 tests)
 Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs

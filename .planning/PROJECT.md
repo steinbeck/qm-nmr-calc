@@ -8,9 +8,19 @@ An asynchronous web service for running NMR quantum mechanical calculations on o
 
 Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
 
+## Current Milestone: v2.3 NMReData Export
+
+**Goal:** Enable machine-readable export of NMR prediction results in the NMReData standard format.
+
+**Target features:**
+- NMReData file generation with predicted 1H/13C shifts and atom assignments
+- Include optimized 3D molecular geometry in export
+- Download button on results page alongside existing PNG/XYZ downloads
+- REST API endpoint for programmatic NMReData access
+
 ## Current State
 
-**Active:** Planning next milestone
+**Active:** v2.3 NMReData Export
 **Last shipped:** v2.2 Documentation (2026-02-01)
 
 **Codebase:** ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS
