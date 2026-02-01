@@ -277,6 +277,7 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 24. Conformer Pre-selection | v2.0.1 | 3/3 | Complete | 2026-01-30 |
 | 25. README & Docs Structure | v2.2 | 1/1 | Complete | 2026-01-31 |
 | 26. Installation Guide | v2.2 | 1/1 | Complete | 2026-01-31 |
+| 27. Usage Guide | v2.2 | 1/2 | In Progress | - |
 
 ## v2.2 Documentation (Phases 25-31)
 
@@ -323,9 +324,9 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 27-01-PLAN.md — Web UI workflow and calculation concepts
+- [x] 27-01-PLAN.md — Web UI workflow and calculation concepts
 - [ ] 27-02-PLAN.md — REST API reference and result interpretation
-**Status**: Not Started
+**Status**: In Progress
 
 ### Phase 28: Technical Architecture
 **Goal**: Developer-facing documentation of system architecture and data flows
