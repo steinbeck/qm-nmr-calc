@@ -11,18 +11,18 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 
 Milestone: v2.2 Documentation
 Phase: 28 of 7 (Technical Architecture)
-Plan: 1 of 2 in current phase
-Status: Plan 01 complete
-Last activity: 2026-02-01 -- Completed 28-01-PLAN.md (core architecture docs)
+Plan: 2 of 2 in current phase
+Status: Phase 28 complete
+Last activity: 2026-02-01 -- Completed 28-02-PLAN.md (conformer pipeline + CSS architecture)
 
-Progress: ██████████░░░░░░░░░░ 43% (3/7 phases)
+Progress: ██████████████░░░░░░ 57% (4/7 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 79 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 4)
+- Total plans completed: 80 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 5)
 - Average duration: ~7 min
-- Total execution time: ~569 min (~9.5 hours)
+- Total execution time: ~571 min (~9.5 hours)
 
 **By Milestone:**
 
@@ -53,7 +53,9 @@ All prior decisions logged in PROJECT.md Key Decisions table.
 - Troubleshooting: Problem/Symptom/Fix format for common issues
 - Usage guide: Web UI first, REST API in separate plan (27-02)
 - API docs: 26 curl examples covering all endpoints with complete workflow script
-- Architecture docs: 5 Mermaid diagrams (stack, data flow, job states, conformer states)
+- Architecture docs: 7 Mermaid diagrams (stack, data flow, job states, conformer states, pipeline stages)
+- Conformer pipeline: 9 stages documented with state machine and RDKit/CREST comparison
+- CSS architecture: Cascade layers, design tokens, BEM naming, file organization
 
 ### Roadmap Evolution
 
@@ -82,9 +84,9 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-01T08:09:43Z
-Stopped at: Completed 28-01-PLAN.md (core architecture documentation)
+Last session: 2026-02-01T08:14:02Z
+Stopped at: Completed 28-02-PLAN.md (conformer pipeline + CSS architecture)
 Resume file: None
-Next: Execute 28-02-PLAN.md (conformer pipeline documentation)
+Next: Phase 29 (Contributing Guide)
 Tests: All tests passing (257 unit + 28 conformer/xTB = 285 tests)
-Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~1,700 LOC docs
+Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~2,000 LOC docs
