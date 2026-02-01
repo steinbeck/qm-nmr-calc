@@ -10,17 +10,17 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 ## Current Position
 
 Milestone: v2.2 Documentation
-Phase: 27 of 7 (Usage Guide)
-Plan: 2 of 2 in current phase
-Status: Phase complete (verified)
-Last activity: 2026-02-01 -- Phase 27 verified, all must-haves passed
+Phase: 28 of 7 (Technical Architecture)
+Plan: 1 of 2 in current phase
+Status: Plan 01 complete
+Last activity: 2026-02-01 -- Completed 28-01-PLAN.md (core architecture docs)
 
 Progress: ██████████░░░░░░░░░░ 43% (3/7 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 78 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 3)
+- Total plans completed: 79 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 4)
 - Average duration: ~7 min
 - Total execution time: ~569 min (~9.5 hours)
 
@@ -53,6 +53,7 @@ All prior decisions logged in PROJECT.md Key Decisions table.
 - Troubleshooting: Problem/Symptom/Fix format for common issues
 - Usage guide: Web UI first, REST API in separate plan (27-02)
 - API docs: 26 curl examples covering all endpoints with complete workflow script
+- Architecture docs: 5 Mermaid diagrams (stack, data flow, job states, conformer states)
 
 ### Roadmap Evolution
 
@@ -81,9 +82,9 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-01T07:50:00Z
-Stopped at: Phase 27 verified and complete
+Last session: 2026-02-01T08:09:43Z
+Stopped at: Completed 28-01-PLAN.md (core architecture documentation)
 Resume file: None
-Next: Plan Phase 28 (/gsd:plan-phase 28) - Technical Architecture
+Next: Execute 28-02-PLAN.md (conformer pipeline documentation)
 Tests: All tests passing (257 unit + 28 conformer/xTB = 285 tests)
-Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~1,300 LOC docs
+Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~1,700 LOC docs
