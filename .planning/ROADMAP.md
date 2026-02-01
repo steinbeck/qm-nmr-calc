@@ -393,9 +393,12 @@ Plans:
   2. Consistent formatting and heading structure across all docs
   3. All links verified working
   4. Table of contents accurate
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 31-01-PLAN.md — Cross-references, link verification, and ToC update
 **Status**: Not Started
 
 ---
 
-*Last updated: 2026-02-01 - Phase 30 complete*
+*Last updated: 2026-02-01 - Phase 31 planned*
