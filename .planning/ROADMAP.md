@@ -320,7 +320,11 @@ Plans:
   4. Solvent selection and implications documented
   5. Preset differences (draft vs production) explained
   6. Result interpretation guide (shifts, spectra, 3D viewer)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 27-01-PLAN.md — Web UI workflow and calculation concepts
+- [ ] 27-02-PLAN.md — REST API reference and result interpretation
 **Status**: Not Started
 
 ### Phase 28: Technical Architecture
@@ -378,4 +382,4 @@ Plans:
 
 ---
 
-*Last updated: 2026-01-31 - Phase 26 complete*
+*Last updated: 2026-02-01 - Phase 27 planned*
