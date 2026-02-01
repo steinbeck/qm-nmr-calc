@@ -323,3 +323,31 @@ H  -0.3630  -0.5135  -0.8892
         # Check that all expected fields are in the response construction
         for field in expected_conformer_fields:
             assert f'"{field}"' in source, f"Field '{field}' not found in conformer data"
+
+
+class TestNMReDataEndpoint:
+    """Tests for NMReData SDF download endpoint."""
+
+    def test_nmredata_endpoint_returns_404_for_nonexistent_job(self):
+        """GET /api/v1/jobs/{id}/nmredata.sdf returns 404 for unknown job."""
+        response = client.get("/api/v1/jobs/nonexistent123/nmredata.sdf")
+        assert response.status_code == 404
+        data = response.json()["detail"]
+        assert data["status"] == 404
+        assert "title" in data  # RFC 7807
+
+    def test_nmredata_endpoint_returns_409_for_incomplete_job(self):
+        """GET /api/v1/jobs/{id}/nmredata.sdf returns 409 for incomplete job."""
+        # Create a job (will be in "queued" state)
+        create_response = client.post(
+            "/api/v1/jobs",
+            json={"smiles": "CCO", "solvent": "chcl3"}
+        )
+        job_id = create_response.json()["job_id"]
+
+        # Immediately try to download NMReData (job still queued)
+        response = client.get(f"/api/v1/jobs/{job_id}/nmredata.sdf")
+        assert response.status_code == 409
+        data = response.json()["detail"]
+        assert data["status"] == 409
+        assert "title" in data  # RFC 7807
