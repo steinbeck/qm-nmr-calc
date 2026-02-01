@@ -377,7 +377,11 @@ Plans:
   7. Conformational sampling importance explained with references
   8. Literature citations included (ISiCLE, DELTA50, CREST, Grimblat)
   9. Expected accuracy (MAE values) and limitations documented
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 30-01-PLAN.md — NMR fundamentals, DFT theory, and COSMO solvation
+- [ ] 30-02-PLAN.md — Linear scaling, DELTA50, Boltzmann, conformational sampling, accuracy, and references
 **Status**: Not Started
 
 ### Phase 31: Documentation Polish and Cross-References
@@ -393,4 +397,4 @@ Plans:
 
 ---
 
-*Last updated: 2026-02-01 - Phase 29 complete*
+*Last updated: 2026-02-01 - Phase 30 planned*
