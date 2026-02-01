@@ -66,28 +66,28 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NMRD-01 | TBD | Pending |
-| NMRD-02 | TBD | Pending |
-| NMRD-03 | TBD | Pending |
-| NMRD-04 | TBD | Pending |
-| NMRD-05 | TBD | Pending |
-| NMRD-06 | TBD | Pending |
-| NMRD-07 | TBD | Pending |
-| NMRD-08 | TBD | Pending |
-| NMRD-09 | TBD | Pending |
-| API-01 | TBD | Pending |
-| API-02 | TBD | Pending |
-| API-03 | TBD | Pending |
-| UI-01 | TBD | Pending |
-| TEST-01 | TBD | Pending |
-| TEST-02 | TBD | Pending |
-| TEST-03 | TBD | Pending |
+| NMRD-01 | Phase 32 | Pending |
+| NMRD-02 | Phase 32 | Pending |
+| NMRD-03 | Phase 32 | Pending |
+| NMRD-04 | Phase 32 | Pending |
+| NMRD-05 | Phase 32 | Pending |
+| NMRD-06 | Phase 32 | Pending |
+| NMRD-07 | Phase 32 | Pending |
+| NMRD-08 | Phase 32 | Pending |
+| NMRD-09 | Phase 32 | Pending |
+| API-01 | Phase 33 | Pending |
+| API-02 | Phase 33 | Pending |
+| API-03 | Phase 33 | Pending |
+| UI-01 | Phase 33 | Pending |
+| TEST-01 | Phase 34 | Pending |
+| TEST-02 | Phase 34 | Pending |
+| TEST-03 | Phase 34 | Pending |
 
 **Coverage:**
 - v2.3 requirements: 16 total
-- Mapped to phases: 0
-- Unmapped: 16 ⚠️
+- Mapped to phases: 16
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-02-01*
-*Last updated: 2026-02-01 after initial definition*
+*Last updated: 2026-02-01 after roadmap creation*

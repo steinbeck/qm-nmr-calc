@@ -8,10 +8,11 @@
 - ✅ **v2.0.1 Conformer Pre-selection** - Phase 24 (shipped 2026-01-30)
 - ✅ **v2.1 UI Redesign** - Phases 18-23 (shipped 2026-01-31)
 - ✅ **v2.2 Documentation** - Phases 25-31 (shipped 2026-02-01)
+- 🚧 **v2.3 NMReData Export** - Phases 32-34 (in progress)
 
 ## Overview
 
-**Current milestone:** None active - run `/gsd:new-milestone` to plan next milestone
+**Current milestone:** v2.3 NMReData Export
 
 **Last shipped:** v2.2 Documentation (2026-02-01) - Comprehensive documentation for academic researchers and developers.
 
@@ -240,47 +241,6 @@ Plans:
 
 </details>
 
-## Progress
-
-**Execution Order:**
-Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (v2.0) -> 18 -> 23 (v2.1)
-
-| Phase | Milestone | Plans Complete | Status | Completed |
-|-------|-----------|----------------|--------|-----------|
-| 1. Project Setup | v1.0 | 3/3 | Complete | 2026-01-20 |
-| 2. NWChem Integration | v1.0 | 3/3 | Complete | 2026-01-20 |
-| 3. NMR Pipeline | v1.0 | 2/2 | Complete | 2026-01-20 |
-| 4. Web Interface | v1.0 | 2/2 | Complete | 2026-01-20 |
-| 5. Visualization | v1.0 | 2/2 | Complete | 2026-01-20 |
-| 6. Polish | v1.0 | 2/2 | Complete | 2026-01-20 |
-| 7. Direct NWChem | v1.1 | 2/2 | Complete | 2026-01-25 |
-| 8. COSMO Solvation | v1.1 | 2/2 | Complete | 2026-01-25 |
-| 9. DELTA50 Benchmark | v1.1 | 3/3 | Complete | 2026-01-25 |
-| 10. 3D Visualization | v1.1 | 2/2 | Complete | 2026-01-25 |
-| 11. Geometry Input | v1.1 | 2/2 | Complete | 2026-01-25 |
-| 11.1 Solvent Research | v1.1 | 1/1 | Complete | 2026-01-25 |
-| 11.2 Vacuum Benchmark | v1.1 | 3/3 | Complete | 2026-01-25 |
-| 12. Data Model | v2.0 | 3/3 | Complete | 2026-01-26 |
-| 13. RDKit Generation | v2.0 | 3/3 | Complete | 2026-01-27 |
-| 14. Boltzmann Averaging | v2.0 | 2/2 | Complete | 2026-01-27 |
-| 15. NWChem Integration | v2.0 | 3/3 | Complete | 2026-01-27 |
-| 16. CREST Integration | v2.0 | 3/3 | Complete | 2026-01-28 |
-| 17. API Integration | v2.0 | 5/5 | Complete | 2026-01-28 |
-| 18. CSS Foundation | v2.1 | 4/4 | Complete | 2026-01-29 |
-| 19. Results Redesign | v2.1 | 3/3 | Complete | 2026-01-29 |
-| 20. Submit Redesign | v2.1 | 2/2 | Complete | 2026-01-29 |
-| 21. Status Redesign | v2.1 | 2/2 | Complete | 2026-01-31 |
-| 22. Responsive Polish | v2.1 | 2/2 | Complete | 2026-01-31 |
-| 23. Accessibility | v2.1 | 2/2 | Complete | 2026-01-31 |
-| 24. Conformer Pre-selection | v2.0.1 | 3/3 | Complete | 2026-01-30 |
-| 25. README & Docs Structure | v2.2 | 1/1 | Complete | 2026-01-31 |
-| 26. Installation Guide | v2.2 | 1/1 | Complete | 2026-01-31 |
-| 27. Usage Guide | v2.2 | 2/2 | Complete | 2026-02-01 |
-| 28. Technical Architecture | v2.2 | 2/2 | Complete | 2026-02-01 |
-| 29. Library Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
-| 30. DP4+ Science Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
-| 31. Documentation Polish | v2.2 | 1/1 | Complete | 2026-02-01 |
-
 <details>
 <summary>v2.2 Documentation (Phases 25-31) - SHIPPED 2026-02-01</summary>
 
@@ -323,6 +283,94 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 
 </details>
 
+<details open>
+<summary>🚧 v2.3 NMReData Export (Phases 32-34) - IN PROGRESS</summary>
+
+### Phase 32: Core NMReData Generation Module
+**Goal**: Generate NMReData-compliant SDF files with predicted chemical shifts and optimized geometry
+**Depends on**: Phase 31 (v2.2 complete)
+**Requirements**: NMRD-01, NMRD-02, NMRD-03, NMRD-04, NMRD-05, NMRD-06, NMRD-07, NMRD-08, NMRD-09
+**Success Criteria** (what must be TRUE):
+  1. User can generate NMReData SDF file containing valid MOL block with optimized 3D coordinates
+  2. Generated file includes required metadata tags (VERSION 1.1 or 2.0, LEVEL 0, SOLVENT with proper mapping, TEMPERATURE 298.15 K)
+  3. Generated file includes ASSIGNMENT tag with 1H and 13C chemical shifts mapped to 1-indexed atom numbers
+  4. Generated file includes molecular identifiers (FORMULA, SMILES tags)
+  5. Generated file includes provenance metadata (calculation method, basis set, scaling factors applied)
+  6. Atom numbering conversion (RDKit 0-indexed → SDF 1-indexed) handled correctly with no off-by-one errors
+  7. Tag separator format (", " comma+space) compliant with NMReData specification
+  8. Ensemble calculations export Boltzmann-weighted average shifts with lowest-energy conformer geometry
+**Status**: Pending
+
+### Phase 33: API and UI Integration
+**Goal**: Enable NMReData file download via REST API endpoint and web UI button
+**Depends on**: Phase 32
+**Requirements**: API-01, API-02, API-03, UI-01
+**Success Criteria** (what must be TRUE):
+  1. User can download NMReData file via GET /api/v1/jobs/{job_id}/nmredata.sdf endpoint
+  2. Response includes proper HTTP headers (media type chemical/x-mdl-sdfile, filename {job_id}_nmredata.sdf)
+  3. Endpoint returns 404 if job not found, 409 if job not complete
+  4. Results page includes NMReData download button alongside existing PNG/XYZ downloads
+  5. Download button follows existing glassmorphism design system from v2.1
+**Status**: Pending
+
+### Phase 34: Testing and Validation
+**Goal**: Comprehensive testing of NMReData format compliance and round-trip validation
+**Depends on**: Phase 33
+**Requirements**: TEST-01, TEST-02, TEST-03
+**Success Criteria** (what must be TRUE):
+  1. Unit tests validate NMReData tag formatting (separators, atom numbering conversion, solvent mapping)
+  2. Integration tests validate complete API endpoint flow (job completion check, file generation, HTTP response)
+  3. Exported file can be parsed by RDKit SDMolSupplier without errors
+  4. Round-trip test verifies atom assignments match original predictions after re-import
+  5. Test coverage includes edge cases (ensemble vs single-conformer, different solvents, molecules with implicit hydrogens)
+**Status**: Pending
+
+</details>
+
+## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (v2.0) -> 18 -> 23 (v2.1) -> 25 -> 31 (v2.2) -> 32 -> 34 (v2.3)
+
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Project Setup | v1.0 | 3/3 | Complete | 2026-01-20 |
+| 2. NWChem Integration | v1.0 | 3/3 | Complete | 2026-01-20 |
+| 3. NMR Pipeline | v1.0 | 2/2 | Complete | 2026-01-20 |
+| 4. Web Interface | v1.0 | 2/2 | Complete | 2026-01-20 |
+| 5. Visualization | v1.0 | 2/2 | Complete | 2026-01-20 |
+| 6. Polish | v1.0 | 2/2 | Complete | 2026-01-20 |
+| 7. Direct NWChem | v1.1 | 2/2 | Complete | 2026-01-25 |
+| 8. COSMO Solvation | v1.1 | 2/2 | Complete | 2026-01-25 |
+| 9. DELTA50 Benchmark | v1.1 | 3/3 | Complete | 2026-01-25 |
+| 10. 3D Visualization | v1.1 | 2/2 | Complete | 2026-01-25 |
+| 11. Geometry Input | v1.1 | 2/2 | Complete | 2026-01-25 |
+| 11.1 Solvent Research | v1.1 | 1/1 | Complete | 2026-01-25 |
+| 11.2 Vacuum Benchmark | v1.1 | 3/3 | Complete | 2026-01-25 |
+| 12. Data Model | v2.0 | 3/3 | Complete | 2026-01-26 |
+| 13. RDKit Generation | v2.0 | 3/3 | Complete | 2026-01-27 |
+| 14. Boltzmann Averaging | v2.0 | 2/2 | Complete | 2026-01-27 |
+| 15. NWChem Integration | v2.0 | 3/3 | Complete | 2026-01-27 |
+| 16. CREST Integration | v2.0 | 3/3 | Complete | 2026-01-28 |
+| 17. API Integration | v2.0 | 5/5 | Complete | 2026-01-28 |
+| 18. CSS Foundation | v2.1 | 4/4 | Complete | 2026-01-29 |
+| 19. Results Redesign | v2.1 | 3/3 | Complete | 2026-01-29 |
+| 20. Submit Redesign | v2.1 | 2/2 | Complete | 2026-01-29 |
+| 21. Status Redesign | v2.1 | 2/2 | Complete | 2026-01-31 |
+| 22. Responsive Polish | v2.1 | 2/2 | Complete | 2026-01-31 |
+| 23. Accessibility | v2.1 | 2/2 | Complete | 2026-01-31 |
+| 24. Conformer Pre-selection | v2.0.1 | 3/3 | Complete | 2026-01-30 |
+| 25. README & Docs Structure | v2.2 | 1/1 | Complete | 2026-01-31 |
+| 26. Installation Guide | v2.2 | 1/1 | Complete | 2026-01-31 |
+| 27. Usage Guide | v2.2 | 2/2 | Complete | 2026-02-01 |
+| 28. Technical Architecture | v2.2 | 2/2 | Complete | 2026-02-01 |
+| 29. Library Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
+| 30. DP4+ Science Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
+| 31. Documentation Polish | v2.2 | 1/1 | Complete | 2026-02-01 |
+| **32. NMReData Module** | **v2.3** | **0/0** | **Pending** | — |
+| **33. API/UI Integration** | **v2.3** | **0/0** | **Pending** | — |
+| **34. Testing & Validation** | **v2.3** | **0/0** | **Pending** | — |
+
 ---
 
-*Last updated: 2026-02-01 - v2.2 Documentation milestone shipped*
+*Last updated: 2026-02-01 - v2.3 NMReData Export roadmap created*
