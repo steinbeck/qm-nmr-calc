@@ -280,6 +280,7 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 27. Usage Guide | v2.2 | 2/2 | Complete | 2026-02-01 |
 | 28. Technical Architecture | v2.2 | 2/2 | Complete | 2026-02-01 |
 | 29. Library Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
+| 30. DP4+ Science Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
 
 ## v2.2 Documentation (Phases 25-31)
 
@@ -380,9 +381,9 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 30-01-PLAN.md — NMR fundamentals, DFT theory, and COSMO solvation
-- [ ] 30-02-PLAN.md — Linear scaling, DELTA50, Boltzmann, conformational sampling, accuracy, and references
-**Status**: Not Started
+- [x] 30-01-PLAN.md — NMR fundamentals, DFT theory, and COSMO solvation
+- [x] 30-02-PLAN.md — Linear scaling, DELTA50, Boltzmann, conformational sampling, accuracy, and references
+**Status**: Complete
 
 ### Phase 31: Documentation Polish and Cross-References
 **Goal**: Final review ensuring consistency and proper cross-linking
@@ -397,4 +398,4 @@ Plans:
 
 ---
 
-*Last updated: 2026-02-01 - Phase 30 planned*
+*Last updated: 2026-02-01 - Phase 30 complete*

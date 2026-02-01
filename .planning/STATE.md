@@ -15,7 +15,7 @@ Plan: 2 of 2 in current phase
 Status: Phase complete
 Last activity: 2026-02-01 -- Completed 30-02-PLAN.md (Linear scaling, Boltzmann, conformers, accuracy)
 
-Progress: ████████████████████ 100% (7/7 phases complete)
+Progress: ██████████████████░░ 86% (6/7 phases complete)
 
 ## Performance Metrics
 
@@ -92,6 +92,6 @@ None
 Last session: 2026-02-01
 Stopped at: Completed 30-02-PLAN.md (Linear scaling, Boltzmann, conformers, accuracy)
 Resume file: None
-Next: v2.2 Documentation milestone complete
+Next: Phase 31 - Documentation Polish and Cross-References
 Tests: All tests passing (257 unit + 28 conformer/xTB = 285 tests)
 Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~3,700 LOC docs
