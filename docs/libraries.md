@@ -310,3 +310,144 @@ The project originally used ISiCLE (a Python wrapper for NWChem) in v1.0 but swi
 
 See [Architecture Documentation](architecture.md#scratch-directory) for detailed scratch directory layout.
 
+---
+
+## Huey Task Queue
+
+Huey provides async job processing with SQLite persistence, enabling long-running NWChem calculations to run in background workers.
+
+**Official docs:** [Huey Documentation](https://huey.readthedocs.io/)
+
+### Integration Points
+
+| Module | Components | Purpose |
+|--------|------------|---------|
+| `queue.py` | `huey` instance, signal handlers | Queue configuration and lifecycle |
+| `tasks.py` | `run_nmr_task()`, `run_ensemble_nmr_task()` | Task definitions |
+
+### Why Huey over Celery
+
+The project uses Huey instead of the more common Celery + Redis stack:
+
+1. **Simpler deployment** - No Redis server required
+2. **SQLite backend** - Uses `./data/huey.db` for durability (single file)
+3. **Single-process consumer** - NWChem calculations are CPU-bound; multiple workers don't help
+4. **Lightweight** - Minimal dependencies compared to Celery's ecosystem
+
+### Queue Configuration
+
+The queue is configured in `queue.py` with signal handlers for job lifecycle management.
+
+```python
+# Source: src/qm_nmr_calc/queue.py, lines 1-89
+from huey import SqliteHuey, signals
+
+# SQLite-backed queue with fsync for durability
+huey = SqliteHuey(
+    'qm-nmr-calc',
+    filename='./data/huey.db',
+    fsync=True
+)
+
+@huey.signal(signals.SIGNAL_EXECUTING)
+def on_task_start(signal, task):
+    """Update job status when task starts executing."""
+    job_id = task.args[0]
+    update_job_status(job_id, status='running', started_at=datetime.utcnow())
+
+@huey.signal(signals.SIGNAL_COMPLETE)
+def on_task_complete(signal, task):
+    """Update job status and send notification on success."""
+    job_id = task.args[0]
+    update_job_status(job_id, status='complete', completed_at=datetime.utcnow())
+    # Send email notification if configured
+    job_status = load_job_status(job_id)
+    if job_status and job_status.input.notification_email:
+        send_job_notification_sync(to_email=..., job_id=job_id, status="complete")
+
+@huey.signal(signals.SIGNAL_ERROR)
+def on_task_error(signal, task, exc=None):
+    """Update job status with error details on failure."""
+    job_id = task.args[0]
+    error_msg = str(exc) if exc else 'Unknown error'
+    update_job_status(job_id, status='failed', error_message=error_msg)
+```
+
+**Key configuration:**
+- `SqliteHuey` - SQLite-backed storage (no Redis required)
+- `fsync=True` - Ensures durability across crashes
+- `filename='./data/huey.db'` - Database location in data directory
+
+**Signal handlers:**
+| Signal | When Fired | Action |
+|--------|------------|--------|
+| `SIGNAL_EXECUTING` | Task starts | Set job status to `running`, record `started_at` |
+| `SIGNAL_COMPLETE` | Task succeeds | Set job status to `complete`, send email notification |
+| `SIGNAL_ERROR` | Task fails | Set job status to `failed`, record error message |
+| `SIGNAL_INTERRUPTED` | Graceful shutdown | Set job status to `failed` with shutdown message |
+
+### Task Definition
+
+Tasks use the `@huey.task()` decorator and track progress through step callbacks.
+
+```python
+# Source: src/qm_nmr_calc/tasks.py, lines 82-144
+from .queue import huey
+
+@huey.task()
+def run_nmr_task(job_id: str) -> dict:
+    """Execute NMR calculation for a queued job."""
+    job_status = load_job_status(job_id)
+    preset = PRESETS[PresetName(job_status.input.preset)]
+
+    # Step 1: Geometry optimization
+    start_step(job_id, "geometry_optimization", "Optimizing geometry")
+
+    # Callback to switch step tracking when optimization completes
+    def on_opt_complete():
+        start_step(job_id, "nmr_shielding", "Computing NMR shielding")
+
+    result = run_calculation(
+        smiles=job_status.input.smiles,
+        job_dir=get_job_dir(job_id),
+        preset=preset,
+        solvent=job_status.input.solvent,
+        on_optimization_complete=on_opt_complete,
+    )
+
+    # Step 3: Post-processing
+    start_step(job_id, "post_processing", "Generating results")
+
+    # Convert shielding to shifts, generate visualizations...
+    return {'success': True, 'job_id': job_id}
+```
+
+**Task pattern:**
+- `job_id` is always the first argument (used by signal handlers to identify the job)
+- Step progress is tracked via `start_step()` and `complete_current_step()` functions
+- The `status.json` file in the job directory is updated at each pipeline stage
+- Exceptions propagate to Huey, triggering `SIGNAL_ERROR` for automatic status update
+
+### Consumer Operations
+
+Start the Huey consumer to process queued jobs:
+
+```bash
+# Start consumer (single worker, thread-based)
+huey_consumer qm_nmr_calc.queue.huey -w 1 -k thread
+
+# Useful flags:
+#   -w N      Number of workers (default: 1)
+#   -k thread Use threading instead of multiprocessing
+#   -v        Verbose output
+#   -l /path  Log file location
+```
+
+**Single worker recommendation:** NWChem calculations spawn MPI processes that consume all available CPU cores. Running multiple Huey workers would cause resource contention. Use `-w 1` for production.
+
+**Startup order:**
+1. Start the FastAPI application first (`uvicorn qm_nmr_calc.api.main:app`)
+2. Then start the Huey consumer (`huey_consumer qm_nmr_calc.queue.huey`)
+
+The API can accept and queue jobs even when the consumer is down; they'll process when the consumer restarts.
+
