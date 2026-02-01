@@ -2,9 +2,43 @@
 
 This document describes the internal architecture of the QM NMR Calculator for developers and contributors. It covers the technology stack, data flows, job lifecycle, and file storage structure.
 
-For a high-level overview, see the [Architecture section](../README.md#architecture-overview) in the main README.
-
 **Audience:** Developers contributing to or extending the codebase.
+
+---
+
+## Architecture Overview
+
+```mermaid
+flowchart LR
+    subgraph Input
+        A[Web UI]
+        B[REST API]
+    end
+
+    subgraph Server
+        C[FastAPI]
+        D[Huey Queue]
+    end
+
+    subgraph Worker
+        E[Consumer]
+    end
+
+    subgraph Computation
+        F[RDKit\nConformers]
+        G[NWChem\nDFT/NMR]
+    end
+
+    A --> C
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> E
+```
+
+FastAPI handles web requests and queues long-running calculations. The Huey consumer processes jobs sequentially, using RDKit for conformer generation and NWChem for DFT-based NMR calculations.
 
 ---
 
@@ -710,8 +744,8 @@ static/css/
 
 ## Related Documentation
 
-- [README](../README.md) - High-level overview and quick start
-- [Installation Guide](installation.md) - System dependencies and setup
+- [README](../README.md) - Project overview and features
+- [Installation Guide](installation.md) - Quick start, system dependencies, and setup
 - [Usage Guide](usage.md) - Web UI and REST API reference
 - [NMR Methodology](science.md) - DP4+, linear scaling, Boltzmann averaging
 - [Library Documentation](libraries.md) - RDKit, NWChem, Huey integrations

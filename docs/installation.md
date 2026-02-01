@@ -4,6 +4,25 @@ Complete installation instructions for the QM NMR Calculator, from system depend
 
 **Target audience:** Academic researchers and developers comfortable with command line basics.
 
+## Quick Start
+
+**Prerequisites:** Linux, Python 3.11+, NWChem, uv
+
+```bash
+# Clone and install
+git clone https://github.com/steinbeck/qm-nmr-calc.git
+cd qm-nmr-calc
+uv sync
+
+# Start services (two terminals)
+uv run python scripts/run_consumer.py  # Terminal 1: Job processor
+uv run python scripts/run_api.py       # Terminal 2: API server
+
+# Open http://localhost:8000
+```
+
+For detailed setup including optional CREST/xTB for ensemble calculations, continue reading below.
+
 ## Prerequisites Overview
 
 Before installing the QM NMR Calculator, you'll need:

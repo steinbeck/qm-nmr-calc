@@ -17,66 +17,16 @@ Built for chemists and researchers who need reliable NMR predictions without man
 - **Interactive results** with spectrum plots and 3D viewer with shift labels
 - **Draft and production modes** for quick checks vs publication-quality results
 
-## Architecture Overview
+## Getting Started
 
-```mermaid
-flowchart LR
-    subgraph Input
-        A[Web UI]
-        B[REST API]
-    end
-
-    subgraph Server
-        C[FastAPI]
-        D[Huey Queue]
-    end
-
-    subgraph Worker
-        E[Consumer]
-    end
-
-    subgraph Computation
-        F[RDKit\nConformers]
-        G[NWChem\nDFT/NMR]
-    end
-
-    A --> C
-    B --> C
-    C --> D
-    D --> E
-    E --> F
-    F --> G
-    G --> E
-```
-
-FastAPI handles web requests and queues long-running calculations. The Huey consumer processes jobs sequentially, using RDKit for conformer generation and NWChem for DFT-based NMR calculations.
-
-## Quick Start
-
-**Prerequisites:** Linux, Python 3.11+, NWChem, uv
-
-```bash
-# Clone and install
-git clone https://github.com/steinbeck/qm-nmr-calc.git
-cd qm-nmr-calc
-uv sync
-
-# Start services (two terminals)
-uv run python scripts/run_consumer.py  # Terminal 1: Job processor
-uv run python scripts/run_api.py       # Terminal 2: API server
-
-# Open http://localhost:8000
-```
-
-For detailed setup including optional CREST/xTB for ensemble calculations, see [docs/installation.md](docs/installation.md).
+See the **[Installation Guide](docs/installation.md)** for system dependencies, setup instructions, and a quick start walkthrough.
 
 ## Documentation
 
-- **[Installation Guide](docs/installation.md)** - System dependencies, uv setup, optional CREST
+- **[NMR Methodology](docs/science.md)** - DP4+, linear scaling, and Boltzmann averaging
 - **[Usage Guide](docs/usage.md)** - Web UI workflow and REST API reference
 - **[Technical Architecture](docs/architecture.md)** - System design and data flow
 - **[Library Documentation](docs/libraries.md)** - RDKit, NWChem, Huey integrations
-- **[NMR Methodology](docs/science.md)** - DP4+, linear scaling, and Boltzmann averaging
 
 ## API Example
 
