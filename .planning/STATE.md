@@ -10,17 +10,17 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 ## Current Position
 
 Milestone: v2.2 Documentation
-Phase: 28 of 7 (Technical Architecture)
-Plan: 2 of 2 in current phase
-Status: Phase 28 complete
-Last activity: 2026-02-01 -- Completed 28-02-PLAN.md (conformer pipeline + CSS architecture)
+Phase: 29 of 7 (Library Documentation)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-01 -- Completed 29-01-PLAN.md (Python library integration)
 
-Progress: ██████████████░░░░░░ 57% (4/7 phases)
+Progress: ██████████████░░░░░░ 64% (5/7 phases partial)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 80 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 5)
+- Total plans completed: 81 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 6)
 - Average duration: ~7 min
 - Total execution time: ~571 min (~9.5 hours)
 
@@ -56,6 +56,7 @@ All prior decisions logged in PROJECT.md Key Decisions table.
 - Architecture docs: 7 Mermaid diagrams (stack, data flow, job states, conformer states, pipeline stages)
 - Conformer pipeline: 9 stages documented with state machine and RDKit/CREST comparison
 - CSS architecture: Cascade layers, design tokens, BEM naming, file organization
+- Library docs: Code-first documentation with source file references, integration points tables
 
 ### Roadmap Evolution
 
@@ -84,9 +85,9 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-01T08:14:02Z
-Stopped at: Completed 28-02-PLAN.md (conformer pipeline + CSS architecture)
+Last session: 2026-02-01T09:34:36Z
+Stopped at: Completed 29-01-PLAN.md (Python library integration)
 Resume file: None
-Next: Phase 29 (Contributing Guide)
+Next: 29-02-PLAN.md (JavaScript libraries + CREST/xTB)
 Tests: All tests passing (257 unit + 28 conformer/xTB = 285 tests)
-Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~2,000 LOC docs
+Codebase: ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS, ~2,400 LOC docs
