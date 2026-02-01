@@ -421,3 +421,173 @@ The scaling factors vary slightly between solvents:
 - **CHCl3 vs DMSO:** Small differences (<1%) in slope, with DMSO showing slightly larger MAE (expected for the more polar solvent with stronger solute-solvent interactions)
 
 **Important:** Always use scaling factors that match your calculation conditions. Using CHCl3 factors for a DMSO calculation will introduce systematic errors.
+
+---
+
+## Boltzmann Weighting
+
+### Statistical Mechanics Foundation
+
+Flexible molecules exist as ensembles of conformers at thermal equilibrium. According to statistical mechanics, the probability of finding a molecule in any particular conformer is governed by the **Boltzmann distribution**---lower energy conformers are exponentially more probable than higher energy ones.
+
+This has direct implications for NMR:
+- Different conformers have different geometries
+- Different geometries produce different chemical shifts
+- Experimental NMR observes a time-averaged spectrum (fast exchange limit)
+- Predictions must average over the conformer ensemble
+
+### Mathematical Derivation
+
+For a system in thermal equilibrium, the probability of state $i$ is given by the **canonical ensemble**. The partition function is:
+
+$$Z = \sum_i e^{-E_i/RT}$$
+
+where:
+- $E_i$ = energy of conformer $i$
+- $R$ = gas constant = 0.001987 kcal/(mol$\cdot$K)
+- $T$ = temperature in Kelvin (default: 298.15 K)
+
+The probability (population) of conformer $i$ is:
+
+$$p_i = \frac{e^{-E_i/RT}}{Z} = \frac{e^{-E_i/RT}}{\sum_j e^{-E_j/RT}}$$
+
+### Numerical Stability: The Exp-Normalize Trick
+
+Direct computation of $e^{-E_i/RT}$ can cause numerical problems:
+- **Overflow:** For low-energy conformers with large negative $-E_i/RT$, $e^x$ becomes astronomically large
+- **Underflow:** For high-energy conformers, $e^{-E_i/RT} \approx 0$ loses precision
+
+The solution is to subtract the minimum energy before exponentiation:
+
+$$p_i = \frac{e^{-(E_i - E_{min})/RT}}{\sum_j e^{-(E_j - E_{min})/RT}}$$
+
+Now all exponent arguments are $\leq 0$:
+- The lowest-energy conformer has exponent 0, giving $e^0 = 1$
+- Higher-energy conformers have negative exponents, giving values $< 1$
+- No overflow possible; underflow only affects negligible conformers
+
+### Application to NMR Chemical Shifts
+
+The population-weighted average chemical shift for each nucleus is:
+
+$$\delta_{avg} = \sum_i p_i \cdot \delta_i$$
+
+where $\delta_i$ is the chemical shift from conformer $i$.
+
+This averaging is applied independently to:
+- Each 1H nucleus (by atom index)
+- Each 13C nucleus (by atom index)
+
+The result is a single predicted spectrum representing what would be observed experimentally under fast-exchange conditions.
+
+### Temperature Dependence
+
+The Boltzmann distribution is temperature-dependent:
+
+- **Lower temperature:** Distribution becomes sharper; lowest-energy conformer dominates
+- **Higher temperature:** Distribution becomes flatter; more conformers contribute significantly
+
+At 298.15 K (25C, typical NMR conditions):
+- A conformer 1 kcal/mol above the minimum has ~15% population
+- A conformer 2 kcal/mol above has ~3% population
+- A conformer 3 kcal/mol above has ~0.6% population
+
+This motivates the energy filtering thresholds (see [Conformational Sampling](#conformational-sampling)).
+
+### Implementation
+
+The Boltzmann weighting is implemented in [`boltzmann.py`](../src/qm_nmr_calc/conformers/boltzmann.py):
+
+```python
+def calculate_boltzmann_weights(energies, temperature_k=298.15):
+    rt = R_KCAL * temperature_k
+    min_energy = min(energies)
+    relative_energies = [e - min_energy for e in energies]
+    unnormalized = [math.exp(-e_rel / rt) for e_rel in relative_energies]
+    return [w / sum(unnormalized) for w in unnormalized]
+```
+
+The `average_nmr_shifts()` function then applies these weights to per-conformer shifts:
+
+```python
+delta_avg = sum(p_i * delta_i for p_i, delta_i in zip(weights, shifts))
+```
+
+---
+
+## Conformational Sampling
+
+### Why Conformers Matter for NMR
+
+A molecule with rotatable bonds can adopt multiple conformations, each with distinct:
+- **3D geometry:** Different bond rotations produce different shapes
+- **Electronic structure:** Geometry affects electron density distribution
+- **NMR shielding:** Each nucleus experiences a different magnetic environment
+
+Experimental NMR spectra reflect the **ensemble average** of all accessible conformers (assuming fast interconversion on the NMR timescale). A calculation on only one conformer may miss significant contributors, leading to incorrect predictions.
+
+**Key insight:** For flexible molecules, the quality of conformer sampling often matters more than the level of DFT theory used.
+
+### Energy Window Filtering
+
+Not all mathematically possible conformers contribute meaningfully. Conformational sampling uses energy-based filtering:
+
+**Pre-DFT filtering (MMFF/xTB energies):**
+- Window: 6 kcal/mol above minimum
+- Rationale: Cast a wide net to avoid missing relevant conformers
+- Source: Force field (MMFF94) or GFN2-xTB energies
+
+**Post-DFT filtering (DFT energies):**
+- Window: 3 kcal/mol above minimum
+- Rationale: At 298 K, conformers >3 kcal/mol above minimum have <1% population
+- Source: B3LYP/6-31G* optimization energies
+
+This two-stage approach balances thoroughness (wide initial search) with computational efficiency (focusing DFT on relevant conformers).
+
+### RDKit vs CREST Methods
+
+This project supports two conformer generation approaches:
+
+| Feature | RDKit ETKDGv3 | CREST (GFN2-xTB) |
+|---------|---------------|------------------|
+| **Speed** | Fast (seconds) | Slower (minutes-hours) |
+| **Sampling algorithm** | Distance geometry + MMFF | Metadynamics + molecular dynamics |
+| **Energy ranking** | MMFF94 force field | GFN2-xTB semi-empirical |
+| **Solvation** | None (gas phase) | ALPB implicit solvation |
+| **Strengths** | Rigid/semi-rigid molecules | Flexible molecules |
+| **When to use** | <3 rotatable bonds | >3 rotatable bonds |
+
+**RDKit ETKDGv3:**
+- Uses experimental torsion angle knowledge for realistic geometries
+- Very fast: 10-50 conformers in under a second
+- May miss conformers requiring barrier crossing
+
+**CREST (Conformer-Rotamer Ensemble Sampling Tool):**
+- Performs metadynamics to escape local minima
+- Finds conformers that distance geometry might miss
+- Uses GFN2-xTB for energy ranking (more accurate than MMFF)
+- Includes ALPB solvation during sampling
+
+### Practical Guidelines
+
+**Use RDKit when:**
+- Molecule is relatively rigid (cyclic, aromatic)
+- Few rotatable bonds (<3)
+- Quick screening is needed
+- CREST/xTB not installed
+
+**Use CREST when:**
+- Molecule is flexible (long chains, multiple rotatable bonds)
+- Accuracy is critical
+- Time is available for thorough sampling
+- Intramolecular hydrogen bonding possible
+
+### Literature References
+
+- **CREST methodology:**
+  Pracht, P.; Bohle, F.; Grimme, S. "Automated exploration of the low-energy chemical space with fast quantum chemical methods."
+  *Phys. Chem. Chem. Phys.* **2020**, 22, 7169-7192.
+  DOI: [10.1039/C9CP06869D](https://doi.org/10.1039/C9CP06869D)
+
+- **Importance for DP4+:**
+  The accuracy of DP4+ probability assignments depends critically on including all relevant conformers. Missing a low-energy conformer can dramatically affect the predicted spectrum and lead to incorrect stereochemical assignments.
