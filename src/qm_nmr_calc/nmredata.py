@@ -66,3 +66,49 @@ def format_atom_label(atom: str, index: int) -> str:
         'c3'
     """
     return f"{atom.lower()}{index}"
+
+
+def format_assignment_tag(h1_shifts: list, c13_shifts: list) -> str:
+    """Format NMREDATA_ASSIGNMENT tag content from shift data.
+
+    Assumes input indices are 1-based (NWChem convention). Does NOT perform
+    any index conversion - uses indices as-is from the input data.
+
+    Args:
+        h1_shifts: List of 1H shift dicts with keys: index (1-based), atom, shift.
+        c13_shifts: List of 13C shift dicts with keys: index (1-based), atom, shift.
+
+    Returns:
+        Multiline ASSIGNMENT tag content with format: label, shift, index.
+        Returns empty string if both lists are empty.
+
+    Format per line:
+        {label}, {shift:.4f}, {atom_index}
+
+    Example:
+        >>> h1 = [{"index": 1, "atom": "H", "shift": 7.2453}]
+        >>> c13 = [{"index": 2, "atom": "C", "shift": 128.45}]
+        >>> format_assignment_tag(h1, c13)
+        'h1, 7.2453, 1\\nc2, 128.4500, 2'
+    """
+    lines = []
+
+    # Process 1H shifts
+    for shift_data in h1_shifts:
+        label = format_atom_label(shift_data["atom"], shift_data["index"])
+        shift_value = shift_data["shift"]
+        atom_index = shift_data["index"]
+        # Format: label, shift (4 decimals), atom_index
+        line = f"{label}{NMREDATA_SEP}{shift_value:.4f}{NMREDATA_SEP}{atom_index}"
+        lines.append(line)
+
+    # Process 13C shifts
+    for shift_data in c13_shifts:
+        label = format_atom_label(shift_data["atom"], shift_data["index"])
+        shift_value = shift_data["shift"]
+        atom_index = shift_data["index"]
+        # Format: label, shift (4 decimals), atom_index
+        line = f"{label}{NMREDATA_SEP}{shift_value:.4f}{NMREDATA_SEP}{atom_index}"
+        lines.append(line)
+
+    return "\n".join(lines)
