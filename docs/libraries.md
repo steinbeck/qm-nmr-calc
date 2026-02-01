@@ -14,7 +14,10 @@ This guide documents how third-party Python libraries are integrated into QM NMR
 - [NWChem](#nwchem) - DFT calculations and NMR shielding
 - [Huey](#huey-task-queue) - Async job queue with SQLite persistence
 
-For JavaScript libraries (3Dmol.js, SmilesDrawer) and optional tools (CREST/xTB), see Phase 29-02.
+**Additional libraries:**
+- [3Dmol.js](#3dmoljs) - Interactive 3D viewer with shift labels
+- [SmilesDrawer](#smilesdrawer) - Real-time 2D structure preview
+- [CREST/xTB](#crestxtb-optional) - Optional high-accuracy conformer generation
 
 ---
 
@@ -450,4 +453,147 @@ huey_consumer qm_nmr_calc.queue.huey -w 1 -k thread
 2. Then start the Huey consumer (`huey_consumer qm_nmr_calc.queue.huey`)
 
 The API can accept and queue jobs even when the consumer is down; they'll process when the consumer restarts.
+
+---
+
+## 3Dmol.js
+
+3Dmol.js provides interactive 3D molecular visualization with chemical shift labels overlaid on the structure.
+
+**Official docs:** [3Dmol.js Documentation](https://3dmol.csb.pitt.edu/)
+
+### Integration Points
+
+| Template | Features | Purpose |
+|----------|----------|---------|
+| `results.html` | Viewer, shift labels, conformer switching | Results visualization |
+| `status.html` | Viewer (optional) | Progress preview |
+
+**CDN:** `https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.5.3/3Dmol-min.js`
+
+### Viewer Setup
+
+The viewer is initialized in the results page to display the optimized 3D geometry.
+
+```javascript
+// Source: src/qm_nmr_calc/api/templates/results.html, lines 401-409
+function initViewer() {
+    const container = document.getElementById('viewer-container-3d');
+    if (!container) return;
+
+    viewer = $3Dmol.createViewer(container, {
+        backgroundColor: 'white'
+    });
+    loadGeometryData();
+}
+```
+
+**Key configuration:**
+- Container element via `getElementById` (not jQuery selector)
+- `backgroundColor: 'white'` for clean presentation
+- Viewer instance stored globally for label/conformer operations
+
+### Geometry Loading
+
+Geometry data is fetched from the API and loaded with format preference.
+
+```javascript
+// Source: src/qm_nmr_calc/api/templates/results.html, lines 411-439
+async function loadGeometryData() {
+    const response = await fetch('/api/v1/jobs/' + JOB_ID + '/geometry.json');
+    geometryData = await response.json();
+
+    // ... conformer handling ...
+    displayConformer(0);
+}
+
+function displayConformer(index) {
+    // Clear and redraw viewer
+    viewer.removeAllModels();
+    viewer.removeAllLabels();
+
+    // Add model (prefer SDF for proper bonds)
+    let model;
+    if (sdf) {
+        model = viewer.addModel(sdf, 'sdf');
+    } else if (xyz) {
+        model = viewer.addModel(xyz, 'xyz', {assignBonds: true});
+    }
+
+    // Apply style
+    viewer.setStyle({}, {
+        stick: {radius: 0.12, colorscheme: 'Jmol'},
+        sphere: {scale: 0.25, colorscheme: 'Jmol'}
+    });
+
+    viewer.zoomTo();
+    viewer.render();
+}
+```
+
+**Format preference:**
+- **SDF preferred** - Contains explicit bond orders for correct aromatic ring and double bond visualization
+- **XYZ fallback** - Uses `assignBonds: true` to infer bonds from distances (less accurate for aromatics)
+
+**Style configuration:**
+- `stick` - Bond representation with 0.12 radius
+- `sphere` - Atom centers with 0.25 scale
+- `colorscheme: 'Jmol'` - Standard Jmol element colors (carbon gray, oxygen red, etc.)
+
+### Chemical Shift Labels
+
+The `addShiftLabels()` function overlays NMR shift values directly on atoms in the 3D view.
+
+```javascript
+// Source: src/qm_nmr_calc/api/templates/results.html, lines 509-538
+function addShiftLabels(model, h1Assignments, c13Assignments) {
+    const atoms = model.selectedAtoms({});
+
+    atoms.forEach(atom => {
+        // CRITICAL: 3Dmol.js uses 0-based serial, NWChem uses 1-based indices
+        const atomIndex = String(atom.serial + 1);
+
+        if (atom.elem === 'H' && h1Assignments && h1Assignments[atomIndex]) {
+            viewer.addLabel(h1Assignments[atomIndex].toFixed(2), {
+                position: {x: atom.x, y: atom.y, z: atom.z},
+                fontSize: 11,
+                fontColor: 'white',
+                backgroundColor: '#3498db',  // Blue for 1H
+                backgroundOpacity: 0.85,
+                inFront: true
+            });
+        }
+
+        if (atom.elem === 'C' && c13Assignments && c13Assignments[atomIndex]) {
+            viewer.addLabel(c13Assignments[atomIndex].toFixed(2), {
+                position: {x: atom.x, y: atom.y, z: atom.z},
+                fontSize: 11,
+                fontColor: 'white',
+                backgroundColor: '#e67e22',  // Orange for 13C
+                backgroundOpacity: 0.85,
+                inFront: true
+            });
+        }
+    });
+}
+```
+
+**CRITICAL - Index Conversion:**
+- 3Dmol.js `atom.serial` is **0-based** (first atom is 0)
+- NWChem atom indices are **1-based** (first atom is 1)
+- Always add 1 when looking up assignments: `atom.serial + 1`
+
+**Label styling:**
+| Element | Background Color | Hex Code |
+|---------|-----------------|----------|
+| 1H | Blue | `#3498db` |
+| 13C | Orange | `#e67e22` |
+
+**Label options:**
+- `fontColor: 'white'` - High contrast on colored backgrounds
+- `backgroundOpacity: 0.85` - Slightly transparent for depth perception
+- `inFront: true` - Labels always visible (not occluded by molecule)
+- `fontSize: 11` - Readable without obscuring structure
+
+**Note:** Labels are added per-atom, not per-peak. For equivalent atoms with identical shifts (e.g., methyl group hydrogens), each atom gets its own label with the same value.
 
