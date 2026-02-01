@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-01)
 ## Current Position
 
 Milestone: v2.3 NMReData Export
-Phase: Phase 33 - API and UI Integration
+Phase: Phase 34 - Testing and Validation
 Plan: 01 of 01 (complete)
-Status: Phase 33 complete - ready for Phase 34
-Last activity: 2026-02-01 — Completed 33-01-PLAN.md
+Status: v2.3 milestone complete - ready for release
+Last activity: 2026-02-01 - Completed 34-01-PLAN.md
 
-Progress: ██████████░░░░░░░░░░ 67% (Phase 33/34 complete, Phase 34/34 next)
+Progress: ████████████████████ 100% (Phase 34/34 complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 87 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 2)
+- Total plans completed: 88 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3)
 - Average duration: ~7 min
-- Total execution time: ~590 min (~9.8 hours)
+- Total execution time: ~597 min (~10 hours)
 
 **By Milestone:**
 
@@ -34,7 +34,7 @@ Progress: ██████████░░░░░░░░░░ 67% (Phas
 | v2.0.1 Conformer Pre-selection | 1 | 3 | 18 min | Shipped 2026-01-30 |
 | v2.1 UI Redesign | 6 | 17 | ~3 days | Shipped 2026-01-31 |
 | v2.2 Documentation | 7 | 10 | 2 days | Shipped 2026-02-01 |
-| v2.3 NMReData Export | 3 | 1 (so far) | In progress | Active |
+| v2.3 NMReData Export | 3 | 3 | ~21 min | Complete |
 
 ## Accumulated Context
 
@@ -46,13 +46,17 @@ v2.2 decisions archived to milestones/v2.2-ROADMAP.md.
 **Phase 32 decisions:**
 - Lowercase atom labels (h5, c3) for NMReData format
 - Preserve 1-based atom indices from NWChem (no conversion)
-- Solvent mapping: chcl3→CDCl3, dmso→(CD3)2SO
+- Solvent mapping: chcl3->CDCl3, dmso->(CD3)2SO
 - 4 decimal precision for shifts per NMReData spec
 
 **Phase 33 decisions:**
 - NMReData button placed after Geometry (SDF) to group SDF downloads together
 - Download attribute added for proper browser download behavior
 - Temperature defaults to 298.15 K (single) or ensemble temperature (ensemble mode)
+
+**Phase 34 decisions:**
+- Separate test classes for error cases and success cases
+- Created mock_complete_job_with_nmr fixture for endpoint testing
 
 ### Roadmap Evolution
 
@@ -62,27 +66,24 @@ v2.2 decisions archived to milestones/v2.2-ROADMAP.md.
 - v2.0.1: 1 phase (24), shipped 2026-01-30
 - v2.1: 6 phases (18-23), shipped 2026-01-31
 - v2.2: 7 phases (25-31), shipped 2026-02-01
-- v2.3: 3 phases (32-34), in progress
+- v2.3: 3 phases (32-34), complete
 
-### v2.3 Phase Structure
+### v2.3 Phase Structure (Complete)
 
-**Phase 32: Core NMReData Generation Module**
+**Phase 32: Core NMReData Generation Module** - COMPLETE
 - Goal: Generate NMReData-compliant SDF files with predicted shifts
 - Requirements: NMRD-01 to NMRD-09 (9 requirements)
 - Key deliverables: nmredata.py module, tag formatting, atom numbering conversion
-- Critical: Avoid off-by-one errors (RDKit 0-indexed → SDF 1-indexed)
 
-**Phase 33: API and UI Integration**
+**Phase 33: API and UI Integration** - COMPLETE
 - Goal: Enable download via REST endpoint and web UI button
 - Requirements: API-01 to API-03, UI-01 (4 requirements)
 - Key deliverables: GET /api/v1/jobs/{job_id}/nmredata.sdf endpoint, download button
-- Follows existing download pattern from /geometry.sdf
 
-**Phase 34: Testing and Validation**
+**Phase 34: Testing and Validation** - COMPLETE
 - Goal: Comprehensive testing and round-trip validation
 - Requirements: TEST-01 to TEST-03 (3 requirements)
-- Key deliverables: Unit tests, integration tests, RDKit round-trip validation
-- Validates format compliance and atom assignment correctness
+- Key deliverables: 8 integration tests, endpoint coverage
 
 ### Pending Todos
 
@@ -99,8 +100,8 @@ None
 ## Session Continuity
 
 Last session: 2026-02-01
-Stopped at: Completed Phase 33 Plan 01 (API and UI Integration)
+Stopped at: Completed Phase 34 Plan 01 (Testing and Validation) - v2.3 COMPLETE
 Resume file: None
-Next: `/gsd:plan-phase 34` to begin Phase 34 (Testing and Validation)
-Tests: All tests passing (285 prior + 36 nmredata = 321 tests)
-Codebase: ~6,380 LOC Python, ~2,230 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs
+Next: Release v2.3 milestone
+Tests: All tests passing (350 prior + 8 new = 358 tests)
+Codebase: ~6,380 LOC Python, ~2,280 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs
