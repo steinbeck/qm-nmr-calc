@@ -1,305 +1,322 @@
-# Feature Research: Conformational Sampling for NMR Predictions
+# Feature Landscape: NMReData Export for Predicted NMR Data
 
-**Domain:** Conformational Sampling for NMR Predictions
-**Researched:** 2026-01-26
-**Confidence:** HIGH
+**Domain:** NMR chemical shift prediction with computational chemistry
+**Researched:** 2026-02-01
+**Confidence:** HIGH (official NMReData documentation, format v1.0/1.1)
 
-## Feature Landscape
+## Executive Summary
 
-Research across ISiCLE, CENSO, Spartan, and academic literature reveals clear patterns in how conformational sampling features are implemented for NMR prediction. The landscape divides into table stakes (features users expect from any ensemble NMR tool), differentiators (features that provide competitive advantage), and anti-features (commonly requested but problematic features to avoid).
+NMReData is a standard format for associating NMR parameters with molecular structures using SDF (Structure Data Format) with custom tags. The format explicitly supports **both experimental and computational/predicted data**, making it well-suited for qm-nmr-calc's DFT-predicted chemical shifts.
 
-### Table Stakes (Users Expect These)
+For predicted data, NMReData requires:
+1. **Core structure data** (MOL block with 3D coordinates)
+2. **Metadata tags** (version, solvent, temperature)
+3. **Assignment mapping** (atom indices to chemical shifts)
+4. **Optional spectrum-like representation** (even though no actual spectrum exists)
 
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| Conformer generation method choice | Different methods trade speed vs accuracy; users need control | Medium | RDKit (fast, drug-like molecules) vs CREST (slow, high accuracy). ISiCLE and CENSO both support multiple backends. |
-| Energy window filtering | Exclude high-energy irrelevant conformers; standard practice | Low | Typical: 3-6 kcal/mol. Two-stage filtering (pre-DFT wide, post-DFT tight) is common. |
-| Boltzmann-weighted average shifts | Core purpose of ensemble calculations; non-negotiable | Medium | Weight by DFT energies from optimization step. Formula: δ_avg = Σ p_i × δ_i where p_i = exp(-E_i/RT) / Σ exp(-E_j/RT) |
-| Temperature parameter | Boltzmann weighting is temperature-dependent; users need control | Low | Default 298.15 K. Essential for experimental condition matching. |
-| Single-conformer fallback mode | Rigid molecules don't need ensemble; wastes compute | Low | Users explicitly choose single vs ensemble. Avoids forcing ensemble on benzene. |
-| Per-atom shift assignments | Users need atom-by-atom predictions for structure elucidation | Low | Already in v1.x. Ensemble mode returns weighted average per atom. |
-| Lowest-energy geometry return | Users expect the "most likely" structure | Low | Standard output. Important for 3D visualization. |
+The format is flexible - many experimental-only fields (coupling constants, peak integrals, multiplicities) are optional and can be omitted for purely computational data.
 
-### Differentiators (Competitive Advantage)
+## Table Stakes Fields
 
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Automatic CREST detection | Zero-config high-accuracy mode when xtb/crest installed | Low | Most tools require manual backend selection. Auto-detection provides better UX. |
-| Weighted-average-only API | Simpler, cleaner API focused on experimental comparison | Low | Spartan/CENSO show per-conformer detail. Weighted average only is sufficient for structure validation. Decision: v2.0 ships this way. |
-| Population % metadata | Shows ensemble composition without full conformer dump | Medium | Response includes: conformer count, energy range, top 3 conformer populations. Useful transparency without overwhelming detail. |
-| Two-stage energy filtering | Reduces DFT calculations without losing important conformers | Medium | Pre-DFT: 6 kcal/mol (broad). Post-DFT: 3 kcal/mol or 95% cumulative population. Saves compute on MMFF/xTB artifacts. |
-| CREST optional (not required) | App works without system deps; graceful fallback to RDKit | Medium | Most tools require all deps. RDKit-only mode enables usage without xtb/crest installation. |
-| Scaling factors per solvent | Existing v1.1 infrastructure extends naturally to ensemble | Low | Competitive advantage from v1.1 carries forward. Ensemble doesn't change this. |
-| Interactive 3D lowest conformer | Shows most populated structure with shift labels | Low | Extends existing 3Dmol.js viewer. Ensemble jobs show lowest-energy conformer, not arbitrary. |
+Required fields for a **minimal valid NMReData file** with predicted data.
 
-### Anti-Features (Commonly Requested, Often Problematic)
+| Field | Purpose | Data Mapping | Format | Notes |
+|-------|---------|--------------|--------|-------|
+| **MOL block** | 3D molecular structure | From optimized geometry XYZ | V2000/V3000 SDF | WE HAVE: `optimized.xyz` from DFT |
+| `NMREDATA_VERSION` | Format version identifier | Static: "1.1" | Single line: `1.1\` | Current stable version |
+| `NMREDATA_LEVEL` | Assignment ambiguity level | Static: "0" (no ambiguity) | Single line: `0` | We have full atom assignments |
+| `NMREDATA_SOLVENT` | Solvent for calculation | From job params: `chcl3` → `CDCl3` | e.g., `CDCl3\` | Map our codes to NMR solvents |
+| `NMREDATA_TEMPERATURE` | Calculation temperature | Static or from ensemble: `298.15 K` | e.g., `298.15 K\` | Default 298.15 K for DFT |
+| `NMREDATA_ASSIGNMENT` | Atom index → shift mapping | From `h1_shifts`, `c13_shifts` | `label, shift, atom_idx\` | **Core data export** |
+| `NMREDATA_FORMULA` | Molecular formula | From RDKit molecule | e.g., `C2H6O` | Optional but strongly recommended |
+| `NMREDATA_SMILES` | SMILES representation | From input SMILES | Isomeric preferred | Optional but strongly recommended |
 
-| Feature | Why Requested | Why Problematic | Alternative |
-|---------|---------------|-----------------|-------------|
-| Automatic rigidity detection | "Let the software decide if I need ensemble" | Rotatable bond count is crude (5-8 bonds = maybe flexible?). nConf20 descriptor better but adds complexity. Misclassification wastes compute or gives poor results. | **User explicitly chooses** single vs ensemble mode. Users know their molecules better than heuristics. |
-| Per-conformer shift detail in API | "I want to see all individual conformers" | Overwhelming data (20 conformers × 30 atoms = 600 values). Rarely actionable—users compare to experiment (one spectrum). Complicates API design. | **Population metadata only**: conformer count, energy range, top populations. Weighted average is what matters. |
-| Real-time progress updates | "Show me conformer 5/20 processing" | WebSocket complexity for marginal UX gain. Most jobs complete faster than user checks. Polling status works fine for v1.x. | **Standard polling**: Status endpoint returns "generating_conformers", "optimizing_conformers", "calculating_nmr", "complete". Sufficient granularity. |
-| DP4+ probability scoring | "Give me confidence in structure assignment" | DP4+ requires experimental spectrum input. Out of scope for prediction-only tool. Adds statistical complexity. | **Future consideration (v3+)**: Structure validation mode with experimental input. V2.0 focuses on prediction. |
-| Conformer geometry downloads | "Export all conformer XYZ files" | Large file downloads (20 conformers × 1-3 KB each). Storage overhead. Rarely needed—users want shifts, not geometries. | **Lowest-energy geometry only**: Standard for single-conformer jobs. Sufficient for visualization and downstream use. |
-| Automatic method selection by molecule size | "Use CREST for small, RDKit for large" | Size is poor proxy for flexibility. Cyclohexane (18 atoms) needs ensemble. Rigid steroids (30+ atoms) don't. Logic would be wrong often. | **User choice of method**: RDKit (fast) or CREST (accurate). User knows flexibility better than atom count heuristic. |
-| MMFF energy pre-filtering | "Filter conformers by MMFF before DFT" | MMFF energies anticorrelate with DFT (Spearman ρ ~ -0.1 to -0.45). Can discard important conformers. | **GFN2-xTB pre-filtering only**: If CREST used, xTB energies filter well (ρ ~ 0.39-0.47). If RDKit used, go straight to DFT. |
+**Complexity:** LOW - straightforward mapping from existing data structures
+
+## Optional But Valuable Fields
+
+Fields that enhance usefulness and interoperability but aren't strictly required.
+
+| Field | Purpose | Data Mapping | Value | Why Include |
+|-------|---------|--------------|-------|-------------|
+| `NMREDATA_ID` | Metadata and provenance | Custom fields | See below | Track calculation origin |
+| `NMREDATA_INCHI` | Structure identifier | From RDKit | InChI string | Better than SMILES for matching |
+| `NMREDATA_1D_1H` | 1H spectrum representation | From `h1_shifts` | Pseudo-spectrum | Enable visualization tools |
+| `NMREDATA_1D_13C` | 13C spectrum representation | From `c13_shifts` | Pseudo-spectrum | Enable visualization tools |
+| `NMREDATA_J` | Coupling constants | NOT AVAILABLE | Omit | We don't calculate J-couplings |
+
+### NMREDATA_ID Subfields (Recommended)
+
+The `NMREDATA_ID` tag supports custom key-value pairs for provenance tracking:
+
+| Subfield | Value | Purpose |
+|----------|-------|---------|
+| `Title` | From `input_name` or auto-generated | Human-readable identifier |
+| `Source` | "Computational" | Distinguish from experimental |
+| `Software` | "qm-nmr-calc vX.X.X" | Track generating software |
+| `Method` | "DFT/GIAO/B3LYP" | Calculation method |
+| `Basis_Geometry` | "6-31G*" or "6-311+G(2d,p)" | From preset |
+| `Basis_NMR` | "6-31G*" or "6-311+G(2d,p)" | From preset |
+| `Scaling` | "DELTA50-derived OLS" | Scaling method used |
+| `Job_ID` | Job ID from qm-nmr-calc | Traceability back to calculation |
+| `Comment` | "Predicted chemical shifts" | Clarify data nature |
+
+**Example:**
+```
+>  <NMREDATA_ID>
+Title=Ethanol predicted NMR\
+Source=Computational\
+Software=qm-nmr-calc v2.3.0\
+Method=DFT/GIAO/B3LYP/COSMO\
+Basis_Geometry=6-311+G(2d,p)\
+Basis_NMR=6-311+G(2d,p)\
+Scaling=DELTA50-derived OLS\
+Job_ID=a1b2c3d4e5f6\
+Comment=Predicted 1H/13C chemical shifts from quantum chemistry\
+```
+
+**Complexity:** LOW - string formatting from metadata
+
+### Pseudo-Spectrum Fields
+
+Even though we don't have actual spectra, we can generate **pseudo-spectrum tags** to enable visualization in NMReData-compatible tools:
+
+**NMREDATA_1D_1H:**
+```
+>  <NMREDATA_1D_1H>
+Larmor=400.000000\
+Spectrum_Location=none\
+7.2345, L=H1\
+4.5678, L=H2\
+1.2345, L=H3\
+```
+
+**NMREDATA_1D_13C:**
+```
+>  <NMREDATA_1D_13C>
+Larmor=100.000000\
+Spectrum_Location=none\
+128.45, L=C1\
+65.32, L=C2\
+18.77, L=C3\
+```
+
+- `Larmor`: Arbitrary but realistic frequency (400 MHz for 1H, 100 MHz for 13C)
+- `Spectrum_Location=none`: No actual spectrum file
+- Signal lines: `shift, L=label` (minimal format, no multiplicity/integrals)
+
+**Value:** Enables tools like Mestrelab Mnova to display predicted shifts visually
+
+**Complexity:** MEDIUM - requires generating labels and formatting per-atom data
+
+## Not Applicable Fields
+
+Experimental-only fields we **skip entirely** for predicted data.
+
+| Field | Why Skip | Alternative |
+|-------|----------|-------------|
+| `NMREDATA_J` | No J-coupling predictions | Omit - not part of our calculation |
+| `NMREDATA_2D_*` | No 2D spectra | Omit - experimental technique only |
+| Multiplicity (`S=`) | No peak shapes from DFT | Omit from 1D tags |
+| Integral (`E=`, `N=`) | No experimental intensities | Omit from 1D tags |
+| Peak width (`W=`) | No lineshape data | Omit from 1D tags |
+| `T1`, `T2`, `Diff` | No relaxation/diffusion data | Omit - experimental measurements |
+| `Spectrum_Location` (with file) | No FID/spectra files | Use `Spectrum_Location=none` |
+| `MD5_*` | No spectrum files to hash | Omit checksum fields |
+| `Pulseprogram` | No pulse sequence | Omit from 1D tags |
+| `CorType` | No 2D experiments | N/A |
+
+**Note:** The NMReData format is designed to be flexible. Omitting experimental-only fields is **explicitly supported** for computational data sources.
+
+## Data We Have → NMReData Field Mapping
+
+Comprehensive mapping of qm-nmr-calc outputs to NMReData fields.
+
+### From Job Metadata (`metadata.json`)
+
+| Our Data | NMReData Field | Transformation |
+|----------|---------------|----------------|
+| `input_smiles` | `NMREDATA_SMILES` | Direct copy (isomeric SMILES preferred) |
+| `input_name` | `NMREDATA_ID` → `Title` | Use if provided, else generate from formula |
+| `solvent` | `NMREDATA_SOLVENT` | Map: `chcl3`→`CDCl3`, `dmso`→`DMSO-d6`, `vacuum`→`none` |
+| `preset` | `NMREDATA_ID` → `Basis_*` | Map: `draft`→`6-31G*`, `production`→`6-311+G(2d,p)` |
+| `functional` | `NMREDATA_ID` → `Method` | Static: `B3LYP` |
+| `job_id` | `NMREDATA_ID` → `Job_ID` | Direct copy |
+
+### From NMR Results (`results.json` / API)
+
+| Our Data | NMReData Field | Transformation |
+|----------|---------------|----------------|
+| `h1_shifts[].index` | `NMREDATA_ASSIGNMENT` | Atom number (1-based, already correct) |
+| `h1_shifts[].shift` | `NMREDATA_ASSIGNMENT` | Chemical shift in ppm (4+ decimals) |
+| `h1_shifts[].atom` | Label generation | Generate label: `H{index}` |
+| `c13_shifts[].index` | `NMREDATA_ASSIGNMENT` | Atom number (1-based) |
+| `c13_shifts[].shift` | `NMREDATA_ASSIGNMENT` | Chemical shift in ppm (4+ decimals) |
+| `c13_shifts[].atom` | Label generation | Generate label: `C{index}` |
+
+### From Geometry Files
+
+| Our Data | NMReData Field | Transformation |
+|----------|---------------|----------------|
+| `optimized.xyz` | MOL block in SDF | Convert XYZ → MOL format (RDKit can do this) |
+| Atom coordinates | MOL block V2000 | 3D coordinates from optimized geometry |
+
+### From RDKit Molecule
+
+| Our Data | NMReData Field | Method |
+|----------|---------------|--------|
+| Molecular formula | `NMREDATA_FORMULA` | `rdkit.Chem.rdMolDescriptors.CalcMolFormula()` |
+| InChI | `NMREDATA_INCHI` | `rdkit.Chem.inchi.MolToInchi()` |
+| SMILES (canonical) | `NMREDATA_SMILES` | `rdkit.Chem.MolToSmiles()` |
+
+### From Ensemble Metadata (if ensemble mode)
+
+| Our Data | NMReData Field | Use |
+|----------|---------------|-----|
+| `temperature_k` | `NMREDATA_TEMPERATURE` | Use ensemble temperature instead of 298.15 K |
+| `conformer_count` | `NMREDATA_ID` → `Comment` | Mention in comment: "Boltzmann-weighted average of N conformers" |
+| `method` (rdkit_kdg/crest) | `NMREDATA_ID` → `Comment` | Mention conformer generation method |
+
+## Ensemble vs Single-Conformer Handling
+
+| Scenario | Temperature | Comment Field |
+|----------|-------------|---------------|
+| **Single conformer** | `298.15 K` (default) | "Predicted from single-conformer calculation" |
+| **Ensemble (RDKit)** | From `ensemble_metadata.temperature_k` | "Boltzmann-weighted average of {N} RDKit KDG conformers" |
+| **Ensemble (CREST)** | From `ensemble_metadata.temperature_k` | "Boltzmann-weighted average of {N} CREST/GFN2-xTB conformers" |
 
 ## Feature Dependencies
 
 ```
-Existing v1.1 Features (Dependencies)
-├── SMILES/SDF input handling → Conformer generation needs starting geometry
-├── NWChem DFT optimization → Each conformer optimized with existing code
-├── NWChem GIAO NMR → Each conformer's shieldings calculated with existing code
-├── Scaling factors (DELTA50) → Applied to weighted-average shifts (not per-conformer)
-├── Job queue (Huey) → Ensemble jobs queue N×DFT+N×NMR subtasks
-├── Status polling → Extended with ensemble-specific states
-└── 3Dmol.js viewer → Shows lowest-energy conformer geometry
+Required dependencies (must implement in order):
+1. XYZ → MOL conversion ────┐
+2. SMILES/formula extraction│
+3. ASSIGNMENT tag generator │
+                            ├──> Minimal valid NMReData file
+4. VERSION/LEVEL/SOLVENT/   │
+   TEMPERATURE generators   │
+5. SDF file assembly ────────┘
 
-New v2.0 Features (Internal Dependencies)
-├── Conformer generation (RDKit KDG)
-│   └── Requires: RDKit (existing dep), SMILES or starting geometry
-├── Conformer generation (CREST/xTB)
-│   ├── Requires: xtb + crest binaries on PATH (optional)
-│   └── Fallback: RDKit if not detected
-├── Energy window filtering
-│   ├── Pre-DFT: Filter RDKit MMFF (crude) or CREST xTB (good) energies
-│   └── Post-DFT: Filter by DFT energies from optimization step
-├── Multi-conformer DFT optimization
-│   └── Requires: Energy-filtered conformer list, existing NWChem opt logic
-├── Multi-conformer NMR calculation
-│   └── Requires: Optimized conformer geometries + DFT energies, existing NWChem NMR logic
-├── Boltzmann weighting
-│   ├── Requires: DFT energies (from optimization), shifts (from NMR calc), temperature parameter
-│   └── Formula: Standard Boltzmann averaging over per-conformer shifts
-└── Population metadata
-    └── Requires: Boltzmann weights, conformer count, energy range
+Optional enhancements (add value, not required):
+6. NMREDATA_ID with provenance → Better traceability
+7. NMREDATA_INCHI → Better structure matching
+8. 1D pseudo-spectrum tags → Visualization tool compatibility
 ```
 
-## MVP Definition
+## MVP Recommendation
 
-### Launch With (v2.0)
+**For MVP (minimal valid NMReData export):**
 
-**Core conformational sampling workflow:**
-1. User chooses single-conformer (v1.x behavior) or ensemble mode
-2. User chooses RDKit (fast) or CREST (accurate) if ensemble mode
-3. User sets energy window (default 6 kcal/mol pre-DFT, 3 kcal/mol post-DFT)
-4. User sets temperature (default 298.15 K)
-5. System generates conformers, filters by energy window
-6. System runs DFT optimization on each surviving conformer
-7. System re-filters by DFT energies (tighter window or 95% cumulative population)
-8. System runs NMR calculation on each surviving conformer
-9. System Boltzmann-weights shifts by DFT energies
-10. API returns weighted-average shifts only (not per-conformer detail)
+1. **MOL block** from `optimized.xyz` (RDKit: XYZ → MOL)
+2. **Required tags:**
+   - `NMREDATA_VERSION` = "1.1"
+   - `NMREDATA_LEVEL` = "0"
+   - `NMREDATA_SOLVENT` (mapped from job solvent)
+   - `NMREDATA_TEMPERATURE` = "298.15 K" (or ensemble temp)
+   - `NMREDATA_ASSIGNMENT` (from `h1_shifts` + `c13_shifts`)
+3. **Strongly recommended:**
+   - `NMREDATA_FORMULA` (from RDKit)
+   - `NMREDATA_SMILES` (from input or RDKit)
 
-**Metadata in response:**
-- Conformer count (initial, post-pre-filter, post-DFT-filter, final NMR count)
-- Energy range (min/max relative energies in kcal/mol)
-- Top 3 conformer populations (as percentages)
-- Method used (RDKit KDG or CREST+xTB)
-- Temperature used for Boltzmann weighting
+**Defer to post-MVP:**
+- `NMREDATA_ID` with full provenance metadata (adds value but not required for validation)
+- `NMREDATA_INCHI` (nice-to-have for structure matching)
+- `NMREDATA_1D_1H` / `NMREDATA_1D_13C` pseudo-spectrum tags (for tool compatibility)
 
-**3D viewer:**
-- Shows lowest-energy conformer geometry with shift labels (same as v1.x single-conformer mode)
+**Rationale:** MVP focuses on core assignment export. Provenance and visualization enhancements can be added incrementally without breaking existing files.
 
-**Status polling granularity:**
-- "generating_conformers" (RDKit or CREST running)
-- "filtering_conformers" (energy window filtering)
-- "optimizing_conformers" (DFT geometry optimizations in progress, X/N complete)
-- "calculating_nmr" (NMR shielding calculations in progress, X/N complete)
-- "averaging_shifts" (Boltzmann weighting)
-- "complete"
-- "failed"
+## Label Generation Strategy
 
-**Error handling:**
-- CREST not found → graceful fallback to RDKit with warning in response metadata
-- Zero conformers after filtering → error, suggest wider energy window
-- DFT optimization fails on all conformers → error
-- DFT optimization fails on some conformers → warning, continue with survivors
+NMReData requires labels in the `NMREDATA_ASSIGNMENT` tag. We need a labeling scheme for atoms.
 
-### Add After Validation (v2.x)
+### Recommended Approach: Simple Index-Based Labels
 
-**Post-launch enhancements** (after v2.0 user feedback):
+```
+H atoms: H1, H2, H3, ... (based on atom index)
+C atoms: C1, C2, C3, ... (based on atom index)
+```
 
-1. **Adaptive energy window** (v2.1)
-   - Automatically tighten post-DFT filter based on 95% cumulative Boltzmann population
-   - Current v2.0 plan: user sets window or uses default 3 kcal/mol
-   - Enhancement: calculate cumulative population, keep conformers until 95% threshold
+**Example for ethanol (CH3CH2OH):**
+```
+>  <NMREDATA_ASSIGNMENT>
+C1, 18.7704, 1\
+C2, 63.5132, 2\
+H1, 1.2436, 3\
+H2, 1.2436, 4\
+H3, 1.2436, 5\
+H4, 3.8300, 6\
+H5, 3.8300, 7\
+O1, 101.4098, 8\
+H6, 0.3412, 9\
+```
 
-2. **Parallel conformer processing** (v2.1)
-   - v2.0: sequential DFT optimizations (simpler implementation)
-   - v2.1: parallel Huey tasks for independent conformer DFT jobs
-   - Benefit: 20 conformers processed in ~15 min instead of 5 hours (for 15 min/conformer)
+**Alternative: Chemical environment labels** (e.g., `CH3`, `CH2`, `OH`)
+- More readable but harder to generate algorithmically
+- Requires chemical interpretation (which CH3 is which?)
+- Defer to future enhancement
 
-3. **Conformer caching** (v2.2)
-   - Cache RDKit or CREST conformer ensembles by (SMILES, method, energy_window, temperature)
-   - Resubmit same molecule with different NMR settings → skip conformer generation
-   - Significant speedup for parameter sweeps or solvent comparison
+**MVP decision:** Use index-based labels (`H{index}`, `C{index}`). Simple, unambiguous, maps directly to atom indices.
 
-4. **Rotatable bond count display** (v2.2)
-   - Show in web UI: "This molecule has 6 rotatable bonds (moderately flexible)"
-   - Informational only, not used for automatic decisions
-   - Helps users decide single vs ensemble mode
+## Solvent Code Mapping
 
-5. **Entropy corrections** (v2.3)
-   - Add GFN2-xTB quasi-RRHO entropy corrections to DFT energies
-   - Improves Boltzmann weighting accuracy (free energy instead of electronic energy)
-   - Requires xtb frequency calculation on DFT-optimized geometries
+| qm-nmr-calc Code | NMReData Standard Name | Notes |
+|------------------|------------------------|-------|
+| `chcl3` | `CDCl3` | Standard chloroform-d |
+| `dmso` | `DMSO-d6` | Deuterated DMSO |
+| `vacuum` | `none` | Gas phase, no solvent |
 
-### Future Consideration (v3+)
+**Future solvents:** When added to qm-nmr-calc, map to deuterated NMR equivalents (e.g., `acetone` → `Acetone-d6`).
 
-**Major features requiring architectural changes or new scope:**
+## Format Precision Requirements
 
-1. **DP4+ structure validation** (v3.0)
-   - Accept experimental NMR spectrum as input
-   - Calculate DP4+ probability for candidate structures
-   - Requires: experimental spectrum parser, statistical framework, conformer comparison logic
-   - Use case: Structure elucidation with confidence metrics
+| Field Type | Precision | Example |
+|------------|-----------|---------|
+| Chemical shifts | **4+ decimals** | `7.2345` (not `7.23`) |
+| Temperature | 2 decimals + unit | `298.15 K` |
+| Atom indices | Integer | `1, 2, 3` |
+| Labels | Alphanumeric | `H1`, `C2` |
 
-2. **Per-conformer detail export** (v3.0)
-   - Optional API endpoint: `/jobs/{job_id}/conformers` returns full conformer detail
-   - Includes: per-conformer geometries, energies, shifts, populations
-   - Use case: Advanced users debugging ensemble or publishing conformational analysis
-   - Not in v2.0: Adds API complexity, niche use case
+**Critical:** NMReData specification **requires 4 decimal places minimum** for chemical shifts. Our current data has this precision already.
 
-3. **Real-time progress streaming** (v3.1)
-   - WebSocket-based progress updates during conformer processing
-   - Shows: current conformer ID, optimization convergence, energy updates
-   - Requires: WebSocket infrastructure, more complex state management
-   - Benefit: Better UX for long-running jobs (hours), but polling sufficient for v2.0
+## Validation Criteria
 
-4. **Multi-temperature ensemble** (v3.1)
-   - Calculate Boltzmann weights at multiple temperatures (e.g., 273 K, 298 K, 323 K)
-   - Compare temperature-dependent conformer populations
-   - Use case: Variable-temperature NMR experiments
+A valid NMReData file for qm-nmr-calc must:
 
-5. **Automatic rigidity heuristics** (v3.2)
-   - Calculate nConf20 or nTABS descriptor for flexibility quantification
-   - Suggest (not enforce) ensemble vs single-conformer mode
-   - Requires: Conformational complexity library, descriptor calculation
-   - v2.0 decision: User explicit choice is sufficient
+1. ✅ Parse as valid SDF (MOL block + tags)
+2. ✅ Contain `NMREDATA_VERSION` = "1.1"
+3. ✅ Contain `NMREDATA_LEVEL` = "0"
+4. ✅ Contain `NMREDATA_ASSIGNMENT` with all predicted atoms
+5. ✅ Have chemical shifts with ≥4 decimal places
+6. ✅ Reference atom indices matching MOL block atom count
+7. ✅ Include `NMREDATA_SOLVENT` and `NMREDATA_TEMPERATURE`
 
-6. **Solvent-specific conformer generation** (v3.2)
-   - Run CREST with ALPB solvent model matching NMR solvent
-   - Currently: CREST runs in vacuum (or generic ALPB), DFT uses COSMO
-   - Benefit: Solvent-dependent conformer populations (e.g., polar solvents stabilize different conformers)
+**Testing strategy:** Use NMReData-compatible tools (Mestrelab Mnova, nmrshiftdb2) to verify files load correctly.
 
-## Real-World Tool Comparison
+## Tool Compatibility Targets
 
-### ISiCLE (PNNL, Open Source)
+| Tool | Purpose | NMReData Support | Priority |
+|------|---------|------------------|----------|
+| **Mestrelab Mnova** | NMR analysis software | Full support (v1.0/1.1) | High |
+| **nmrshiftdb2** | Open NMR database | Full support | High |
+| **ACD/Labs NMR** | Commercial NMR software | Full support | Medium |
+| **ChemDraw** | Structure drawing | SDF import (partial) | Low |
 
-**Conformer approach:**
-- Molecular dynamics simulations for conformer generation
-- Boltzmann-weighted by Gibbs free energy
-- NWChem backend (same as qm-nmr-calc)
-- Demonstrated on 80 methylcyclohexane conformers with excellent results
-
-**What they got right:**
-- Automated workflow (minimal user input)
-- NWChem integration for NMR
-- COSMO implicit solvent
-- Boltzmann weighting by free energy
-
-**What's different from v2.0 plan:**
-- ISiCLE uses MD for conformers (slower, more thorough)
-- qm-nmr-calc uses RDKit or CREST (faster, sufficient for drug-like molecules)
-- ISiCLE focuses on automation; qm-nmr-calc gives user control (method choice, energy window)
-
-### CENSO (Grimme Lab, Open Source)
-
-**Conformer approach:**
-- CREST metadynamics for exhaustive conformer search
-- Multi-stage filtering: GFN2-xTB → DFT single-point → high-level DFT
-- Command-line tool with Python API
-- Generates input for ANMR (spectrum simulation)
-
-**What they got right:**
-- Best-in-class conformer sampling (CREST)
-- Intelligent energy filtering (multi-stage)
-- Transparent intermediate results
-
-**What's different from v2.0 plan:**
-- CENSO is command-line; qm-nmr-calc is web service
-- CENSO requires xtb/crest; qm-nmr-calc has RDKit fallback
-- CENSO uses ANMR for spectra; qm-nmr-calc directly returns shifts
-- CENSO is expert tool; qm-nmr-calc targets broader users
-
-### Spartan (Commercial, GUI)
-
-**Conformer approach:**
-- Force field conformational search (MMFF, SYBYL)
-- Quantum mechanical refinement (DFT or semi-empirical)
-- Boltzmann-weighted NMR spectra (1D and 2D COSY)
-- GUI-based workflow with visualization
-
-**What they got right:**
-- Integrated workflow (search → optimize → NMR → average in one click)
-- Boltzmann-weighted 1D and 2D NMR spectra
-- Visual conformer distribution display
-- Multi-step recipes (MM + QM)
-
-**What's different from v2.0 plan:**
-- Spartan is GUI-only; qm-nmr-calc is API-first with web UI
-- Spartan shows per-conformer detail; qm-nmr-calc weighted average only (simplicity)
-- Spartan commercial ($1000s); qm-nmr-calc open source
-
-## Implementation Priorities by User Impact
-
-### High-Impact, Must-Have (v2.0)
-1. **Conformer generation choice** (RDKit or CREST) → Users need speed/accuracy tradeoff
-2. **Boltzmann-weighted average** → Core feature, non-negotiable
-3. **Energy window filtering** → Reduces compute cost without losing accuracy
-4. **Single-conformer fallback** → Don't force ensemble on rigid molecules
-5. **Temperature parameter** → Experimental condition matching
-
-### Medium-Impact, Should-Have (v2.0)
-6. **Population metadata** → Transparency without overwhelming detail
-7. **Lowest-energy geometry** → Standard output, important for visualization
-8. **Status granularity** → Users want to know progress on long jobs
-9. **Graceful CREST fallback** → Works without system deps
-
-### Low-Impact, Nice-to-Have (v2.x)
-10. **Adaptive energy window** → Optimization, not critical
-11. **Parallel conformer processing** → Speed improvement, not functionality
-12. **Conformer caching** → Optimization for parameter sweeps
-13. **Rotatable bond display** → Informational, not actionable
-
-### Future/Niche (v3+)
-14. **DP4+ probability** → Requires experimental spectrum input (scope change)
-15. **Per-conformer detail export** → Advanced users only
-16. **Real-time progress streaming** → Marginal UX improvement over polling
-17. **Multi-temperature ensemble** → Variable-temperature NMR experiments (niche)
-18. **Automatic rigidity heuristics** → User choice sufficient
-19. **Solvent-specific conformers** → Accuracy improvement, added complexity
+**Goal:** Files should load in Mnova and nmrshiftdb2 without errors. Full visualization may require pseudo-spectrum tags (post-MVP).
 
 ## Sources
 
-### Academic Literature
-- [ISiCLE NMR Framework](https://jcheminf.biomedcentral.com/articles/10.1186/s13321-018-0305-8) — Yesiltepe et al. 2018, automated NWChem-based NMR with conformer Boltzmann weighting
-- [Fully Automated Quantum NMR](https://onlinelibrary.wiley.com/doi/full/10.1002/anie.201708266) — Grimme et al. 2017, automated quantum chemistry NMR workflow
-- [Conformational Search Importance for NMR](https://pmc.ncbi.nlm.nih.gov/articles/PMC9694776/) — Cuadrado et al. 2022, force field comparison showing MMFF poor correlation with DFT
-- [DP4+ Structure Assignment](https://pubs.acs.org/doi/abs/10.1021/ja105035r) — Smith & Goodman 2010, DP4 probability for stereochemical assignment
-- [DP4-AI Automation](https://pmc.ncbi.nlm.nih.gov/articles/PMC8152620/) — Automated NMR data analysis from spectrometer to structure
+### Primary Documentation
+- [NMReData Tag Format (v1.0/1.1)](https://github.com/NMReDATAInitiative/NMReDATAInitiative.github.io/blob/master/NMReDATA_tag_format.md) - Official format specification
+- [NMReData 1D Attributes](https://github.com/NMReDATAInitiative/NMReDATAInitiative.github.io/blob/master/1D_attributes.md) - Spectrum signal attributes
+- [NMReData Examples Repository](https://github.com/NMReDATAInitiative/Examples-of-NMR-records) - Example files including computational data
 
-### Software Documentation
-- [CENSO GitHub](https://github.com/grimme-lab/CENSO) — Commandline ENergetic SOrting conformer analysis tool
-- [CENSO NMR Calculation Docs](https://xtb-docs.readthedocs.io/en/latest/CENSO_docs/censo_nmr.html) — Documentation for NMR spectrum calculation workflow
-- [ISiCLE GitHub](https://github.com/pnnl/isicle) — In silico chemical library engine for property prediction
-- [Spartan Conformational Search FAQ](https://downloads.wavefun.com/FAQ/Conformational_Searching.html) — Conformational search methods and energy profile questions
-- [Generation of Gaussian Input from Spartan Conformers](https://protocols.scienceexchange.com/protocols/generation-of-gaussian-09-input-files-for-the-computation-of-1h-and-13c-nmr-chemical-shifts-of-structures-from-a-spartan-14-conformational-search) — Protocol for NMR calculation workflow
+### Literature
+- [NMReDATA, a standard to report the NMR assignment and parameters of organic compounds](https://pmc.ncbi.nlm.nih.gov/articles/PMC6226248/) - Primary publication (Magnetic Resonance in Chemistry, 2018)
+- [NMReData Initiative Website](https://nmredata.org/) - Official initiative homepage (currently offline)
 
-### Methodological Reviews
-- [NMR Ensemble Determination](https://www.nature.com/articles/s41570-023-00494-x) — Ensemble determination by NMR data deconvolution
-- [Molecular Flexibility Beyond Rotatable Bonds](https://pubs.acs.org/doi/10.1021/acs.jcim.6b00565) — nConf20 descriptor for conformational flexibility quantification
-- [Torsion Angular Bin Strings](https://pubs.acs.org/doi/10.1021/acs.jcim.4c01513) — TABS method for molecular flexibility quantification
-- [CREST Conformational Space Exploration](https://pubs.aip.org/aip/jcp/article/160/11/114110/3278084/CREST-A-program-for-the-exploration-of-low-energy) — Automated low-energy molecular chemical space exploration
+### Computational NMR Context
+- [Accurate Prediction of NMR Chemical Shifts: Integrating DFT Calculations with 3D GNNs](https://pmc.ncbi.nlm.nih.gov/articles/PMC11209944/) - DFT-GIAO methodology
+- [IR-NMR multimodal computational spectra dataset](https://www.nature.com/articles/s41597-025-05729-8) - Computational NMR dataset (2025)
+- [nmrshiftdb2 - open nmr database](https://nmrshiftdb.nmr.uni-koeln.de/) - Supports predicted/calculated NMR data
 
-### Computational Best Practices
-- [Automated NMR Workflows for Non-Experts](https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/10.1002/mrc.5540) — Best practices for automated NMR data processing
-- [Low-Cost Methods for Conformer Screening](https://pubs.acs.org/doi/10.1021/acs.jpca.4c01407) — GFN-FF, GFN2-xTB, DFTB3, HF-3c comparison
-- [GEOM Energy-Annotated Conformers](https://www.nature.com/articles/s41597-022-01288-4) — Large-scale conformer dataset with energy annotations
-
----
-*Feature research for: Conformational Sampling NMR*
-*Research confidence: HIGH — verified with authoritative sources (academic literature, official software documentation)*
-*Researched: 2026-01-26*
+**Confidence level:** HIGH - Official documentation accessed, format specification version 1.0/1.1 is stable and widely adopted. Example files confirm computational data is explicitly supported.
