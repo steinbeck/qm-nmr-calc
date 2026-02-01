@@ -31,9 +31,9 @@ Requirements for NMReData export feature. Each maps to roadmap phases.
 
 ### Testing
 
-- [ ] **TEST-01**: Unit tests validate NMReData tag formatting (separators, atom numbering)
-- [ ] **TEST-02**: Integration tests validate complete endpoint flow
-- [ ] **TEST-03**: Exported file can be parsed by RDKit SDMolSupplier and atom assignments verified
+- [x] **TEST-01**: Unit tests validate NMReData tag formatting (separators, atom numbering)
+- [x] **TEST-02**: Integration tests validate complete endpoint flow
+- [x] **TEST-03**: Exported file can be parsed by RDKit SDMolSupplier and atom assignments verified
 
 ## Future Requirements
 
@@ -79,9 +79,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | API-02 | Phase 33 | Complete |
 | API-03 | Phase 33 | Complete |
 | UI-01 | Phase 33 | Complete |
-| TEST-01 | Phase 34 | Pending |
-| TEST-02 | Phase 34 | Pending |
-| TEST-03 | Phase 34 | Pending |
+| TEST-01 | Phase 34 | Complete |
+| TEST-02 | Phase 34 | Complete |
+| TEST-03 | Phase 34 | Complete |
 
 **Coverage:**
 - v2.3 requirements: 16 total
@@ -90,4 +90,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-01*
-*Last updated: 2026-02-01 after Phase 33 completion*
+*Last updated: 2026-02-01 after Phase 34 completion*

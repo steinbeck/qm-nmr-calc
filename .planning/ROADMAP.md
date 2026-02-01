@@ -8,13 +8,13 @@
 - ✅ **v2.0.1 Conformer Pre-selection** - Phase 24 (shipped 2026-01-30)
 - ✅ **v2.1 UI Redesign** - Phases 18-23 (shipped 2026-01-31)
 - ✅ **v2.2 Documentation** - Phases 25-31 (shipped 2026-02-01)
-- 🚧 **v2.3 NMReData Export** - Phases 32-34 (in progress)
+- ✅ **v2.3 NMReData Export** - Phases 32-34 (shipped 2026-02-01)
 
 ## Overview
 
-**Current milestone:** v2.3 NMReData Export
+**Current milestone:** None (v2.3 complete)
 
-**Last shipped:** v2.2 Documentation (2026-02-01) - Comprehensive documentation for academic researchers and developers.
+**Last shipped:** v2.3 NMReData Export (2026-02-01) - Machine-readable export of NMR prediction results in NMReData standard format.
 
 ## Phases
 
@@ -332,10 +332,10 @@ Plans:
   4. Round-trip test verifies atom assignments match original predictions after re-import
   5. Test coverage includes edge cases (ensemble vs single-conformer, different solvents, molecules with implicit hydrogens)
 **Plans**: 1 plan
-**Status**: Pending
+**Status**: Complete
 
 Plans:
-- [ ] 34-01-PLAN.md — NMReData endpoint integration tests
+- [x] 34-01-PLAN.md — NMReData endpoint integration tests
 
 </details>
 
@@ -381,8 +381,8 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 31. Documentation Polish | v2.2 | 1/1 | Complete | 2026-02-01 |
 | **32. NMReData Module** | **v2.3** | **1/1** | **Complete** | 2026-02-01 |
 | **33. API/UI Integration** | **v2.3** | **1/1** | **Complete** | 2026-02-01 |
-| **34. Testing & Validation** | **v2.3** | **0/1** | **Pending** | — |
+| **34. Testing & Validation** | **v2.3** | **1/1** | **Complete** | 2026-02-01 |
 
 ---
 
-*Last updated: 2026-02-01 - Phase 34 planned*
+*Last updated: 2026-02-01 - Phase 34 complete, v2.3 milestone complete*
