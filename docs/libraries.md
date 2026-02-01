@@ -597,3 +597,299 @@ function addShiftLabels(model, h1Assignments, c13Assignments) {
 
 **Note:** Labels are added per-atom, not per-peak. For equivalent atoms with identical shifts (e.g., methyl group hydrogens), each atom gets its own label with the same value.
 
+---
+
+## SmilesDrawer
+
+SmilesDrawer provides real-time 2D structure preview as users type SMILES strings in the submission form.
+
+**Official docs:** [SmilesDrawer GitHub](https://github.com/reymond-group/smilesDrawer)
+
+### Integration Points
+
+| Template | Features | Purpose |
+|----------|----------|---------|
+| `submit.html` | Canvas preview, validation feedback | Input assistance |
+
+**CDN:** `https://unpkg.com/smiles-drawer@1.2.0/dist/smiles-drawer.min.js`
+
+### Canvas Setup
+
+The drawer is configured with custom colors matching the application theme.
+
+```javascript
+// Source: src/qm_nmr_calc/api/templates/submit.html, lines 149-173
+const smilesDrawer = new SmilesDrawer.Drawer({
+    width: 350,
+    height: 350,
+    bondThickness: 0.6,
+    bondLength: 15,
+    terminalCarbons: true,
+    explicitHydrogens: false,
+    themes: {
+        light: {
+            C: '#222',
+            O: '#e74c3c',
+            N: '#3498db',
+            S: '#f1c40f',
+            P: '#e67e22',
+            F: '#1abc9c',
+            CL: '#1abc9c',
+            BR: '#e74c3c',
+            I: '#9b59b6',
+            H: '#aaa'
+        }
+    }
+});
+```
+
+**Key options:**
+- `width/height: 350` - Canvas dimensions in pixels
+- `bondThickness: 0.6` - Bond line width
+- `terminalCarbons: true` - Show CH3 labels explicitly
+- `explicitHydrogens: false` - Hide non-terminal hydrogens for clarity
+- Custom theme colors matching the application color palette
+
+### Debounced Input Preview
+
+SMILES parsing runs on input change with debouncing to avoid excessive redraws.
+
+```javascript
+// Source: src/qm_nmr_calc/api/templates/submit.html, lines 191-214
+function updateMoleculePreview(smiles) {
+    setupCanvas();
+
+    if (!smiles || smiles.trim() === '') {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        status.textContent = 'Enter a SMILES string to preview';
+        status.className = 'preview-card__status preview-card__status--empty';
+        return;
+    }
+
+    SmilesDrawer.parse(smiles, function(tree) {
+        // Valid SMILES - draw molecule
+        smilesDrawer.draw(tree, 'molecule-preview', 'light', false);
+        status.textContent = 'Valid SMILES';
+        status.className = 'preview-card__status preview-card__status--valid';
+    }, function(err) {
+        // Invalid SMILES - show error
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        status.textContent = 'Invalid SMILES syntax';
+        status.className = 'preview-card__status preview-card__status--invalid';
+    });
+}
+
+// Debounced preview update (400ms delay)
+const debouncedPreview = debounce(updateMoleculePreview, 400);
+```
+
+**Parse + Draw pattern:**
+1. `SmilesDrawer.parse(smiles, successCallback, errorCallback)` - Parse SMILES string
+2. On success: `smilesDrawer.draw(tree, canvasId, theme, isAnimated)` - Draw to canvas
+3. On error: Clear canvas and show error status
+
+**Status feedback:**
+| Status | CSS Class | Message |
+|--------|-----------|---------|
+| Empty | `--empty` | "Enter a SMILES string to preview" |
+| Valid | `--valid` | "Valid SMILES" |
+| Invalid | `--invalid` | "Invalid SMILES syntax" |
+
+**Debounce timing:** 400ms delay prevents rapid redraws during typing while remaining responsive.
+
+---
+
+## CREST/xTB (Optional)
+
+CREST (Conformer-Rotamer Ensemble Sampling Tool) with xTB provides high-accuracy conformer ensemble generation as an optional alternative to RDKit.
+
+**Official docs:**
+- [CREST Documentation](https://crest-lab.github.io/crest-docs/)
+- [xTB Documentation](https://xtb-docs.readthedocs.io/)
+
+### Integration Points
+
+| Module | Functions | Purpose |
+|--------|-----------|---------|
+| `conformers/crest_generator.py` | `detect_crest_available()`, `run_crest()`, `parse_crest_ensemble()` | Ensemble generation |
+
+**Binaries required:** Both `crest` and `xtb` must be available on PATH.
+
+**Fallback behavior:** When CREST is not available, the system automatically falls back to RDKit KDG conformer generation.
+
+### Availability Detection
+
+CREST availability is checked once at startup and cached.
+
+```python
+# Source: src/qm_nmr_calc/conformers/crest_generator.py, lines 47-64
+import shutil
+from functools import lru_cache
+
+@lru_cache(maxsize=1)
+def detect_crest_available() -> bool:
+    """
+    Detect if CREST and xTB binaries are available on PATH.
+
+    CREST requires both binaries to function. This function uses a cache
+    since binary availability doesn't change during process lifetime.
+
+    Returns:
+        True if both crest and xtb are found, False otherwise
+    """
+    crest_found = shutil.which("crest") is not None
+    xtb_found = shutil.which("xtb") is not None
+    return crest_found and xtb_found
+```
+
+**Pattern notes:**
+- `@lru_cache(maxsize=1)` - Cache result (binaries don't appear/disappear during runtime)
+- `shutil.which()` - Cross-platform binary lookup (like Unix `which` command)
+- Both binaries required - CREST orchestrates, xTB performs calculations
+
+**Health endpoint:** The `/api/v1/health` endpoint reports CREST availability in its response:
+```json
+{"crest_available": true}
+```
+
+### CREST Execution
+
+CREST is run as a subprocess with timeout handling for complex molecules.
+
+```python
+# Source: src/qm_nmr_calc/conformers/crest_generator.py, lines 172-259
+def run_crest(
+    input_xyz: Path,
+    solvent: str,
+    charge: int = 0,
+    ewin_kcal: float = 6.0,
+    num_threads: int | None = None,
+    timeout_seconds: int = 7200,
+) -> Path:
+    """Run CREST conformational search subprocess."""
+    # Build CREST command
+    cmd = [
+        "crest",
+        str(input_xyz),
+        "--gfn2",           # GFN2-xTB method
+        "--alpb", solvent,  # ALPB implicit solvent
+        "--chrg", str(charge),
+        "--ewin", str(ewin_kcal),
+        "-T", str(num_threads),
+    ]
+
+    # Set up environment variables for stability
+    env = os.environ.copy()
+    env["OMP_STACKSIZE"] = "2G"
+    env["GFORTRAN_UNBUFFERED_ALL"] = "1"
+
+    subprocess.run(
+        cmd,
+        cwd=input_xyz.parent,
+        capture_output=True,
+        text=True,
+        timeout=timeout_seconds,
+        env=env,
+        check=True,
+    )
+
+    return input_xyz.parent / "crest_conformers.xyz"
+```
+
+**Key parameters:**
+- `--gfn2` - Use GFN2-xTB method (good accuracy/speed balance)
+- `--alpb` - ALPB implicit solvation model
+- `--ewin` - Energy window in kcal/mol for conformer inclusion
+- `-T` - Number of threads (defaults to all available)
+
+**Environment variables:**
+- `OMP_STACKSIZE=2G` - Increase OpenMP stack for large molecules
+- `GFORTRAN_UNBUFFERED_ALL=1` - Prevent output buffering issues
+
+**Timeout handling:**
+- Default: 7200 seconds (2 hours)
+- Macrocycles and complex molecules may require longer
+- On timeout: `RuntimeError` raised (no silent fallback to RDKit)
+
+**Solvent mapping (ALPB):**
+| Job Solvent | ALPB Identifier |
+|-------------|-----------------|
+| `chcl3` | `chcl3` |
+| `dmso` | `dmso` |
+| `vacuum` | (no solvent flag) |
+
+### Ensemble Parsing
+
+CREST outputs conformers as concatenated XYZ files with energies in the comment line.
+
+```python
+# Source: src/qm_nmr_calc/conformers/crest_generator.py, lines 98-169
+def parse_crest_ensemble(ensemble_file: Path) -> list[CRESTConformer]:
+    """
+    Parse CREST multi-structure XYZ ensemble file.
+
+    CREST outputs conformers in concatenated XYZ format:
+    - Each structure starts with atom count line
+    - Comment line contains energy as first token (in Hartree)
+    - Coordinate lines follow
+    - Structures are concatenated sequentially
+    """
+    conformers = []
+    lines = ensemble_file.read_text().strip().split("\n")
+
+    i = 0
+    conf_number = 1
+
+    while i < len(lines):
+        num_atoms = int(lines[i].strip())
+        i += 1
+        comment_line = lines[i].strip()
+        energy_hartree = float(comment_line.split()[0])
+        i += 1
+
+        coord_lines = []
+        for _ in range(num_atoms):
+            coord_lines.append(lines[i])
+            i += 1
+
+        # Build xyz_block
+        xyz_block = f"{num_atoms}\n{comment_line}\n"
+        xyz_block += "\n".join(coord_lines) + "\n"
+
+        conformer = CRESTConformer(
+            conformer_id=f"conf_{conf_number:03d}",
+            energy_hartree=energy_hartree,
+            xyz_block=xyz_block,
+        )
+        conformers.append(conformer)
+        conf_number += 1
+
+    return conformers
+```
+
+**CREST output format:**
+```
+12                      <- atom count
+-12.345678901234        <- energy (Hartree) in comment line
+C   0.000000   0.000000   0.000000
+H   1.089000   0.000000   0.000000
+...
+12                      <- next conformer
+-12.345612345678
+...
+```
+
+**CRESTConformer dataclass:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `conformer_id` | `str` | Sequential ID (e.g., `"conf_001"`) |
+| `energy_hartree` | `float` | Total energy in Hartree |
+| `xyz_block` | `str` | Complete XYZ content for this conformer |
+
+**Energy handling:**
+- CREST outputs absolute energies in Hartree
+- After parsing, energies are converted to relative kcal/mol for filtering and Boltzmann weighting
+- Conversion factor: 1 Hartree = 627.509 kcal/mol
+
