@@ -3,9 +3,9 @@
 ![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)
 
-Predict NMR chemical shifts for organic molecules using quantum chemistry. Submit a molecule structure (SMILES, MOL, or SDF), and get back accurate 1H and 13C chemical shifts with interactive spectrum visualizations and a 3D structure viewer.
+Predict NMR chemical shifts for organic molecules using quantum chemistry. Submit a molecule structure (SMILES, MOL, or SDF), and get back predicted 1H and 13C chemical shifts with interactive spectrum visualizations and a 3D structure viewer.
 
-Built for chemists and researchers who need reliable NMR predictions without managing complex computational workflows.
+Built for chemists and researchers who need NMR predictions without managing complex computational workflows.
 
 ## Features
 
