@@ -1,0 +1,86 @@
+# Worker container for qm-nmr-calc
+# Based on NWChem with CREST, xTB, and Python 3.11 via Miniconda
+
+FROM ghcr.io/nwchemgit/nwchem-dev/amd64:latest
+
+# Switch to root for package installation
+USER root
+
+# Install required tools and X11 libraries for RDKit drawing
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget \
+    xz-utils \
+    ca-certificates \
+    libxrender1 \
+    libxext6 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Miniconda for Python 3.11
+ENV CONDA_DIR=/opt/conda
+RUN wget -q https://repo.anaconda.com/miniconda/Miniconda3-py311_24.11.1-0-Linux-x86_64.sh -O /tmp/miniconda.sh \
+    && bash /tmp/miniconda.sh -b -p $CONDA_DIR \
+    && rm /tmp/miniconda.sh
+ENV PATH="$CONDA_DIR/bin:$PATH"
+
+# Install xTB 6.7.1
+RUN mkdir -p /opt/xtb \
+    && wget -q https://github.com/grimme-lab/xtb/releases/download/v6.7.1/xtb-6.7.1-linux-x86_64.tar.xz \
+    && tar xf xtb-6.7.1-linux-x86_64.tar.xz --strip-components=1 -C /opt/xtb \
+    && rm xtb-6.7.1-linux-x86_64.tar.xz
+
+# Install CREST v3.0.2
+RUN mkdir -p /opt/crest \
+    && wget -q https://github.com/crest-lab/crest/releases/download/v3.0.2/crest-gnu-12-ubuntu-latest.tar.xz \
+    && tar xf crest-gnu-12-ubuntu-latest.tar.xz -C /opt/crest \
+    && chmod +x /opt/crest/crest \
+    && rm crest-gnu-12-ubuntu-latest.tar.xz
+
+# Create virtual environment and install dependencies from pyproject.toml
+WORKDIR /app
+COPY pyproject.toml README.md ./
+COPY src/ /app/src/
+RUN python -m venv /app/.venv \
+    && /app/.venv/bin/pip install --upgrade pip \
+    && /app/.venv/bin/pip install --no-cache-dir .
+
+# NWChem environment (verify/set these)
+ENV NWCHEM_TOP="/opt/nwchem"
+ENV NWCHEM_BASIS_LIBRARY="${NWCHEM_TOP}/src/basis/libraries/"
+
+# xTB environment
+ENV XTBPATH="/opt/xtb/share/xtb"
+
+# PATH for all binaries (CREST archive extracts to crest/crest/)
+ENV PATH="/opt/xtb/bin:/opt/crest/crest:${PATH}"
+
+# OpenMP for CREST/xTB (CRITICAL - prevents stack overflow on large molecules)
+ENV OMP_STACKSIZE="2G"
+ENV OMP_NUM_THREADS="4"
+ENV GFORTRAN_UNBUFFERED_ALL="1"
+
+# Allow MPI to run as root in container
+ENV OMPI_ALLOW_RUN_AS_ROOT="1"
+ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM="1"
+
+# Python virtual environment
+ENV VIRTUAL_ENV="/app/.venv"
+ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
+ENV PYTHONPATH="/app/src:${PYTHONPATH}"
+
+# NWChem process count (configurable)
+ENV NWCHEM_NPROC="4"
+
+# Create data directory for Huey database and job files
+RUN mkdir -p /app/data
+
+# Copy validation scripts
+COPY scripts/validate-worker.sh /app/scripts/
+COPY scripts/test-nwchem-container.sh /app/scripts/
+RUN chmod +x /app/scripts/validate-worker.sh /app/scripts/test-nwchem-container.sh
+
+# Reset entrypoint (NWChem base image has nwchem as entrypoint)
+ENTRYPOINT []
+
+# Default command: start Huey consumer
+# Single worker, process-based for isolation
+CMD ["huey_consumer", "qm_nmr_calc.queue.huey", "-w", "1", "-k", "process"]
