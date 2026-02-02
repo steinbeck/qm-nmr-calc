@@ -8,20 +8,24 @@ An asynchronous web service for running NMR quantum mechanical calculations on o
 
 Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
 
-## Current Milestone: v2.3 NMReData Export
+## Current Milestone: v2.4 Docker Deployment
 
-**Goal:** Enable machine-readable export of NMR prediction results in the NMReData standard format.
+**Goal:** Make qm-nmr-calc deployable with `docker compose up` — pre-built images, auto-HTTPS, production-ready defaults.
 
 **Target features:**
-- NMReData file generation with predicted 1H/13C shifts and atom assignments
-- Include optimized 3D molecular geometry in export
-- Download button on results page alongside existing PNG/XYZ downloads
-- REST API endpoint for programmatic NMReData access
+- Docker Compose stack (app + worker + Caddy reverse proxy)
+- Pre-built images published to GitHub Container Registry (GHCR)
+- NWChem, CREST, xTB pre-installed in worker image
+- Auto-HTTPS via Caddy with Let's Encrypt
+- Health checks and restart policies for auto-recovery
+- Volume persistence for job data
+- Environment configuration via `.env` file
+- Deployment documentation
 
 ## Current State
 
-**Active:** v2.3 NMReData Export
-**Last shipped:** v2.2 Documentation (2026-02-01)
+**Active:** v2.4 Docker Deployment
+**Last shipped:** v2.3 NMReData Export (2026-02-01)
 
 **Codebase:** ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS
 **Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Custom CSS
@@ -44,13 +48,12 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 ## Next Milestone
 
-**TBD** — run `/gsd:new-milestone` to plan next milestone
+**TBD** — run `/gsd:new-milestone` after v2.4 ships
 
 Future considerations tracked in `.planning/BACKLOG.md`:
 - Dark mode (color scheme, system preference detection)
 - Enhanced interactivity (card expansion, drag-and-drop)
 - User accounts and calculation history
-- Deploy to production and test with real workloads
 
 ## Requirements
 
@@ -98,6 +101,8 @@ Future considerations tracked in `.planning/BACKLOG.md`:
 - xTB energy ranking for conformer filtering -- v2.0.1
 - Comprehensive documentation (README, installation, usage, architecture, libraries, science) -- v2.2
 - DP4+ methodology writeup with full derivations and literature citations -- v2.2
+- NMReData SDF export with chemical shifts and atom assignments -- v2.3
+- NMReData download via REST API and web UI -- v2.3
 
 ### Out of Scope
 
@@ -157,4 +162,4 @@ Future considerations tracked in `.planning/BACKLOG.md`:
 | xTB for conformer ranking | Better than MMFF, faster than DFT | Good -- optional with MMFF fallback |
 
 ---
-*Last updated: 2026-02-01 after v2.2 Documentation milestone shipped*
+*Last updated: 2026-02-02 after v2.4 Docker Deployment milestone started*
