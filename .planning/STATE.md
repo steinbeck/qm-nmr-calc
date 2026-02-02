@@ -5,24 +5,24 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.4 Docker Deployment - Phase 35 Worker Container
+**Current focus:** v2.4 Docker Deployment - Phase 36 API Container
 
 ## Current Position
 
 Milestone: v2.4 Docker Deployment
-Phase: 35 of 40 (Worker Container)
-Plan: Ready to plan
-Status: Ready to plan
-Last activity: 2026-02-02 -- Roadmap created for v2.4 Docker Deployment
+Phase: 36 of 40 (API Container)
+Plan: Not started
+Status: Ready for planning
+Last activity: 2026-02-02 -- Phase 35 Worker Container complete
 
-Progress: [####################] 100% (v1.0-v2.3) | [....................] 0% (v2.4)
+Progress: [####################] 100% (v1.0-v2.3) | [####................] 17% (v2.4)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 88 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3)
+- Total plans completed: 89 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 1)
 - Average duration: ~7 min
-- Total execution time: ~600 min (~10 hours)
+- Total execution time: ~650 min (~11 hours)
 
 **By Milestone:**
 
@@ -68,14 +68,15 @@ v2.3 decisions archived to milestones/v2.3-ROADMAP.md.
 None
 
 **Research Flags (from v2.4 research):**
-- Phase 35: NWChem MPI tuning, CREST binary compatibility -- may need deeper research during planning
+- Phase 35: ✅ Resolved - Used Miniconda Python 3.11 for glibc compatibility, MPI configured with OMPI_ALLOW_RUN_AS_ROOT
 - Phase 39: Multi-arch builds for scientific binaries -- arm64 support uncertain
 
 ## Session Continuity
 
 Last session: 2026-02-02
-Stopped at: Roadmap created for v2.4 Docker Deployment
+Stopped at: Phase 35 Worker Container complete
 Resume file: None
-Next: `/gsd:plan-phase 35` to plan Worker Container phase
+Next: `/gsd:plan-phase 36` to plan API Container phase
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs
+Docker: Worker image builds and passes all validation tests (2.1GB)
