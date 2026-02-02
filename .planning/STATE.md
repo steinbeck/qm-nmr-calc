@@ -11,16 +11,16 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 
 Milestone: v2.4 Docker Deployment
 Phase: 36 of 40 (API Container)
-Plan: Not started
-Status: Ready for planning
-Last activity: 2026-02-02 -- Phase 35 Worker Container complete
+Plan: 01 of 01 complete
+Status: Phase complete
+Last activity: 2026-02-02 -- Completed 36-01-PLAN.md (API Container)
 
-Progress: [####################] 100% (v1.0-v2.3) | [####................] 17% (v2.4)
+Progress: [####################] 100% (v1.0-v2.3) | [########............] 33% (v2.4)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 89 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 1)
+- Total plans completed: 90 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 2)
 - Average duration: ~7 min
 - Total execution time: ~650 min (~11 hours)
 
@@ -69,14 +69,15 @@ None
 
 **Research Flags (from v2.4 research):**
 - Phase 35: ✅ Resolved - Used Miniconda Python 3.11 for glibc compatibility, MPI configured with OMPI_ALLOW_RUN_AS_ROOT
+- Phase 36: ✅ Resolved - Added X11 libraries (libxrender1, libxext6, libexpat1) for RDKit drawing
 - Phase 39: Multi-arch builds for scientific binaries -- arm64 support uncertain
 
 ## Session Continuity
 
 Last session: 2026-02-02
-Stopped at: Phase 35 Worker Container complete
+Stopped at: Phase 36 API Container complete
 Resume file: None
-Next: `/gsd:plan-phase 36` to plan API Container phase
+Next: `/gsd:plan-phase 37` to plan Docker Compose phase
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs
-Docker: Worker image builds and passes all validation tests (2.1GB)
+Docker: Worker image 2.1GB, API image ~733MB - both build and pass validation tests
