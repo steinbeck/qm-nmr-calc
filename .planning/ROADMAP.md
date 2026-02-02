@@ -249,10 +249,10 @@ Docker deployment transforms qm-nmr-calc from a manual installation into a `dock
   3. CREST conformer search completes successfully inside container
   4. xTB energy calculation completes successfully inside container
   5. Huey consumer runs and processes queued jobs in container
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 35-01: TBD
+- [ ] 35-01-PLAN.md -- Create and validate worker container with NWChem, CREST, xTB, and Huey
 
 ### Phase 36: API Container
 **Goal**: FastAPI application runs in a minimal, secure container with health checks.
@@ -373,7 +373,7 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 | 32. NMReData Module | v2.3 | 1/1 | Complete | 2026-02-01 |
 | 33. API/UI Integration | v2.3 | 1/1 | Complete | 2026-02-01 |
 | 34. Testing & Validation | v2.3 | 1/1 | Complete | 2026-02-01 |
-| **35. Worker Container** | **v2.4** | **0/TBD** | **Not started** | - |
+| **35. Worker Container** | **v2.4** | **0/1** | **Not started** | - |
 | **36. API Container** | **v2.4** | **0/TBD** | **Not started** | - |
 | **37. Docker Compose Integration** | **v2.4** | **0/TBD** | **Not started** | - |
 | **38. Caddy + HTTPS** | **v2.4** | **0/TBD** | **Not started** | - |
@@ -416,4 +416,4 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 **Mapped: 26/26 (100%)**
 
 ---
-*Last updated: 2026-02-02 - v2.4 Docker Deployment roadmap created*
+*Last updated: 2026-02-02 - Phase 35 planned (1 plan)*
