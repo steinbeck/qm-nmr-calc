@@ -263,10 +263,10 @@ Plans:
   2. FastAPI server responds to HTTP requests at port 8000
   3. Health check endpoint returns 200 OK
   4. Container runs as non-root user
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 36-01: TBD
+- [ ] 36-01-PLAN.md -- Create Dockerfile.api with multi-stage build and validation script
 
 ### Phase 37: Docker Compose Integration
 **Goal**: Complete deployment with single `docker compose up -d` command, persistent data, and operational controls.
@@ -374,7 +374,7 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 | 33. API/UI Integration | v2.3 | 1/1 | Complete | 2026-02-01 |
 | 34. Testing & Validation | v2.3 | 1/1 | Complete | 2026-02-01 |
 | **35. Worker Container** | **v2.4** | **0/1** | **Not started** | - |
-| **36. API Container** | **v2.4** | **0/TBD** | **Not started** | - |
+| **36. API Container** | **v2.4** | **0/1** | **Not started** | - |
 | **37. Docker Compose Integration** | **v2.4** | **0/TBD** | **Not started** | - |
 | **38. Caddy + HTTPS** | **v2.4** | **0/TBD** | **Not started** | - |
 | **39. CI/CD + GHCR Publishing** | **v2.4** | **0/TBD** | **Not started** | - |
@@ -416,4 +416,4 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 **Mapped: 26/26 (100%)**
 
 ---
-*Last updated: 2026-02-02 - Phase 35 planned (1 plan)*
+*Last updated: 2026-02-02 - Phase 36 planned (1 plan)*
