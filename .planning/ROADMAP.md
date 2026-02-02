@@ -2,24 +2,25 @@
 
 ## Milestones
 
-- ✅ **v1.0 MVP** - Phases 1-6 (shipped 2026-01-20)
-- ✅ **v1.1 Accurate Chemical Shifts** - Phases 7-11.2 (shipped 2026-01-25)
-- ✅ **v2.0 Conformational Sampling** - Phases 12-17 (shipped 2026-01-28)
-- ✅ **v2.0.1 Conformer Pre-selection** - Phase 24 (shipped 2026-01-30)
-- ✅ **v2.1 UI Redesign** - Phases 18-23 (shipped 2026-01-31)
-- ✅ **v2.2 Documentation** - Phases 25-31 (shipped 2026-02-01)
-- ✅ **v2.3 NMReData Export** - Phases 32-34 (shipped 2026-02-01)
+- [x] **v1.0 MVP** - Phases 1-6 (shipped 2026-01-20)
+- [x] **v1.1 Accurate Chemical Shifts** - Phases 7-11.2 (shipped 2026-01-25)
+- [x] **v2.0 Conformational Sampling** - Phases 12-17 (shipped 2026-01-28)
+- [x] **v2.0.1 Conformer Pre-selection** - Phase 24 (shipped 2026-01-30)
+- [x] **v2.1 UI Redesign** - Phases 18-23 (shipped 2026-01-31)
+- [x] **v2.2 Documentation** - Phases 25-31 (shipped 2026-02-01)
+- [x] **v2.3 NMReData Export** - Phases 32-34 (shipped 2026-02-01)
+- [ ] **v2.4 Docker Deployment** - Phases 35-40 (in progress)
 
 ## Overview
 
-**Current milestone:** None (v2.3 complete)
+**Current milestone:** v2.4 Docker Deployment
 
-**Last shipped:** v2.3 NMReData Export (2026-02-01) - Machine-readable export of NMR prediction results in NMReData standard format.
+Docker deployment transforms qm-nmr-calc from a manual installation into a `docker compose up` experience. The roadmap progresses from the most complex, blocking component (worker container with NWChem/CREST/xTB) through orchestration and HTTPS, culminating in CI/CD publishing and documentation. Each phase delivers a testable increment toward production-ready containerization.
 
 ## Phases
 
 <details>
-<summary>✅ v1.0 MVP (Phases 1-6) - SHIPPED 2026-01-20</summary>
+<summary>v1.0 MVP (Phases 1-6) - SHIPPED 2026-01-20</summary>
 
 ### Phase 1: Project Setup and Foundation
 **Goal**: Runnable service with basic architecture
@@ -54,7 +55,7 @@
 </details>
 
 <details>
-<summary>✅ v1.1 Accurate Chemical Shifts (Phases 7-11.2) - SHIPPED 2026-01-25</summary>
+<summary>v1.1 Accurate Chemical Shifts (Phases 7-11.2) - SHIPPED 2026-01-25</summary>
 
 ### Phase 7: Remove ISiCLE Dependency
 **Goal**: Direct NWChem integration
@@ -94,106 +95,65 @@
 </details>
 
 <details>
-<summary>✅ v2.0 Conformational Sampling (Phases 12-17) - SHIPPED 2026-01-28</summary>
+<summary>v2.0 Conformational Sampling (Phases 12-17) - SHIPPED 2026-01-28</summary>
 
 ### Phase 12: Conformer Data Model and Storage
-**Goal**: Foundation for multi-conformer calculations -- data structures, file organization, backward compatibility
-**Depends on**: Phase 11.2
-**Requirements**: DFT-03, API-04 (partial)
-**Success Criteria** (what must be TRUE):
-  1. System tracks conformer IDs, energies (with units), and geometries in structured format
-  2. Each conformer uses isolated scratch directory to prevent NWChem file conflicts
-  3. Canonical atom ordering established and verified across conformer lifecycle
-  4. Existing v1.x single-conformer jobs load and run without modification
-  5. Job directory structure supports per-conformer outputs (`output/conformers/`, `output/optimized/`)
+**Goal**: Foundation for multi-conformer calculations
 **Plans**: 3 plans
 **Status**: Complete
 
 ### Phase 13: RDKit KDG Conformer Generation
-**Goal**: Generate conformer ensembles using RDKit distance geometry (no external dependencies)
-**Depends on**: Phase 12
-**Requirements**: CONF-03, CONF-06, FILT-01
-**Success Criteria** (what must be TRUE):
-  1. System generates conformers using KDG method (pure distance geometry, no crystal bias)
-  2. MMFF optimization and RMSD deduplication produces diverse low-energy set
-  3. Pre-DFT energy window filter (default 6 kcal/mol) removes high-energy conformers
-  4. Adaptive conformer count scales with rotatable bond count
-  5. App works fully without CREST/xTB installed (RDKit-only mode validated)
+**Goal**: Generate conformer ensembles using RDKit distance geometry
 **Plans**: 3 plans
 **Status**: Complete
 
 ### Phase 14: Boltzmann Averaging Implementation
 **Goal**: Numerically stable Boltzmann weighting and ensemble averaging
-**Depends on**: Phase 13
-**Requirements**: BOLTZ-01, BOLTZ-02, BOLTZ-03, BOLTZ-04
-**Success Criteria** (what must be TRUE):
-  1. System calculates Boltzmann weights from DFT energies using exp-normalize trick (no overflow/underflow)
-  2. System computes population-weighted average chemical shifts across conformer ensemble
-  3. Temperature parameter (default 298.15 K) correctly applied in Boltzmann calculation
-  4. Unit tests validate numerics with wide energy ranges (0-20 kcal/mol) and known test cases
-  5. Single-conformer edge case (ensemble of 1) returns correct degeneracy (weight = 1.0)
 **Plans**: 2 plans
 **Status**: Complete
 
 ### Phase 15: Multi-Conformer NWChem Integration
-**Goal**: Sequential DFT optimization and NMR calculation loop for conformer ensemble
-**Depends on**: Phase 14
-**Requirements**: DFT-01, DFT-02, DFT-04, DFT-05, FILT-02, FILT-03
-**Success Criteria** (what must be TRUE):
-  1. System runs DFT geometry optimization on each conformer surviving pre-DFT filter
-  2. System extracts DFT energies from optimization step for Boltzmann weighting
-  3. Post-DFT energy window filter (default 3 kcal/mol) applied before NMR calculations
-  4. System runs NMR shielding calculation on each conformer surviving post-DFT filter
-  5. Partial conformer failures handled gracefully (job continues with successful conformers if >50% succeed)
-  6. User can configure energy window parameters (pre-DFT and post-DFT thresholds)
+**Goal**: Sequential DFT optimization and NMR calculation loop
 **Plans**: 3 plans
 **Status**: Complete
 
 ### Phase 16: CREST Integration (Optional High-Accuracy Mode)
-**Goal**: Production-quality conformer generation using CREST metadynamics (when available)
-**Depends on**: Phase 15
-**Requirements**: CONF-04, CONF-05
-**Success Criteria** (what must be TRUE):
-  1. System generates conformers using CREST/xTB when binaries available on PATH
-  2. System auto-detects CREST/xTB availability and reports status in API health endpoint
-  3. CREST includes ALPB solvation model matching job solvent parameter
-  4. CREST timeout (default 7200s) with clear error message prevents hanging on macrocycles (fail-fast, no auto-fallback)
-  5. Environment variables (OMP_STACKSIZE, GFORTRAN_UNBUFFERED_ALL) configured for stability
+**Goal**: Production-quality conformer generation using CREST metadynamics
 **Plans**: 3 plans
 **Status**: Complete
 
 ### Phase 17: API Integration and Progress Tracking
-**Goal**: User-facing ensemble mode with conformer selection, metadata, and progress updates
-**Depends on**: Phase 16
-**Requirements**: CONF-01, CONF-02, API-01, API-02, API-03, PROG-01, PROG-02
-**Success Criteria** (what must be TRUE):
-  1. User can choose between single-conformer mode (v1.x behavior) and ensemble mode when submitting job
-  2. User can choose RDKit KDG or CREST as conformer generation method in ensemble mode
-  3. API returns Boltzmann-weighted average shifts (not per-conformer detail)
-  4. API response includes ensemble metadata (conformer count, energy range, top 3 populations, method used, temperature)
-  5. 3D viewer shows lowest-energy conformer geometry with shift labels
-  6. Job status includes ensemble-specific states (generating_conformers, optimizing_conformers X/N, calculating_nmr X/N, averaging_shifts)
-  7. Web UI displays conformer progress for ensemble jobs
+**Goal**: User-facing ensemble mode with conformer selection and progress
 **Plans**: 5 plans
 **Status**: Complete
 
 </details>
 
 <details>
-<summary>✅ v2.1 UI Redesign (Phases 18-23) - SHIPPED 2026-01-31</summary>
+<summary>v2.0.1 Conformer Pre-selection Hotfix - SHIPPED 2026-01-30</summary>
+
+### Phase 24: Conformer Pre-selection with xTB
+**Goal**: Efficient conformer filtering using RMSD clustering and xTB ranking
+**Plans**: 3 plans
+**Status**: Complete
+
+</details>
+
+<details>
+<summary>v2.1 UI Redesign (Phases 18-23) - SHIPPED 2026-01-31</summary>
 
 ### Phase 18: CSS Foundation and Design System
-**Goal**: Reusable CSS architecture with design tokens, glass components, and bento grid utilities
+**Goal**: Reusable CSS architecture with design tokens
 **Plans**: 4 plans
 **Status**: Complete
 
 ### Phase 19: Results Page Redesign
-**Goal**: Bento grid layout for results page with prominent visualizations
+**Goal**: Bento grid layout with prominent visualizations
 **Plans**: 3 plans
 **Status**: Complete
 
 ### Phase 20: Submit Page Redesign
-**Goal**: Clean form layout with logical grouping and solid backgrounds
+**Goal**: Clean form layout with logical grouping
 **Plans**: 2 plans
 **Status**: Complete
 
@@ -203,40 +163,13 @@
 **Status**: Complete
 
 ### Phase 22: Responsive and Layout Polish
-**Goal**: Mobile-first breakpoints with performance-optimized glass effects
+**Goal**: Mobile-first breakpoints with optimized glass effects
 **Plans**: 2 plans
 **Status**: Complete
 
 ### Phase 23: Accessibility and Testing
-**Goal**: WCAG compliance, cross-browser validation, and performance optimization
+**Goal**: WCAG compliance and cross-browser validation
 **Plans**: 2 plans
-**Status**: Complete
-
-*Full details: .planning/milestones/v2.1-ROADMAP.md*
-
-</details>
-
-<details>
-<summary>✅ v2.0.1 Conformer Pre-selection Hotfix - SHIPPED 2026-01-30</summary>
-
-**Hotfix Goal:** Reduce conformers sent to expensive DFT optimization from ~40 to ~8 using RMSD clustering and xTB energy ranking.
-
-### Phase 24: Conformer Pre-selection with xTB
-**Goal**: Efficient conformer filtering using RMSD clustering and xTB semi-empirical ranking
-**Depends on**: Phase 17 (v2.0 complete)
-**Requirements**: Performance optimization for ensemble calculations
-**Success Criteria** (what must be TRUE):
-  1. RMSD-based Butina clustering reduces redundant conformers (40 → ~8-12 clusters)
-  2. xTB (GFN2) single-point energy ranking available when xTB binary detected
-  3. System selects ~8 diverse, low-energy conformers for DFT optimization
-  4. Fallback to MMFF ranking when xTB not available (RDKit-only mode works)
-  5. Flexible molecules (hexanol, decane) complete in <3 hours instead of 10+ hours
-**Plans**: 3 plans
-
-Plans:
-- [x] 24-01-PLAN.md — RMSD clustering with Butina algorithm (RDKit)
-- [x] 24-02-PLAN.md — xTB integration for energy ranking
-- [x] 24-03-PLAN.md — Pipeline integration and testing
 **Status**: Complete
 
 </details>
@@ -245,104 +178,162 @@ Plans:
 <summary>v2.2 Documentation (Phases 25-31) - SHIPPED 2026-02-01</summary>
 
 ### Phase 25: README and Documentation Structure
-**Goal**: Overhaul README.md with clear introduction, architecture overview, and links to detailed docs
+**Goal**: Overhaul README with architecture overview
 **Plans**: 1 plan
 **Status**: Complete
 
 ### Phase 26: Installation Guide
-**Goal**: Comprehensive installation documentation covering all dependencies and configurations
+**Goal**: Comprehensive installation documentation
 **Plans**: 1 plan
 **Status**: Complete
 
 ### Phase 27: Usage Guide
-**Goal**: User-facing documentation for web UI and REST API workflows
+**Goal**: User-facing documentation for web UI and API
 **Plans**: 2 plans
 **Status**: Complete
 
 ### Phase 28: Technical Architecture
-**Goal**: Developer-facing documentation of system architecture and data flows
+**Goal**: Developer-facing system architecture docs
 **Plans**: 2 plans
 **Status**: Complete
 
 ### Phase 29: Library Documentation
-**Goal**: Documentation of third-party library integrations and usage patterns
+**Goal**: Third-party library integrations documentation
 **Plans**: 2 plans
 **Status**: Complete
 
 ### Phase 30: DP4+ Science Documentation
-**Goal**: Thorough scientific writeup of NMR prediction methodology with full derivations
+**Goal**: Scientific writeup with full derivations
 **Plans**: 2 plans
 **Status**: Complete
 
-### Phase 31: Documentation Polish and Cross-References
-**Goal**: Final review ensuring consistency and proper cross-linking
+### Phase 31: Documentation Polish
+**Goal**: Consistency and cross-linking review
 **Plans**: 1 plan
 **Status**: Complete
 
-*Full details: .planning/milestones/v2.2-ROADMAP.md*
+</details>
+
+<details>
+<summary>v2.3 NMReData Export (Phases 32-34) - SHIPPED 2026-02-01</summary>
+
+### Phase 32: Core NMReData Generation Module
+**Goal**: Generate NMReData-compliant SDF files
+**Plans**: 1 plan
+**Status**: Complete
+
+### Phase 33: API and UI Integration
+**Goal**: NMReData download via REST API and web UI
+**Plans**: 1 plan
+**Status**: Complete
+
+### Phase 34: Testing and Validation
+**Goal**: Format compliance and round-trip testing
+**Plans**: 1 plan
+**Status**: Complete
 
 </details>
 
 <details open>
-<summary>🚧 v2.3 NMReData Export (Phases 32-34) - IN PROGRESS</summary>
+<summary>v2.4 Docker Deployment (Phases 35-40) - IN PROGRESS</summary>
 
-### Phase 32: Core NMReData Generation Module
-**Goal**: Generate NMReData-compliant SDF files with predicted chemical shifts and optimized geometry
-**Depends on**: Phase 31 (v2.2 complete)
-**Requirements**: NMRD-01, NMRD-02, NMRD-03, NMRD-04, NMRD-05, NMRD-06, NMRD-07, NMRD-08, NMRD-09
+**Milestone Goal:** Make qm-nmr-calc deployable with `docker compose up` -- pre-built images, auto-HTTPS, production-ready defaults.
+
+### Phase 35: Worker Container
+**Goal**: NWChem, CREST, and xTB run correctly in a Docker container with all environment configuration.
+**Depends on**: Nothing (first phase of v2.4)
+**Requirements**: DOCK-02
 **Success Criteria** (what must be TRUE):
-  1. User can generate NMReData SDF file containing valid MOL block with optimized 3D coordinates
-  2. Generated file includes required metadata tags (VERSION 1.1 or 2.0, LEVEL 0, SOLVENT with proper mapping, TEMPERATURE 298.15 K)
-  3. Generated file includes ASSIGNMENT tag with 1H and 13C chemical shifts mapped to 1-indexed atom numbers
-  4. Generated file includes molecular identifiers (FORMULA, SMILES tags)
-  5. Generated file includes provenance metadata (calculation method, basis set, scaling factors applied)
-  6. Atom numbering conversion (RDKit 0-indexed → SDF 1-indexed) handled correctly with no off-by-one errors
-  7. Tag separator format (", " comma+space) compliant with NMReData specification
-  8. Ensemble calculations export Boltzmann-weighted average shifts with lowest-energy conformer geometry
-**Plans**: 1 plan
-**Status**: Complete
+  1. User can build worker image with `docker build -f Dockerfile.worker`
+  2. NWChem DFT calculation completes successfully inside container
+  3. CREST conformer search completes successfully inside container
+  4. xTB energy calculation completes successfully inside container
+  5. Huey consumer runs and processes queued jobs in container
+**Plans**: TBD
 
 Plans:
-- [x] 32-01-PLAN.md — Core NMReData module with tag formatting and generate_nmredata_sdf()
+- [ ] 35-01: TBD
 
-### Phase 33: API and UI Integration
-**Goal**: Enable NMReData file download via REST API endpoint and web UI button
-**Depends on**: Phase 32
-**Requirements**: API-01, API-02, API-03, UI-01
+### Phase 36: API Container
+**Goal**: FastAPI application runs in a minimal, secure container with health checks.
+**Depends on**: Nothing (parallel with Phase 35)
+**Requirements**: DOCK-03
 **Success Criteria** (what must be TRUE):
-  1. User can download NMReData file via GET /api/v1/jobs/{job_id}/nmredata.sdf endpoint
-  2. Response includes proper HTTP headers (media type chemical/x-mdl-sdfile, filename {job_id}_nmredata.sdf)
-  3. Endpoint returns 404 if job not found, 409 if job not complete
-  4. Results page includes NMReData download button alongside existing PNG/XYZ downloads
-  5. Download button follows existing glassmorphism design system from v2.1
-**Plans**: 1 plan
-**Status**: Complete
+  1. User can build API image with `docker build -f Dockerfile.api`
+  2. FastAPI server responds to HTTP requests at port 8000
+  3. Health check endpoint returns 200 OK
+  4. Container runs as non-root user
+**Plans**: TBD
 
 Plans:
-- [x] 33-01-PLAN.md — NMReData endpoint and download button
+- [ ] 36-01: TBD
 
-### Phase 34: Testing and Validation
-**Goal**: Comprehensive testing of NMReData format compliance and round-trip validation
-**Depends on**: Phase 33
-**Requirements**: TEST-01, TEST-02, TEST-03
+### Phase 37: Docker Compose Integration
+**Goal**: Complete deployment with single `docker compose up -d` command, persistent data, and operational controls.
+**Depends on**: Phase 35, Phase 36
+**Requirements**: DOCK-01, DOCK-04, DOCK-05, DOCK-06, DOCK-07, DOCK-08, DOCK-09, OPS-01, OPS-02, OPS-03, OPS-04
 **Success Criteria** (what must be TRUE):
-  1. Unit tests validate NMReData tag formatting (separators, atom numbering conversion, solvent mapping)
-  2. Integration tests validate complete API endpoint flow (job completion check, file generation, HTTP response)
-  3. Exported file can be parsed by RDKit SDMolSupplier without errors
-  4. Round-trip test verifies atom assignments match original predictions after re-import
-  5. Test coverage includes edge cases (ensemble vs single-conformer, different solvents, molecules with implicit hydrogens)
-**Plans**: 1 plan
-**Status**: Complete
+  1. User can start entire stack with `docker compose up -d`
+  2. Job data persists after `docker compose down && docker compose up -d`
+  3. Huey queue state persists across container restarts
+  4. All services restart automatically after simulated failure
+  5. User can configure deployment via `.env` file with documented options
+  6. Worker completes current job on SIGTERM before stopping
+  7. User can view logs with `docker compose logs`
+**Plans**: TBD
 
 Plans:
-- [x] 34-01-PLAN.md — NMReData endpoint integration tests
+- [ ] 37-01: TBD
+
+### Phase 38: Caddy + HTTPS
+**Goal**: Production-ready HTTPS with automatic certificate management via Let's Encrypt.
+**Depends on**: Phase 37
+**Requirements**: HTTPS-01, HTTPS-02, HTTPS-03, HTTPS-04, HTTPS-05
+**Success Criteria** (what must be TRUE):
+  1. Caddy reverse proxy serves application on ports 80 and 443
+  2. HTTPS certificate obtained automatically when domain is configured
+  3. HTTP requests redirect to HTTPS automatically
+  4. User can set domain via `DOMAIN` environment variable
+  5. Deployment works on localhost without domain (HTTP-only mode)
+**Plans**: TBD
+
+Plans:
+- [ ] 38-01: TBD
+
+### Phase 39: CI/CD + GHCR Publishing
+**Goal**: Pre-built images available on GitHub Container Registry, built automatically on release.
+**Depends on**: Phase 38
+**Requirements**: GHCR-01, GHCR-02, GHCR-03, GHCR-04
+**Success Criteria** (what must be TRUE):
+  1. Pre-built images exist on ghcr.io/[owner]/qm-nmr-calc
+  2. GitHub Actions workflow triggers on release tag
+  3. Images tagged with version (e.g., v2.4.0) and `latest`
+  4. Images support both amd64 and arm64 architectures
+**Plans**: TBD
+
+Plans:
+- [ ] 39-01: TBD
+
+### Phase 40: Documentation
+**Goal**: Users can deploy qm-nmr-calc in 5 minutes with clear guidance for production setup and troubleshooting.
+**Depends on**: Phase 39
+**Requirements**: DOCS-01, DOCS-02, DOCS-03, DOCS-04
+**Success Criteria** (what must be TRUE):
+  1. README contains quick start section with 5-minute deployment instructions
+  2. Deployment guide covers cloud VPS setup (DigitalOcean, Linode, etc.)
+  3. Troubleshooting section addresses common issues from research pitfalls
+  4. Backup and restore instructions document volume management
+**Plans**: TBD
+
+Plans:
+- [ ] 40-01: TBD
 
 </details>
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (v2.0) -> 18 -> 23 (v2.1) -> 25 -> 31 (v2.2) -> 32 -> 34 (v2.3)
+Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -379,10 +370,50 @@ Phases execute in numeric order: 1 -> 6 (v1.0) -> 7 -> 11.2 (v1.1) -> 12 -> 17 (
 | 29. Library Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
 | 30. DP4+ Science Documentation | v2.2 | 2/2 | Complete | 2026-02-01 |
 | 31. Documentation Polish | v2.2 | 1/1 | Complete | 2026-02-01 |
-| **32. NMReData Module** | **v2.3** | **1/1** | **Complete** | 2026-02-01 |
-| **33. API/UI Integration** | **v2.3** | **1/1** | **Complete** | 2026-02-01 |
-| **34. Testing & Validation** | **v2.3** | **1/1** | **Complete** | 2026-02-01 |
+| 32. NMReData Module | v2.3 | 1/1 | Complete | 2026-02-01 |
+| 33. API/UI Integration | v2.3 | 1/1 | Complete | 2026-02-01 |
+| 34. Testing & Validation | v2.3 | 1/1 | Complete | 2026-02-01 |
+| **35. Worker Container** | **v2.4** | **0/TBD** | **Not started** | - |
+| **36. API Container** | **v2.4** | **0/TBD** | **Not started** | - |
+| **37. Docker Compose Integration** | **v2.4** | **0/TBD** | **Not started** | - |
+| **38. Caddy + HTTPS** | **v2.4** | **0/TBD** | **Not started** | - |
+| **39. CI/CD + GHCR Publishing** | **v2.4** | **0/TBD** | **Not started** | - |
+| **40. Documentation** | **v2.4** | **0/TBD** | **Not started** | - |
+
+## Coverage (v2.4)
+
+**v2.4 Requirements: 26 total**
+
+| Requirement | Phase | Description |
+|-------------|-------|-------------|
+| DOCK-01 | 37 | Deploy with `docker compose up -d` |
+| DOCK-02 | 35 | Worker includes NWChem, CREST, xTB |
+| DOCK-03 | 36 | App container runs FastAPI |
+| DOCK-04 | 37 | Job data persists via volume |
+| DOCK-05 | 37 | Huey queue persists via volume |
+| DOCK-06 | 37 | Health check configuration |
+| DOCK-07 | 37 | Restart policies |
+| DOCK-08 | 37 | `.env` file configuration |
+| DOCK-09 | 37 | `.env.example` documentation |
+| HTTPS-01 | 38 | Caddy on ports 80/443 |
+| HTTPS-02 | 38 | Auto-HTTPS via Let's Encrypt |
+| HTTPS-03 | 38 | HTTP-to-HTTPS redirect |
+| HTTPS-04 | 38 | DOMAIN env var |
+| HTTPS-05 | 38 | Localhost HTTP mode |
+| GHCR-01 | 39 | Images on GHCR |
+| GHCR-02 | 39 | GitHub Actions build |
+| GHCR-03 | 39 | Version + latest tags |
+| GHCR-04 | 39 | Multi-arch (amd64 + arm64) |
+| OPS-01 | 37 | Graceful SIGTERM handling |
+| OPS-02 | 37 | Worker memory limits |
+| OPS-03 | 37 | NWCHEM_NPROC env var |
+| OPS-04 | 37 | `docker compose logs` |
+| DOCS-01 | 40 | Quick start (5-minute) |
+| DOCS-02 | 40 | Cloud VPS guide |
+| DOCS-03 | 40 | Troubleshooting |
+| DOCS-04 | 40 | Backup/restore |
+
+**Mapped: 26/26 (100%)**
 
 ---
-
-*Last updated: 2026-02-01 - Phase 34 complete, v2.3 milestone complete*
+*Last updated: 2026-02-02 - v2.4 Docker Deployment roadmap created*

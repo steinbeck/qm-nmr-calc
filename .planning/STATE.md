@@ -5,17 +5,17 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.4 Docker Deployment
+**Current focus:** v2.4 Docker Deployment - Phase 35 Worker Container
 
 ## Current Position
 
 Milestone: v2.4 Docker Deployment
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-02-02 — Milestone v2.4 started
+Phase: 35 of 40 (Worker Container)
+Plan: Ready to plan
+Status: Ready to plan
+Last activity: 2026-02-02 -- Roadmap created for v2.4 Docker Deployment
 
-Progress: ░░░░░░░░░░░░░░░░░░░░ 0% (v2.4 starting)
+Progress: [####################] 100% (v1.0-v2.3) | [....................] 0% (v2.4)
 
 ## Performance Metrics
 
@@ -35,6 +35,7 @@ Progress: ░░░░░░░░░░░░░░░░░░░░ 0% (v2.4 
 | v2.1 UI Redesign | 6 | 17 | ~3 days | Shipped 2026-01-31 |
 | v2.2 Documentation | 7 | 10 | 2 days | Shipped 2026-02-01 |
 | v2.3 NMReData Export | 3 | 3 | 1 day | Shipped 2026-02-01 |
+| v2.4 Docker Deployment | 6 | TBD | - | In progress |
 
 ## Accumulated Context
 
@@ -52,7 +53,7 @@ v2.3 decisions archived to milestones/v2.3-ROADMAP.md.
 - v2.1: 6 phases (18-23), shipped 2026-01-31
 - v2.2: 7 phases (25-31), shipped 2026-02-01
 - v2.3: 3 phases (32-34), shipped 2026-02-01
-- v2.4: Docker Deployment (in progress)
+- v2.4: 6 phases (35-40), in progress
 
 ### Pending Todos
 
@@ -66,11 +67,15 @@ v2.3 decisions archived to milestones/v2.3-ROADMAP.md.
 **Active:**
 None
 
+**Research Flags (from v2.4 research):**
+- Phase 35: NWChem MPI tuning, CREST binary compatibility -- may need deeper research during planning
+- Phase 39: Multi-arch builds for scientific binaries -- arm64 support uncertain
+
 ## Session Continuity
 
 Last session: 2026-02-02
-Stopped at: v2.4 Docker Deployment milestone started, defining requirements
+Stopped at: Roadmap created for v2.4 Docker Deployment
 Resume file: None
-Next: Complete requirements → roadmap → `/gsd:plan-phase`
+Next: `/gsd:plan-phase 35` to plan Worker Container phase
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs
