@@ -250,9 +250,10 @@ Docker deployment transforms qm-nmr-calc from a manual installation into a `dock
   4. xTB energy calculation completes successfully inside container
   5. Huey consumer runs and processes queued jobs in container
 **Plans**: 1 plan
+**Status**: Complete
 
 Plans:
-- [ ] 35-01-PLAN.md -- Create and validate worker container with NWChem, CREST, xTB, and Huey
+- [x] 35-01-PLAN.md -- Create and validate worker container with NWChem, CREST, xTB, and Huey
 
 ### Phase 36: API Container
 **Goal**: FastAPI application runs in a minimal, secure container with health checks.
@@ -264,9 +265,10 @@ Plans:
   3. Health check endpoint returns 200 OK
   4. Container runs as non-root user
 **Plans**: 1 plan
+**Status**: Complete
 
 Plans:
-- [ ] 36-01-PLAN.md -- Create Dockerfile.api with multi-stage build and validation script
+- [x] 36-01-PLAN.md -- Create Dockerfile.api with multi-stage build and validation script
 
 ### Phase 37: Docker Compose Integration
 **Goal**: Complete deployment with single `docker compose up -d` command, persistent data, and operational controls.
@@ -280,10 +282,11 @@ Plans:
   5. User can configure deployment via `.env` file with documented options
   6. Worker completes current job on SIGTERM before stopping
   7. User can view logs with `docker compose logs`
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 37-01: TBD
+- [ ] 37-01-PLAN.md -- Create docker-compose.yml and .env.example configuration
+- [ ] 37-02-PLAN.md -- Validation script and integration testing
 
 ### Phase 38: Caddy + HTTPS
 **Goal**: Production-ready HTTPS with automatic certificate management via Let's Encrypt.
@@ -373,9 +376,9 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 | 32. NMReData Module | v2.3 | 1/1 | Complete | 2026-02-01 |
 | 33. API/UI Integration | v2.3 | 1/1 | Complete | 2026-02-01 |
 | 34. Testing & Validation | v2.3 | 1/1 | Complete | 2026-02-01 |
-| **35. Worker Container** | **v2.4** | **0/1** | **Not started** | - |
-| **36. API Container** | **v2.4** | **0/1** | **Not started** | - |
-| **37. Docker Compose Integration** | **v2.4** | **0/TBD** | **Not started** | - |
+| **35. Worker Container** | **v2.4** | **1/1** | **Complete** | 2026-02-02 |
+| **36. API Container** | **v2.4** | **1/1** | **Complete** | 2026-02-02 |
+| **37. Docker Compose Integration** | **v2.4** | **0/2** | **Not started** | - |
 | **38. Caddy + HTTPS** | **v2.4** | **0/TBD** | **Not started** | - |
 | **39. CI/CD + GHCR Publishing** | **v2.4** | **0/TBD** | **Not started** | - |
 | **40. Documentation** | **v2.4** | **0/TBD** | **Not started** | - |
@@ -416,4 +419,4 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 **Mapped: 26/26 (100%)**
 
 ---
-*Last updated: 2026-02-02 - Phase 36 planned (1 plan)*
+*Last updated: 2026-02-02 - Phase 37 planned (2 plans)*
