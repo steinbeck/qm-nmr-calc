@@ -1,5 +1,32 @@
 # Project Milestones: qm-nmr-calc
 
+## v2.3 NMReData Export (Shipped: 2026-02-01)
+
+**Delivered:** Machine-readable export of NMR prediction results in NMReData standard format for interoperability with NMR analysis tools.
+
+**Phases completed:** 32-34 (3 phases, 3 plans total)
+
+**Key accomplishments:**
+
+- NMReData-compliant SDF generation with all 8 required tags (VERSION, LEVEL, SOLVENT, TEMPERATURE, ASSIGNMENT, FORMULA, SMILES, ID)
+- REST API download endpoint `GET /api/v1/jobs/{job_id}/nmredata.sdf` with proper HTTP headers (chemical/x-mdl-sdfile)
+- Web UI download button on results page following glassmorphism design system
+- Automatic solvent mapping (chcl3→CDCl3, dmso→(CD3)2SO, vacuum→vacuum)
+- Ensemble mode support with Boltzmann-averaged shifts and provenance metadata
+- Comprehensive test coverage: 44 tests (36 unit + 8 integration)
+
+**Stats:**
+
+- ~1,023 lines added (270 LOC module, 641 LOC tests, 112 LOC endpoint/UI)
+- 3 phases, 3 plans
+- 1 day (2026-02-01)
+
+**Git range:** `ac9409a` → `094fda8`
+
+**What's next:** Deploy to production. Future considerations: NMREDATA_J (coupling constants), NMREDATA_INCHI, per-conformer export.
+
+---
+
 ## v2.2 Documentation (Shipped: 2026-02-01)
 
 **Delivered:** Comprehensive documentation for academic researchers and developers, including DP4+ science writeup with full derivations.
