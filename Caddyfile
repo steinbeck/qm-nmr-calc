@@ -1,0 +1,15 @@
+# Caddyfile for qm-nmr-calc reverse proxy
+#
+# When DOMAIN is unset: serves http://localhost (no TLS)
+# When DOMAIN is set: serves https://{DOMAIN} (auto TLS via Let's Encrypt)
+#
+# Configuration: Set DOMAIN in .env file
+# Example: DOMAIN=nmr.example.com
+
+{$DOMAIN:localhost} {
+    # Reverse proxy to FastAPI backend
+    reverse_proxy api:8000
+
+    # Enable compression for faster responses
+    encode gzip
+}
