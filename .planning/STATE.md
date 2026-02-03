@@ -5,22 +5,22 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.4 Docker Deployment - Phase 37 Docker Compose Integration
+**Current focus:** v2.4 Docker Deployment - Phase 38 Caddy + HTTPS
 
 ## Current Position
 
 Milestone: v2.4 Docker Deployment
 Phase: 37 of 40 (Docker Compose Integration)
-Plan: 01 of 01 complete
+Plan: 02 of 02 complete
 Status: Phase complete
-Last activity: 2026-02-03 -- Completed 37-01-PLAN.md (Docker Compose Configuration)
+Last activity: 2026-02-03 -- Phase 37 complete, deployment validated
 
 Progress: [####################] 100% (v1.0-v2.3) | [##########..........] 50% (v2.4)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 91 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 3)
+- Total plans completed: 92 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 4)
 - Average duration: ~7 min
 - Total execution time: ~650 min (~11 hours)
 
@@ -78,7 +78,7 @@ None
 Last session: 2026-02-03
 Stopped at: Phase 37 Docker Compose Integration complete
 Resume file: None
-Next: `/gsd:plan-phase 38` to plan Production Hardening phase
+Next: `/gsd:plan-phase 38` to plan Caddy + HTTPS phase
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs
 Docker: Worker image 2.1GB, API image ~733MB, docker-compose.yml ready for deployment

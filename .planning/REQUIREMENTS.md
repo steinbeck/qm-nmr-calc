@@ -88,15 +88,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DOCK-01 | Phase 37 | Pending |
-| DOCK-02 | Phase 35 | Pending |
-| DOCK-03 | Phase 36 | Pending |
-| DOCK-04 | Phase 37 | Pending |
-| DOCK-05 | Phase 37 | Pending |
-| DOCK-06 | Phase 37 | Pending |
-| DOCK-07 | Phase 37 | Pending |
-| DOCK-08 | Phase 37 | Pending |
-| DOCK-09 | Phase 37 | Pending |
+| DOCK-01 | Phase 37 | Complete |
+| DOCK-02 | Phase 35 | Complete |
+| DOCK-03 | Phase 36 | Complete |
+| DOCK-04 | Phase 37 | Complete |
+| DOCK-05 | Phase 37 | Complete |
+| DOCK-06 | Phase 37 | Complete |
+| DOCK-07 | Phase 37 | Complete |
+| DOCK-08 | Phase 37 | Complete |
+| DOCK-09 | Phase 37 | Complete |
 | HTTPS-01 | Phase 38 | Pending |
 | HTTPS-02 | Phase 38 | Pending |
 | HTTPS-03 | Phase 38 | Pending |
@@ -106,10 +106,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GHCR-02 | Phase 39 | Pending |
 | GHCR-03 | Phase 39 | Pending |
 | GHCR-04 | Phase 39 | Pending |
-| OPS-01 | Phase 37 | Pending |
-| OPS-02 | Phase 37 | Pending |
-| OPS-03 | Phase 37 | Pending |
-| OPS-04 | Phase 37 | Pending |
+| OPS-01 | Phase 37 | Complete |
+| OPS-02 | Phase 37 | Complete |
+| OPS-03 | Phase 37 | Complete |
+| OPS-04 | Phase 37 | Complete |
 | DOCS-01 | Phase 40 | Pending |
 | DOCS-02 | Phase 40 | Pending |
 | DOCS-03 | Phase 40 | Pending |
