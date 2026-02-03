@@ -5,24 +5,24 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.4 Docker Deployment - Phase 38 Caddy + HTTPS
+**Current focus:** v2.4 Docker Deployment - Phase 39 CI/CD + GHCR Publishing
 
 ## Current Position
 
 Milestone: v2.4 Docker Deployment
-Phase: 38 of 40 (Caddy + HTTPS)
+Phase: 39 of 40 (CI/CD + GHCR Publishing)
 Plan: 01 of 01 complete
 Status: Phase complete
-Last activity: 2026-02-03 -- Completed 38-01-PLAN.md (Caddy reverse proxy with automatic HTTPS)
+Last activity: 2026-02-03 -- Completed 39-01-PLAN.md (GitHub Actions workflow for GHCR publishing)
 
-Progress: [####################] 100% (v1.0-v2.3) | [############........] 60% (v2.4)
+Progress: [####################] 100% (v1.0-v2.3) | [###############.....] 75% (v2.4)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 93 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 5)
+- Total plans completed: 94 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 6)
 - Average duration: ~7 min
-- Total execution time: ~652 min (~11 hours)
+- Total execution time: ~660 min (~11 hours)
 
 **By Milestone:**
 
@@ -43,6 +43,12 @@ Progress: [####################] 100% (v1.0-v2.3) | [############........] 60% (
 
 All prior decisions logged in PROJECT.md Key Decisions table.
 v2.3 decisions archived to milestones/v2.3-ROADMAP.md.
+
+**v2.4 Decisions:**
+- Worker image amd64-only due to CREST/xTB lacking arm64 binaries
+- API image supports amd64+arm64 for broader deployment options
+- GITHUB_TOKEN authentication for GHCR (not PAT)
+- GHA cache with per-image scope to avoid cache eviction
 
 ### Roadmap Evolution
 
@@ -68,17 +74,17 @@ v2.3 decisions archived to milestones/v2.3-ROADMAP.md.
 None
 
 **Research Flags (from v2.4 research):**
-- Phase 35: ✅ Resolved - Used Miniconda Python 3.11 for glibc compatibility, MPI configured with OMPI_ALLOW_RUN_AS_ROOT
-- Phase 36: ✅ Resolved - Added X11 libraries (libxrender1, libxext6, libexpat1) for RDKit drawing
-- Phase 37: ✅ Resolved - SIGINT for Huey graceful shutdown, 5-min grace period, 512MB shm_size for MPI
-- Phase 39: Multi-arch builds for scientific binaries -- arm64 support uncertain
+- Phase 35: Resolved - Used Miniconda Python 3.11 for glibc compatibility, MPI configured with OMPI_ALLOW_RUN_AS_ROOT
+- Phase 36: Resolved - Added X11 libraries (libxrender1, libxext6, libexpat1) for RDKit drawing
+- Phase 37: Resolved - SIGINT for Huey graceful shutdown, 5-min grace period, 512MB shm_size for MPI
+- Phase 39: Resolved - Worker amd64-only, API multi-arch; GITHUB_TOKEN for auth
 
 ## Session Continuity
 
-Last session: 2026-02-03 16:45 UTC
-Stopped at: Completed 38-01-PLAN.md (Caddy + HTTPS integration)
+Last session: 2026-02-03 20:19 UTC
+Stopped at: Completed 39-01-PLAN.md (CI/CD + GHCR publishing)
 Resume file: None
-Next: `/gsd:plan-phase 39` to plan final deployment phases
+Next: `/gsd:plan-phase 40` to plan deployment polish phase
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs
-Docker: Worker image 2.1GB, API image ~733MB, Caddy reverse proxy configured with automatic HTTPS
+Docker: Worker image 2.1GB, API image ~733MB, Caddy reverse proxy, GHCR publishing workflow
