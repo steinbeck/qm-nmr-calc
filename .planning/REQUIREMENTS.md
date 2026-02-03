@@ -21,11 +21,11 @@ Requirements for Docker deployment milestone. Each maps to roadmap phases.
 
 ### Reverse Proxy & HTTPS
 
-- [ ] **HTTPS-01**: Caddy reverse proxy serves app on ports 80/443
-- [ ] **HTTPS-02**: HTTPS certificates obtained automatically via Let's Encrypt
-- [ ] **HTTPS-03**: HTTP requests redirect to HTTPS automatically
-- [ ] **HTTPS-04**: User can configure domain via `DOMAIN` environment variable
-- [ ] **HTTPS-05**: Deployment works on localhost without domain (HTTP mode)
+- [x] **HTTPS-01**: Caddy reverse proxy serves app on ports 80/443
+- [x] **HTTPS-02**: HTTPS certificates obtained automatically via Let's Encrypt
+- [x] **HTTPS-03**: HTTP requests redirect to HTTPS automatically
+- [x] **HTTPS-04**: User can configure domain via `DOMAIN` environment variable
+- [x] **HTTPS-05**: Deployment works on localhost without domain (HTTP mode)
 
 ### Image Publishing
 
@@ -97,11 +97,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DOCK-07 | Phase 37 | Complete |
 | DOCK-08 | Phase 37 | Complete |
 | DOCK-09 | Phase 37 | Complete |
-| HTTPS-01 | Phase 38 | Pending |
-| HTTPS-02 | Phase 38 | Pending |
-| HTTPS-03 | Phase 38 | Pending |
-| HTTPS-04 | Phase 38 | Pending |
-| HTTPS-05 | Phase 38 | Pending |
+| HTTPS-01 | Phase 38 | Complete |
+| HTTPS-02 | Phase 38 | Complete |
+| HTTPS-03 | Phase 38 | Complete |
+| HTTPS-04 | Phase 38 | Complete |
+| HTTPS-05 | Phase 38 | Complete |
 | GHCR-01 | Phase 39 | Pending |
 | GHCR-02 | Phase 39 | Pending |
 | GHCR-03 | Phase 39 | Pending |
@@ -122,4 +122,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-02*
-*Last updated: 2026-02-02 after roadmap creation*
+*Last updated: 2026-02-03 - Phase 38 complete (HTTPS-01 through HTTPS-05)*
