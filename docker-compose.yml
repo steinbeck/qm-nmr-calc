@@ -1,0 +1,72 @@
+# Docker Compose configuration for qm-nmr-calc
+# Complete NMR prediction service with API and worker containers
+#
+# Usage:
+#   Start:    docker compose up -d
+#   Stop:     docker compose down
+#   Logs:     docker compose logs -f
+#   Rebuild:  docker compose up -d --build
+#
+# Configuration: Copy .env.example to .env and customize values
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - app-data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+    env_file:
+      - path: .env
+        required: false
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    volumes:
+      - app-data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+      - NWCHEM_NPROC=${NWCHEM_NPROC:-4}
+      - OMP_NUM_THREADS=${OMP_NUM_THREADS:-4}
+    env_file:
+      - path: .env
+        required: false
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    # CRITICAL: Huey uses SIGINT for graceful shutdown (finish current task)
+    # Docker default SIGTERM causes immediate termination, losing work
+    stop_signal: SIGINT
+    # Allow 5 minutes for long NMR calculations to complete
+    stop_grace_period: 300s
+    # MPI requires larger shared memory than Docker's 64MB default
+    shm_size: 512m
+    # Resource limits (configurable via environment)
+    deploy:
+      resources:
+        limits:
+          memory: ${WORKER_MEMORY_LIMIT:-8g}
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "huey_consumer"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+
+volumes:
+  app-data:
+    name: qm-nmr-calc-data
