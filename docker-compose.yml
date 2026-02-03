@@ -1,6 +1,20 @@
 # Docker Compose configuration for qm-nmr-calc
 # Complete NMR prediction service with API and worker containers
 #
+# DEPLOYMENT OPTIONS:
+#
+# Option 1: Use pre-built images from GHCR (recommended for deployment)
+#   Replace the 'build' sections with 'image' lines:
+#     api:
+#       image: ghcr.io/steinbeck/qm-nmr-calc-api:latest
+#     worker:
+#       image: ghcr.io/steinbeck/qm-nmr-calc-worker:latest
+#
+# Option 2: Build from source (for development)
+#   Keep the existing 'build' configuration (default)
+#
+# See: https://github.com/steinbeck/qm-nmr-calc/pkgs/container/qm-nmr-calc-api
+#
 # Usage:
 #   Start:    docker compose up -d
 #   Stop:     docker compose down
