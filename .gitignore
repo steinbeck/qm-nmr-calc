@@ -75,3 +75,6 @@ data/benchmark/results/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Docker environment configuration (may contain secrets)
+.env
