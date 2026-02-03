@@ -23,8 +23,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api
-    ports:
-      - "${API_PORT:-8000}:8000"
+    expose:
+      - "8000"
     volumes:
       - app-data:/app/data
     environment:
@@ -42,6 +42,25 @@ services:
       timeout: 5s
       start_period: 10s
       retries: 3
+
+  caddy:
+    image: caddy:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"  # HTTP/3 (QUIC)
+    cap_add:
+      - NET_ADMIN  # Required for QUIC/HTTP3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - DOMAIN=${DOMAIN:-}
+    depends_on:
+      api:
+        condition: service_healthy
 
   worker:
     build:
@@ -82,3 +101,6 @@ services:
 volumes:
   app-data:
     name: qm-nmr-calc-data
+  caddy_data:
+    name: qm-nmr-calc-caddy-data
+  caddy_config:
