@@ -299,10 +299,10 @@ Plans:
   3. HTTP requests redirect to HTTPS automatically
   4. User can set domain via `DOMAIN` environment variable
   5. Deployment works on localhost without domain (HTTP-only mode)
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 38-01: TBD
+- [ ] 38-01-PLAN.md -- Add Caddy reverse proxy with conditional HTTPS
 
 ### Phase 39: CI/CD + GHCR Publishing
 **Goal**: Pre-built images available on GitHub Container Registry, built automatically on release.
@@ -380,7 +380,7 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 | **35. Worker Container** | **v2.4** | **1/1** | **Complete** | 2026-02-02 |
 | **36. API Container** | **v2.4** | **1/1** | **Complete** | 2026-02-02 |
 | **37. Docker Compose Integration** | **v2.4** | **2/2** | **Complete** | 2026-02-03 |
-| **38. Caddy + HTTPS** | **v2.4** | **0/TBD** | **Not started** | - |
+| **38. Caddy + HTTPS** | **v2.4** | **0/1** | **Planned** | - |
 | **39. CI/CD + GHCR Publishing** | **v2.4** | **0/TBD** | **Not started** | - |
 | **40. Documentation** | **v2.4** | **0/TBD** | **Not started** | - |
 
@@ -420,4 +420,4 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 **Mapped: 26/26 (100%)**
 
 ---
-*Last updated: 2026-02-02 - Phase 37 planned (2 plans)*
+*Last updated: 2026-02-03 - Phase 38 planned (1 plan)*
