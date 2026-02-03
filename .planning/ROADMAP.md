@@ -314,10 +314,11 @@ Plans:
   2. GitHub Actions workflow triggers on release tag
   3. Images tagged with version (e.g., v2.4.0) and `latest`
   4. Images support both amd64 and arm64 architectures
-**Plans**: TBD
+**Plans**: 1 plan
+**Status**: Not started
 
 Plans:
-- [ ] 39-01: TBD
+- [ ] 39-01-PLAN.md -- Create GitHub Actions workflow for GHCR publishing with OCI labels
 
 ### Phase 40: Documentation
 **Goal**: Users can deploy qm-nmr-calc in 5 minutes with clear guidance for production setup and troubleshooting.
@@ -382,7 +383,7 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 | **36. API Container** | **v2.4** | **1/1** | **Complete** | 2026-02-02 |
 | **37. Docker Compose Integration** | **v2.4** | **2/2** | **Complete** | 2026-02-03 |
 | **38. Caddy + HTTPS** | **v2.4** | **1/1** | **Complete** | 2026-02-03 |
-| **39. CI/CD + GHCR Publishing** | **v2.4** | **0/TBD** | **Not started** | - |
+| **39. CI/CD + GHCR Publishing** | **v2.4** | **0/1** | **Not started** | - |
 | **40. Documentation** | **v2.4** | **0/TBD** | **Not started** | - |
 
 ## Coverage (v2.4)
@@ -421,4 +422,4 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 **Mapped: 26/26 (100%)**
 
 ---
-*Last updated: 2026-02-03 - Phase 38 complete*
+*Last updated: 2026-02-03 - Phase 39 planned*
