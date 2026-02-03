@@ -10,6 +10,15 @@
 # Configuration: Copy .env.example to .env and customize values
 
 services:
+  # Init service: ensures data volume has correct permissions (UID 999 for appuser)
+  # Runs once on startup, then exits
+  init:
+    image: alpine:latest
+    volumes:
+      - app-data:/app/data
+    command: chown -R 999:999 /app/data
+    restart: "no"
+
   api:
     build:
       context: .
@@ -23,6 +32,9 @@ services:
     env_file:
       - path: .env
         required: false
+    depends_on:
+      init:
+        condition: service_completed_successfully
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
