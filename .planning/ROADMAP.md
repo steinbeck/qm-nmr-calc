@@ -9,7 +9,7 @@
 - [x] **v2.1 UI Redesign** - Phases 18-23 (shipped 2026-01-31)
 - [x] **v2.2 Documentation** - Phases 25-31 (shipped 2026-02-01)
 - [x] **v2.3 NMReData Export** - Phases 32-34 (shipped 2026-02-01)
-- [ ] **v2.4 Docker Deployment** - Phases 35-40 (in progress)
+- [x] **v2.4 Docker Deployment** - Phases 35-40 (shipped 2026-02-03)
 
 ## Overview
 
@@ -331,9 +331,11 @@ Plans:
   4. Backup and restore instructions document volume management
 **Plans**: 2 plans
 
+**Status**: Complete
+
 Plans:
-- [ ] 40-01-PLAN.md -- Add Docker quick start to README
-- [ ] 40-02-PLAN.md -- Create deployment guide with VPS setup, troubleshooting, and backup/restore
+- [x] 40-01-PLAN.md -- Add Docker quick start to README
+- [x] 40-02-PLAN.md -- Create deployment guide with VPS setup, troubleshooting, and backup/restore
 
 </details>
 
@@ -385,7 +387,7 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 | **37. Docker Compose Integration** | **v2.4** | **2/2** | **Complete** | 2026-02-03 |
 | **38. Caddy + HTTPS** | **v2.4** | **1/1** | **Complete** | 2026-02-03 |
 | **39. CI/CD + GHCR Publishing** | **v2.4** | **1/1** | **Complete** | 2026-02-03 |
-| **40. Documentation** | **v2.4** | **0/2** | **Not started** | - |
+| **40. Documentation** | **v2.4** | **2/2** | **Complete** | 2026-02-03 |
 
 ## Coverage (v2.4)
 
@@ -423,4 +425,4 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 **Mapped: 26/26 (100%)**
 
 ---
-*Last updated: 2026-02-03 - Phase 40 planned*
+*Last updated: 2026-02-03 - Phase 40 complete, v2.4 milestone shipped*

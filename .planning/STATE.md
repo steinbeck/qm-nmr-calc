@@ -12,8 +12,8 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 Milestone: v2.4 Docker Deployment
 Phase: 40 of 40 (Documentation)
 Plan: 02 of 02 complete
-Status: Phase complete
-Last activity: 2026-02-03 -- Completed 40-02-PLAN.md (deployment guide)
+Status: Milestone complete
+Last activity: 2026-02-03 -- v2.4 Docker Deployment milestone shipped
 
 Progress: [####################] 100% (v1.0-v2.3) | [####################] 100% (v2.4)
 
@@ -35,7 +35,7 @@ Progress: [####################] 100% (v1.0-v2.3) | [####################] 100% 
 | v2.1 UI Redesign | 6 | 17 | ~3 days | Shipped 2026-01-31 |
 | v2.2 Documentation | 7 | 10 | 2 days | Shipped 2026-02-01 |
 | v2.3 NMReData Export | 3 | 3 | 1 day | Shipped 2026-02-01 |
-| v2.4 Docker Deployment | 6 | 8 | ~2 hours | Complete |
+| v2.4 Docker Deployment | 6 | 8 | ~2 hours | Shipped 2026-02-03 |
 
 ## Accumulated Context
 
@@ -62,7 +62,7 @@ v2.3 decisions archived to milestones/v2.3-ROADMAP.md.
 - v2.1: 6 phases (18-23), shipped 2026-01-31
 - v2.2: 7 phases (25-31), shipped 2026-02-01
 - v2.3: 3 phases (32-34), shipped 2026-02-01
-- v2.4: 6 phases (35-40), in progress
+- v2.4: 6 phases (35-40), shipped 2026-02-03
 
 ### Pending Todos
 

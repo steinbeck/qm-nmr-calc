@@ -9,15 +9,15 @@ Requirements for Docker deployment milestone. Each maps to roadmap phases.
 
 ### Container Stack
 
-- [ ] **DOCK-01**: User can deploy app with `docker compose up -d` command
-- [ ] **DOCK-02**: Worker container includes NWChem, CREST, and xTB pre-installed
-- [ ] **DOCK-03**: App container runs FastAPI server with all Python dependencies
-- [ ] **DOCK-04**: Job data persists across container restarts via named volume
-- [ ] **DOCK-05**: Huey queue database persists across container restarts
-- [ ] **DOCK-06**: All services have health check configuration
-- [ ] **DOCK-07**: All services restart automatically on failure (unless-stopped policy)
-- [ ] **DOCK-08**: User can configure deployment via `.env` file
-- [ ] **DOCK-09**: `.env.example` documents all configuration options with comments
+- [x] **DOCK-01**: User can deploy app with `docker compose up -d` command
+- [x] **DOCK-02**: Worker container includes NWChem, CREST, and xTB pre-installed
+- [x] **DOCK-03**: App container runs FastAPI server with all Python dependencies
+- [x] **DOCK-04**: Job data persists across container restarts via named volume
+- [x] **DOCK-05**: Huey queue database persists across container restarts
+- [x] **DOCK-06**: All services have health check configuration
+- [x] **DOCK-07**: All services restart automatically on failure (unless-stopped policy)
+- [x] **DOCK-08**: User can configure deployment via `.env` file
+- [x] **DOCK-09**: `.env.example` documents all configuration options with comments
 
 ### Reverse Proxy & HTTPS
 
@@ -36,17 +36,17 @@ Requirements for Docker deployment milestone. Each maps to roadmap phases.
 
 ### Operations
 
-- [ ] **OPS-01**: Worker handles SIGTERM gracefully (completes current job)
-- [ ] **OPS-02**: Worker container has memory limits configured
-- [ ] **OPS-03**: User can configure NWChem parallel processes via environment variable
-- [ ] **OPS-04**: User can view all service logs with `docker compose logs`
+- [x] **OPS-01**: Worker handles SIGTERM gracefully (completes current job)
+- [x] **OPS-02**: Worker container has memory limits configured
+- [x] **OPS-03**: User can configure NWChem parallel processes via environment variable
+- [x] **OPS-04**: User can view all service logs with `docker compose logs`
 
 ### Documentation
 
-- [ ] **DOCS-01**: Quick start section in README (5-minute deployment)
-- [ ] **DOCS-02**: Deployment guide for cloud VPS setup
-- [ ] **DOCS-03**: Troubleshooting section for common issues
-- [ ] **DOCS-04**: Backup and restore instructions for job data
+- [x] **DOCS-01**: Quick start section in README (5-minute deployment)
+- [x] **DOCS-02**: Deployment guide for cloud VPS setup
+- [x] **DOCS-03**: Troubleshooting section for common issues
+- [x] **DOCS-04**: Backup and restore instructions for job data
 
 ## Future Requirements
 
@@ -110,16 +110,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | OPS-02 | Phase 37 | Complete |
 | OPS-03 | Phase 37 | Complete |
 | OPS-04 | Phase 37 | Complete |
-| DOCS-01 | Phase 40 | Pending |
-| DOCS-02 | Phase 40 | Pending |
-| DOCS-03 | Phase 40 | Pending |
-| DOCS-04 | Phase 40 | Pending |
+| DOCS-01 | Phase 40 | Complete |
+| DOCS-02 | Phase 40 | Complete |
+| DOCS-03 | Phase 40 | Complete |
+| DOCS-04 | Phase 40 | Complete |
 
 **Coverage:**
 - v2.4 requirements: 26 total
 - Mapped to phases: 26
-- Unmapped: 0
+- Complete: 26/26 (100%)
 
 ---
 *Requirements defined: 2026-02-02*
-*Last updated: 2026-02-03 - Phase 39 complete (GHCR-01 through GHCR-04)*
+*Last updated: 2026-02-03 - v2.4 milestone complete (all 26 requirements satisfied)*
