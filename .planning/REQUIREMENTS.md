@@ -29,10 +29,10 @@ Requirements for Docker deployment milestone. Each maps to roadmap phases.
 
 ### Image Publishing
 
-- [ ] **GHCR-01**: Pre-built images available on GitHub Container Registry
-- [ ] **GHCR-02**: GitHub Actions workflow builds and publishes on release
-- [ ] **GHCR-03**: Images tagged with version (e.g., `v2.4.0`) and `latest`
-- [ ] **GHCR-04**: Multi-architecture builds support amd64 and arm64
+- [x] **GHCR-01**: Pre-built images available on GitHub Container Registry
+- [x] **GHCR-02**: GitHub Actions workflow builds and publishes on release
+- [x] **GHCR-03**: Images tagged with version (e.g., `v2.4.0`) and `latest`
+- [x] **GHCR-04**: Multi-architecture builds support amd64 and arm64
 
 ### Operations
 
@@ -102,10 +102,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HTTPS-03 | Phase 38 | Complete |
 | HTTPS-04 | Phase 38 | Complete |
 | HTTPS-05 | Phase 38 | Complete |
-| GHCR-01 | Phase 39 | Pending |
-| GHCR-02 | Phase 39 | Pending |
-| GHCR-03 | Phase 39 | Pending |
-| GHCR-04 | Phase 39 | Pending |
+| GHCR-01 | Phase 39 | Complete |
+| GHCR-02 | Phase 39 | Complete |
+| GHCR-03 | Phase 39 | Complete |
+| GHCR-04 | Phase 39 | Complete |
 | OPS-01 | Phase 37 | Complete |
 | OPS-02 | Phase 37 | Complete |
 | OPS-03 | Phase 37 | Complete |
@@ -122,4 +122,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-02*
-*Last updated: 2026-02-03 - Phase 38 complete (HTTPS-01 through HTTPS-05)*
+*Last updated: 2026-02-03 - Phase 39 complete (GHCR-01 through GHCR-04)*
