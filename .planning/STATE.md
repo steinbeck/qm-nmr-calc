@@ -5,24 +5,24 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.4 Docker Deployment - Phase 39 CI/CD + GHCR Publishing
+**Current focus:** v2.4 Docker Deployment - Phase 40 Documentation
 
 ## Current Position
 
 Milestone: v2.4 Docker Deployment
-Phase: 39 of 40 (CI/CD + GHCR Publishing)
-Plan: 01 of 01 complete
-Status: Phase complete
-Last activity: 2026-02-03 -- Completed 39-01-PLAN.md (GitHub Actions workflow for GHCR publishing)
+Phase: 40 of 40 (Documentation)
+Plan: 01 of 02 complete
+Status: In progress
+Last activity: 2026-02-03 -- Completed 40-01-PLAN.md (Docker quick start in README)
 
-Progress: [####################] 100% (v1.0-v2.3) | [###############.....] 75% (v2.4)
+Progress: [####################] 100% (v1.0-v2.3) | [##################..] 90% (v2.4)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 94 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 6)
+- Total plans completed: 95 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 7)
 - Average duration: ~7 min
-- Total execution time: ~660 min (~11 hours)
+- Total execution time: ~661 min (~11 hours)
 
 **By Milestone:**
 
@@ -49,6 +49,8 @@ v2.3 decisions archived to milestones/v2.3-ROADMAP.md.
 - API image supports amd64+arm64 for broader deployment options
 - GITHUB_TOKEN authentication for GHCR (not PAT)
 - GHA cache with per-image scope to avoid cache eviction
+- Docker as primary deployment method in README (not source installation)
+- Pre-built GHCR images referenced as default (not build-from-source)
 
 ### Roadmap Evolution
 
@@ -81,10 +83,10 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-03 20:19 UTC
-Stopped at: Completed 39-01-PLAN.md (CI/CD + GHCR publishing)
+Last session: 2026-02-03 21:51 UTC
+Stopped at: Completed 40-01-PLAN.md (Docker quick start in README)
 Resume file: None
-Next: `/gsd:plan-phase 40` to plan deployment polish phase
+Next: 40-02-PLAN.md (deployment guide)
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs
 Docker: Worker image 2.1GB, API image ~733MB, Caddy reverse proxy, GHCR publishing workflow
