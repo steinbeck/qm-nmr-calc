@@ -11,18 +11,18 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 
 Milestone: v2.4 Docker Deployment
 Phase: 40 of 40 (Documentation)
-Plan: 01 of 02 complete
-Status: In progress
-Last activity: 2026-02-03 -- Completed 40-01-PLAN.md (Docker quick start in README)
+Plan: 02 of 02 complete
+Status: Phase complete
+Last activity: 2026-02-03 -- Completed 40-02-PLAN.md (deployment guide)
 
-Progress: [####################] 100% (v1.0-v2.3) | [##################..] 90% (v2.4)
+Progress: [####################] 100% (v1.0-v2.3) | [####################] 100% (v2.4)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 95 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 7)
+- Total plans completed: 96 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8)
 - Average duration: ~7 min
-- Total execution time: ~661 min (~11 hours)
+- Total execution time: ~663 min (~11 hours)
 
 **By Milestone:**
 
@@ -35,7 +35,7 @@ Progress: [####################] 100% (v1.0-v2.3) | [##################..] 90% (
 | v2.1 UI Redesign | 6 | 17 | ~3 days | Shipped 2026-01-31 |
 | v2.2 Documentation | 7 | 10 | 2 days | Shipped 2026-02-01 |
 | v2.3 NMReData Export | 3 | 3 | 1 day | Shipped 2026-02-01 |
-| v2.4 Docker Deployment | 6 | TBD | - | In progress |
+| v2.4 Docker Deployment | 6 | 8 | ~2 hours | Complete |
 
 ## Accumulated Context
 
@@ -51,6 +51,7 @@ v2.3 decisions archived to milestones/v2.3-ROADMAP.md.
 - GHA cache with per-image scope to avoid cache eviction
 - Docker as primary deployment method in README (not source installation)
 - Pre-built GHCR images referenced as default (not build-from-source)
+- Comprehensive single guide for deployment (combined VPS, troubleshooting, backup)
 
 ### Roadmap Evolution
 
@@ -83,10 +84,10 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-03 21:51 UTC
-Stopped at: Completed 40-01-PLAN.md (Docker quick start in README)
+Last session: 2026-02-03 21:53 UTC
+Stopped at: Completed 40-02-PLAN.md (deployment guide) - Phase 40 complete
 Resume file: None
-Next: 40-02-PLAN.md (deployment guide)
+Next: v2.4 ready for release
 Tests: All tests passing (356 tests)
-Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,100 LOC docs
+Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs
 Docker: Worker image 2.1GB, API image ~733MB, Caddy reverse proxy, GHCR publishing workflow
