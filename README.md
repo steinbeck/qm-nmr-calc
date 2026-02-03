@@ -17,9 +17,54 @@ Built for chemists and researchers who need NMR predictions without managing com
 - **Interactive results** with spectrum plots and 3D viewer with shift labels
 - **Draft and production modes** for quick checks vs publication-quality results
 
-## Getting Started
+## Quick Start (Docker)
 
-See the **[Installation Guide](docs/installation.md)** for system dependencies, setup instructions, and a quick start walkthrough.
+Deploy qm-nmr-calc in under 5 minutes using pre-built Docker images:
+
+```bash
+# Clone repository (for docker-compose.yml and Caddyfile)
+git clone https://github.com/steinbeck/qm-nmr-calc.git
+cd qm-nmr-calc
+
+# Configure (optional - defaults work for local testing)
+cp .env.example .env
+# Edit .env if you want to customize CPU cores, memory, or add domain for HTTPS
+
+# Start all services
+docker compose up -d
+
+# Open http://localhost in your browser
+```
+
+**What's running:**
+- **API** (ghcr.io/steinbeck/qm-nmr-calc-api) - FastAPI web server
+- **Worker** (ghcr.io/steinbeck/qm-nmr-calc-worker) - NWChem/CREST/xTB calculation engine
+- **Caddy** - Reverse proxy (auto-HTTPS when domain configured)
+
+**Stop services:** `docker compose down`
+**View logs:** `docker compose logs -f`
+
+For production deployment with HTTPS, cloud VPS setup, and troubleshooting, see the **[Deployment Guide](docs/deployment.md)**.
+
+## Development Installation
+
+For development or contributing, install from source:
+
+**Prerequisites:** Linux, Python 3.11+, NWChem, uv
+
+```bash
+git clone https://github.com/steinbeck/qm-nmr-calc.git
+cd qm-nmr-calc
+uv sync
+
+# Start services (two terminals)
+uv run python scripts/run_consumer.py  # Terminal 1: Job processor
+uv run python scripts/run_api.py       # Terminal 2: API server
+
+# Open http://localhost:8000
+```
+
+See **[Installation Guide](docs/installation.md)** for detailed setup including CREST/xTB.
 
 ## Documentation
 
