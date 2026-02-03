@@ -5,6 +5,7 @@ Comprehensive guides for qm-nmr-calc users, developers, and researchers.
 ## For Users
 
 - **[Installation Guide](installation.md)** - System dependencies, uv package manager setup, and optional CREST/xTB configuration
+- **[Deployment Guide](deployment.md)** - Docker deployment, cloud VPS setup, HTTPS configuration, and troubleshooting
 - **[Usage Guide](usage.md)** - Web interface workflow and REST API reference with practical examples
 
 ## For Developers
