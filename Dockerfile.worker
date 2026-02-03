@@ -3,6 +3,11 @@
 
 FROM ghcr.io/nwchemgit/nwchem-dev/amd64:latest
 
+# OCI labels for GHCR repository linking
+LABEL org.opencontainers.image.source="https://github.com/steinbeck/qm-nmr-calc"
+LABEL org.opencontainers.image.description="QM NMR Calculator - Worker container with NWChem, CREST, xTB"
+LABEL org.opencontainers.image.licenses="MIT"
+
 # Switch to root for package installation
 USER root
 

@@ -29,6 +29,11 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # ============================================================================
 FROM python:3.11-slim-bookworm
 
+# OCI labels for GHCR repository linking
+LABEL org.opencontainers.image.source="https://github.com/steinbeck/qm-nmr-calc"
+LABEL org.opencontainers.image.description="QM NMR Calculator - API container"
+LABEL org.opencontainers.image.licenses="MIT"
+
 # Install curl for health checks and X11 libraries for RDKit drawing
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
