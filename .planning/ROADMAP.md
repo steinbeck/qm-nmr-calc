@@ -329,10 +329,11 @@ Plans:
   2. Deployment guide covers cloud VPS setup (DigitalOcean, Linode, etc.)
   3. Troubleshooting section addresses common issues from research pitfalls
   4. Backup and restore instructions document volume management
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 40-01: TBD
+- [ ] 40-01-PLAN.md -- Add Docker quick start to README
+- [ ] 40-02-PLAN.md -- Create deployment guide with VPS setup, troubleshooting, and backup/restore
 
 </details>
 
@@ -384,7 +385,7 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 | **37. Docker Compose Integration** | **v2.4** | **2/2** | **Complete** | 2026-02-03 |
 | **38. Caddy + HTTPS** | **v2.4** | **1/1** | **Complete** | 2026-02-03 |
 | **39. CI/CD + GHCR Publishing** | **v2.4** | **1/1** | **Complete** | 2026-02-03 |
-| **40. Documentation** | **v2.4** | **0/TBD** | **Not started** | - |
+| **40. Documentation** | **v2.4** | **0/2** | **Not started** | - |
 
 ## Coverage (v2.4)
 
@@ -422,4 +423,4 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 **Mapped: 26/26 (100%)**
 
 ---
-*Last updated: 2026-02-03 - Phase 39 complete*
+*Last updated: 2026-02-03 - Phase 40 planned*
