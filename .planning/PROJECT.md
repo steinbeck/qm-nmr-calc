@@ -32,11 +32,18 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - WCAG-compliant accessibility (keyboard nav, reduced motion, contrast)
 - Mobile-optimized responsive design
 
-## Next Milestone
+## Current Milestone: v2.5 ARM64 Docker Support
 
-**TBD** — run `/gsd:new-milestone` to define next focus area
+**Goal:** Native Apple Silicon support for the worker container, enabling local development on M1/M2/M3 Macs and deployment to ARM-based cloud instances.
 
-Future considerations:
+**Target features:**
+- ARM64 worker container using conda-forge packages (NWChem, xTB, CREST)
+- Multi-arch image builds (amd64 + arm64) in CI/CD
+- Unified `docker compose up` experience across architectures
+- Auto-detection of architecture with appropriate image pull
+
+## Future Considerations
+
 - Dark mode (color scheme, system preference detection)
 - Enhanced interactivity (card expansion, drag-and-drop)
 - User accounts and calculation history

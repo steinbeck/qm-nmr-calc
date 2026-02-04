@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 
 ## Current Position
 
-Milestone: (none active)
-Phase: Ready for next milestone
+Milestone: v2.5 ARM64 Docker Support
+Phase: Defining requirements
 Status: Ready to plan
-Last activity: 2026-02-03 -- v2.4 Docker Deployment archived
+Last activity: 2026-02-04 -- Milestone v2.5 started
 
-Progress: [####################] 100% (v1.0-v2.4)
+Progress: [                    ] 0%
 
 ## Performance Metrics
 
