@@ -18,10 +18,10 @@ Requirements for ARM64 Docker support. Each maps to roadmap phases.
 
 ### CI/CD
 
-- [ ] **CICD-01**: GitHub Actions builds ARM64 worker image with native runner
-- [ ] **CICD-02**: Multi-arch manifest created combining amd64 and arm64
-- [ ] **CICD-03**: Single image tag (`latest`, `vX.Y.Z`) works on both architectures
-- [ ] **CICD-04**: ARM64 build uses native runner (not QEMU emulation)
+- [x] **CICD-01**: GitHub Actions builds ARM64 worker image with native runner
+- [x] **CICD-02**: Multi-arch manifest created combining amd64 and arm64
+- [x] **CICD-03**: Single image tag (`latest`, `vX.Y.Z`) works on both architectures
+- [x] **CICD-04**: ARM64 build uses native runner (not QEMU emulation)
 
 ### Documentation
 
@@ -61,10 +61,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONT-04 | Phase 42 | Complete |
 | CONT-05 | Phase 41 | Complete |
 | CONT-06 | Phase 42 | Complete |
-| CICD-01 | Phase 43 | Pending |
-| CICD-02 | Phase 43 | Pending |
-| CICD-03 | Phase 43 | Pending |
-| CICD-04 | Phase 43 | Pending |
+| CICD-01 | Phase 43 | Complete |
+| CICD-02 | Phase 43 | Complete |
+| CICD-03 | Phase 43 | Complete |
+| CICD-04 | Phase 43 | Complete |
 | DOCS-01 | Phase 44 | Pending |
 | DOCS-02 | Phase 44 | Pending |
 | DOCS-03 | Phase 44 | Pending |

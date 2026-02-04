@@ -2,10 +2,14 @@
 # Triggered on release tags (v*) - builds and pushes api and worker images
 #
 # Images published:
-#   - ghcr.io/steinbeck/qm-nmr-calc-api:v2.4.0, v2.4, latest (amd64 + arm64)
-#   - ghcr.io/steinbeck/qm-nmr-calc-worker:v2.4.0, v2.4, latest (amd64 only)
+#   - ghcr.io/steinbeck/qm-nmr-calc-api:vX.Y.Z (amd64 + arm64 via QEMU)
+#   - ghcr.io/steinbeck/qm-nmr-calc-worker:vX.Y.Z (amd64 + arm64 via native runners)
 #
-# Note: Worker image is amd64-only because CREST/xTB lack arm64 binaries
+# Architecture note:
+#   - API image: Small (~733MB), QEMU emulation acceptable
+#   - Worker image: Large (~2.1GB), requires native ARM64 runner
+#
+# ARM64 runner requirement: ubuntu-24.04-arm is FREE for PUBLIC repos only
 
 name: Publish Docker Images
 
@@ -16,24 +20,17 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  WORKER_IMAGE: ghcr.io/${{ github.repository_owner }}/qm-nmr-calc-worker
 
 jobs:
-  build-and-push:
+  # ==========================================================================
+  # Build API image - QEMU pattern (small image, emulation acceptable)
+  # ==========================================================================
+  build-api:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - image: qm-nmr-calc-api
-            dockerfile: Dockerfile.api
-            platforms: linux/amd64,linux/arm64
-          - image: qm-nmr-calc-worker
-            dockerfile: Dockerfile.worker
-            platforms: linux/amd64  # arm64 not supported - CREST/xTB lack arm64 binaries
 
     steps:
       - name: Checkout
@@ -56,7 +53,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.image }}
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/qm-nmr-calc-api
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -66,10 +63,148 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ${{ matrix.dockerfile }}
-          platforms: ${{ matrix.platforms }}
+          file: Dockerfile.api
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha,scope=${{ matrix.image }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.image }}
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,mode=max,scope=api
+
+  # ==========================================================================
+  # Build Worker image per-platform on native runners
+  #
+  # Why native runners: Worker image is 2.1GB with compiled binaries.
+  # QEMU emulation would take 30+ minutes and likely timeout.
+  # Native ARM64 runner (ubuntu-24.04-arm) builds in ~10-15 minutes.
+  # ==========================================================================
+  build-worker:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
+
+    # Dynamic runner selection:
+    # - linux/amd64 → ubuntu-latest (x86_64)
+    # - linux/arm64 → ubuntu-24.04-arm (native ARM64)
+    runs-on: ${{ matrix.platform == 'linux/amd64' && 'ubuntu-latest' || 'ubuntu-24.04-arm' }}
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Prepare platform pair
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.WORKER_IMAGE }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: ${{ matrix.platform }}
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Platform-specific Dockerfile selection:
+      # - amd64: Dockerfile.worker (x86_64 binaries)
+      # - arm64: Dockerfile.worker.arm64 (conda-forge ARM64 packages)
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.platform == 'linux/amd64' && 'Dockerfile.worker' || 'Dockerfile.worker.arm64' }}
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,name=${{ env.WORKER_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=worker-${{ env.PLATFORM_PAIR }}
+          cache-to: type=gha,mode=max,scope=worker-${{ env.PLATFORM_PAIR }}
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      # Upload digest as artifact with platform-specific name
+      # (v4 artifacts are immutable - cannot reuse same name)
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  # ==========================================================================
+  # Merge Worker digests into multi-arch manifest
+  #
+  # Pattern: Download all platform digests, create manifest list with
+  # docker buildx imagetools create. This produces a single tag that
+  # auto-selects the correct architecture on pull.
+  # ==========================================================================
+  merge-worker:
+    runs-on: ubuntu-latest
+    needs: [build-worker]
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      # Download digests from both platforms (merge-multiple flattens into single dir)
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.WORKER_IMAGE }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Create multi-arch manifest from platform-specific digests
+      # DOCKER_METADATA_OUTPUT_JSON is set by metadata-action
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ env.WORKER_IMAGE }}@sha256:%s ' *)
+
+      # Verify both platforms present in final manifest
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect '${{ env.WORKER_IMAGE }}:${{ steps.meta.outputs.version }}'
