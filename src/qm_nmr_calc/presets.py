@@ -1,7 +1,29 @@
 """Calculation preset configurations for NMR calculations."""
 
+import os
 from enum import Enum
 from typing import TypedDict
+
+
+def get_default_processes() -> int:
+    """Get default number of MPI processes from environment or CPU count.
+
+    Uses NWCHEM_NPROC env var if set, otherwise detects available CPUs
+    and caps at 40 (diminishing returns beyond that for typical molecules).
+    """
+    env_val = os.environ.get("NWCHEM_NPROC")
+    if env_val:
+        try:
+            return int(env_val)
+        except ValueError:
+            pass
+
+    # Detect available CPUs, cap at 40
+    try:
+        cpu_count = os.cpu_count() or 4
+        return min(cpu_count, 40)
+    except Exception:
+        return 4
 
 
 class PresetName(str, Enum):
@@ -33,6 +55,9 @@ class CalculationPreset(TypedDict):
     max_iter: int
 
 
+# Compute default processes once at module load
+_DEFAULT_PROCESSES = get_default_processes()
+
 PRESETS: dict[PresetName, CalculationPreset] = {
     PresetName.DRAFT: {
         "name": "draft",
@@ -40,7 +65,7 @@ PRESETS: dict[PresetName, CalculationPreset] = {
         "functional": "b3lyp",
         "basis_set": "6-31G*",
         "nmr_basis_set": "6-31G*",
-        "processes": 40,
+        "processes": _DEFAULT_PROCESSES,
         "max_iter": 100,
     },
     PresetName.PRODUCTION: {
@@ -49,7 +74,7 @@ PRESETS: dict[PresetName, CalculationPreset] = {
         "functional": "b3lyp",
         "basis_set": "6-31G*",
         "nmr_basis_set": "6-311+G(2d,p)",
-        "processes": 40,
+        "processes": _DEFAULT_PROCESSES,
         "max_iter": 300,
     },
 }

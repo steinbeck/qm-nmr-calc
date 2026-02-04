@@ -84,8 +84,10 @@ services:
       - app-data:/app/data
     environment:
       - PYTHONUNBUFFERED=1
-      - NWCHEM_NPROC=${NWCHEM_NPROC:-4}
-      - OMP_NUM_THREADS=${OMP_NUM_THREADS:-4}
+      # NWCHEM_NPROC: MPI processes for NWChem. Auto-detects CPU count if not set.
+      # Override in .env or shell: NWCHEM_NPROC=8 docker compose up -d
+      - NWCHEM_NPROC=${NWCHEM_NPROC:-}
+      - OMP_NUM_THREADS=${OMP_NUM_THREADS:-1}
     env_file:
       - path: .env
         required: false
