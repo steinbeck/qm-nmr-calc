@@ -5,18 +5,17 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.5 ARM64 Docker Support - Phase 44 (Documentation and Release)
+**Current focus:** None (between milestones)
 
 ## Current Position
 
-Milestone: v2.5 ARM64 Docker Support
-Phase: 44 of 44 (Documentation and Release)
-Plan: 01 of 01 complete
-Status: Phase 44 complete, v2.5 milestone complete
-Last activity: 2026-02-04 -- Completed 44-01-PLAN.md (ARM64 Documentation)
+Milestone: None (v2.5 ARM64 Docker Support shipped 2026-02-04)
+Phase: N/A
+Plan: N/A
+Status: Between milestones
+Last activity: 2026-02-04 -- v2.5 milestone complete, released as v2.5.0
 
-Progress: [####################] 96 plans complete (v1.0-v2.4)
-         [####################] 100% of v2.5 (4/4 plans)
+Progress: [####################] 100 plans complete (v1.0-v2.5)
 
 ## Performance Metrics
 
@@ -37,7 +36,7 @@ Progress: [####################] 96 plans complete (v1.0-v2.4)
 | v2.2 Documentation | 7 | 10 | 2 days | Shipped 2026-02-01 |
 | v2.3 NMReData Export | 3 | 3 | 1 day | Shipped 2026-02-01 |
 | v2.4 Docker Deployment | 6 | 8 | ~2 hours | Shipped 2026-02-03 |
-| v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Complete |
+| v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
 
 ## Accumulated Context
 
@@ -68,7 +67,7 @@ v2.4 decisions archived to MILESTONES.md.
 - v2.2: 7 phases (25-31), shipped 2026-02-01
 - v2.3: 3 phases (32-34), shipped 2026-02-01
 - v2.4: 6 phases (35-40), shipped 2026-02-03
-- v2.5: 4 phases (41-44), complete
+- v2.5: 4 phases (41-44), shipped 2026-02-04
 
 ### Pending Todos
 
@@ -89,10 +88,10 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-04 13:37
-Stopped at: Completed 44-01-PLAN.md (ARM64 Documentation) - v2.5 milestone complete
+Last session: 2026-02-04
+Stopped at: v2.5 milestone archived and complete
 Resume file: None
-Next: v2.5 release tagging or next milestone planning
+Next: Next milestone planning
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs
-Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker validated on Apple Silicon
+Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR

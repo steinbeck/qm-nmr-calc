@@ -10,7 +10,7 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 ## Current State
 
-**Last shipped:** v2.4 Docker Deployment (2026-02-03)
+**Last shipped:** v2.5 ARM64 Docker Support (2026-02-04)
 
 **Codebase:** ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs
 **Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Custom CSS, Docker, Caddy
@@ -32,15 +32,9 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - WCAG-compliant accessibility (keyboard nav, reduced motion, contrast)
 - Mobile-optimized responsive design
 
-## Current Milestone: v2.5 ARM64 Docker Support
+## Current Milestone: None (between milestones)
 
-**Goal:** Native Apple Silicon support for the worker container, enabling local development on M1/M2/M3 Macs and deployment to ARM-based cloud instances.
-
-**Target features:**
-- ARM64 worker container using conda-forge packages (NWChem, xTB, CREST)
-- Multi-arch image builds (amd64 + arm64) in CI/CD
-- Unified `docker compose up` experience across architectures
-- Auto-detection of architecture with appropriate image pull
+v2.5 ARM64 Docker Support shipped 2026-02-04. See `.planning/milestones/v2.5-ROADMAP.md` for details.
 
 ## Future Considerations
 

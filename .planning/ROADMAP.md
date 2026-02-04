@@ -10,13 +10,13 @@
 - [x] **v2.2 Documentation** - Phases 25-31 (shipped 2026-02-01)
 - [x] **v2.3 NMReData Export** - Phases 32-34 (shipped 2026-02-01)
 - [x] **v2.4 Docker Deployment** - Phases 35-40 (shipped 2026-02-03)
-- [ ] **v2.5 ARM64 Docker Support** - Phases 41-44 (in progress)
+- [x] **v2.5 ARM64 Docker Support** - Phases 41-44 (shipped 2026-02-04)
 
 ## Overview
 
-**Current milestone:** v2.5 ARM64 Docker Support
+**Current milestone:** None (between milestones)
 
-v2.5 enables native ARM64 execution for the worker container, unlocking local development on Apple Silicon Macs and deployment to ARM-based cloud instances (AWS Graviton). The roadmap progresses from creating the ARM64-specific Dockerfile using conda-forge packages, through local validation on Apple Silicon, to CI/CD integration with native ARM64 runners, culminating in documentation and release. Each phase builds on the previous, with the critical dependency being a working Dockerfile before any validation or automation can proceed.
+v2.5 ARM64 Docker Support shipped 2026-02-04. See `.planning/milestones/v2.5-ROADMAP.md` for archived details.
 
 ## Phases
 
@@ -270,8 +270,8 @@ v2.5 enables native ARM64 execution for the worker container, unlocking local de
 
 </details>
 
-<details open>
-<summary>v2.5 ARM64 Docker Support (Phases 41-44) - IN PROGRESS</summary>
+<details>
+<summary>v2.5 ARM64 Docker Support (Phases 41-44) - SHIPPED 2026-02-04</summary>
 
 **Milestone Goal:** Native ARM64 support for the worker container, enabling local development on Apple Silicon Macs and deployment to ARM-based cloud instances without emulation.
 
