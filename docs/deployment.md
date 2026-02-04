@@ -452,6 +452,32 @@ docker compose up -d --build
 | `qm-nmr-calc-caddy-data` | Let's Encrypt certificates |
 | `qm-nmr-calc-caddy-config` | Caddy runtime config |
 
+## ARM64 / Apple Silicon
+
+qm-nmr-calc fully supports ARM64 architecture, including Apple Silicon Macs (M1/M2/M3) and ARM-based cloud instances (AWS Graviton, Ampere).
+
+### How It Works
+
+Docker images are published as multi-architecture manifests. When you run `docker compose up -d`, Docker automatically pulls the correct image for your platform:
+
+- **x86_64 hosts**: Pull `linux/amd64` images
+- **ARM64 hosts**: Pull `linux/arm64` images
+
+No configuration changes needed - the same `docker-compose.yml` works on both architectures.
+
+### Known Considerations
+
+| Topic | Details |
+|-------|---------|
+| Memory | NWChem requires minimum 2 GB memory per MPI process for reliable DFT calculations |
+| Threading | OpenBLAS configured with `OMP_NUM_THREADS=1` to avoid thread contention with MPI |
+| CPU detection | `NWCHEM_NPROC` auto-detects available CPUs (capped at 40) if not explicitly set |
+| Numerical results | ARM64 results match x86_64 within acceptable tolerances (0.5 ppm 1H, 2.0 ppm 13C) |
+
+### CI/CD Note
+
+ARM64 images are built using GitHub Actions' native `ubuntu-24.04-arm` runners. This is **free for public repositories only**. If you fork this repository as private, ARM64 builds will not run.
+
 ## Related Documentation
 
 - [README](../README.md) - Quick start and feature overview
