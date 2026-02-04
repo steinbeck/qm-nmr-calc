@@ -1,4 +1,5 @@
 """Huey task definitions for calculations."""
+import os
 from pathlib import Path
 
 import orjson
@@ -36,6 +37,11 @@ def _generate_initial_xyz(smiles: str, output_path: Path) -> None:
         xyz_lines.append(f"{atom.GetSymbol()} {pos.x:.6f} {pos.y:.6f} {pos.z:.6f}")
 
     output_path.write_text("\n".join(xyz_lines))
+    # Make file world-writable for multi-container setups (different UIDs)
+    try:
+        os.chmod(output_path, 0o666)
+    except PermissionError:
+        pass  # File created by another container with correct permissions
 
 
 @huey.task()
@@ -121,8 +127,10 @@ def run_nmr_task(job_id: str) -> dict:
     job_dir = get_job_dir(job_id)
 
     # Generate initial RDKit geometry for 3D visualization (before optimization starts)
+    # Skip if API already created it (multi-container permission handling)
     initial_xyz_path = job_dir / "output" / "initial.xyz"
-    _generate_initial_xyz(smiles, initial_xyz_path)
+    if not initial_xyz_path.exists():
+        _generate_initial_xyz(smiles, initial_xyz_path)
 
     # Step 1: Geometry optimization
     start_step(job_id, "geometry_optimization", "Optimizing geometry")

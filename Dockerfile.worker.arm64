@@ -28,10 +28,9 @@ RUN pip install --no-cache-dir .
 # Environment variables (supplements conda activation scripts)
 # Conda activation sets NWCHEM_BASIS_LIBRARY and XTBPATH automatically
 ENV OMP_STACKSIZE="2G"
-ENV OMP_NUM_THREADS="4"
+ENV OMP_NUM_THREADS="1"
 ENV OPENBLAS_NUM_THREADS="4"
 ENV GFORTRAN_UNBUFFERED_ALL="1"
-ENV NWCHEM_NPROC="4"
 
 # Create data directory for Huey database and job files
 RUN mkdir -p /app/data

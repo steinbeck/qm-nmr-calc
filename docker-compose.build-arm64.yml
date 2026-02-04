@@ -1,0 +1,29 @@
+# Docker Compose override for building from source (ARM64/Apple Silicon)
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.build-arm64.yml up -d
+#   docker compose -f docker-compose.yml -f docker-compose.build-arm64.yml up -d --build
+#
+# Note: ARM64 worker uses mambauser (UID 57439), API uses appuser (UID 999)
+# The init container sets group-writable permissions to accommodate both
+
+services:
+  # Override init to set permissions that work for both API (UID 999) and ARM64 worker (UID 57439)
+  # Pre-create huey.db and WAL files with 666 so both containers can write to them
+  init:
+    command: >-
+      sh -c "chmod 777 /app/data &&
+             touch /app/data/huey.db /app/data/huey.db-wal /app/data/huey.db-shm &&
+             chmod 666 /app/data/huey.db /app/data/huey.db-wal /app/data/huey.db-shm"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: qm-nmr-calc-api:local
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker.arm64
+    image: qm-nmr-calc-worker:local

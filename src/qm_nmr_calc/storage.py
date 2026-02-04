@@ -1,5 +1,6 @@
 """Job directory and status file management."""
 
+import os
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -61,6 +62,12 @@ def create_job_directory(
     job_dir.mkdir(parents=True, exist_ok=True)
     (job_dir / "output").mkdir(exist_ok=True)
     (job_dir / "logs").mkdir(exist_ok=True)
+
+    # Make directories world-writable for multi-container setups
+    # (API and worker may run as different UIDs, e.g., ARM64 local dev)
+    os.chmod(job_dir, 0o777)
+    os.chmod(job_dir / "output", 0o777)
+    os.chmod(job_dir / "logs", 0o777)
 
     status = JobStatus(
         job_id=job_id,
@@ -195,6 +202,12 @@ def _write_status(job_id: str, status: JobStatus) -> None:
     status_file.write_bytes(
         orjson.dumps(status.model_dump(mode="json"), option=orjson.OPT_INDENT_2)
     )
+    # Make file world-writable for multi-container setups (different UIDs)
+    # Only chmod if we're the owner (ignore errors when updating others' files)
+    try:
+        os.chmod(status_file, 0o666)
+    except PermissionError:
+        pass  # File already world-writable from original creation
 
 
 def list_jobs_by_status(status_filter: str) -> list[str]:
@@ -286,6 +299,14 @@ def create_conformer_directories(job_id: str, conformer_ids: list[str]) -> dict[
     output_base.mkdir(parents=True, exist_ok=True)
     optimized_dir.mkdir(parents=True, exist_ok=True)
 
+    # Make parent directories world-writable for multi-container setups
+    os.chmod(scratch_base, 0o777)
+    os.chmod(output_base, 0o777)
+    os.chmod(optimized_dir, 0o777)
+    # Also chmod parents that were created
+    os.chmod(job_dir / "scratch", 0o777)
+    os.chmod(job_dir / "output" / "conformers", 0o777)
+
     # Create per-conformer directories
     result = {}
     for conf_id in conformer_ids:
@@ -293,6 +314,8 @@ def create_conformer_directories(job_id: str, conformer_ids: list[str]) -> dict[
         conf_output = output_base / conf_id
         conf_scratch.mkdir(exist_ok=True)
         conf_output.mkdir(exist_ok=True)
+        os.chmod(conf_scratch, 0o777)
+        os.chmod(conf_output, 0o777)
         result[conf_id] = conf_scratch
 
     return result

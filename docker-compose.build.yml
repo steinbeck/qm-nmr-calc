@@ -1,0 +1,18 @@
+# Docker Compose override for building from source (x86_64/amd64)
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml up -d
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: qm-nmr-calc-api:local
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    image: qm-nmr-calc-worker:local
