@@ -316,8 +316,8 @@ Plans:
   2. Multi-arch manifest created combining amd64 and arm64 images
   3. Single image tag (latest, vX.Y.Z) pulls correct architecture automatically
   4. ARM64 build completes in reasonable time (under 15 minutes, not QEMU-slow)
-**Plans**: TBD
-**Status**: Not started
+**Plans**: 1 plan
+**Status**: Planned
 
 Plans:
 - [ ] 43-01-PLAN.md -- Update publish-images.yml with ARM64 build job and manifest merge
@@ -389,7 +389,7 @@ Phases execute in numeric order: 41 -> 42 -> 43 -> 44
 | 40. Documentation | v2.4 | 2/2 | Complete | 2026-02-03 |
 | **41. ARM64 Dockerfile** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
 | **42. Local Validation** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
-| **43. CI/CD Integration** | **v2.5** | **0/1** | **Not started** | - |
+| **43. CI/CD Integration** | **v2.5** | **0/1** | **Planned** | - |
 | **44. Documentation** | **v2.5** | **0/1** | **Not started** | - |
 
 ## Coverage (v2.5)
@@ -415,4 +415,4 @@ Phases execute in numeric order: 41 -> 42 -> 43 -> 44
 **Mapped: 13/13 (100%)**
 
 ---
-*Last updated: 2026-02-04 - Phase 42 plan created*
+*Last updated: 2026-02-04 - Phase 43 plan created*
