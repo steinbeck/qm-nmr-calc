@@ -41,6 +41,10 @@ docker compose up -d
 - **Worker** (ghcr.io/steinbeck/qm-nmr-calc-worker) - NWChem/CREST/xTB calculation engine
 - **Caddy** - Reverse proxy (auto-HTTPS when domain configured)
 
+**Platform Support:**
+- **x86_64 (Intel/AMD)**: Full support
+- **ARM64 (Apple Silicon, AWS Graviton)**: Full support - images auto-select correct architecture
+
 **Stop services:** `docker compose down`
 **View logs:** `docker compose logs -f`
 
