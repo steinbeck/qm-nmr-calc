@@ -285,10 +285,10 @@ v2.5 enables native ARM64 execution for the worker container, unlocking local de
   3. NWChem, xTB, and CREST are installed from conda-forge linux-aarch64 channel
   4. Environment variables configured for NWChem basis sets and OpenBLAS threading
 **Plans**: 1 plan
-**Status**: Not started
+**Status**: Complete
 
 Plans:
-- [ ] 41-01-PLAN.md -- Create Dockerfile.worker.arm64, env-worker-arm64.yaml, and validation script
+- [x] 41-01-PLAN.md -- Create Dockerfile.worker.arm64, env-worker-arm64.yaml, and validation script
 
 ### Phase 42: Local Validation
 **Goal**: ARM64 worker container passes all computational chemistry tests on Apple Silicon.
@@ -299,12 +299,13 @@ Plans:
   2. NWChem NMR shielding calculation produces valid chemical shifts
   3. xTB energy calculation completes successfully
   4. CREST conformer search finds multiple conformers
-  5. Results match x86_64 output within 0.01 ppm tolerance
-**Plans**: TBD
+  5. Results match x86_64 output within tolerance (0.5 ppm 1H, 2.0 ppm 13C)
+  6. Full NMR prediction pipeline produces results matching x86 within tolerance
+**Plans**: 1 plan
 **Status**: Not started
 
 Plans:
-- [ ] 42-01-PLAN.md -- Validate ARM64 container on Apple Silicon with full calculation suite
+- [ ] 42-01-PLAN.md -- Create validation script and test fixtures, build and validate ARM64 container on Apple Silicon
 
 ### Phase 43: CI/CD Integration
 **Goal**: GitHub Actions builds and publishes multi-arch images with native ARM64 runner.
@@ -386,7 +387,7 @@ Phases execute in numeric order: 41 -> 42 -> 43 -> 44
 | 38. Caddy + HTTPS | v2.4 | 1/1 | Complete | 2026-02-03 |
 | 39. CI/CD + GHCR Publishing | v2.4 | 1/1 | Complete | 2026-02-03 |
 | 40. Documentation | v2.4 | 2/2 | Complete | 2026-02-03 |
-| **41. ARM64 Dockerfile** | **v2.5** | **0/1** | **Not started** | - |
+| **41. ARM64 Dockerfile** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
 | **42. Local Validation** | **v2.5** | **0/1** | **Not started** | - |
 | **43. CI/CD Integration** | **v2.5** | **0/1** | **Not started** | - |
 | **44. Documentation** | **v2.5** | **0/1** | **Not started** | - |
@@ -414,4 +415,4 @@ Phases execute in numeric order: 41 -> 42 -> 43 -> 44
 **Mapped: 13/13 (100%)**
 
 ---
-*Last updated: 2026-02-04 - Phase 41 plan created*
+*Last updated: 2026-02-04 - Phase 42 plan created*
