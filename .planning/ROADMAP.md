@@ -330,8 +330,8 @@ Plans:
   1. README mentions ARM64/Apple Silicon support in Docker deployment section
   2. Known issues section documents any ARM64-specific caveats discovered during validation
   3. docker-compose.yml works unchanged on ARM64 (auto-pulls correct architecture)
-**Plans**: TBD
-**Status**: Not started
+**Plans**: 1 plan
+**Status**: Planning
 
 Plans:
 - [ ] 44-01-PLAN.md -- Update README and deployment docs with ARM64 support
@@ -390,7 +390,7 @@ Phases execute in numeric order: 41 -> 42 -> 43 -> 44
 | **41. ARM64 Dockerfile** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
 | **42. Local Validation** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
 | **43. CI/CD Integration** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
-| **44. Documentation** | **v2.5** | **0/1** | **Not started** | - |
+| **44. Documentation** | **v2.5** | **0/1** | **Planning** | - |
 
 ## Coverage (v2.5)
 
@@ -415,4 +415,4 @@ Phases execute in numeric order: 41 -> 42 -> 43 -> 44
 **Mapped: 13/13 (100%)**
 
 ---
-*Last updated: 2026-02-04 - Phase 43 complete*
+*Last updated: 2026-02-04 - Phase 44 planned*
