@@ -5,25 +5,25 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.5 ARM64 Docker Support - Phase 41 (ARM64 Dockerfile Creation)
+**Current focus:** v2.5 ARM64 Docker Support - Phase 42 (Local Validation)
 
 ## Current Position
 
 Milestone: v2.5 ARM64 Docker Support
-Phase: 41 of 44 (ARM64 Dockerfile Creation)
+Phase: 42 of 44 (Local Validation)
 Plan: 01 of 01 complete
-Status: Phase 41 complete
-Last activity: 2026-02-04 -- Completed 41-01-PLAN.md (ARM64 Dockerfile Creation)
+Status: Phase 42 complete
+Last activity: 2026-02-04 -- Completed 42-01-PLAN.md (ARM64 Local Validation)
 
 Progress: [####################] 96 plans complete (v1.0-v2.4)
-         [#####               ] 25% of v2.5 (1/4 plans)
+         [##########          ] 50% of v2.5 (2/4 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 97 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 1)
+- Total plans completed: 98 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 2)
 - Average duration: ~7 min
-- Total execution time: ~666 min (~11 hours)
+- Total execution time: ~681 min (~11.3 hours)
 
 **By Milestone:**
 
@@ -54,6 +54,9 @@ v2.4 decisions archived to MILESTONES.md.
 - RDKit from conda-forge (not pip) for C++ dependency handling
 - Conda env name: base (micromamba default activation)
 - Architecture check: warning not error (allows x86 testing with QEMU)
+- NWChem memory 2gb (500mb insufficient for reliable operation)
+- Auto-detect CPU count for NWCHEM_NPROC (cap at 40)
+- OMP_NUM_THREADS=1 to avoid thread contention with MPI
 
 ### Roadmap Evolution
 
@@ -80,16 +83,16 @@ v2.4 decisions archived to MILESTONES.md.
 None
 
 **Research Flags (from v2.5 research):**
-- Phase 42: NWChem basis set paths may differ in conda-forge package (verify NWCHEM_BASIS_LIBRARY)
-- Phase 42: OpenMPI configuration needs OMPI_ALLOW_RUN_AS_ROOT
-- Phase 42: OpenBLAS threading needs explicit OPENBLAS_NUM_THREADS=4
+- ~~Phase 42: NWChem basis set paths may differ in conda-forge package~~ RESOLVED: Works correctly
+- ~~Phase 42: OpenMPI configuration needs OMPI_ALLOW_RUN_AS_ROOT~~ RESOLVED: Set in Dockerfile
+- ~~Phase 42: OpenBLAS threading needs explicit OPENBLAS_NUM_THREADS=4~~ RESOLVED: Set in Dockerfile
 
 ## Session Continuity
 
-Last session: 2026-02-04 10:05
-Stopped at: Completed 41-01-PLAN.md (ARM64 Dockerfile Creation)
+Last session: 2026-02-04 11:55
+Stopped at: Completed 42-01-PLAN.md (ARM64 Local Validation)
 Resume file: None
-Next: `/gsd:plan-phase 42` to create Build and Publish plan
+Next: `/gsd:plan-phase 43` to create CI/CD ARM64 workflow plan
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs
-Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), Caddy reverse proxy
+Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker validated on Apple Silicon
