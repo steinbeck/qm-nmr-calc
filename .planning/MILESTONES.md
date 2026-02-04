@@ -1,5 +1,33 @@
 # Project Milestones: qm-nmr-calc
 
+## v2.4 Docker Deployment (Shipped: 2026-02-03)
+
+**Delivered:** Production-ready Docker deployment with `docker compose up`, pre-built GHCR images, auto-HTTPS via Caddy, and comprehensive deployment documentation.
+
+**Phases completed:** 35-40 (6 phases, 8 plans total)
+
+**Key accomplishments:**
+
+- Worker container with NWChem, CREST, xTB pre-installed (2.1GB image, amd64)
+- API container with FastAPI multi-stage build (~733MB image, amd64+arm64)
+- Docker Compose orchestration with persistent volumes, health checks, graceful shutdown
+- Caddy reverse proxy with automatic Let's Encrypt HTTPS certificates
+- GitHub Actions CI/CD workflow publishing to GHCR on release tags
+- Comprehensive deployment guide (460 lines) covering VPS setup, troubleshooting, backup/restore
+- Docker Quick Start as primary README getting started path
+
+**Stats:**
+
+- ~1,065 lines of Docker/deployment artifacts
+- 6 phases, 8 plans
+- ~2 days (2026-02-02 to 2026-02-03)
+
+**Git range:** `docs(35)` → `docs(40)`
+
+**What's next:** TBD — run `/gsd:new-milestone` to define next focus area.
+
+---
+
 ## v2.3 NMReData Export (Shipped: 2026-02-01)
 
 **Delivered:** Machine-readable export of NMR prediction results in NMReData standard format for interoperability with NMR analysis tools.

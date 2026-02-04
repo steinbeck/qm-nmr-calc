@@ -8,28 +8,14 @@ An asynchronous web service for running NMR quantum mechanical calculations on o
 
 Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
 
-## Current Milestone: v2.4 Docker Deployment
-
-**Goal:** Make qm-nmr-calc deployable with `docker compose up` — pre-built images, auto-HTTPS, production-ready defaults.
-
-**Target features:**
-- Docker Compose stack (app + worker + Caddy reverse proxy)
-- Pre-built images published to GitHub Container Registry (GHCR)
-- NWChem, CREST, xTB pre-installed in worker image
-- Auto-HTTPS via Caddy with Let's Encrypt
-- Health checks and restart policies for auto-recovery
-- Volume persistence for job data
-- Environment configuration via `.env` file
-- Deployment documentation
-
 ## Current State
 
-**Active:** v2.4 Docker Deployment
-**Last shipped:** v2.3 NMReData Export (2026-02-01)
+**Last shipped:** v2.4 Docker Deployment (2026-02-03)
 
-**Codebase:** ~6,000 LOC Python, ~1,800 LOC tests, ~940 LOC templates, ~2,400 LOC CSS
-**Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Custom CSS
-**Test suite:** 285 tests (257 unit + 28 conformer/xTB)
+**Codebase:** ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs
+**Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Custom CSS, Docker, Caddy
+**Test suite:** 356 tests
+**Docker:** Worker 2.1GB, API ~733MB, Caddy reverse proxy, GHCR publishing
 
 **What works today:**
 - Submit molecules (SMILES/MOL/SDF) via REST API or modern web UI
@@ -48,12 +34,14 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 ## Next Milestone
 
-**TBD** — run `/gsd:new-milestone` after v2.4 ships
+**TBD** — run `/gsd:new-milestone` to define next focus area
 
-Future considerations tracked in `.planning/BACKLOG.md`:
+Future considerations:
 - Dark mode (color scheme, system preference detection)
 - Enhanced interactivity (card expansion, drag-and-drop)
 - User accounts and calculation history
+- Kubernetes/Helm charts for HPC environments
+- Prometheus metrics and monitoring
 
 ## Requirements
 
@@ -103,6 +91,13 @@ Future considerations tracked in `.planning/BACKLOG.md`:
 - DP4+ methodology writeup with full derivations and literature citations -- v2.2
 - NMReData SDF export with chemical shifts and atom assignments -- v2.3
 - NMReData download via REST API and web UI -- v2.3
+- Deploy with `docker compose up -d` command -- v2.4
+- Worker container with NWChem, CREST, xTB pre-installed -- v2.4
+- API container with FastAPI and health checks -- v2.4
+- Persistent volumes for job data and queue -- v2.4
+- Auto-HTTPS via Caddy and Let's Encrypt -- v2.4
+- Pre-built images on GHCR with CI/CD publishing -- v2.4
+- Comprehensive deployment documentation -- v2.4
 
 ### Out of Scope
 
@@ -160,6 +155,10 @@ Future considerations tracked in `.planning/BACKLOG.md`:
 | Glassmorphism with high opacity | 85-95% for WCAG contrast compliance | Good -- accessible and attractive |
 | RMSD clustering for conformers | Reduce redundant DFT calculations | Good -- 40→8 conformers, 10x faster |
 | xTB for conformer ranking | Better than MMFF, faster than DFT | Good -- optional with MMFF fallback |
+| Worker amd64-only | CREST/xTB lack arm64 binaries | Good -- API supports both |
+| Caddy for reverse proxy | Auto-HTTPS, zero config | Good -- Let's Encrypt works seamlessly |
+| GITHUB_TOKEN for GHCR | No PAT management needed | Good -- automatic authentication |
+| Docker as primary install | Most users want easy deployment | Good -- 5-minute quick start |
 
 ---
-*Last updated: 2026-02-02 after v2.4 Docker Deployment milestone started*
+*Last updated: 2026-02-03 after v2.4 Docker Deployment milestone shipped*

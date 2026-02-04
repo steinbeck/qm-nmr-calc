@@ -2,20 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-02)
+See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.4 Docker Deployment - Phase 40 Documentation
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Milestone: v2.4 Docker Deployment
-Phase: 40 of 40 (Documentation)
-Plan: 02 of 02 complete
-Status: Milestone complete
-Last activity: 2026-02-03 -- v2.4 Docker Deployment milestone shipped
+Milestone: (none active)
+Phase: Ready for next milestone
+Status: Ready to plan
+Last activity: 2026-02-03 -- v2.4 Docker Deployment archived
 
-Progress: [####################] 100% (v1.0-v2.3) | [####################] 100% (v2.4)
+Progress: [####################] 100% (v1.0-v2.4)
 
 ## Performance Metrics
 
@@ -84,10 +83,10 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-03 21:53 UTC
-Stopped at: Completed 40-02-PLAN.md (deployment guide) - Phase 40 complete
+Last session: 2026-02-03 22:10 UTC
+Stopped at: v2.4 milestone archived
 Resume file: None
-Next: v2.4 ready for release
+Next: `/gsd:new-milestone` to define next focus area
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs
 Docker: Worker image 2.1GB, API image ~733MB, Caddy reverse proxy, GHCR publishing workflow
