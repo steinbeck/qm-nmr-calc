@@ -10,12 +10,13 @@
 - [x] **v2.2 Documentation** - Phases 25-31 (shipped 2026-02-01)
 - [x] **v2.3 NMReData Export** - Phases 32-34 (shipped 2026-02-01)
 - [x] **v2.4 Docker Deployment** - Phases 35-40 (shipped 2026-02-03)
+- [ ] **v2.5 ARM64 Docker Support** - Phases 41-44 (in progress)
 
 ## Overview
 
-**Current milestone:** v2.4 Docker Deployment
+**Current milestone:** v2.5 ARM64 Docker Support
 
-Docker deployment transforms qm-nmr-calc from a manual installation into a `docker compose up` experience. The roadmap progresses from the most complex, blocking component (worker container with NWChem/CREST/xTB) through orchestration and HTTPS, culminating in CI/CD publishing and documentation. Each phase delivers a testable increment toward production-ready containerization.
+v2.5 enables native ARM64 execution for the worker container, unlocking local development on Apple Silicon Macs and deployment to ARM-based cloud instances (AWS Graviton). The roadmap progresses from creating the ARM64-specific Dockerfile using conda-forge packages, through local validation on Apple Silicon, to CI/CD integration with native ARM64 runners, culminating in documentation and release. Each phase builds on the previous, with the critical dependency being a working Dockerfile before any validation or automation can proceed.
 
 ## Phases
 
@@ -234,115 +235,112 @@ Docker deployment transforms qm-nmr-calc from a manual installation into a `dock
 
 </details>
 
-<details open>
-<summary>v2.4 Docker Deployment (Phases 35-40) - IN PROGRESS</summary>
-
-**Milestone Goal:** Make qm-nmr-calc deployable with `docker compose up` -- pre-built images, auto-HTTPS, production-ready defaults.
+<details>
+<summary>v2.4 Docker Deployment (Phases 35-40) - SHIPPED 2026-02-03</summary>
 
 ### Phase 35: Worker Container
 **Goal**: NWChem, CREST, and xTB run correctly in a Docker container with all environment configuration.
-**Depends on**: Nothing (first phase of v2.4)
-**Requirements**: DOCK-02
-**Success Criteria** (what must be TRUE):
-  1. User can build worker image with `docker build -f Dockerfile.worker`
-  2. NWChem DFT calculation completes successfully inside container
-  3. CREST conformer search completes successfully inside container
-  4. xTB energy calculation completes successfully inside container
-  5. Huey consumer runs and processes queued jobs in container
 **Plans**: 1 plan
 **Status**: Complete
-
-Plans:
-- [x] 35-01-PLAN.md -- Create and validate worker container with NWChem, CREST, xTB, and Huey
 
 ### Phase 36: API Container
 **Goal**: FastAPI application runs in a minimal, secure container with health checks.
-**Depends on**: Nothing (parallel with Phase 35)
-**Requirements**: DOCK-03
-**Success Criteria** (what must be TRUE):
-  1. User can build API image with `docker build -f Dockerfile.api`
-  2. FastAPI server responds to HTTP requests at port 8000
-  3. Health check endpoint returns 200 OK
-  4. Container runs as non-root user
 **Plans**: 1 plan
 **Status**: Complete
-
-Plans:
-- [x] 36-01-PLAN.md -- Create Dockerfile.api with multi-stage build and validation script
 
 ### Phase 37: Docker Compose Integration
 **Goal**: Complete deployment with single `docker compose up -d` command, persistent data, and operational controls.
-**Depends on**: Phase 35, Phase 36
-**Requirements**: DOCK-01, DOCK-04, DOCK-05, DOCK-06, DOCK-07, DOCK-08, DOCK-09, OPS-01, OPS-02, OPS-03, OPS-04
-**Success Criteria** (what must be TRUE):
-  1. User can start entire stack with `docker compose up -d`
-  2. Job data persists after `docker compose down && docker compose up -d`
-  3. Huey queue state persists across container restarts
-  4. All services restart automatically after simulated failure
-  5. User can configure deployment via `.env` file with documented options
-  6. Worker completes current job on SIGTERM before stopping
-  7. User can view logs with `docker compose logs`
 **Plans**: 2 plans
 **Status**: Complete
-
-Plans:
-- [x] 37-01-PLAN.md -- Create docker-compose.yml and .env.example configuration
-- [x] 37-02-PLAN.md -- Validation script and integration testing
 
 ### Phase 38: Caddy + HTTPS
 **Goal**: Production-ready HTTPS with automatic certificate management via Let's Encrypt.
-**Depends on**: Phase 37
-**Requirements**: HTTPS-01, HTTPS-02, HTTPS-03, HTTPS-04, HTTPS-05
-**Success Criteria** (what must be TRUE):
-  1. Caddy reverse proxy serves application on ports 80 and 443
-  2. HTTPS certificate obtained automatically when domain is configured
-  3. HTTP requests redirect to HTTPS automatically
-  4. User can set domain via `DOMAIN` environment variable
-  5. Deployment works on localhost without domain (HTTP-only mode)
 **Plans**: 1 plan
 **Status**: Complete
-
-Plans:
-- [x] 38-01-PLAN.md -- Add Caddy reverse proxy with conditional HTTPS
 
 ### Phase 39: CI/CD + GHCR Publishing
 **Goal**: Pre-built images available on GitHub Container Registry, built automatically on release.
-**Depends on**: Phase 38
-**Requirements**: GHCR-01, GHCR-02, GHCR-03, GHCR-04
-**Success Criteria** (what must be TRUE):
-  1. Pre-built images exist on ghcr.io/[owner]/qm-nmr-calc
-  2. GitHub Actions workflow triggers on release tag
-  3. Images tagged with version (e.g., v2.4.0) and `latest`
-  4. Images support both amd64 and arm64 architectures
 **Plans**: 1 plan
 **Status**: Complete
 
-Plans:
-- [x] 39-01-PLAN.md -- Create GitHub Actions workflow for GHCR publishing with OCI labels
-
 ### Phase 40: Documentation
 **Goal**: Users can deploy qm-nmr-calc in 5 minutes with clear guidance for production setup and troubleshooting.
-**Depends on**: Phase 39
-**Requirements**: DOCS-01, DOCS-02, DOCS-03, DOCS-04
-**Success Criteria** (what must be TRUE):
-  1. README contains quick start section with 5-minute deployment instructions
-  2. Deployment guide covers cloud VPS setup (DigitalOcean, Linode, etc.)
-  3. Troubleshooting section addresses common issues from research pitfalls
-  4. Backup and restore instructions document volume management
 **Plans**: 2 plans
-
 **Status**: Complete
 
+</details>
+
+<details open>
+<summary>v2.5 ARM64 Docker Support (Phases 41-44) - IN PROGRESS</summary>
+
+**Milestone Goal:** Native ARM64 support for the worker container, enabling local development on Apple Silicon Macs and deployment to ARM-based cloud instances without emulation.
+
+### Phase 41: ARM64 Dockerfile Creation
+**Goal**: ARM64 worker container exists with all computational chemistry packages installed via conda-forge.
+**Depends on**: Nothing (first phase of v2.5)
+**Requirements**: CONT-05
+**Success Criteria** (what must be TRUE):
+  1. Dockerfile.worker.arm64 exists and builds successfully on ARM64 host
+  2. Container uses micromamba base image with conda-forge packages (not x86 binaries)
+  3. NWChem, xTB, and CREST are installed from conda-forge linux-aarch64 channel
+  4. Environment variables configured for NWChem basis sets and OpenBLAS threading
+**Plans**: TBD
+**Status**: Not started
+
 Plans:
-- [x] 40-01-PLAN.md -- Add Docker quick start to README
-- [x] 40-02-PLAN.md -- Create deployment guide with VPS setup, troubleshooting, and backup/restore
+- [ ] 41-01-PLAN.md -- Create Dockerfile.worker.arm64 and env-worker-arm64.yaml
+
+### Phase 42: Local Validation
+**Goal**: ARM64 worker container passes all computational chemistry tests on Apple Silicon.
+**Depends on**: Phase 41
+**Requirements**: CONT-01, CONT-02, CONT-03, CONT-04, CONT-06
+**Success Criteria** (what must be TRUE):
+  1. NWChem DFT geometry optimization completes without SIGILL or crashes
+  2. NWChem NMR shielding calculation produces valid chemical shifts
+  3. xTB energy calculation completes successfully
+  4. CREST conformer search finds multiple conformers
+  5. Results match x86_64 output within 0.01 ppm tolerance
+**Plans**: TBD
+**Status**: Not started
+
+Plans:
+- [ ] 42-01-PLAN.md -- Validate ARM64 container on Apple Silicon with full calculation suite
+
+### Phase 43: CI/CD Integration
+**Goal**: GitHub Actions builds and publishes multi-arch images with native ARM64 runner.
+**Depends on**: Phase 42
+**Requirements**: CICD-01, CICD-02, CICD-03, CICD-04
+**Success Criteria** (what must be TRUE):
+  1. GitHub Actions workflow builds ARM64 worker image on ubuntu-24.04-arm runner
+  2. Multi-arch manifest created combining amd64 and arm64 images
+  3. Single image tag (latest, vX.Y.Z) pulls correct architecture automatically
+  4. ARM64 build completes in reasonable time (under 15 minutes, not QEMU-slow)
+**Plans**: TBD
+**Status**: Not started
+
+Plans:
+- [ ] 43-01-PLAN.md -- Update publish-images.yml with ARM64 build job and manifest merge
+
+### Phase 44: Documentation and Release
+**Goal**: Users know ARM64 is supported and can deploy without architecture-specific instructions.
+**Depends on**: Phase 43
+**Requirements**: DOCS-01, DOCS-02, DOCS-03
+**Success Criteria** (what must be TRUE):
+  1. README mentions ARM64/Apple Silicon support in Docker deployment section
+  2. Known issues section documents any ARM64-specific caveats discovered during validation
+  3. docker-compose.yml works unchanged on ARM64 (auto-pulls correct architecture)
+**Plans**: TBD
+**Status**: Not started
+
+Plans:
+- [ ] 44-01-PLAN.md -- Update README and deployment docs with ARM64 support
 
 </details>
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
+Phases execute in numeric order: 41 -> 42 -> 43 -> 44
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -382,47 +380,38 @@ Phases execute in numeric order: 35 -> 36 -> 37 -> 38 -> 39 -> 40
 | 32. NMReData Module | v2.3 | 1/1 | Complete | 2026-02-01 |
 | 33. API/UI Integration | v2.3 | 1/1 | Complete | 2026-02-01 |
 | 34. Testing & Validation | v2.3 | 1/1 | Complete | 2026-02-01 |
-| **35. Worker Container** | **v2.4** | **1/1** | **Complete** | 2026-02-02 |
-| **36. API Container** | **v2.4** | **1/1** | **Complete** | 2026-02-02 |
-| **37. Docker Compose Integration** | **v2.4** | **2/2** | **Complete** | 2026-02-03 |
-| **38. Caddy + HTTPS** | **v2.4** | **1/1** | **Complete** | 2026-02-03 |
-| **39. CI/CD + GHCR Publishing** | **v2.4** | **1/1** | **Complete** | 2026-02-03 |
-| **40. Documentation** | **v2.4** | **2/2** | **Complete** | 2026-02-03 |
+| 35. Worker Container | v2.4 | 1/1 | Complete | 2026-02-02 |
+| 36. API Container | v2.4 | 1/1 | Complete | 2026-02-02 |
+| 37. Docker Compose Integration | v2.4 | 2/2 | Complete | 2026-02-03 |
+| 38. Caddy + HTTPS | v2.4 | 1/1 | Complete | 2026-02-03 |
+| 39. CI/CD + GHCR Publishing | v2.4 | 1/1 | Complete | 2026-02-03 |
+| 40. Documentation | v2.4 | 2/2 | Complete | 2026-02-03 |
+| **41. ARM64 Dockerfile** | **v2.5** | **0/1** | **Not started** | - |
+| **42. Local Validation** | **v2.5** | **0/1** | **Not started** | - |
+| **43. CI/CD Integration** | **v2.5** | **0/1** | **Not started** | - |
+| **44. Documentation** | **v2.5** | **0/1** | **Not started** | - |
 
-## Coverage (v2.4)
+## Coverage (v2.5)
 
-**v2.4 Requirements: 26 total**
+**v2.5 Requirements: 13 total**
 
 | Requirement | Phase | Description |
 |-------------|-------|-------------|
-| DOCK-01 | 37 | Deploy with `docker compose up -d` |
-| DOCK-02 | 35 | Worker includes NWChem, CREST, xTB |
-| DOCK-03 | 36 | App container runs FastAPI |
-| DOCK-04 | 37 | Job data persists via volume |
-| DOCK-05 | 37 | Huey queue persists via volume |
-| DOCK-06 | 37 | Health check configuration |
-| DOCK-07 | 37 | Restart policies |
-| DOCK-08 | 37 | `.env` file configuration |
-| DOCK-09 | 37 | `.env.example` documentation |
-| HTTPS-01 | 38 | Caddy on ports 80/443 |
-| HTTPS-02 | 38 | Auto-HTTPS via Let's Encrypt |
-| HTTPS-03 | 38 | HTTP-to-HTTPS redirect |
-| HTTPS-04 | 38 | DOMAIN env var |
-| HTTPS-05 | 38 | Localhost HTTP mode |
-| GHCR-01 | 39 | Images on GHCR |
-| GHCR-02 | 39 | GitHub Actions build |
-| GHCR-03 | 39 | Version + latest tags |
-| GHCR-04 | 39 | Multi-arch (amd64 + arm64) |
-| OPS-01 | 37 | Graceful SIGTERM handling |
-| OPS-02 | 37 | Worker memory limits |
-| OPS-03 | 37 | NWCHEM_NPROC env var |
-| OPS-04 | 37 | `docker compose logs` |
-| DOCS-01 | 40 | Quick start (5-minute) |
-| DOCS-02 | 40 | Cloud VPS guide |
-| DOCS-03 | 40 | Troubleshooting |
-| DOCS-04 | 40 | Backup/restore |
+| CONT-01 | 42 | ARM64 worker runs NWChem DFT geometry optimization |
+| CONT-02 | 42 | ARM64 worker runs NWChem NMR shielding calculation |
+| CONT-03 | 42 | ARM64 worker runs xTB energy calculations |
+| CONT-04 | 42 | ARM64 worker runs CREST conformer search |
+| CONT-05 | 41 | ARM64 worker uses conda-forge packages |
+| CONT-06 | 42 | ARM64 worker produces numerically equivalent results |
+| CICD-01 | 43 | GitHub Actions builds ARM64 worker with native runner |
+| CICD-02 | 43 | Multi-arch manifest combining amd64 and arm64 |
+| CICD-03 | 43 | Single image tag works on both architectures |
+| CICD-04 | 43 | ARM64 build uses native runner (not QEMU) |
+| DOCS-01 | 44 | README documents ARM64/Apple Silicon support |
+| DOCS-02 | 44 | Known issues section covers ARM64-specific caveats |
+| DOCS-03 | 44 | docker-compose.yml works unchanged on ARM64 |
 
-**Mapped: 26/26 (100%)**
+**Mapped: 13/13 (100%)**
 
 ---
-*Last updated: 2026-02-03 - Phase 40 complete, v2.4 milestone shipped*
+*Last updated: 2026-02-04 - v2.5 roadmap created*

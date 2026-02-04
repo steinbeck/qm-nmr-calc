@@ -55,25 +55,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CONT-01 | TBD | Pending |
-| CONT-02 | TBD | Pending |
-| CONT-03 | TBD | Pending |
-| CONT-04 | TBD | Pending |
-| CONT-05 | TBD | Pending |
-| CONT-06 | TBD | Pending |
-| CICD-01 | TBD | Pending |
-| CICD-02 | TBD | Pending |
-| CICD-03 | TBD | Pending |
-| CICD-04 | TBD | Pending |
-| DOCS-01 | TBD | Pending |
-| DOCS-02 | TBD | Pending |
-| DOCS-03 | TBD | Pending |
+| CONT-01 | Phase 42 | Pending |
+| CONT-02 | Phase 42 | Pending |
+| CONT-03 | Phase 42 | Pending |
+| CONT-04 | Phase 42 | Pending |
+| CONT-05 | Phase 41 | Pending |
+| CONT-06 | Phase 42 | Pending |
+| CICD-01 | Phase 43 | Pending |
+| CICD-02 | Phase 43 | Pending |
+| CICD-03 | Phase 43 | Pending |
+| CICD-04 | Phase 43 | Pending |
+| DOCS-01 | Phase 44 | Pending |
+| DOCS-02 | Phase 44 | Pending |
+| DOCS-03 | Phase 44 | Pending |
 
 **Coverage:**
 - v2.5 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13 ⚠️
+- Mapped to phases: 13
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-04*
-*Last updated: 2026-02-04 after initial definition*
+*Last updated: 2026-02-04 after roadmap creation*

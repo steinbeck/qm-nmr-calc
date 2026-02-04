@@ -5,16 +5,18 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Planning next milestone
+**Current focus:** v2.5 ARM64 Docker Support - Phase 41 (ARM64 Dockerfile Creation)
 
 ## Current Position
 
 Milestone: v2.5 ARM64 Docker Support
-Phase: Defining requirements
+Phase: 41 of 44 (ARM64 Dockerfile Creation)
+Plan: Ready to plan
 Status: Ready to plan
-Last activity: 2026-02-04 -- Milestone v2.5 started
+Last activity: 2026-02-04 -- v2.5 roadmap created
 
-Progress: [                    ] 0%
+Progress: [####################] 96 plans complete (v1.0-v2.4)
+         [                    ] 0% of v2.5 (0/4 plans)
 
 ## Performance Metrics
 
@@ -35,22 +37,20 @@ Progress: [                    ] 0%
 | v2.2 Documentation | 7 | 10 | 2 days | Shipped 2026-02-01 |
 | v2.3 NMReData Export | 3 | 3 | 1 day | Shipped 2026-02-01 |
 | v2.4 Docker Deployment | 6 | 8 | ~2 hours | Shipped 2026-02-03 |
+| v2.5 ARM64 Docker Support | 4 | 4 | - | In progress |
 
 ## Accumulated Context
 
 ### Decisions
 
 All prior decisions logged in PROJECT.md Key Decisions table.
-v2.3 decisions archived to milestones/v2.3-ROADMAP.md.
+v2.4 decisions archived to MILESTONES.md.
 
-**v2.4 Decisions:**
-- Worker image amd64-only due to CREST/xTB lacking arm64 binaries
-- API image supports amd64+arm64 for broader deployment options
-- GITHUB_TOKEN authentication for GHCR (not PAT)
-- GHA cache with per-image scope to avoid cache eviction
-- Docker as primary deployment method in README (not source installation)
-- Pre-built GHCR images referenced as default (not build-from-source)
-- Comprehensive single guide for deployment (combined VPS, troubleshooting, backup)
+**v2.5 Decisions (pending):**
+- Separate Dockerfile.worker.arm64 (not unified Dockerfile with build args)
+- conda-forge packages for NWChem, xTB, CREST on ARM64 (no pre-compiled binaries available)
+- micromamba base image for faster package resolution
+- GitHub Actions ubuntu-24.04-arm runner for native ARM64 builds
 
 ### Roadmap Evolution
 
@@ -62,31 +62,31 @@ v2.3 decisions archived to milestones/v2.3-ROADMAP.md.
 - v2.2: 7 phases (25-31), shipped 2026-02-01
 - v2.3: 3 phases (32-34), shipped 2026-02-01
 - v2.4: 6 phases (35-40), shipped 2026-02-03
+- v2.5: 4 phases (41-44), in progress
 
 ### Pending Todos
 
 - Dark mode (deferred from v2.1)
 - Enhanced interactivity (deferred from v2.1)
 - User accounts and calculation history
-- NMReData enhancements: INCHI tag, 1D pseudo-spectrum tags, J-coupling (requires additional QM)
+- NMReData enhancements: INCHI tag, 1D pseudo-spectrum tags, J-coupling
 
 ### Blockers/Concerns
 
 **Active:**
 None
 
-**Research Flags (from v2.4 research):**
-- Phase 35: Resolved - Used Miniconda Python 3.11 for glibc compatibility, MPI configured with OMPI_ALLOW_RUN_AS_ROOT
-- Phase 36: Resolved - Added X11 libraries (libxrender1, libxext6, libexpat1) for RDKit drawing
-- Phase 37: Resolved - SIGINT for Huey graceful shutdown, 5-min grace period, 512MB shm_size for MPI
-- Phase 39: Resolved - Worker amd64-only, API multi-arch; GITHUB_TOKEN for auth
+**Research Flags (from v2.5 research):**
+- Phase 42: NWChem basis set paths may differ in conda-forge package (verify NWCHEM_BASIS_LIBRARY)
+- Phase 42: OpenMPI configuration needs OMPI_ALLOW_RUN_AS_ROOT
+- Phase 42: OpenBLAS threading needs explicit OPENBLAS_NUM_THREADS=4
 
 ## Session Continuity
 
-Last session: 2026-02-03 22:15 UTC
-Stopped at: Post-v2.4 bugfix (Caddy empty DOMAIN), user testing on Mac
-Resume file: .planning/.continue-here.md
-Next: User tests Docker on Mac, then `/gsd:new-milestone`
+Last session: 2026-02-04
+Stopped at: v2.5 roadmap created, ready for plan-phase 41
+Resume file: None
+Next: `/gsd:plan-phase 41` to create ARM64 Dockerfile plan
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs
-Docker: Worker image 2.1GB, API image ~733MB, Caddy reverse proxy, GHCR publishing workflow
+Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), Caddy reverse proxy
