@@ -11,19 +11,19 @@ See: .planning/PROJECT.md (updated 2026-02-03)
 
 Milestone: v2.5 ARM64 Docker Support
 Phase: 41 of 44 (ARM64 Dockerfile Creation)
-Plan: Ready to plan
-Status: Ready to plan
-Last activity: 2026-02-04 -- v2.5 roadmap created
+Plan: 01 of 01 complete
+Status: Phase 41 complete
+Last activity: 2026-02-04 -- Completed 41-01-PLAN.md (ARM64 Dockerfile Creation)
 
 Progress: [####################] 96 plans complete (v1.0-v2.4)
-         [                    ] 0% of v2.5 (0/4 plans)
+         [#####               ] 25% of v2.5 (1/4 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 96 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8)
+- Total plans completed: 97 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 1)
 - Average duration: ~7 min
-- Total execution time: ~663 min (~11 hours)
+- Total execution time: ~666 min (~11 hours)
 
 **By Milestone:**
 
@@ -46,11 +46,14 @@ Progress: [####################] 96 plans complete (v1.0-v2.4)
 All prior decisions logged in PROJECT.md Key Decisions table.
 v2.4 decisions archived to MILESTONES.md.
 
-**v2.5 Decisions (pending):**
+**v2.5 Decisions:**
 - Separate Dockerfile.worker.arm64 (not unified Dockerfile with build args)
 - conda-forge packages for NWChem, xTB, CREST on ARM64 (no pre-compiled binaries available)
 - micromamba base image for faster package resolution
 - GitHub Actions ubuntu-24.04-arm runner for native ARM64 builds
+- RDKit from conda-forge (not pip) for C++ dependency handling
+- Conda env name: base (micromamba default activation)
+- Architecture check: warning not error (allows x86 testing with QEMU)
 
 ### Roadmap Evolution
 
@@ -83,10 +86,10 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-04
-Stopped at: v2.5 roadmap created, ready for plan-phase 41
+Last session: 2026-02-04 10:05
+Stopped at: Completed 41-01-PLAN.md (ARM64 Dockerfile Creation)
 Resume file: None
-Next: `/gsd:plan-phase 41` to create ARM64 Dockerfile plan
+Next: `/gsd:plan-phase 42` to create Build and Publish plan
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs
 Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), Caddy reverse proxy
