@@ -302,10 +302,10 @@ Plans:
   5. Results match x86_64 output within tolerance (0.5 ppm 1H, 2.0 ppm 13C)
   6. Full NMR prediction pipeline produces results matching x86 within tolerance
 **Plans**: 1 plan
-**Status**: Not started
+**Status**: Complete
 
 Plans:
-- [ ] 42-01-PLAN.md -- Create validation script and test fixtures, build and validate ARM64 container on Apple Silicon
+- [x] 42-01-PLAN.md -- Create validation script and test fixtures, build and validate ARM64 container on Apple Silicon
 
 ### Phase 43: CI/CD Integration
 **Goal**: GitHub Actions builds and publishes multi-arch images with native ARM64 runner.
@@ -388,7 +388,7 @@ Phases execute in numeric order: 41 -> 42 -> 43 -> 44
 | 39. CI/CD + GHCR Publishing | v2.4 | 1/1 | Complete | 2026-02-03 |
 | 40. Documentation | v2.4 | 2/2 | Complete | 2026-02-03 |
 | **41. ARM64 Dockerfile** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
-| **42. Local Validation** | **v2.5** | **0/1** | **Not started** | - |
+| **42. Local Validation** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
 | **43. CI/CD Integration** | **v2.5** | **0/1** | **Not started** | - |
 | **44. Documentation** | **v2.5** | **0/1** | **Not started** | - |
 

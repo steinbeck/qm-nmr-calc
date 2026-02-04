@@ -9,12 +9,12 @@ Requirements for ARM64 Docker support. Each maps to roadmap phases.
 
 ### Container Build
 
-- [ ] **CONT-01**: ARM64 worker container runs NWChem DFT geometry optimization
-- [ ] **CONT-02**: ARM64 worker container runs NWChem NMR shielding calculation
-- [ ] **CONT-03**: ARM64 worker container runs xTB energy calculations
-- [ ] **CONT-04**: ARM64 worker container runs CREST conformer search
-- [ ] **CONT-05**: ARM64 worker uses conda-forge packages (not x86 binaries)
-- [ ] **CONT-06**: ARM64 worker produces numerically equivalent results to x86_64
+- [x] **CONT-01**: ARM64 worker container runs NWChem DFT geometry optimization
+- [x] **CONT-02**: ARM64 worker container runs NWChem NMR shielding calculation
+- [x] **CONT-03**: ARM64 worker container runs xTB energy calculations
+- [x] **CONT-04**: ARM64 worker container runs CREST conformer search
+- [x] **CONT-05**: ARM64 worker uses conda-forge packages (not x86 binaries)
+- [x] **CONT-06**: ARM64 worker produces numerically equivalent results to x86_64
 
 ### CI/CD
 
@@ -55,12 +55,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CONT-01 | Phase 42 | Pending |
-| CONT-02 | Phase 42 | Pending |
-| CONT-03 | Phase 42 | Pending |
-| CONT-04 | Phase 42 | Pending |
-| CONT-05 | Phase 41 | Pending |
-| CONT-06 | Phase 42 | Pending |
+| CONT-01 | Phase 42 | Complete |
+| CONT-02 | Phase 42 | Complete |
+| CONT-03 | Phase 42 | Complete |
+| CONT-04 | Phase 42 | Complete |
+| CONT-05 | Phase 41 | Complete |
+| CONT-06 | Phase 42 | Complete |
 | CICD-01 | Phase 43 | Pending |
 | CICD-02 | Phase 43 | Pending |
 | CICD-03 | Phase 43 | Pending |
