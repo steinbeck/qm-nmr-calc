@@ -5,15 +5,15 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** None (between milestones)
+**Current focus:** v2.6 Google Cloud Spot Deployment
 
 ## Current Position
 
-Milestone: None (v2.5 ARM64 Docker Support shipped 2026-02-04)
-Phase: N/A
-Plan: N/A
-Status: Between milestones
-Last activity: 2026-02-04 -- v2.5 milestone complete, released as v2.5.0
+Milestone: v2.6 Google Cloud Spot Deployment
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-04 -- Milestone v2.6 started
 
 Progress: [####################] 100 plans complete (v1.0-v2.5)
 

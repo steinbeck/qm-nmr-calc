@@ -32,9 +32,16 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - WCAG-compliant accessibility (keyboard nav, reduced motion, contrast)
 - Mobile-optimized responsive design
 
-## Current Milestone: None (between milestones)
+## Current Milestone: v2.6 Google Cloud Spot Deployment
 
-v2.5 ARM64 Docker Support shipped 2026-02-04. See `.planning/milestones/v2.5-ROADMAP.md` for details.
+**Goal:** One-command deployment of qm-nmr-calc to a cheap, high-core Google Cloud spot VM.
+
+**Target features:**
+- Script to provision a GCP spot instance (high CPU, high memory, preemptible)
+- Automated Docker deployment on the spot VM
+- HTTPS with domain support (using existing Caddy setup)
+- Simple start/stop commands for the VM
+- Manual lifecycle management (user starts/stops as needed)
 
 ## Future Considerations
 
@@ -162,4 +169,4 @@ v2.5 ARM64 Docker Support shipped 2026-02-04. See `.planning/milestones/v2.5-ROA
 | Docker as primary install | Most users want easy deployment | Good -- 5-minute quick start |
 
 ---
-*Last updated: 2026-02-03 after v2.4 Docker Deployment milestone shipped*
+*Last updated: 2026-02-04 after v2.6 milestone started*
