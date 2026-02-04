@@ -284,11 +284,11 @@ v2.5 enables native ARM64 execution for the worker container, unlocking local de
   2. Container uses micromamba base image with conda-forge packages (not x86 binaries)
   3. NWChem, xTB, and CREST are installed from conda-forge linux-aarch64 channel
   4. Environment variables configured for NWChem basis sets and OpenBLAS threading
-**Plans**: TBD
+**Plans**: 1 plan
 **Status**: Not started
 
 Plans:
-- [ ] 41-01-PLAN.md -- Create Dockerfile.worker.arm64 and env-worker-arm64.yaml
+- [ ] 41-01-PLAN.md -- Create Dockerfile.worker.arm64, env-worker-arm64.yaml, and validation script
 
 ### Phase 42: Local Validation
 **Goal**: ARM64 worker container passes all computational chemistry tests on Apple Silicon.
@@ -414,4 +414,4 @@ Phases execute in numeric order: 41 -> 42 -> 43 -> 44
 **Mapped: 13/13 (100%)**
 
 ---
-*Last updated: 2026-02-04 - v2.5 roadmap created*
+*Last updated: 2026-02-04 - Phase 41 plan created*
