@@ -2,18 +2,18 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-03)
+See: .planning/PROJECT.md (updated 2026-02-04)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.6 Google Cloud Spot Deployment
+**Current focus:** v2.6 Google Cloud Spot Deployment - Phase 45 Infrastructure Setup
 
 ## Current Position
 
 Milestone: v2.6 Google Cloud Spot Deployment
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-02-04 -- Milestone v2.6 started
+Phase: 45 of 48 (GCP Infrastructure Setup)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-02-04 -- v2.6 roadmap created
 
 Progress: [####################] 100 plans complete (v1.0-v2.5)
 
@@ -37,25 +37,17 @@ Progress: [####################] 100 plans complete (v1.0-v2.5)
 | v2.3 NMReData Export | 3 | 3 | 1 day | Shipped 2026-02-01 |
 | v2.4 Docker Deployment | 6 | 8 | ~2 hours | Shipped 2026-02-03 |
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
+| v2.6 GCP Spot Deployment | 4 | TBD | - | In progress |
 
 ## Accumulated Context
 
 ### Decisions
 
 All prior decisions logged in PROJECT.md Key Decisions table.
-v2.4 decisions archived to MILESTONES.md.
+v2.5 decisions archived.
 
-**v2.5 Decisions:**
-- Separate Dockerfile.worker.arm64 (not unified Dockerfile with build args)
-- conda-forge packages for NWChem, xTB, CREST on ARM64 (no pre-compiled binaries available)
-- micromamba base image for faster package resolution
-- GitHub Actions ubuntu-24.04-arm runner for native ARM64 builds
-- RDKit from conda-forge (not pip) for C++ dependency handling
-- Conda env name: base (micromamba default activation)
-- Architecture check: warning not error (allows x86 testing with QEMU)
-- NWChem memory 2gb (500mb insufficient for reliable operation)
-- Auto-detect CPU count for NWCHEM_NPROC (cap at 40)
-- OMP_NUM_THREADS=1 to avoid thread contention with MPI
+**v2.6 Decisions:**
+- None yet (milestone just started)
 
 ### Roadmap Evolution
 
@@ -68,6 +60,7 @@ v2.4 decisions archived to MILESTONES.md.
 - v2.3: 3 phases (32-34), shipped 2026-02-01
 - v2.4: 6 phases (35-40), shipped 2026-02-03
 - v2.5: 4 phases (41-44), shipped 2026-02-04
+- v2.6: 4 phases (45-48), in progress
 
 ### Pending Todos
 
@@ -81,17 +74,17 @@ v2.4 decisions archived to MILESTONES.md.
 **Active:**
 None
 
-**Research Flags (from v2.5 research):**
-- ~~Phase 42: NWChem basis set paths may differ in conda-forge package~~ RESOLVED: Works correctly
-- ~~Phase 42: OpenMPI configuration needs OMPI_ALLOW_RUN_AS_ROOT~~ RESOLVED: Set in Dockerfile
-- ~~Phase 42: OpenBLAS threading needs explicit OPENBLAS_NUM_THREADS=4~~ RESOLVED: Set in Dockerfile
+**Research Flags (from v2.6 research):**
+- Phase 46: May need research on cloud-init vs metadata startup scripts for reliability
+- Phase 45-47: Standard gcloud patterns, no deep research needed
+- Phase 48: Documentation only, no research needed
 
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: v2.5 milestone archived and complete
+Stopped at: v2.6 roadmap created, ready to plan Phase 45
 Resume file: None
-Next: Next milestone planning
+Next: /gsd:plan-phase 45
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs
 Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR

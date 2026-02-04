@@ -11,12 +11,13 @@
 - [x] **v2.3 NMReData Export** - Phases 32-34 (shipped 2026-02-01)
 - [x] **v2.4 Docker Deployment** - Phases 35-40 (shipped 2026-02-03)
 - [x] **v2.5 ARM64 Docker Support** - Phases 41-44 (shipped 2026-02-04)
+- [ ] **v2.6 Google Cloud Spot Deployment** - Phases 45-48 (in progress)
 
 ## Overview
 
-**Current milestone:** None (between milestones)
+**Current milestone:** v2.6 Google Cloud Spot Deployment
 
-v2.5 ARM64 Docker Support shipped 2026-02-04. See `.planning/milestones/v2.5-ROADMAP.md` for archived details.
+v2.6 delivers one-command deployment of qm-nmr-calc to a cost-effective GCP Spot VM. The existing Docker Compose stack runs unchanged, wrapped by GCP-specific infrastructure scripts for provisioning, lifecycle management, and persistent data storage. Users can deploy for ~$0.10/hour spot pricing (80% discount vs on-demand) with manual start/stop control.
 
 ## Phases
 
@@ -273,75 +274,99 @@ v2.5 ARM64 Docker Support shipped 2026-02-04. See `.planning/milestones/v2.5-ROA
 <details>
 <summary>v2.5 ARM64 Docker Support (Phases 41-44) - SHIPPED 2026-02-04</summary>
 
-**Milestone Goal:** Native ARM64 support for the worker container, enabling local development on Apple Silicon Macs and deployment to ARM-based cloud instances without emulation.
-
 ### Phase 41: ARM64 Dockerfile Creation
 **Goal**: ARM64 worker container exists with all computational chemistry packages installed via conda-forge.
-**Depends on**: Nothing (first phase of v2.5)
-**Requirements**: CONT-05
-**Success Criteria** (what must be TRUE):
-  1. Dockerfile.worker.arm64 exists and builds successfully on ARM64 host
-  2. Container uses micromamba base image with conda-forge packages (not x86 binaries)
-  3. NWChem, xTB, and CREST are installed from conda-forge linux-aarch64 channel
-  4. Environment variables configured for NWChem basis sets and OpenBLAS threading
 **Plans**: 1 plan
 **Status**: Complete
-
-Plans:
-- [x] 41-01-PLAN.md -- Create Dockerfile.worker.arm64, env-worker-arm64.yaml, and validation script
 
 ### Phase 42: Local Validation
 **Goal**: ARM64 worker container passes all computational chemistry tests on Apple Silicon.
-**Depends on**: Phase 41
-**Requirements**: CONT-01, CONT-02, CONT-03, CONT-04, CONT-06
-**Success Criteria** (what must be TRUE):
-  1. NWChem DFT geometry optimization completes without SIGILL or crashes
-  2. NWChem NMR shielding calculation produces valid chemical shifts
-  3. xTB energy calculation completes successfully
-  4. CREST conformer search finds multiple conformers
-  5. Results match x86_64 output within tolerance (0.5 ppm 1H, 2.0 ppm 13C)
-  6. Full NMR prediction pipeline produces results matching x86 within tolerance
 **Plans**: 1 plan
 **Status**: Complete
-
-Plans:
-- [x] 42-01-PLAN.md -- Create validation script and test fixtures, build and validate ARM64 container on Apple Silicon
 
 ### Phase 43: CI/CD Integration
 **Goal**: GitHub Actions builds and publishes multi-arch images with native ARM64 runner.
-**Depends on**: Phase 42
-**Requirements**: CICD-01, CICD-02, CICD-03, CICD-04
-**Success Criteria** (what must be TRUE):
-  1. GitHub Actions workflow builds ARM64 worker image on ubuntu-24.04-arm runner
-  2. Multi-arch manifest created combining amd64 and arm64 images
-  3. Single image tag (latest, vX.Y.Z) pulls correct architecture automatically
-  4. ARM64 build completes in reasonable time (under 15 minutes, not QEMU-slow)
 **Plans**: 1 plan
 **Status**: Complete
-
-Plans:
-- [x] 43-01-PLAN.md -- Update publish-images.yml with ARM64 build job and manifest merge
 
 ### Phase 44: Documentation and Release
 **Goal**: Users know ARM64 is supported and can deploy without architecture-specific instructions.
-**Depends on**: Phase 43
-**Requirements**: DOCS-01, DOCS-02, DOCS-03
-**Success Criteria** (what must be TRUE):
-  1. README mentions ARM64/Apple Silicon support in Docker deployment section
-  2. Known issues section documents any ARM64-specific caveats discovered during validation
-  3. docker-compose.yml works unchanged on ARM64 (auto-pulls correct architecture)
 **Plans**: 1 plan
 **Status**: Complete
 
-Plans:
-- [x] 44-01-PLAN.md -- Update README and deployment docs with ARM64 support
-
 </details>
+
+## v2.6 Google Cloud Spot Deployment (In Progress)
+
+**Milestone Goal:** One-command deployment of qm-nmr-calc to a cheap, high-core Google Cloud Spot VM with manual lifecycle management.
+
+### Phase 45: GCP Infrastructure Setup
+**Goal**: GCP project configured with networking and storage prerequisites for Spot VM deployment.
+**Depends on**: Nothing (first phase of v2.6)
+**Requirements**: INFRA-01, INFRA-02, INFRA-03, INFRA-04
+**Success Criteria** (what must be TRUE):
+  1. Static external IP is reserved and can be used for DNS configuration
+  2. Firewall rules allow HTTP (80), HTTPS (443), and SSH (22) traffic
+  3. Persistent disk exists for job data and Let's Encrypt certificates
+  4. Persistent disk survives VM deletion (verified by delete/recreate cycle)
+**Plans**: TBD
+**Status**: Not started
+
+Plans:
+- [ ] 45-01: TBD
+
+### Phase 46: VM Deployment Script
+**Goal**: Single script creates a fully-configured Spot VM running qm-nmr-calc with HTTPS.
+**Depends on**: Phase 45
+**Requirements**: DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04, DEPLOY-05, DEPLOY-06, DEPLOY-07
+**Success Criteria** (what must be TRUE):
+  1. User runs one command and gets a working qm-nmr-calc instance
+  2. Startup script installs Docker, pulls GHCR images, and starts containers
+  3. Containers shut down gracefully within 25 seconds during preemption
+  4. User can select region, zone, and machine type with sensible defaults
+  5. Cost estimate displayed before VM creation (user can cancel)
+**Plans**: TBD
+**Status**: Not started
+
+Plans:
+- [ ] 46-01: TBD
+
+### Phase 47: Lifecycle Management Scripts
+**Goal**: Users can stop, start, check status, and access their GCP VM without memorizing gcloud commands.
+**Depends on**: Phase 46
+**Requirements**: LIFE-01, LIFE-02, LIFE-03, LIFE-04, LIFE-05, LIFE-06, LIFE-07
+**Success Criteria** (what must be TRUE):
+  1. Stop command halts VM (stops compute billing, preserves data)
+  2. Start command resumes VM (services auto-start via startup script)
+  3. Delete command removes VM but preserves persistent disk
+  4. Status command shows VM state, IP address, and running containers
+  5. SSH and logs commands provide easy access for debugging
+**Plans**: TBD
+**Status**: Not started
+
+Plans:
+- [ ] 47-01: TBD
+
+### Phase 48: Documentation and Testing
+**Goal**: Users can deploy to GCP with clear guidance on prerequisites, costs, and limitations.
+**Depends on**: Phase 47
+**Requirements**: DOCS-01, DOCS-02, DOCS-03, DOCS-04, DOCS-05
+**Success Criteria** (what must be TRUE):
+  1. README includes GCP deployment as an option alongside Docker Compose
+  2. Prerequisites documented (GCP account, gcloud CLI, domain for HTTPS)
+  3. Cost estimates documented (spot vs on-demand, static IP charges)
+  4. Preemption behavior documented (jobs in progress will be lost)
+  5. DNS configuration guide covers common providers (Cloudflare, Namecheap)
+**Plans**: TBD
+**Status**: Not started
+
+Plans:
+- [ ] 48-01: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 41 -> 42 -> 43 -> 44
+Phases execute in numeric order: 45 -> 46 -> 47 -> 48
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -387,32 +412,46 @@ Phases execute in numeric order: 41 -> 42 -> 43 -> 44
 | 38. Caddy + HTTPS | v2.4 | 1/1 | Complete | 2026-02-03 |
 | 39. CI/CD + GHCR Publishing | v2.4 | 1/1 | Complete | 2026-02-03 |
 | 40. Documentation | v2.4 | 2/2 | Complete | 2026-02-03 |
-| **41. ARM64 Dockerfile** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
-| **42. Local Validation** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
-| **43. CI/CD Integration** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
-| **44. Documentation** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
+| 41. ARM64 Dockerfile | v2.5 | 1/1 | Complete | 2026-02-04 |
+| 42. Local Validation | v2.5 | 1/1 | Complete | 2026-02-04 |
+| 43. CI/CD Integration | v2.5 | 1/1 | Complete | 2026-02-04 |
+| 44. Documentation | v2.5 | 1/1 | Complete | 2026-02-04 |
+| **45. GCP Infrastructure** | **v2.6** | **0/TBD** | **Not started** | - |
+| **46. VM Deployment** | **v2.6** | **0/TBD** | **Not started** | - |
+| **47. Lifecycle Scripts** | **v2.6** | **0/TBD** | **Not started** | - |
+| **48. Documentation** | **v2.6** | **0/TBD** | **Not started** | - |
 
-## Coverage (v2.5)
+## Coverage (v2.6)
 
-**v2.5 Requirements: 13 total**
+**v2.6 Requirements: 23 total**
 
 | Requirement | Phase | Description |
 |-------------|-------|-------------|
-| CONT-01 | 42 | ARM64 worker runs NWChem DFT geometry optimization |
-| CONT-02 | 42 | ARM64 worker runs NWChem NMR shielding calculation |
-| CONT-03 | 42 | ARM64 worker runs xTB energy calculations |
-| CONT-04 | 42 | ARM64 worker runs CREST conformer search |
-| CONT-05 | 41 | ARM64 worker uses conda-forge packages |
-| CONT-06 | 42 | ARM64 worker produces numerically equivalent results |
-| CICD-01 | 43 | GitHub Actions builds ARM64 worker with native runner |
-| CICD-02 | 43 | Multi-arch manifest combining amd64 and arm64 |
-| CICD-03 | 43 | Single image tag works on both architectures |
-| CICD-04 | 43 | ARM64 build uses native runner (not QEMU) |
-| DOCS-01 | 44 | README documents ARM64/Apple Silicon support |
-| DOCS-02 | 44 | Known issues section covers ARM64-specific caveats |
-| DOCS-03 | 44 | docker-compose.yml works unchanged on ARM64 |
+| INFRA-01 | 45 | Static external IP for stable DNS |
+| INFRA-02 | 45 | Firewall rules (HTTP, HTTPS, SSH) |
+| INFRA-03 | 45 | Persistent disk for job data and certificates |
+| INFRA-04 | 45 | Persistent disk survives VM deletion |
+| DEPLOY-01 | 46 | One-command VM creation with Spot configuration |
+| DEPLOY-02 | 46 | Startup script installs Docker and deploys containers |
+| DEPLOY-03 | 46 | Startup script pulls images from GHCR |
+| DEPLOY-04 | 46 | Graceful container shutdown during preemption |
+| DEPLOY-05 | 46 | Interactive prompts for region/zone/machine type |
+| DEPLOY-06 | 46 | Cost estimation before VM creation |
+| DEPLOY-07 | 46 | docker-compose.gcp.yml override for GCP settings |
+| LIFE-01 | 47 | Stop command halts VM |
+| LIFE-02 | 47 | Start command resumes VM |
+| LIFE-03 | 47 | Delete command removes VM (preserves disk) |
+| LIFE-04 | 47 | Status command shows VM state and IP |
+| LIFE-05 | 47 | SSH command provides shell access |
+| LIFE-06 | 47 | Logs command streams container logs |
+| LIFE-07 | 47 | Configuration persistence between commands |
+| DOCS-01 | 48 | README section on GCP deployment |
+| DOCS-02 | 48 | Prerequisites documented |
+| DOCS-03 | 48 | Cost estimates documented |
+| DOCS-04 | 48 | Preemption limitations documented |
+| DOCS-05 | 48 | DNS configuration guide |
 
-**Mapped: 13/13 (100%)**
+**Mapped: 23/23 (100%)**
 
 ---
-*Last updated: 2026-02-04 - Phase 44 complete, v2.5 milestone complete*
+*Last updated: 2026-02-04 - v2.6 roadmap created*

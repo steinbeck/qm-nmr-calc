@@ -76,35 +76,35 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | TBD | Pending |
-| INFRA-02 | TBD | Pending |
-| INFRA-03 | TBD | Pending |
-| INFRA-04 | TBD | Pending |
-| DEPLOY-01 | TBD | Pending |
-| DEPLOY-02 | TBD | Pending |
-| DEPLOY-03 | TBD | Pending |
-| DEPLOY-04 | TBD | Pending |
-| DEPLOY-05 | TBD | Pending |
-| DEPLOY-06 | TBD | Pending |
-| DEPLOY-07 | TBD | Pending |
-| LIFE-01 | TBD | Pending |
-| LIFE-02 | TBD | Pending |
-| LIFE-03 | TBD | Pending |
-| LIFE-04 | TBD | Pending |
-| LIFE-05 | TBD | Pending |
-| LIFE-06 | TBD | Pending |
-| LIFE-07 | TBD | Pending |
-| DOCS-01 | TBD | Pending |
-| DOCS-02 | TBD | Pending |
-| DOCS-03 | TBD | Pending |
-| DOCS-04 | TBD | Pending |
-| DOCS-05 | TBD | Pending |
+| INFRA-01 | Phase 45 | Pending |
+| INFRA-02 | Phase 45 | Pending |
+| INFRA-03 | Phase 45 | Pending |
+| INFRA-04 | Phase 45 | Pending |
+| DEPLOY-01 | Phase 46 | Pending |
+| DEPLOY-02 | Phase 46 | Pending |
+| DEPLOY-03 | Phase 46 | Pending |
+| DEPLOY-04 | Phase 46 | Pending |
+| DEPLOY-05 | Phase 46 | Pending |
+| DEPLOY-06 | Phase 46 | Pending |
+| DEPLOY-07 | Phase 46 | Pending |
+| LIFE-01 | Phase 47 | Pending |
+| LIFE-02 | Phase 47 | Pending |
+| LIFE-03 | Phase 47 | Pending |
+| LIFE-04 | Phase 47 | Pending |
+| LIFE-05 | Phase 47 | Pending |
+| LIFE-06 | Phase 47 | Pending |
+| LIFE-07 | Phase 47 | Pending |
+| DOCS-01 | Phase 48 | Pending |
+| DOCS-02 | Phase 48 | Pending |
+| DOCS-03 | Phase 48 | Pending |
+| DOCS-04 | Phase 48 | Pending |
+| DOCS-05 | Phase 48 | Pending |
 
 **Coverage:**
 - v2.6 requirements: 23 total
-- Mapped to phases: 0
-- Unmapped: 23 (pending roadmap creation)
+- Mapped to phases: 23
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-04*
-*Last updated: 2026-02-04 after initial definition*
+*Last updated: 2026-02-04 after roadmap creation*
