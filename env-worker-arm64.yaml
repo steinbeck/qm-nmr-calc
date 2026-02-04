@@ -1,0 +1,42 @@
+# Conda environment for ARM64 worker container
+# Uses conda-forge packages for NWChem, xTB, CREST, RDKit
+# micromamba base environment (name: base)
+name: base
+channels:
+  - conda-forge
+dependencies:
+  # Core computational chemistry (all verified for linux-aarch64)
+  - python=3.11
+  - nwchem=7.3.1
+  - xtb=6.7.1
+  - crest=3.0.2
+  - rdkit>=2025.9
+
+  # X11 for RDKit drawing (headless container)
+  - xorg-libxrender
+  - xorg-libxext
+
+  # pip for remaining Python dependencies
+  - pip
+  - pip:
+    # FastAPI and server
+    - fastapi>=0.128.0
+    - uvicorn>=0.40.0
+    - python-multipart>=0.0.21
+
+    # Task queue
+    - huey>=2.6.0
+
+    # Email
+    - aiosmtplib>=5.0.0
+    - email-validator>=2.3.0
+
+    # Data processing
+    - jinja2>=3.1.0
+    - matplotlib>=3.10.0
+    - orjson>=3.11.5
+    - pandas>=2.3.3
+    - pydantic>=2.12.5
+    - scipy>=1.17.0
+    - statsmodels>=0.14.0
+    - tqdm>=4.67.1
