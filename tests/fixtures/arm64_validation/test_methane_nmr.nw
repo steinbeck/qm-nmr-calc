@@ -1,0 +1,21 @@
+# Methane ARM64 Validation - NMR Shielding
+title "Methane NMR ARM64 Validation"
+memory 500 mb
+geometry units angstrom
+  C    0.000000    0.000000    0.000000
+  H    0.629118    0.629118    0.629118
+  H   -0.629118   -0.629118    0.629118
+  H   -0.629118    0.629118   -0.629118
+  H    0.629118   -0.629118   -0.629118
+end
+basis
+  * library 6-311+G(2d,p)
+end
+dft
+  xc b3lyp
+  iterations 100
+end
+property
+  shielding
+end
+task dft property
