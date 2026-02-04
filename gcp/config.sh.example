@@ -1,0 +1,23 @@
+#!/bin/bash
+# GCP Configuration - copy to config.sh and customize
+#
+# Usage:
+#   cp config.sh.example config.sh
+#   # Edit config.sh with your values
+#   ./setup-infrastructure.sh
+
+# Required: Your GCP project ID
+# Find at: GCP Console -> Project selector -> copy project ID
+GCP_PROJECT_ID="your-project-id"
+
+# Region for static IP and other regional resources
+GCP_REGION="us-central1"
+
+# Zone for VM and persistent disk
+GCP_ZONE="us-central1-a"
+
+# Prefix for all resource names (IP, firewall rules, disk, VM)
+RESOURCE_PREFIX="qm-nmr-calc"
+
+# Persistent disk size in GB (stores job data and Let's Encrypt certs)
+DISK_SIZE_GB="100"
