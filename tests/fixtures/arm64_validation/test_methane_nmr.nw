@@ -1,6 +1,6 @@
 # Methane ARM64 Validation - NMR Shielding
 title "Methane NMR ARM64 Validation"
-memory 500 mb
+memory 2 gb
 geometry units angstrom
   C    0.000000    0.000000    0.000000
   H    0.629118    0.629118    0.629118
