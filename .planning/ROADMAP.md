@@ -309,11 +309,11 @@ v2.6 delivers one-command deployment of qm-nmr-calc to a cost-effective GCP Spot
   2. Firewall rules allow HTTP (80), HTTPS (443), and SSH (22) traffic
   3. Persistent disk exists for job data and Let's Encrypt certificates
   4. Persistent disk survives VM deletion (verified by delete/recreate cycle)
-**Plans**: TBD
+**Plans**: 1 plan
 **Status**: Not started
 
 Plans:
-- [ ] 45-01: TBD
+- [ ] 45-01-PLAN.md - Infrastructure setup and teardown scripts
 
 ### Phase 46: VM Deployment Script
 **Goal**: Single script creates a fully-configured Spot VM running qm-nmr-calc with HTTPS.
@@ -416,7 +416,7 @@ Phases execute in numeric order: 45 -> 46 -> 47 -> 48
 | 42. Local Validation | v2.5 | 1/1 | Complete | 2026-02-04 |
 | 43. CI/CD Integration | v2.5 | 1/1 | Complete | 2026-02-04 |
 | 44. Documentation | v2.5 | 1/1 | Complete | 2026-02-04 |
-| **45. GCP Infrastructure** | **v2.6** | **0/TBD** | **Not started** | - |
+| **45. GCP Infrastructure** | **v2.6** | **0/1** | **Not started** | - |
 | **46. VM Deployment** | **v2.6** | **0/TBD** | **Not started** | - |
 | **47. Lifecycle Scripts** | **v2.6** | **0/TBD** | **Not started** | - |
 | **48. Documentation** | **v2.6** | **0/TBD** | **Not started** | - |
@@ -454,4 +454,4 @@ Phases execute in numeric order: 45 -> 46 -> 47 -> 48
 **Mapped: 23/23 (100%)**
 
 ---
-*Last updated: 2026-02-04 - v2.6 roadmap created*
+*Last updated: 2026-02-04 - Phase 45 planned*
