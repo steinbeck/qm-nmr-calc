@@ -1,0 +1,47 @@
+# ARM64 Worker container for qm-nmr-calc
+# Uses conda-forge packages (no x86 binaries)
+# Base: micromamba for fast package resolution
+
+FROM mambaorg/micromamba:2.5.0-debian12-slim
+
+# OCI labels for GHCR repository linking
+LABEL org.opencontainers.image.source="https://github.com/steinbeck/qm-nmr-calc"
+LABEL org.opencontainers.image.description="QM NMR Calculator - ARM64 Worker (NWChem, CREST, xTB)"
+LABEL org.opencontainers.image.licenses="MIT"
+
+# Copy environment definition and install conda packages
+# This installs: nwchem, xtb, crest, rdkit, python, X11 libs
+COPY --chown=$MAMBA_USER:$MAMBA_USER env-worker-arm64.yaml /tmp/env-worker-arm64.yaml
+RUN micromamba install -y -n base -f /tmp/env-worker-arm64.yaml && \
+    micromamba clean --all --yes
+
+# CRITICAL: Enable conda activation for subsequent RUN commands
+# Without this, pip and python commands will fail
+ARG MAMBA_DOCKERFILE_ACTIVATE=1
+
+# Copy and install application
+WORKDIR /app
+COPY --chown=$MAMBA_USER:$MAMBA_USER pyproject.toml README.md ./
+COPY --chown=$MAMBA_USER:$MAMBA_USER src/ ./src/
+RUN pip install --no-cache-dir .
+
+# Environment variables (supplements conda activation scripts)
+# Conda activation sets NWCHEM_BASIS_LIBRARY and XTBPATH automatically
+ENV OMP_STACKSIZE="2G"
+ENV OMP_NUM_THREADS="4"
+ENV OPENBLAS_NUM_THREADS="4"
+ENV GFORTRAN_UNBUFFERED_ALL="1"
+ENV NWCHEM_NPROC="4"
+
+# Create data directory for Huey database and job files
+RUN mkdir -p /app/data
+
+# Copy validation script
+COPY --chown=$MAMBA_USER:$MAMBA_USER scripts/validate-worker-arm64.sh /app/scripts/
+RUN chmod +x /app/scripts/validate-worker-arm64.sh
+
+WORKDIR /app
+
+# Default command: start Huey consumer
+# Single worker, process-based for isolation
+CMD ["huey_consumer", "qm_nmr_calc.queue.huey", "-w", "1", "-k", "process"]
