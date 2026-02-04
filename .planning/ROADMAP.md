@@ -325,11 +325,11 @@ Plans:
   3. Containers shut down gracefully within 25 seconds during preemption
   4. User can select region, zone, and machine type with sensible defaults
   5. Cost estimate displayed before VM creation (user can cancel)
-**Plans**: TBD
+**Plans**: 1 plan
 **Status**: Not started
 
 Plans:
-- [ ] 46-01: TBD
+- [ ] 46-01-PLAN.md - VM deployment with startup/shutdown scripts and Docker Compose override
 
 ### Phase 47: Lifecycle Management Scripts
 **Goal**: Users can stop, start, check status, and access their GCP VM without memorizing gcloud commands.
@@ -417,7 +417,7 @@ Phases execute in numeric order: 45 -> 46 -> 47 -> 48
 | 43. CI/CD Integration | v2.5 | 1/1 | Complete | 2026-02-04 |
 | 44. Documentation | v2.5 | 1/1 | Complete | 2026-02-04 |
 | **45. GCP Infrastructure** | **v2.6** | **1/1** | **Complete** | 2026-02-04 |
-| **46. VM Deployment** | **v2.6** | **0/TBD** | **Not started** | - |
+| **46. VM Deployment** | **v2.6** | **0/1** | **Not started** | - |
 | **47. Lifecycle Scripts** | **v2.6** | **0/TBD** | **Not started** | - |
 | **48. Documentation** | **v2.6** | **0/TBD** | **Not started** | - |
 
@@ -454,4 +454,4 @@ Phases execute in numeric order: 45 -> 46 -> 47 -> 48
 **Mapped: 23/23 (100%)**
 
 ---
-*Last updated: 2026-02-04 - Phase 45 complete*
+*Last updated: 2026-02-04 - Phase 46 planned*
