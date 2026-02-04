@@ -83,10 +83,10 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-03 22:10 UTC
-Stopped at: v2.4 milestone archived
-Resume file: None
-Next: `/gsd:new-milestone` to define next focus area
+Last session: 2026-02-03 22:15 UTC
+Stopped at: Post-v2.4 bugfix (Caddy empty DOMAIN), user testing on Mac
+Resume file: .planning/.continue-here.md
+Next: User tests Docker on Mac, then `/gsd:new-milestone`
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs
 Docker: Worker image 2.1GB, API image ~733MB, Caddy reverse proxy, GHCR publishing workflow
