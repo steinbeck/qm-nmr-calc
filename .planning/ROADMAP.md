@@ -331,10 +331,10 @@ Plans:
   2. Known issues section documents any ARM64-specific caveats discovered during validation
   3. docker-compose.yml works unchanged on ARM64 (auto-pulls correct architecture)
 **Plans**: 1 plan
-**Status**: Planning
+**Status**: Complete
 
 Plans:
-- [ ] 44-01-PLAN.md -- Update README and deployment docs with ARM64 support
+- [x] 44-01-PLAN.md -- Update README and deployment docs with ARM64 support
 
 </details>
 
@@ -390,7 +390,7 @@ Phases execute in numeric order: 41 -> 42 -> 43 -> 44
 | **41. ARM64 Dockerfile** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
 | **42. Local Validation** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
 | **43. CI/CD Integration** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
-| **44. Documentation** | **v2.5** | **0/1** | **Planning** | - |
+| **44. Documentation** | **v2.5** | **1/1** | **Complete** | 2026-02-04 |
 
 ## Coverage (v2.5)
 
@@ -415,4 +415,4 @@ Phases execute in numeric order: 41 -> 42 -> 43 -> 44
 **Mapped: 13/13 (100%)**
 
 ---
-*Last updated: 2026-02-04 - Phase 44 planned*
+*Last updated: 2026-02-04 - Phase 44 complete, v2.5 milestone complete*

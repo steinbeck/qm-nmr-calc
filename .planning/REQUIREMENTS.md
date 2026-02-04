@@ -25,9 +25,9 @@ Requirements for ARM64 Docker support. Each maps to roadmap phases.
 
 ### Documentation
 
-- [ ] **DOCS-01**: README documents ARM64/Apple Silicon support
-- [ ] **DOCS-02**: Known issues section covers ARM64-specific caveats
-- [ ] **DOCS-03**: docker-compose.yml works unchanged on ARM64
+- [x] **DOCS-01**: README documents ARM64/Apple Silicon support
+- [x] **DOCS-02**: Known issues section covers ARM64-specific caveats
+- [x] **DOCS-03**: docker-compose.yml works unchanged on ARM64
 
 ## Future Requirements
 
@@ -65,9 +65,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CICD-02 | Phase 43 | Complete |
 | CICD-03 | Phase 43 | Complete |
 | CICD-04 | Phase 43 | Complete |
-| DOCS-01 | Phase 44 | Pending |
-| DOCS-02 | Phase 44 | Pending |
-| DOCS-03 | Phase 44 | Pending |
+| DOCS-01 | Phase 44 | Complete |
+| DOCS-02 | Phase 44 | Complete |
+| DOCS-03 | Phase 44 | Complete |
 
 **Coverage:**
 - v2.5 requirements: 13 total
