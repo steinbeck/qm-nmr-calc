@@ -87,13 +87,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEPLOY-05 | Phase 46 | Complete |
 | DEPLOY-06 | Phase 46 | Complete |
 | DEPLOY-07 | Phase 46 | Complete |
-| LIFE-01 | Phase 47 | Pending |
-| LIFE-02 | Phase 47 | Pending |
-| LIFE-03 | Phase 47 | Pending |
-| LIFE-04 | Phase 47 | Pending |
-| LIFE-05 | Phase 47 | Pending |
-| LIFE-06 | Phase 47 | Pending |
-| LIFE-07 | Phase 47 | Pending |
+| LIFE-01 | Phase 47 | Complete |
+| LIFE-02 | Phase 47 | Complete |
+| LIFE-03 | Phase 47 | Complete |
+| LIFE-04 | Phase 47 | Complete |
+| LIFE-05 | Phase 47 | Complete |
+| LIFE-06 | Phase 47 | Complete |
+| LIFE-07 | Phase 47 | Complete |
 | DOCS-01 | Phase 48 | Pending |
 | DOCS-02 | Phase 48 | Pending |
 | DOCS-03 | Phase 48 | Pending |
@@ -107,4 +107,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-04*
-*Last updated: 2026-02-04 after Phase 46 complete*
+*Last updated: 2026-02-05 after Phase 47 complete*
