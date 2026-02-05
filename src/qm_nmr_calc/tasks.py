@@ -152,6 +152,15 @@ def run_nmr_task(job_id: str) -> dict:
 
     geometry_file = result['geometry_file']
 
+    # Store NWChem runtime info (actual processes and memory used)
+    runtime_info = result.get('runtime_info')
+    if runtime_info:
+        update_job_status(
+            job_id,
+            nwchem_actual_processes=runtime_info['nproc'],
+            nwchem_actual_memory_mb=runtime_info['total_memory_mb'],
+        )
+
     # Step 3: Post-processing
     start_step(job_id, "post_processing", "Generating results")
 
@@ -323,7 +332,7 @@ def run_ensemble_nmr_task(job_id: str) -> dict:
 
     # Step 2-4: DFT optimization + Post-DFT filter + NMR calculations
     start_step(job_id, "optimizing_conformers", f"Optimizing conformers (0/{len(ensemble.conformers)})")
-    ensemble, nmr_results = run_ensemble_dft_and_nmr(
+    ensemble, nmr_results, runtime_info = run_ensemble_dft_and_nmr(
         ensemble=ensemble,
         job_id=job_id,
         preset=preset,
@@ -331,6 +340,14 @@ def run_ensemble_nmr_task(job_id: str) -> dict:
         processes=preset['processes'],
         progress_callback=on_progress,
     )
+
+    # Store NWChem runtime info (actual processes and memory used)
+    if runtime_info:
+        update_job_status(
+            job_id,
+            nwchem_actual_processes=runtime_info['nproc'],
+            nwchem_actual_memory_mb=runtime_info['total_memory_mb'],
+        )
 
     # Step 5: Boltzmann averaging
     # CRITICAL: Filter to only nmr_complete conformers before averaging

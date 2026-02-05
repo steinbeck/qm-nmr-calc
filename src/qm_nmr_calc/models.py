@@ -127,6 +127,10 @@ class JobStatus(BaseModel):
     cpu_time_seconds: Optional[float] = None
     memory_peak_mb: Optional[float] = None
 
+    # NWChem runtime configuration (extracted from first NWChem output)
+    nwchem_actual_processes: Optional[int] = None  # Actual MPI processes used
+    nwchem_actual_memory_mb: Optional[float] = None  # Actual memory allocation
+
     # NMR results (populated on completion)
     nmr_results: Optional[NMRResults] = None
     optimized_geometry_file: Optional[str] = None  # Path to XYZ file

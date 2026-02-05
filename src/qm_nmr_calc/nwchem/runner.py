@@ -12,7 +12,7 @@ from pathlib import Path
 
 from .geometry import smiles_to_xyz, load_geometry_file, mol_to_xyz_block
 from .input_gen import generate_optimization_input, generate_shielding_input
-from .output_parser import extract_optimized_geometry, parse_shielding_output
+from .output_parser import extract_optimized_geometry, extract_runtime_info, parse_shielding_output
 
 
 def validate_nwchem() -> None:
@@ -223,11 +223,18 @@ def run_calculation(
     shielding_output_text = shielding_output_file.read_text()
     shielding_data = parse_shielding_output(shielding_output_text)
 
+    # Extract runtime info from NWChem output (optimization if available, else shielding)
+    runtime_info = None
+    output_for_runtime = optimization_output if optimization_output else shielding_output_file
+    if output_for_runtime and output_for_runtime.exists():
+        runtime_info = extract_runtime_info(output_for_runtime.read_text())
+
     return {
         "geometry_file": optimized_xyz_path,
         "shielding_data": shielding_data,
         "optimization_output": optimization_output,
         "shielding_output": shielding_output_file,
+        "runtime_info": runtime_info,
     }
 
 
@@ -254,7 +261,10 @@ def run_conformer_dft_optimization(
         progress_callback: Optional callback called with (step, current, total) for progress tracking
 
     Returns:
-        Tuple of (successful_conformers, failed_conformers) where each is a list of ConformerData
+        Tuple of (successful_conformers, failed_conformers, runtime_info) where:
+        - successful_conformers: list of ConformerData
+        - failed_conformers: list of ConformerData
+        - runtime_info: NWChemRuntimeInfo from first successful conformer (or None)
 
     Raises:
         RuntimeError: If less than 50% of conformers succeed
@@ -268,6 +278,7 @@ def run_conformer_dft_optimization(
     job_dir = get_job_dir(job_id)
     successful = []
     failed = []
+    runtime_info = None  # Capture from first successful conformer
 
     for conformer in ensemble.conformers:
         try:
@@ -311,6 +322,10 @@ def run_conformer_dft_optimization(
                 conf_optimized_path.relative_to(job_dir)
             )
 
+            # Capture runtime info from first successful conformer
+            if runtime_info is None:
+                runtime_info = result.get("runtime_info")
+
             successful.append(conformer)
 
             # Report progress after each conformer completes (success)
@@ -342,7 +357,7 @@ def run_conformer_dft_optimization(
             f"Need at least 50% success rate."
         )
 
-    return (successful, failed)
+    return (successful, failed, runtime_info)
 
 
 def apply_post_dft_filter(
@@ -524,15 +539,16 @@ def run_ensemble_dft_and_nmr(
         progress_callback: Optional callback called with (step, current, total) for progress tracking
 
     Returns:
-        Tuple of (ensemble, nmr_results) where:
+        Tuple of (ensemble, nmr_results, runtime_info) where:
             - ensemble: Updated ConformerEnsemble with total_after_post_filter set
             - nmr_results: List of NMRResults for conformers that completed NMR
+            - runtime_info: NWChemRuntimeInfo from first NWChem run (or None)
 
     Raises:
         RuntimeError: If DFT optimization fails for >50% of conformers
     """
     # Step 1: DFT optimization
-    optimized_conformers, failed_dft = run_conformer_dft_optimization(
+    optimized_conformers, failed_dft, runtime_info = run_conformer_dft_optimization(
         ensemble, job_id, preset, solvent, processes, progress_callback
     )
 
@@ -554,4 +570,4 @@ def run_ensemble_dft_and_nmr(
     # Each ConformerData object's status/energy/etc fields were updated by reference
     # No reconstruction needed - final states are already reflected
 
-    return (ensemble, nmr_results)
+    return (ensemble, nmr_results, runtime_info)

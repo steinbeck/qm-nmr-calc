@@ -31,6 +31,57 @@ adjustment for different NWChem versions. Test with actual output files.
 """
 
 import re
+from typing import TypedDict
+
+
+class NWChemRuntimeInfo(TypedDict):
+    """Runtime information extracted from NWChem output header."""
+
+    nproc: int
+    total_memory_mb: float
+
+
+def extract_runtime_info(output_text: str) -> NWChemRuntimeInfo | None:
+    """Extract runtime configuration from NWChem output header.
+
+    Parses the job information section at the start of NWChem output to get
+    the actual number of MPI processes and memory allocation used.
+
+    Args:
+        output_text: Full NWChem output file content as string.
+
+    Returns:
+        Dictionary with nproc and total_memory_mb, or None if not found.
+
+    Example NWChem header:
+        nproc           =        4
+        ...
+        Memory information
+        ------------------
+        heap     =   13107200 doubles =    100.0 Mbytes
+        stack    =   78643197 doubles =    600.0 Mbytes
+        global   =  209715200 doubles =   1600.0 Mbytes
+        total    =  301465597 doubles =   2300.0 Mbytes
+    """
+    result: NWChemRuntimeInfo = {"nproc": 0, "total_memory_mb": 0.0}
+
+    # Extract nproc: "nproc           =        4"
+    nproc_match = re.search(r"nproc\s*=\s*(\d+)", output_text)
+    if nproc_match:
+        result["nproc"] = int(nproc_match.group(1))
+
+    # Extract total memory: "total    =  301465597 doubles =   2300.0 Mbytes"
+    memory_match = re.search(
+        r"total\s*=\s*\d+\s+doubles\s*=\s*([\d.]+)\s*Mbytes", output_text
+    )
+    if memory_match:
+        result["total_memory_mb"] = float(memory_match.group(1))
+
+    # Return None if we couldn't find the essential info
+    if result["nproc"] == 0:
+        return None
+
+    return result
 
 
 def extract_dft_energy(output_text: str) -> float:

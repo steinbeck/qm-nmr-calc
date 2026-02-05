@@ -295,6 +295,14 @@ async def results_page(request: Request, job_id: str) -> HTMLResponse:
     context = _get_base_context()
     context["job"] = job_context
     context["results"] = results_context
+
+    # Override system_info with actual NWChem runtime values if available
+    if job_status.nwchem_actual_processes is not None:
+        context["system_info"]["nwchem_processes"] = job_status.nwchem_actual_processes
+        # Memory per process is 2GB, but show actual total from NWChem
+        if job_status.nwchem_actual_memory_mb is not None:
+            context["system_info"]["nwchem_memory_gb"] = round(job_status.nwchem_actual_memory_mb / 1024, 1)
+
     return templates.TemplateResponse(
         request=request,
         name="results.html",
