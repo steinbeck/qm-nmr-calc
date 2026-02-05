@@ -60,7 +60,7 @@ def get_default_processes() -> int:
     """Get default number of MPI processes from environment or auto-detect.
 
     Uses NWCHEM_NPROC env var if set, otherwise auto-detects based on:
-    1. Available CPUs: uses 80% (to leave headroom for system)
+    1. Available CPUs: uses all cores (assumes dedicated compute environment)
     2. Available memory: requires 2GB per MPI process (NWChem recommendation)
     3. Hard cap at 40 (diminishing returns beyond that for typical molecules)
 
@@ -74,9 +74,9 @@ def get_default_processes() -> int:
             pass
 
     try:
-        # CPU-based limit: 80% of available cores
+        # CPU-based limit: all available cores (dedicated compute environment)
         cpu_count = os.cpu_count() or 4
-        cpu_limit = int(cpu_count * 0.8)
+        cpu_limit = cpu_count
 
         # Memory-based limit: 2GB per MPI process
         memory_gb = _get_available_memory_gb()
