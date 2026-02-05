@@ -11,18 +11,18 @@ See: .planning/PROJECT.md (updated 2026-02-04)
 
 Milestone: v2.6 Google Cloud Spot Deployment
 Phase: 46 of 48 (VM Deployment Script)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-02-04 -- Phase 45 complete (infrastructure scripts)
+Plan: 1 of 1 complete
+Status: Phase complete
+Last activity: 2026-02-05 -- Completed 46-01-PLAN.md (VM deployment scripts)
 
-Progress: [####################] 101 plans complete (v1.0-v2.5, Phase 45)
+Progress: [####################] 102 plans complete (v1.0-v2.5, Phase 45-46)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 101 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 1)
+- Total plans completed: 102 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 2)
 - Average duration: ~7 min
-- Total execution time: ~681 min (~11.3 hours)
+- Total execution time: ~684 min (~11.4 hours)
 
 **By Milestone:**
 
@@ -49,6 +49,9 @@ v2.5 decisions archived.
 **v2.6 Decisions:**
 - Phase 45: Idempotent infrastructure scripts that check for existing resources
 - Phase 45: Teardown requires explicit "yes" confirmation for safety
+- Phase 46: Startup script downloads docker-compose.yml and Caddyfile from GitHub master branch
+- Phase 46: Shutdown script uses 25s timeout to stay within 30s preemption window
+- Phase 46: Default machine type is e2-standard-4 (4 vCPU, 16 GB, ~$30-50/month Spot)
 
 ### Roadmap Evolution
 
@@ -82,10 +85,11 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-04
-Stopped at: Phase 45 complete, ready to plan Phase 46
+Last session: 2026-02-05
+Stopped at: Phase 46 complete (VM deployment scripts)
 Resume file: None
-Next: /gsd:plan-phase 46
+Next: /gsd:plan-phase 47
 Tests: All tests passing (356 tests)
-Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs
+Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs, ~750 LOC GCP scripts
 Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR
+GCP: Infrastructure scripts ready, VM deployment script ready
