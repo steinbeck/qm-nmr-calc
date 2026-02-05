@@ -7,6 +7,9 @@ from typing import TypedDict
 
 def _get_available_memory_gb() -> float:
     """Get available memory in GB (container limit or system memory)."""
+    import platform
+    import subprocess
+
     # Try cgroup v2 first (modern Docker/Kubernetes)
     try:
         with open("/sys/fs/cgroup/memory.max", "r") as f:
@@ -26,10 +29,8 @@ def _get_available_memory_gb() -> float:
     except (FileNotFoundError, ValueError, PermissionError):
         pass
 
-    # Fall back to system memory
+    # Try Linux /proc/meminfo
     try:
-        import shutil
-        total, _, _ = shutil.disk_usage("/")  # dummy call to check we can import
         with open("/proc/meminfo", "r") as f:
             for line in f:
                 if line.startswith("MemTotal:"):
@@ -37,6 +38,20 @@ def _get_available_memory_gb() -> float:
                     return int(line.split()[1]) / (1024**2)
     except (FileNotFoundError, ValueError, PermissionError):
         pass
+
+    # Try macOS sysctl
+    if platform.system() == "Darwin":
+        try:
+            result = subprocess.run(
+                ["sysctl", "-n", "hw.memsize"],
+                capture_output=True,
+                text=True,
+                timeout=1,
+            )
+            if result.returncode == 0:
+                return int(result.stdout.strip()) / (1024**3)
+        except (subprocess.TimeoutExpired, ValueError, FileNotFoundError):
+            pass
 
     return 8.0  # Conservative default
 
