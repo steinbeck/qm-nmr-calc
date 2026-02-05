@@ -341,11 +341,11 @@ Plans:
   3. Delete command removes VM but preserves persistent disk
   4. Status command shows VM state, IP address, and running containers
   5. SSH and logs commands provide easy access for debugging
-**Plans**: TBD
+**Plans**: 1 plan
 **Status**: Not started
 
 Plans:
-- [ ] 47-01: TBD
+- [ ] 47-01-PLAN.md - Lifecycle management scripts (stop, start, delete, status, ssh, logs)
 
 ### Phase 48: Documentation and Testing
 **Goal**: Users can deploy to GCP with clear guidance on prerequisites, costs, and limitations.
@@ -418,7 +418,7 @@ Phases execute in numeric order: 45 -> 46 -> 47 -> 48
 | 44. Documentation | v2.5 | 1/1 | Complete | 2026-02-04 |
 | **45. GCP Infrastructure** | **v2.6** | **1/1** | **Complete** | 2026-02-04 |
 | **46. VM Deployment** | **v2.6** | **1/1** | **Complete** | 2026-02-04 |
-| **47. Lifecycle Scripts** | **v2.6** | **0/TBD** | **Not started** | - |
+| **47. Lifecycle Scripts** | **v2.6** | **0/1** | **Not started** | - |
 | **48. Documentation** | **v2.6** | **0/TBD** | **Not started** | - |
 
 ## Coverage (v2.6)
@@ -454,4 +454,4 @@ Phases execute in numeric order: 45 -> 46 -> 47 -> 48
 **Mapped: 23/23 (100%)**
 
 ---
-*Last updated: 2026-02-04 - Phase 46 complete*
+*Last updated: 2026-02-05 - Phase 47 planned*
