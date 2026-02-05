@@ -33,8 +33,23 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="container">
-        <small>Powered by NWChem</small>
+    <footer class="container footer">
+        <div class="footer-content">
+            <div class="footer-machine">
+                <span class="footer-label">{{ system_info.machine_type }}:</span>
+                <span>{{ system_info.total_cores }} cores · {{ system_info.total_memory_gb }} GB RAM</span>
+                <span class="footer-separator">·</span>
+                <span class="footer-label">NWChem uses:</span>
+                <span>{{ system_info.nwchem_processes }} processes · {{ system_info.nwchem_memory_gb }} GB</span>
+            </div>
+            <div class="footer-branding">
+                <span>Powered by <a href="https://nwchemgit.github.io/" target="_blank" rel="noopener">NWChem</a></span>
+                <span class="footer-separator">·</span>
+                <span>By <a href="https://cheminf.uni-jena.de" target="_blank" rel="noopener">Steinbeck Lab</a></span>
+                <span class="footer-separator">·</span>
+                <a href="https://github.com/steinbeck-lab/qm-nmr-calc" target="_blank" rel="noopener">GitHub</a>
+            </div>
+        </div>
     </footer>
 
     {% block scripts %}{% endblock %}

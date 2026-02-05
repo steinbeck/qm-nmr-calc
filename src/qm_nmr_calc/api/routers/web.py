@@ -19,6 +19,7 @@ from ...solvents import (
 from ...storage import create_job_directory, get_job_dir, load_job_status
 from ...tasks import run_nmr_task, run_ensemble_nmr_task, _generate_initial_xyz
 from ...validation import validate_mol_file, validate_smiles
+from ..system_info import get_system_info
 
 # Template engine setup
 templates = Jinja2Templates(
@@ -26,6 +27,11 @@ templates = Jinja2Templates(
 )
 
 router = APIRouter(tags=["web"])
+
+
+def _get_base_context() -> dict:
+    """Build base context with system info for all templates."""
+    return {"system_info": get_system_info()}
 
 
 def _get_form_context() -> dict:
@@ -47,7 +53,13 @@ def _get_form_context() -> dict:
     # Check CREST availability for form display
     crest_available = detect_crest_available()
 
-    return {"solvents": solvents, "presets": presets, "crest_available": crest_available}
+    context = _get_base_context()
+    context.update({
+        "solvents": solvents,
+        "presets": presets,
+        "crest_available": crest_available,
+    })
+    return context
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -221,10 +233,12 @@ async def job_status_page(request: Request, job_id: str) -> HTMLResponse:
         "conformer_mode": job_status.input.conformer_mode,
     }
 
+    context = _get_base_context()
+    context["job"] = job_data
     return templates.TemplateResponse(
         request=request,
         name="status.html",
-        context={"job": job_data},
+        context=context,
     )
 
 
@@ -278,11 +292,11 @@ async def results_page(request: Request, job_id: str) -> HTMLResponse:
         "solvent": get_solvent_display_name(job_status.nmr_results.solvent),
     }
 
+    context = _get_base_context()
+    context["job"] = job_context
+    context["results"] = results_context
     return templates.TemplateResponse(
         request=request,
         name="results.html",
-        context={
-            "job": job_context,
-            "results": results_context,
-        },
+        context=context,
     )
