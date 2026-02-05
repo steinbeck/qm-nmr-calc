@@ -464,9 +464,20 @@ Spot VMs offer **60-91% cost savings** compared to on-demand pricing. For NMR ca
 - Pay only for compute time - stop the VM when not running calculations
 - Persistent disk preserves all data between sessions
 
+### One-Command Deployment
+
+For first-time users, use the interactive quick deploy wizard:
+
+```bash
+cd gcp
+./quick-deploy.sh
+```
+
+This guides you through the entire process: prerequisites, infrastructure, DNS, and deployment.
+
 ### Prerequisites
 
-Before starting, ensure you have:
+Before starting (the quick-deploy script will check these for you):
 
 1. **GCP Account with Billing** - [Create account](https://console.cloud.google.com/)
 2. **gcloud CLI** - [Install](https://cloud.google.com/sdk/docs/install) and authenticate:
@@ -519,7 +530,19 @@ nano config.sh
 # Set: GCP_PROJECT_ID="your-actual-project-id"
 ```
 
-**Step 2: Create infrastructure**
+**Step 2: Check prerequisites**
+
+```bash
+./check-prerequisites.sh
+```
+
+This verifies:
+- gcloud CLI is installed and authenticated
+- Project exists and is accessible
+- Billing is enabled
+- Compute Engine API is enabled
+
+**Step 3: Create infrastructure**
 
 ```bash
 ./setup-infrastructure.sh
@@ -532,11 +555,19 @@ This creates:
 
 Note the static IP address displayed at the end.
 
-**Step 3: Configure DNS**
+**Step 4: Configure DNS**
 
 Point your domain to the static IP (see [DNS Configuration](#dns-configuration) below).
 
-**Step 4: Deploy VM**
+**Step 5: Verify DNS propagation**
+
+```bash
+./check-dns.sh your-domain.com
+```
+
+Wait until DNS resolves to the correct IP before proceeding.
+
+**Step 6: Deploy VM**
 
 ```bash
 ./deploy-vm.sh
@@ -547,13 +578,19 @@ You'll be prompted for:
 - Machine type (e2-standard-4 recommended)
 - Domain name (for HTTPS certificate)
 
-**Step 5: Wait and access**
+The script automatically validates DNS before deploying.
 
-The VM takes 2-3 minutes to start. It automatically:
-- Installs Docker
-- Downloads docker-compose.yml from GitHub
-- Starts all containers
-- Obtains Let's Encrypt certificate
+**Step 7: Verify deployment**
+
+```bash
+./verify-deployment.sh
+```
+
+This checks:
+- VM is running
+- Containers are healthy
+- HTTPS endpoint responds
+- Persistent disk is mounted
 
 Access your deployment at `https://your-domain.com`
 
@@ -597,6 +634,9 @@ Use these scripts from the `gcp/` directory to manage your deployment:
 
 | Task | Command | Description |
 |------|---------|-------------|
+| Check Prerequisites | `./check-prerequisites.sh` | Verify GCP setup before first deployment |
+| Check DNS | `./check-dns.sh domain` | Verify DNS resolves to static IP |
+| Verify Deployment | `./verify-deployment.sh` | Check all components are healthy |
 | Stop VM | `./stop-vm.sh` | Stop billing for compute, preserve data |
 | Start VM | `./start-vm.sh` | Resume VM, services auto-start |
 | Delete VM | `./delete-vm.sh` | Remove VM instance, keep disk and IP |
@@ -618,6 +658,28 @@ Use these scripts from the `gcp/` directory to manage your deployment:
 ```
 
 ### Troubleshooting GCP Deployment
+
+#### Prerequisites Failing
+
+Run `./check-prerequisites.sh` to diagnose issues:
+
+**Compute Engine API not enabled:**
+```
+Compute Engine API is not enabled
+```
+Fix: `gcloud services enable compute.googleapis.com`
+
+**Billing not enabled:**
+```
+Billing is not enabled for project
+```
+Fix: Enable billing at https://console.cloud.google.com/billing/linkedaccount
+
+**Not authenticated:**
+```
+Not authenticated with gcloud
+```
+Fix: `gcloud auth login && gcloud config set project YOUR_PROJECT`
 
 #### VM Won't Start
 

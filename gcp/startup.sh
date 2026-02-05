@@ -93,6 +93,16 @@ mkdir -p "$APP_DIR"
 cd "$APP_DIR"
 
 # ============================================================================
+# Setup data directory with correct permissions
+# ============================================================================
+DATA_DIR="$MOUNT_POINT/jobs"
+echo_info "Setting up data directory: $DATA_DIR"
+mkdir -p "$DATA_DIR"
+# Ensure UID 999 (appuser in container) can write
+chown -R 999:999 "$MOUNT_POINT" 2>/dev/null || true
+chmod -R 755 "$MOUNT_POINT" 2>/dev/null || true
+
+# ============================================================================
 # Fetch DOMAIN from instance metadata
 # ============================================================================
 echo_info "Fetching DOMAIN from instance metadata..."
@@ -186,5 +196,45 @@ echo_info "Services started successfully"
 echo_info "Running containers:"
 docker compose -f docker-compose.yml -f docker-compose.gcp.yml ps
 
-echo_info "VM setup complete! Access at https://${DOMAIN}"
+# ============================================================================
+# Wait for services to be healthy
+# ============================================================================
+echo_info "Waiting for services to become healthy..."
+
+MAX_WAIT=120
+WAIT_INTERVAL=5
+WAITED=0
+
+while [[ $WAITED -lt $MAX_WAIT ]]; do
+    # Check if API is healthy
+    API_HEALTH=$(docker compose -f docker-compose.yml -f docker-compose.gcp.yml ps api --format "{{.Health}}" 2>/dev/null || echo "unknown")
+
+    if [[ "$API_HEALTH" == "healthy" ]]; then
+        echo_info "API service is healthy!"
+        break
+    fi
+
+    echo_info "Waiting for API to become healthy... ($WAITED/${MAX_WAIT}s)"
+    sleep $WAIT_INTERVAL
+    WAITED=$((WAITED + WAIT_INTERVAL))
+done
+
+if [[ $WAITED -ge $MAX_WAIT ]]; then
+    echo_warn "API did not become healthy within ${MAX_WAIT}s - check logs with: docker compose logs api"
+fi
+
+# ============================================================================
+# Final status
+# ============================================================================
+echo ""
+echo "=============================================="
+echo_info "VM Setup Complete!"
+echo "=============================================="
+echo ""
+echo "Domain:     https://${DOMAIN}"
+echo "Data dir:   $MOUNT_POINT"
+echo ""
+echo "Container status:"
+docker compose -f docker-compose.yml -f docker-compose.gcp.yml ps --format "table {{.Service}}\t{{.Status}}\t{{.Health}}"
+echo ""
 echo_info "Startup script finished at $(date '+%Y-%m-%d %H:%M:%S')"

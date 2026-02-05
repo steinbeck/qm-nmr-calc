@@ -78,3 +78,6 @@ Thumbs.db
 
 # Docker environment configuration (may contain secrets)
 .env
+
+# GCP deployment configuration (contains project-specific settings)
+gcp/config.sh

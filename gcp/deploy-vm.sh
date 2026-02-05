@@ -4,6 +4,7 @@
 # This script creates a cost-optimized Spot VM with:
 #   - Interactive prompts for region, zone, machine type, and domain
 #   - Cost estimation before creation
+#   - DNS validation before deployment
 #   - Automatic Docker installation and container deployment via startup script
 #   - Graceful shutdown handling during preemption
 #
@@ -11,14 +12,34 @@
 #   - gcloud CLI installed and authenticated (gcloud auth login)
 #   - config.sh created from config.sh.example with your project ID
 #   - Infrastructure created (run ./setup-infrastructure.sh first)
+#   - DNS configured (domain pointing to static IP)
 #
 # Usage:
 #   ./deploy-vm.sh
+#   ./deploy-vm.sh --skip-dns-check    # Skip DNS validation (not recommended)
+#
+# First time? Run these in order:
+#   1. ./check-prerequisites.sh
+#   2. ./setup-infrastructure.sh
+#   3. Configure DNS (point domain to static IP)
+#   4. ./check-dns.sh your-domain.com
+#   5. ./deploy-vm.sh
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
+
+# Parse arguments
+SKIP_DNS_CHECK=false
+for arg in "$@"; do
+    case $arg in
+        --skip-dns-check)
+            SKIP_DNS_CHECK=true
+            shift
+            ;;
+    esac
+done
 
 # Colors for output
 RED='\033[0;31m'
@@ -69,6 +90,21 @@ echo_info "Authenticated as: $ACTIVE_ACCOUNT"
 gcloud config set project "$GCP_PROJECT_ID" --quiet
 
 # ============================================================================
+# Check Compute Engine API is enabled
+# ============================================================================
+echo_info "Checking Compute Engine API..."
+COMPUTE_API=$(gcloud services list --enabled --filter="name:compute.googleapis.com" --format="value(name)" 2>/dev/null || true)
+if [[ -z "$COMPUTE_API" ]]; then
+    echo_error "Compute Engine API is not enabled"
+    echo ""
+    echo "Enable it with:"
+    echo "  gcloud services enable compute.googleapis.com"
+    echo ""
+    echo "Or run: ./check-prerequisites.sh"
+    exit 1
+fi
+
+# ============================================================================
 # Interactive prompts
 # ============================================================================
 echo ""
@@ -109,6 +145,61 @@ read -r -p "Domain: " DOMAIN
 if [[ -z "$DOMAIN" ]]; then
     echo_error "Domain is required for HTTPS deployment"
     exit 1
+fi
+
+# ============================================================================
+# Validate DNS configuration
+# ============================================================================
+if [[ "$SKIP_DNS_CHECK" != "true" ]]; then
+    echo ""
+    echo_info "Validating DNS configuration..."
+
+    # Get expected static IP
+    IP_NAME="${RESOURCE_PREFIX}-ip"
+    EXPECTED_IP=$(gcloud compute addresses describe "$IP_NAME" \
+        --region="$SELECTED_REGION" \
+        --format="value(address)" 2>/dev/null || true)
+
+    if [[ -z "$EXPECTED_IP" ]]; then
+        echo_error "Static IP not found. Run ./setup-infrastructure.sh first."
+        exit 1
+    fi
+
+    # Check DNS resolution
+    RESOLVED_IP=""
+    if command -v dig &>/dev/null; then
+        RESOLVED_IP=$(dig +short "$DOMAIN" A 2>/dev/null | head -1 || true)
+    elif command -v host &>/dev/null; then
+        RESOLVED_IP=$(host "$DOMAIN" 2>/dev/null | grep "has address" | head -1 | awk '{print $4}' || true)
+    elif command -v nslookup &>/dev/null; then
+        RESOLVED_IP=$(nslookup "$DOMAIN" 2>/dev/null | grep "Address:" | tail -1 | awk '{print $2}' || true)
+    fi
+
+    if [[ -z "$RESOLVED_IP" ]]; then
+        echo_error "Domain '$DOMAIN' does not resolve"
+        echo ""
+        echo "Configure your DNS A record to point to: $EXPECTED_IP"
+        echo "Then wait for propagation (5-15 minutes) and try again."
+        echo ""
+        echo "Check propagation at: https://dnschecker.org/#A/$DOMAIN"
+        echo ""
+        echo "To skip this check (not recommended):"
+        echo "  ./deploy-vm.sh --skip-dns-check"
+        exit 1
+    elif [[ "$RESOLVED_IP" != "$EXPECTED_IP" ]]; then
+        echo_warn "Domain '$DOMAIN' resolves to $RESOLVED_IP (expected: $EXPECTED_IP)"
+        echo ""
+        echo "This may cause Let's Encrypt certificate issues."
+        echo ""
+        read -r -p "Continue anyway? (yes/no) [no]: " DNS_CONTINUE
+        DNS_CONTINUE="${DNS_CONTINUE:-no}"
+        if [[ "$DNS_CONTINUE" != "yes" ]]; then
+            echo_info "Deployment cancelled. Fix DNS and try again."
+            exit 0
+        fi
+    else
+        echo_info "DNS verified: $DOMAIN -> $EXPECTED_IP"
+    fi
 fi
 
 # ============================================================================

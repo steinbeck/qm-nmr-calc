@@ -72,6 +72,25 @@ echo_info "Setting project to $GCP_PROJECT_ID..."
 gcloud config set project "$GCP_PROJECT_ID" --quiet
 
 # ============================================================================
+# Check Compute Engine API is enabled
+# ============================================================================
+echo_info "Checking Compute Engine API..."
+COMPUTE_API=$(gcloud services list --enabled --filter="name:compute.googleapis.com" --format="value(name)" 2>/dev/null || true)
+if [[ -z "$COMPUTE_API" ]]; then
+    echo_warn "Compute Engine API is not enabled. Enabling now..."
+    if gcloud services enable compute.googleapis.com; then
+        echo_info "Compute Engine API enabled successfully"
+        sleep 5  # Wait for API to become active
+    else
+        echo_error "Failed to enable Compute Engine API"
+        echo "Enable manually at: https://console.cloud.google.com/apis/library/compute.googleapis.com?project=$GCP_PROJECT_ID"
+        exit 1
+    fi
+else
+    echo_info "Compute Engine API is enabled"
+fi
+
+# ============================================================================
 # INFRA-01: Reserve static external IP
 # ============================================================================
 echo ""

@@ -52,7 +52,7 @@ For production deployment with HTTPS, cloud VPS setup, and troubleshooting, see 
 
 **Cloud Options:**
 - **Self-managed VPS**: Any cloud provider (DigitalOcean, Linode, etc.) - see Deployment Guide
-- **[GCP Spot VM](docs/deployment.md#google-cloud-platform-deployment)**: Cost-effective Google Cloud deployment (~$30-50/month) with lifecycle scripts
+- **[GCP Spot VM](docs/deployment.md#google-cloud-platform-deployment)**: Cost-effective Google Cloud deployment (~$30-50/month) with one-command setup: `cd gcp && ./quick-deploy.sh`
 
 ## Development Installation
 
