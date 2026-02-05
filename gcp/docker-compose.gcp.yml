@@ -27,6 +27,12 @@ services:
       - LOG_LEVEL=info
       # Let auto-detection handle CPU count based on VM size
       - NWCHEM_NPROC=${NWCHEM_NPROC:-}
+    # Override default 8GB memory limit for high-memory GCP VMs
+    # This allows auto-detection to use more MPI processes
+    deploy:
+      resources:
+        limits:
+          memory: ${WORKER_MEMORY_LIMIT:-120g}
 
   # Caddy DOMAIN comes from .env file (already set in base compose)
   # Named volumes (caddy_data, caddy_config) remain as Docker volumes for certificate storage
