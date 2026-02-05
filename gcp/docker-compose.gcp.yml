@@ -1,0 +1,32 @@
+# Docker Compose GCP overrides for qm-nmr-calc
+# Uses persistent disk for data storage and sets production environment
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.gcp.yml up -d
+#
+# This override file is automatically created by the startup script and configures:
+# - Persistent disk bind mounts (/mnt/disks/data instead of named volume)
+# - Production environment variables
+# - Info-level logging for production
+
+services:
+  api:
+    volumes:
+      # Override to use mounted persistent disk instead of named volume
+      - /mnt/disks/data:/app/data
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=info
+
+  worker:
+    volumes:
+      # Override to use mounted persistent disk instead of named volume
+      - /mnt/disks/data:/app/data
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=info
+      # Let auto-detection handle CPU count based on VM size
+      - NWCHEM_NPROC=${NWCHEM_NPROC:-}
+
+  # Caddy DOMAIN comes from .env file (already set in base compose)
+  # Named volumes (caddy_data, caddy_config) remain as Docker volumes for certificate storage
