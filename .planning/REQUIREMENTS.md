@@ -9,20 +9,20 @@ Requirements for GCP Spot VM deployment. Enables cost-effective cloud deployment
 
 ### Infrastructure
 
-- [ ] **INFRA-01**: Script creates static external IP for stable DNS
-- [ ] **INFRA-02**: Script creates firewall rules (HTTP 80, HTTPS 443, SSH 22)
-- [ ] **INFRA-03**: Script creates persistent disk for job data and certificates
-- [ ] **INFRA-04**: Persistent disk survives VM deletion/recreation
+- [x] **INFRA-01**: Script creates static external IP for stable DNS
+- [x] **INFRA-02**: Script creates firewall rules (HTTP 80, HTTPS 443, SSH 22)
+- [x] **INFRA-03**: Script creates persistent disk for job data and certificates
+- [x] **INFRA-04**: Persistent disk survives VM deletion/recreation
 
 ### Deployment
 
-- [ ] **DEPLOY-01**: One-command VM creation with Spot configuration
-- [ ] **DEPLOY-02**: Startup script installs Docker and deploys containers
-- [ ] **DEPLOY-03**: Startup script pulls images from GHCR
-- [ ] **DEPLOY-04**: Graceful container shutdown during preemption (25s timeout)
-- [ ] **DEPLOY-05**: Interactive prompts for region, zone, machine type with defaults
-- [ ] **DEPLOY-06**: Cost estimation displayed before VM creation
-- [ ] **DEPLOY-07**: docker-compose.gcp.yml override for GCP-specific settings
+- [x] **DEPLOY-01**: One-command VM creation with Spot configuration
+- [x] **DEPLOY-02**: Startup script installs Docker and deploys containers
+- [x] **DEPLOY-03**: Startup script pulls images from GHCR
+- [x] **DEPLOY-04**: Graceful container shutdown during preemption (25s timeout)
+- [x] **DEPLOY-05**: Interactive prompts for region, zone, machine type with defaults
+- [x] **DEPLOY-06**: Cost estimation displayed before VM creation
+- [x] **DEPLOY-07**: docker-compose.gcp.yml override for GCP-specific settings
 
 ### Lifecycle
 
@@ -76,17 +76,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 45 | Pending |
-| INFRA-02 | Phase 45 | Pending |
-| INFRA-03 | Phase 45 | Pending |
-| INFRA-04 | Phase 45 | Pending |
-| DEPLOY-01 | Phase 46 | Pending |
-| DEPLOY-02 | Phase 46 | Pending |
-| DEPLOY-03 | Phase 46 | Pending |
-| DEPLOY-04 | Phase 46 | Pending |
-| DEPLOY-05 | Phase 46 | Pending |
-| DEPLOY-06 | Phase 46 | Pending |
-| DEPLOY-07 | Phase 46 | Pending |
+| INFRA-01 | Phase 45 | Complete |
+| INFRA-02 | Phase 45 | Complete |
+| INFRA-03 | Phase 45 | Complete |
+| INFRA-04 | Phase 45 | Complete |
+| DEPLOY-01 | Phase 46 | Complete |
+| DEPLOY-02 | Phase 46 | Complete |
+| DEPLOY-03 | Phase 46 | Complete |
+| DEPLOY-04 | Phase 46 | Complete |
+| DEPLOY-05 | Phase 46 | Complete |
+| DEPLOY-06 | Phase 46 | Complete |
+| DEPLOY-07 | Phase 46 | Complete |
 | LIFE-01 | Phase 47 | Pending |
 | LIFE-02 | Phase 47 | Pending |
 | LIFE-03 | Phase 47 | Pending |
@@ -107,4 +107,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-04*
-*Last updated: 2026-02-04 after roadmap creation*
+*Last updated: 2026-02-04 after Phase 46 complete*
