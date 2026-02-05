@@ -452,6 +452,242 @@ docker compose up -d --build
 | `qm-nmr-calc-caddy-data` | Let's Encrypt certificates |
 | `qm-nmr-calc-caddy-config` | Caddy runtime config |
 
+## Google Cloud Platform Deployment
+
+Deploy qm-nmr-calc to a cost-effective GCP Spot VM with lifecycle management scripts. This is ideal for teams that want cloud hosting without managed complexity.
+
+### Why GCP Spot VMs?
+
+Spot VMs offer **60-91% cost savings** compared to on-demand pricing. For NMR calculations that run intermittently, this makes cloud hosting very affordable:
+
+- **e2-standard-4** (4 vCPU, 16 GB): ~$30-50/month Spot vs ~$100-150/month on-demand
+- Pay only for compute time - stop the VM when not running calculations
+- Persistent disk preserves all data between sessions
+
+### Prerequisites
+
+Before starting, ensure you have:
+
+1. **GCP Account with Billing** - [Create account](https://console.cloud.google.com/)
+2. **gcloud CLI** - [Install](https://cloud.google.com/sdk/docs/install) and authenticate:
+   ```bash
+   gcloud auth login
+   gcloud config set project YOUR_PROJECT_ID
+   ```
+3. **Domain Name** - Required for HTTPS (e.g., nmr.example.com)
+4. **Git** - To clone the repository
+
+### Cost Estimates
+
+| Resource | Spot Pricing | On-Demand Pricing | Notes |
+|----------|--------------|-------------------|-------|
+| e2-standard-4 (4 vCPU, 16 GB) | ~$30-50/month | ~$100-150/month | Primary compute cost |
+| e2-standard-2 (2 vCPU, 8 GB) | ~$15-25/month | ~$50-75/month | Light workloads |
+| n2-standard-4 (4 vCPU, 16 GB) | ~$50-80/month | ~$150-200/month | Higher performance |
+| Static IP (attached) | Free | Free | While VM is running |
+| Static IP (detached) | ~$7/month | ~$7/month | When VM is stopped |
+| Persistent Disk (100 GB SSD) | ~$17/month | ~$17/month | Always billed |
+
+**Monthly estimate for typical usage:** $35-70/month (Spot VM + disk + IP during downtime)
+
+### Preemption and Job Loss
+
+> **WARNING: GCP can reclaim Spot VMs with only 30 seconds notice.**
+
+This has important implications for NMR calculations:
+
+- **Jobs in progress will be lost** - There is no checkpoint/restart mechanism
+- The shutdown script attempts graceful container stop within the 30-second window
+- **Persistent disk survives** - All completed job data is preserved
+- **Static IP is retained** - DNS configuration remains valid
+
+**Best practice:** Use `./stop-vm.sh` when not running calculations to avoid surprise preemption. This also eliminates compute charges during idle periods.
+
+### Quick Start
+
+**Step 1: Clone and configure**
+
+```bash
+git clone https://github.com/steinbeck/qm-nmr-calc.git
+cd qm-nmr-calc/gcp
+
+# Create configuration
+cp config.sh.example config.sh
+
+# Edit config.sh with your GCP project ID
+nano config.sh
+# Set: GCP_PROJECT_ID="your-actual-project-id"
+```
+
+**Step 2: Create infrastructure**
+
+```bash
+./setup-infrastructure.sh
+```
+
+This creates:
+- Static external IP (for DNS)
+- Firewall rules (HTTP, HTTPS, SSH)
+- Persistent disk (100 GB SSD for job data)
+
+Note the static IP address displayed at the end.
+
+**Step 3: Configure DNS**
+
+Point your domain to the static IP (see [DNS Configuration](#dns-configuration) below).
+
+**Step 4: Deploy VM**
+
+```bash
+./deploy-vm.sh
+```
+
+You'll be prompted for:
+- Region and zone (defaults from config.sh)
+- Machine type (e2-standard-4 recommended)
+- Domain name (for HTTPS certificate)
+
+**Step 5: Wait and access**
+
+The VM takes 2-3 minutes to start. It automatically:
+- Installs Docker
+- Downloads docker-compose.yml from GitHub
+- Starts all containers
+- Obtains Let's Encrypt certificate
+
+Access your deployment at `https://your-domain.com`
+
+### DNS Configuration
+
+After `./setup-infrastructure.sh` displays your static IP, configure DNS:
+
+#### Cloudflare
+
+1. Go to your domain's DNS settings in Cloudflare dashboard
+2. Add an A record:
+   - **Type:** A
+   - **Name:** `nmr` (or `@` for root domain)
+   - **IPv4 address:** Your static IP
+   - **Proxy status:** DNS only (gray cloud) - required for initial setup
+   - **TTL:** Auto
+3. After Let's Encrypt certificate is obtained, you can enable Cloudflare proxy (orange cloud)
+
+#### Namecheap
+
+1. Go to Domain List > Manage > Advanced DNS
+2. Add a new record:
+   - **Type:** A Record
+   - **Host:** `nmr` (or `@` for root domain)
+   - **Value:** Your static IP
+   - **TTL:** Automatic
+
+#### General Instructions (Any Provider)
+
+Create an A record pointing to your static IP:
+
+```
+nmr.example.com.  A  203.0.113.10  TTL=300
+```
+
+**Note:** DNS propagation can take 5-15 minutes. Use [dnschecker.org](https://dnschecker.org) to verify propagation before deploying.
+
+### Lifecycle Management
+
+Use these scripts from the `gcp/` directory to manage your deployment:
+
+| Task | Command | Description |
+|------|---------|-------------|
+| Stop VM | `./stop-vm.sh` | Stop billing for compute, preserve data |
+| Start VM | `./start-vm.sh` | Resume VM, services auto-start |
+| Delete VM | `./delete-vm.sh` | Remove VM instance, keep disk and IP |
+| Check Status | `./status-vm.sh` | Show VM state, IP, running containers |
+| SSH Access | `./ssh-vm.sh` | Open interactive shell on VM |
+| View Logs | `./logs-vm.sh` | Stream container logs |
+
+**Cost-saving workflow:**
+
+```bash
+# Done with calculations - stop to save money
+./stop-vm.sh
+
+# Ready to run more calculations - resume
+./start-vm.sh
+
+# Wait 2-3 minutes for containers to start
+./status-vm.sh
+```
+
+### Troubleshooting GCP Deployment
+
+#### VM Won't Start
+
+**Spot capacity unavailable:**
+```
+ZONE_RESOURCE_POOL_EXHAUSTED
+```
+- Try a different zone in the same region
+- Try during off-peak hours
+- Consider a different machine type
+
+**Quota exceeded:**
+```
+Quota 'CPUS' exceeded
+```
+- Request quota increase in GCP Console > IAM & Admin > Quotas
+- Or use a smaller machine type
+
+#### HTTPS Not Working
+
+**Check DNS propagation:**
+```bash
+dig +short nmr.example.com
+# Should return your static IP
+```
+
+**Check Caddy logs:**
+```bash
+./ssh-vm.sh
+docker compose -f /opt/qm-nmr-calc/docker-compose.yml logs caddy | grep -i error
+```
+
+**Common causes:**
+- DNS not propagated (wait 5-15 minutes)
+- Cloudflare proxy enabled during initial setup (use DNS-only mode)
+- Domain doesn't match what was entered during `./deploy-vm.sh`
+
+#### Containers Not Running
+
+**Check startup script completion:**
+```bash
+./ssh-vm.sh
+tail -50 /var/log/startup-script.log
+```
+
+**Check container status:**
+```bash
+./status-vm.sh
+# Or manually:
+./ssh-vm.sh
+docker compose -f /opt/qm-nmr-calc/docker-compose.yml ps
+```
+
+**Restart containers:**
+```bash
+./ssh-vm.sh
+cd /opt/qm-nmr-calc
+docker compose down
+docker compose up -d
+```
+
+#### VM Preempted Unexpectedly
+
+This is normal for Spot VMs. Simply restart:
+```bash
+./start-vm.sh
+```
+
+The persistent disk retains all completed job data. Only jobs that were running at preemption time are lost.
+
 ## ARM64 / Apple Silicon
 
 qm-nmr-calc fully supports ARM64 architecture, including Apple Silicon Macs (M1/M2/M3) and ARM-based cloud instances (AWS Graviton, Ampere).
