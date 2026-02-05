@@ -5,24 +5,24 @@
 See: .planning/PROJECT.md (updated 2026-02-04)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.6 Google Cloud Spot Deployment - Phase 46 VM Deployment
+**Current focus:** v2.6 Google Cloud Spot Deployment - Phase 47 Lifecycle Management Scripts
 
 ## Current Position
 
 Milestone: v2.6 Google Cloud Spot Deployment
-Phase: 46 of 48 (VM Deployment Script)
+Phase: 47 of 48 (Lifecycle Management Scripts)
 Plan: 1 of 1 complete
 Status: Phase complete
-Last activity: 2026-02-05 -- Completed 46-01-PLAN.md (VM deployment scripts)
+Last activity: 2026-02-05 -- Completed 47-01-PLAN.md (lifecycle management scripts)
 
-Progress: [####################] 102 plans complete (v1.0-v2.5, Phase 45-46)
+Progress: [####################] 103 plans complete (v1.0-v2.5, Phase 45-47)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 102 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 2)
+- Total plans completed: 103 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 3)
 - Average duration: ~7 min
-- Total execution time: ~684 min (~11.4 hours)
+- Total execution time: ~686 min (~11.4 hours)
 
 **By Milestone:**
 
@@ -52,6 +52,8 @@ v2.5 decisions archived.
 - Phase 46: Startup script downloads docker-compose.yml and Caddyfile from GitHub master branch
 - Phase 46: Shutdown script uses 25s timeout to stay within 30s preemption window
 - Phase 46: Default machine type is e2-standard-4 (4 vCPU, 16 GB, ~$30-50/month Spot)
+- Phase 47: delete-vm.sh preserves persistent disk and static IP, only removes VM instance
+- Phase 47: logs-vm.sh uses both compose files (base + gcp override) for proper configuration
 
 ### Roadmap Evolution
 
@@ -86,10 +88,10 @@ None
 ## Session Continuity
 
 Last session: 2026-02-05
-Stopped at: Phase 46 complete (VM deployment scripts)
+Stopped at: Phase 47 complete (lifecycle management scripts)
 Resume file: None
-Next: /gsd:plan-phase 47
+Next: /gsd:plan-phase 48
 Tests: All tests passing (356 tests)
-Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs, ~750 LOC GCP scripts
+Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs, ~1,500 LOC GCP scripts
 Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR
-GCP: Infrastructure scripts ready, VM deployment script ready
+GCP: Infrastructure scripts ready, VM deployment script ready, lifecycle scripts ready
