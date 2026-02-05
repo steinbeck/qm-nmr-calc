@@ -29,7 +29,11 @@ echo_info "Starting VM setup..."
 # ============================================================================
 echo_info "Installing Docker and Docker Compose..."
 apt-get update
-apt-get install -y docker.io docker-compose-v2 curl git
+apt-get install -y ca-certificates curl git
+
+# Install Docker using official convenience script
+echo_info "Installing Docker via official script..."
+curl -fsSL https://get.docker.com | sh
 
 # Enable and start Docker service
 echo_info "Enabling Docker service..."
@@ -113,14 +117,22 @@ if [[ -z "$DOMAIN" ]]; then
 fi
 echo_info "Domain: $DOMAIN"
 
-# Create .env file with DOMAIN
-echo "DOMAIN=${DOMAIN}" > .env
+# Detect CPU count for NWChem (use all cores on dedicated compute)
+CPU_COUNT=$(nproc)
+echo_info "Detected $CPU_COUNT CPU cores"
+
+# Create .env file with DOMAIN and NWCHEM_NPROC
+cat > .env <<EOF
+DOMAIN=${DOMAIN}
+NWCHEM_NPROC=${CPU_COUNT}
+EOF
+echo_info "Created .env with DOMAIN=$DOMAIN, NWCHEM_NPROC=$CPU_COUNT"
 
 # ============================================================================
 # Download docker-compose.yml and Caddyfile from GitHub
 # ============================================================================
 echo_info "Downloading docker-compose.yml and Caddyfile from GitHub..."
-REPO_URL="https://raw.githubusercontent.com/Steinbeck-Lab/qm-nmr-calc/master"
+REPO_URL="https://raw.githubusercontent.com/steinbeck/qm-nmr-calc/master"
 
 if ! curl -fsSL "${REPO_URL}/docker-compose.yml" -o docker-compose.yml; then
     echo_error "Failed to download docker-compose.yml"
@@ -159,8 +171,8 @@ services:
     environment:
       - ENVIRONMENT=production
       - LOG_LEVEL=info
-      # Let auto-detection handle CPU count based on VM size
-      - NWCHEM_NPROC=${NWCHEM_NPROC:-}
+      # Use all CPUs (set dynamically in .env based on VM size)
+      - NWCHEM_NPROC=${NWCHEM_NPROC}
 
   # Caddy DOMAIN comes from .env file (already set in base compose)
   # Named volumes (caddy_data, caddy_config) remain as Docker volumes for certificate storage

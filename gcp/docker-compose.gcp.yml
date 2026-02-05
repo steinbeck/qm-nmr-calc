@@ -25,8 +25,8 @@ services:
     environment:
       - ENVIRONMENT=production
       - LOG_LEVEL=info
-      # Let auto-detection handle CPU count based on VM size
-      - NWCHEM_NPROC=${NWCHEM_NPROC:-}
+      # Use all CPUs (set dynamically in .env by startup.sh based on VM size)
+      - NWCHEM_NPROC=${NWCHEM_NPROC}
     # Override default 8GB memory limit for high-memory GCP VMs
     # This allows auto-detection to use more MPI processes
     deploy:
