@@ -1130,11 +1130,15 @@ async def get_geometry_data(job_id: str):
                 if min_energy is None or c.energy < min_energy:
                     min_energy = c.energy
 
-        # Sort by energy (lowest first)
+        # Sort by energy (lowest first) - include optimized conformers
         sorted_conformers = sorted(
             [c for c in ensemble.conformers if c.status in ("optimized", "nmr_complete")],
             key=lambda x: x.energy if x.energy is not None else float("inf"),
         )
+
+        # Fallback: if no optimized conformers yet, use all conformers with initial geometry
+        if not sorted_conformers and ensemble.conformers:
+            sorted_conformers = ensemble.conformers
 
         for c in sorted_conformers:
             # Read geometry file (prefer optimized over initial)
