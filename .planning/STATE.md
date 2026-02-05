@@ -5,24 +5,24 @@
 See: .planning/PROJECT.md (updated 2026-02-04)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.6 Google Cloud Spot Deployment - Phase 47 Lifecycle Management Scripts
+**Current focus:** v2.6 Google Cloud Spot Deployment - Complete
 
 ## Current Position
 
 Milestone: v2.6 Google Cloud Spot Deployment
-Phase: 47 of 48 (Lifecycle Management Scripts)
+Phase: 48 of 48 (Documentation and Testing)
 Plan: 1 of 1 complete
-Status: Phase complete
-Last activity: 2026-02-05 -- Completed 47-01-PLAN.md (lifecycle management scripts)
+Status: Milestone complete
+Last activity: 2026-02-05 -- Completed 48-01-PLAN.md (GCP documentation)
 
-Progress: [####################] 103 plans complete (v1.0-v2.5, Phase 45-47)
+Progress: [####################] 104 plans complete (v1.0-v2.6)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 103 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 3)
+- Total plans completed: 104 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4)
 - Average duration: ~7 min
-- Total execution time: ~686 min (~11.4 hours)
+- Total execution time: ~688 min (~11.5 hours)
 
 **By Milestone:**
 
@@ -37,7 +37,7 @@ Progress: [####################] 103 plans complete (v1.0-v2.5, Phase 45-47)
 | v2.3 NMReData Export | 3 | 3 | 1 day | Shipped 2026-02-01 |
 | v2.4 Docker Deployment | 6 | 8 | ~2 hours | Shipped 2026-02-03 |
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
-| v2.6 GCP Spot Deployment | 4 | TBD | - | In progress |
+| v2.6 GCP Spot Deployment | 4 | 4 | ~1 day | Shipped 2026-02-05 |
 
 ## Accumulated Context
 
@@ -54,6 +54,7 @@ v2.5 decisions archived.
 - Phase 46: Default machine type is e2-standard-4 (4 vCPU, 16 GB, ~$30-50/month Spot)
 - Phase 47: delete-vm.sh preserves persistent disk and static IP, only removes VM instance
 - Phase 47: logs-vm.sh uses both compose files (base + gcp override) for proper configuration
+- Phase 48: GCP documentation added to deployment.md with DNS guides for Cloudflare/Namecheap
 
 ### Roadmap Evolution
 
@@ -66,7 +67,7 @@ v2.5 decisions archived.
 - v2.3: 3 phases (32-34), shipped 2026-02-01
 - v2.4: 6 phases (35-40), shipped 2026-02-03
 - v2.5: 4 phases (41-44), shipped 2026-02-04
-- v2.6: 4 phases (45-48), in progress
+- v2.6: 4 phases (45-48), shipped 2026-02-05
 
 ### Pending Todos
 
@@ -80,18 +81,13 @@ v2.5 decisions archived.
 **Active:**
 None
 
-**Research Flags (from v2.6 research):**
-- Phase 46: May need research on cloud-init vs metadata startup scripts for reliability
-- Phase 45-47: Standard gcloud patterns, no deep research needed
-- Phase 48: Documentation only, no research needed
-
 ## Session Continuity
 
 Last session: 2026-02-05
-Stopped at: Phase 47 complete (lifecycle management scripts)
+Stopped at: v2.6 milestone complete
 Resume file: None
-Next: /gsd:plan-phase 48
+Next: Ready for next milestone planning
 Tests: All tests passing (356 tests)
-Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs, ~1,500 LOC GCP scripts
+Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~1,500 LOC GCP scripts
 Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR
-GCP: Infrastructure scripts ready, VM deployment script ready, lifecycle scripts ready
+GCP: Full deployment toolkit ready with documentation
