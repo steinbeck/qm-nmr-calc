@@ -11,7 +11,7 @@
 - [x] **v2.3 NMReData Export** - Phases 32-34 (shipped 2026-02-01)
 - [x] **v2.4 Docker Deployment** - Phases 35-40 (shipped 2026-02-03)
 - [x] **v2.5 ARM64 Docker Support** - Phases 41-44 (shipped 2026-02-04)
-- [ ] **v2.6 Google Cloud Spot Deployment** - Phases 45-48 (in progress)
+- [x] **v2.6 Google Cloud Spot Deployment** - Phases 45-48 (shipped 2026-02-05)
 
 ## Overview
 
@@ -358,10 +358,10 @@ Plans:
   4. Preemption behavior documented (jobs in progress will be lost)
   5. DNS configuration guide covers common providers (Cloudflare, Namecheap)
 **Plans**: 1 plan
-**Status**: Not started
+**Status**: Complete
 
 Plans:
-- [ ] 48-01-PLAN.md - GCP deployment documentation
+- [x] 48-01-PLAN.md - GCP deployment documentation
 
 ## Progress
 
@@ -419,7 +419,7 @@ Phases execute in numeric order: 45 -> 46 -> 47 -> 48
 | **45. GCP Infrastructure** | **v2.6** | **1/1** | **Complete** | 2026-02-04 |
 | **46. VM Deployment** | **v2.6** | **1/1** | **Complete** | 2026-02-04 |
 | **47. Lifecycle Scripts** | **v2.6** | **1/1** | **Complete** | 2026-02-05 |
-| **48. Documentation** | **v2.6** | **0/1** | **Not started** | - |
+| **48. Documentation** | **v2.6** | **1/1** | **Complete** | 2026-02-05 |
 
 ## Coverage (v2.6)
 
@@ -454,4 +454,4 @@ Phases execute in numeric order: 45 -> 46 -> 47 -> 48
 **Mapped: 23/23 (100%)**
 
 ---
-*Last updated: 2026-02-05 - Phase 48 planned*
+*Last updated: 2026-02-05 - v2.6 milestone complete*
