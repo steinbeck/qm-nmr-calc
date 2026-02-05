@@ -50,6 +50,10 @@ docker compose up -d
 
 For production deployment with HTTPS, cloud VPS setup, and troubleshooting, see the **[Deployment Guide](docs/deployment.md)**.
 
+**Cloud Options:**
+- **Self-managed VPS**: Any cloud provider (DigitalOcean, Linode, etc.) - see Deployment Guide
+- **[GCP Spot VM](docs/deployment.md#google-cloud-platform-deployment)**: Cost-effective Google Cloud deployment (~$30-50/month) with lifecycle scripts
+
 ## Development Installation
 
 For development or contributing, install from source:
