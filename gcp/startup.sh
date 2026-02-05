@@ -173,6 +173,11 @@ services:
       - LOG_LEVEL=info
       # Use all CPUs (set dynamically in .env based on VM size)
       - NWCHEM_NPROC=${NWCHEM_NPROC}
+    # Override default 8GB memory limit for high-memory GCP VMs
+    deploy:
+      resources:
+        limits:
+          memory: 120g
 
   # Caddy DOMAIN comes from .env file (already set in base compose)
   # Named volumes (caddy_data, caddy_config) remain as Docker volumes for certificate storage
