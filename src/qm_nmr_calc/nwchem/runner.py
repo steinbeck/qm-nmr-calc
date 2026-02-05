@@ -74,7 +74,12 @@ def run_nwchem(
     logfile = str(output_file.with_suffix(".log").resolve())
 
     # Unset DISPLAY to prevent X11 errors in headless mode
-    cmd = f"unset DISPLAY; mpirun --bind-to none -n {processes} nwchem {infile} > {outfile} 2> {logfile}"
+    # --oversubscribe: Required for Docker containers where nproc detection is unreliable.
+    #   Inside containers, nproc often returns 1 even when the container has access to
+    #   many CPUs, causing MPI to refuse running the requested process count. Since we
+    #   already calculate processes based on actual resources (os.cpu_count() + memory),
+    #   oversubscribe is safe here.
+    cmd = f"unset DISPLAY; mpirun --oversubscribe --bind-to none -n {processes} nwchem {infile} > {outfile} 2> {logfile}"
 
     result = subprocess.call(cmd, shell=True)
 
