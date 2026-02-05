@@ -242,14 +242,19 @@ def get_initial_geometry_file(job_id: str) -> Optional[Path]:
 def get_output_files(job_id: str) -> list[Path]:
     """Get list of raw NWChem output files in job scratch directory.
 
-    Returns .out and .nw files from the scratch directory.
+    Returns .out and .nw files from the scratch directory, including
+    conformer subdirectories for ensemble calculations.
     """
     scratch_dir = get_job_dir(job_id) / "scratch"
     if not scratch_dir.exists():
         return []
     files = []
+    # Top-level scratch files (single-conformer jobs)
     for pattern in ["*.out", "*.nw"]:
         files.extend(scratch_dir.glob(pattern))
+    # Conformer subdirectory files (ensemble jobs)
+    for pattern in ["*.out", "*.nw"]:
+        files.extend(scratch_dir.glob(f"conformers/*/{pattern}"))
     return files
 
 
