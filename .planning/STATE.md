@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-06)
 ## Current Position
 
 Milestone: v2.7 Automated GCP Deployment
-Phase: Phase 49 - Config Foundation and Pricing Query
-Plan: 02 of 2 in phase (Phase 49 complete)
-Status: Phase complete
-Last activity: 2026-02-06 — Completed 49-02-PLAN.md (spot pricing query)
+Phase: Phase 50 - Machine Selection and Resource Calculation (IN PROGRESS)
+Plan: 1/1 complete
+Status: Phase 50 complete, ready for Phase 51
+Last activity: 2026-02-06 — Completed 50-01-PLAN.md (machine selection, zone fallback, Docker resource calculation)
 
-Progress: [####################-] 106 plans complete (v1.0-v2.6 + 49-01, 49-02)
+Progress: [####################-] 107 plans complete (v1.0-v2.6 + 49-01, 49-02, 50-01)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 106 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 2)
+- Total plans completed: 107 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 3)
 - Average duration: ~7 min
-- Total execution time: ~704 min (~11.7 hours)
+- Total execution time: ~708 min (~11.8 hours)
 
 **By Milestone:**
 
@@ -38,7 +38,7 @@ Progress: [####################-] 106 plans complete (v1.0-v2.6 + 49-01, 49-02)
 | v2.4 Docker Deployment | 6 | 8 | ~2 hours | Shipped 2026-02-03 |
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
-| v2.7 Automated GCP Deployment | 5 | 2/TBD | In progress | Started 2026-02-06 |
+| v2.7 Automated GCP Deployment | 5 | 3/TBD | In progress | Started 2026-02-06 |
 
 ## Accumulated Context
 
@@ -62,6 +62,13 @@ v2.6 decisions archived.
 - Dynamic Docker limit calculation on VM host (not inside containers)
 - HTTP-only deployment (no domain, no HTTPS)
 - Modular bash libraries (config.sh, pricing.sh, machine.sh, infra.sh)
+
+**v2.7 Phase 50 (Machine Selection) decisions:**
+- find_available_zone() calls get_ranked_regions() internally for simpler API
+- Docker worker memory = VM RAM - 8GB OS overhead (minimum 4GB)
+- Startup script uses runtime $(nproc) detection instead of hardcoded CPU count
+- HTTP-only docker-compose.gcp.yml override (no Caddy service)
+- --oversubscribe flag for MPI compatibility in containers (v2.6 fix)
 
 ### Roadmap Evolution
 
@@ -98,10 +105,10 @@ None
 ## Session Continuity
 
 Last session: 2026-02-06
-Stopped at: Completed 49-02-PLAN.md (spot pricing query) -- Phase 49 complete
+Stopped at: Completed 50-01-PLAN.md (machine selection and resource calculation) -- Phase 50 complete
 Resume file: None
-Next: Phase 50 planning (Machine Type Selection)
-Tests: 396 tests collected (377 pre-existing + 19 config + 19 pricing; pre-existing failures in NWChem integration unrelated)
-Codebase: ~6,700 LOC Python, ~2,800 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~1,600 LOC GCP scripts
+Next: Phase 51 (VM Creation and Deployment)
+Tests: 415 tests collected (377 pre-existing + 19 config + 19 pricing + 19 machine; pre-existing failures in NWChem integration unrelated)
+Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~1,600 LOC GCP scripts
 Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR
-GCP: Full deployment toolkit ready with documentation, v2.7 automation in progress (config validation + pricing query complete)
+GCP: Machine selection module complete (select_machine.py with 5 functions + CLI), ready for VM creation automation
