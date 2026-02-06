@@ -432,14 +432,14 @@ Plans:
   6. Failed deployment cleans up orphaned resources automatically
   7. deploy-auto.sh orchestrator replaces v2.6 interactive deploy-vm.sh
 **Plans**: 2 plans
-**Status**: Not started
+**Status**: Complete (2026-02-06)
 
 Plans:
-- [ ] 51-01-PLAN.md -- Infrastructure library (logging, dry-run, cleanup, idempotent operations)
-- [ ] 51-02-PLAN.md -- Deployment orchestrator (deploy-auto.sh replacing deploy-vm.sh)
+- [x] 51-01-PLAN.md -- Infrastructure library (logging, dry-run, cleanup, idempotent operations)
+- [x] 51-02-PLAN.md -- Deployment orchestrator (deploy-auto.sh replacing deploy-vm.sh)
 
 ### Phase 52: HTTP-Only Container Deployment
-**Goal**: Container deployment with HTTP-only configuration and correct resource limits.
+**Goal**: Migrate lifecycle and teardown scripts to v2.7 TOML config with runtime zone detection, removing all HTTPS/domain/Caddy references.
 **Depends on**: Phase 51
 **Requirements**: DEP-06, LCY-01, LCY-02, RPL-04
 **Success Criteria** (what must be TRUE):
@@ -449,11 +449,12 @@ Plans:
   4. Existing lifecycle scripts (start, stop, delete, status, ssh, logs) continue to work
   5. Teardown script removes all created resources cleanly
   6. HTTPS/domain/Caddy TLS configuration removed from GCP deployment
-**Plans**: 0 plans
+**Plans**: 2 plans
 **Status**: Not started
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 52 to break down)
+- [ ] 52-01-PLAN.md -- Migrate 6 lifecycle scripts to TOML config + runtime zone detection
+- [ ] 52-02-PLAN.md -- Migrate teardown script to TOML config + runtime zone/region detection
 
 ### Phase 53: Conformer Progress Bug Fix
 **Goal**: Conformer progress tracking displays correctly during processing.
@@ -530,8 +531,8 @@ Phases execute in numeric order: 49 -> 50 -> 51 -> 52 -> 53
 | 48.1 Machine Info | v2.6 | 0/TBD | Not started | - |
 | **49. Config & Pricing** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
 | **50. Machine Selection** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
-| **51. Orchestration** | **v2.7** | **0/2** | **Not started** | - |
-| **52. HTTP Container** | **v2.7** | **0/TBD** | **Not started** | - |
+| **51. Orchestration** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
+| **52. HTTP Container** | **v2.7** | **0/2** | **Not started** | - |
 | **53. Conformer Bug Fix** | **v2.7** | **0/TBD** | **Not started** | - |
 
 ## Coverage (v2.6)
@@ -607,4 +608,4 @@ Phases execute in numeric order: 49 -> 50 -> 51 -> 52 -> 53
 **Mapped: 31/31 (100%)**
 
 ---
-*Last updated: 2026-02-06 - Phase 50 complete (2/2 plans, 10/10 must-haves verified)*
+*Last updated: 2026-02-06 - Phase 52 planned (2 plans in 1 wave)*
