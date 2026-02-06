@@ -56,8 +56,8 @@ Requirements for v2.7 milestone. Each maps to roadmap phases.
 
 ### Bug Fix
 
-- [ ] **BUG-01**: Conformer progress tracking display updates correctly during processing
-- [ ] **BUG-02**: Status bar shows accurate conformer count (e.g., "1/2" not "0/2") as conformers complete
+- [x] **BUG-01**: Conformer progress tracking display updates correctly during processing
+- [x] **BUG-02**: Status bar shows accurate conformer count (e.g., "1/2" not "0/2") as conformers complete
 
 ## Deferred Requirements
 
@@ -123,8 +123,8 @@ Not in v2.7 scope. Tracked for future consideration.
 | RPL-02 | 51 | Done |
 | RPL-03 | 51 | Done |
 | RPL-04 | 52 | Done |
-| BUG-01 | 53 | Pending |
-| BUG-02 | 53 | Pending |
+| BUG-01 | 53 | Done |
+| BUG-02 | 53 | Done |
 
 **Coverage:**
 - v2.7 requirements: 31 total
@@ -133,4 +133,4 @@ Not in v2.7 scope. Tracked for future consideration.
 
 ---
 *Requirements defined: 2026-02-06*
-*Last updated: 2026-02-06 - Phase 52 requirements (DEP-06, LCY-01, LCY-02, RPL-04) marked Done*
+*Last updated: 2026-02-06 - Phase 53 requirements (BUG-01, BUG-02) marked Done — all v2.7 requirements complete*
