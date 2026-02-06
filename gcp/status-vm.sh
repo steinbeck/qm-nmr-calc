@@ -25,20 +25,12 @@ echo_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 # ============================================================================
 # Load configuration
 # ============================================================================
-if [[ ! -f "config.sh" ]]; then
-    echo_error "config.sh not found!"
-    echo "Copy config.sh.example to config.sh and set your GCP_PROJECT_ID:"
-    echo "  cp config.sh.example config.sh"
-    echo "  # Edit config.sh with your values"
-    exit 1
-fi
+source "$SCRIPT_DIR/lib/config.sh"
+load_config "$SCRIPT_DIR/config.toml" || exit 1
 
-source ./config.sh
-
-# Validate required variables
-if [[ -z "${GCP_PROJECT_ID:-}" || "$GCP_PROJECT_ID" == "your-project-id" ]]; then
-    echo_error "GCP_PROJECT_ID is not set or still has default value"
-    echo "Edit config.sh and set your actual GCP project ID"
+# Validate project is set (load_config ensures this, but be explicit)
+if [[ -z "${GCP_PROJECT_ID:-}" ]]; then
+    echo_error "GCP_PROJECT_ID not set after loading config"
     exit 1
 fi
 
@@ -61,23 +53,25 @@ gcloud config set project "$GCP_PROJECT_ID" --quiet
 # Check VM exists
 # ============================================================================
 VM_NAME="${RESOURCE_PREFIX}-vm"
-echo_info "Checking VM '$VM_NAME' in zone '$GCP_ZONE'..."
 
-if ! gcloud compute instances describe "$VM_NAME" --zone="$GCP_ZONE" &>/dev/null; then
+# Detect VM zone dynamically (v2.7 selects zone at deployment time)
+GCP_ZONE=$(gcloud compute instances list --project="$GCP_PROJECT_ID" \
+    --filter="name=${VM_NAME}" --format="value(zone)" --quiet 2>/dev/null | head -1)
+if [[ -z "$GCP_ZONE" ]]; then
     echo ""
     echo "=============================================="
     echo_warn "VM Not Found"
     echo "=============================================="
     echo ""
     echo "VM Name:  $VM_NAME"
-    echo "Zone:     $GCP_ZONE"
     echo "Status:   NOT CREATED"
     echo ""
     echo "To create a VM, run:"
-    echo "  ./deploy-vm.sh"
+    echo "  ./deploy-auto.sh"
     echo ""
     exit 0
 fi
+echo_info "Found VM '$VM_NAME' in zone '$GCP_ZONE'"
 
 # ============================================================================
 # Get VM details
@@ -97,11 +91,6 @@ EXTERNAL_IP=$(gcloud compute instances describe "$VM_NAME" \
 CREATION_TIME=$(gcloud compute instances describe "$VM_NAME" \
     --zone="$GCP_ZONE" \
     --format="value(creationTimestamp)")
-
-# Get domain from VM metadata if available
-DOMAIN=$(gcloud compute instances describe "$VM_NAME" \
-    --zone="$GCP_ZONE" \
-    --format="value(metadata.items[DOMAIN])" 2>/dev/null || echo "")
 
 # ============================================================================
 # Display status
@@ -140,11 +129,6 @@ else
     echo "External IP:   N/A (VM is stopped)"
 fi
 
-# Domain if configured
-if [[ -n "$DOMAIN" ]]; then
-    echo "Domain:        $DOMAIN"
-fi
-
 echo ""
 
 # ============================================================================
@@ -155,8 +139,8 @@ if [[ "$VM_STATUS" == "RUNNING" ]]; then
     echo "  Access Information"
     echo "=============================================="
     echo ""
-    if [[ -n "$DOMAIN" ]]; then
-        echo "Web UI:  https://$DOMAIN"
+    if [[ -n "$EXTERNAL_IP" ]]; then
+        echo "Web UI:  http://$EXTERNAL_IP"
         echo ""
     fi
     echo "SSH:"

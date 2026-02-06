@@ -7,7 +7,6 @@
 #   ./logs-vm.sh              # Stream all container logs
 #   ./logs-vm.sh api          # Stream only API container logs
 #   ./logs-vm.sh worker       # Stream only worker container logs
-#   ./logs-vm.sh caddy        # Stream only Caddy (reverse proxy) logs
 #
 # Press Ctrl+C to stop streaming logs.
 
@@ -29,20 +28,12 @@ echo_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 # ============================================================================
 # Load configuration
 # ============================================================================
-if [[ ! -f "config.sh" ]]; then
-    echo_error "config.sh not found!"
-    echo "Copy config.sh.example to config.sh and set your GCP_PROJECT_ID:"
-    echo "  cp config.sh.example config.sh"
-    echo "  # Edit config.sh with your values"
-    exit 1
-fi
+source "$SCRIPT_DIR/lib/config.sh"
+load_config "$SCRIPT_DIR/config.toml" || exit 1
 
-source ./config.sh
-
-# Validate required variables
-if [[ -z "${GCP_PROJECT_ID:-}" || "$GCP_PROJECT_ID" == "your-project-id" ]]; then
-    echo_error "GCP_PROJECT_ID is not set or still has default value"
-    echo "Edit config.sh and set your actual GCP project ID"
+# Validate project is set (load_config ensures this, but be explicit)
+if [[ -z "${GCP_PROJECT_ID:-}" ]]; then
+    echo_error "GCP_PROJECT_ID not set after loading config"
     exit 1
 fi
 
@@ -65,11 +56,15 @@ gcloud config set project "$GCP_PROJECT_ID" --quiet
 # ============================================================================
 VM_NAME="${RESOURCE_PREFIX}-vm"
 
-if ! gcloud compute instances describe "$VM_NAME" --zone="$GCP_ZONE" &>/dev/null; then
-    echo_error "VM '$VM_NAME' not found in zone '$GCP_ZONE'"
-    echo "Create the VM first with ./deploy-vm.sh"
+# Detect VM zone dynamically (v2.7 selects zone at deployment time)
+GCP_ZONE=$(gcloud compute instances list --project="$GCP_PROJECT_ID" \
+    --filter="name=${VM_NAME}" --format="value(zone)" --quiet 2>/dev/null | head -1)
+if [[ -z "$GCP_ZONE" ]]; then
+    echo_error "VM '$VM_NAME' not found in any zone"
+    echo "Create the VM first with ./deploy-auto.sh"
     exit 1
 fi
+echo_info "Found VM '$VM_NAME' in zone '$GCP_ZONE'"
 
 # Get current status
 CURRENT_STATUS=$(gcloud compute instances describe "$VM_NAME" \
