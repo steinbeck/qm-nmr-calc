@@ -395,11 +395,11 @@ Plans:
   5. Hardcoded regional fallback rankings used when pricing API unavailable
   6. All gcloud commands use --quiet and --format=json for non-interactive execution
 **Plans**: 2 plans
-**Status**: Not started
+**Status**: Complete (2026-02-06)
 
 Plans:
-- [ ] 49-01-PLAN.md -- TOML config validation with Pydantic (TDD)
-- [ ] 49-02-PLAN.md -- Spot pricing query with API, caching, and fallback (TDD)
+- [x] 49-01-PLAN.md -- TOML config validation with Pydantic (TDD)
+- [x] 49-02-PLAN.md -- Spot pricing query with API, caching, and fallback (TDD)
 
 ### Phase 50: Machine Selection and Resource Calculation
 **Goal**: Correct machine type mapping and dynamic Docker resource limit calculation.
@@ -412,11 +412,12 @@ Plans:
   4. Docker memory limit calculated dynamically from selected machine type (VM_RAM - 8GB for OS)
   5. NWCHEM_NPROC calculated from actual CPU count on VM host (not inside container)
   6. Startup script template generated with computed WORKER_MEMORY_LIMIT and NWCHEM_NPROC
-**Plans**: 0 plans
+**Plans**: 2 plans
 **Status**: Not started
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 50 to break down)
+- [ ] 50-01-PLAN.md -- Machine type selection and resource calculation Python module (TDD)
+- [ ] 50-02-PLAN.md -- Bash library wrapper for shell integration
 
 ### Phase 51: Deployment Orchestration
 **Goal**: End-to-end automated deployment with progressive feedback and error handling.
@@ -526,8 +527,8 @@ Phases execute in numeric order: 49 -> 50 -> 51 -> 52 -> 53
 | 47. Lifecycle Scripts | v2.6 | 1/1 | Complete | 2026-02-05 |
 | 48. Documentation | v2.6 | 1/1 | Complete | 2026-02-05 |
 | 48.1 Machine Info | v2.6 | 0/TBD | Not started | - |
-| **49. Config & Pricing** | **v2.7** | **0/TBD** | **Not started** | - |
-| **50. Machine Selection** | **v2.7** | **0/TBD** | **Not started** | - |
+| **49. Config & Pricing** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
+| **50. Machine Selection** | **v2.7** | **0/2** | **Not started** | - |
 | **51. Orchestration** | **v2.7** | **0/TBD** | **Not started** | - |
 | **52. HTTP Container** | **v2.7** | **0/TBD** | **Not started** | - |
 | **53. Conformer Bug Fix** | **v2.7** | **0/TBD** | **Not started** | - |
@@ -605,4 +606,4 @@ Phases execute in numeric order: 49 -> 50 -> 51 -> 52 -> 53
 **Mapped: 31/31 (100%)**
 
 ---
-*Last updated: 2026-02-06 - v2.7 phases 49-53 added*
+*Last updated: 2026-02-06 - Phase 50 planned (2 plans in 2 waves)*
