@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-06)
 ## Current Position
 
 Milestone: v2.7 Automated GCP Deployment
-Phase: Phase 50 - Machine Selection and Resource Calculation (COMPLETE)
-Plan: 2/2 complete
-Status: Phase 50 complete, ready for Phase 51
-Last activity: 2026-02-06 — Completed 50-02-PLAN.md (bash wrapper library for machine selection)
+Phase: Phase 51 - Deployment Orchestration (IN PROGRESS)
+Plan: 1/2 complete
+Status: Infrastructure library complete, ready for orchestrator
+Last activity: 2026-02-06 — Completed 51-01-PLAN.md (infrastructure library)
 
-Progress: [####################-] 108 plans complete (v1.0-v2.6 + 49-01, 49-02, 50-01, 50-02)
+Progress: [####################-] 109 plans complete (v1.0-v2.6 + 49-01, 49-02, 50-01, 50-02, 51-01)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 108 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 4)
+- Total plans completed: 109 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 5)
 - Average duration: ~7 min
-- Total execution time: ~709 min (~11.8 hours)
+- Total execution time: ~711 min (~11.8 hours)
 
 **By Milestone:**
 
@@ -38,7 +38,7 @@ Progress: [####################-] 108 plans complete (v1.0-v2.6 + 49-01, 49-02, 
 | v2.4 Docker Deployment | 6 | 8 | ~2 hours | Shipped 2026-02-03 |
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
-| v2.7 Automated GCP Deployment | 5 | 4/TBD | In progress | Started 2026-02-06 |
+| v2.7 Automated GCP Deployment | 5 | 5/TBD | In progress | Started 2026-02-06 |
 
 ## Accumulated Context
 
@@ -71,6 +71,12 @@ v2.6 decisions archived.
 - --oversubscribe flag for MPI compatibility in containers (v2.6 fix)
 - Bash wrapper library pattern: source gcp/lib/machine.sh, call functions with args
 - Provide both JSON output (select_machine) and eval-friendly format (get_docker_resources)
+
+**v2.7 Phase 51 (Deployment Orchestration) decisions:**
+- Cleanup trap only deletes VMs, never disks or IPs (data preservation)
+- Trap registration deferred to orchestrator, not set in library (composability)
+- Existence checks always run, not wrapped in execute() (accurate dry-run reporting)
+- HTTP and SSH firewall rules only, no HTTPS (v2.7 HTTP-only per RPL-03)
 
 ### Roadmap Evolution
 
@@ -107,10 +113,10 @@ None
 ## Session Continuity
 
 Last session: 2026-02-06
-Stopped at: Completed 50-02-PLAN.md (bash wrapper library for machine selection) -- Phase 50 complete
+Stopped at: Completed 51-01-PLAN.md (infrastructure library with idempotent operations)
 Resume file: None
-Next: Phase 51 (VM Creation and Deployment)
+Next: 51-02 (deployment orchestrator)
 Tests: 415 tests collected (377 pre-existing + 19 config + 19 pricing + 19 machine; pre-existing failures in NWChem integration unrelated)
-Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~1,700 LOC GCP scripts
+Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~1,950 LOC GCP scripts
 Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR
-GCP: Machine selection complete (select_machine.py + gcp/lib/machine.sh wrapper with 4 functions), ready for VM creation automation
+GCP: Infrastructure library complete (gcp/lib/infra.sh with 11 functions: logging, dry-run, cleanup, static IP, firewall, disk, cost display, VM creation), ready for orchestrator
