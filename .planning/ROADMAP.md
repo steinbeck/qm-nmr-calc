@@ -11,13 +11,14 @@
 - [x] **v2.3 NMReData Export** - Phases 32-34 (shipped 2026-02-01)
 - [x] **v2.4 Docker Deployment** - Phases 35-40 (shipped 2026-02-03)
 - [x] **v2.5 ARM64 Docker Support** - Phases 41-44 (shipped 2026-02-04)
-- [x] **v2.6 Google Cloud Spot Deployment** - Phases 45-48 (shipped 2026-02-05)
+- [x] **v2.6 Google Cloud Spot Deployment** - Phases 45-48.1 (shipped 2026-02-05)
+- [ ] **v2.7 Automated GCP Deployment** - Phases 49-53 (in progress)
 
 ## Overview
 
-**Current milestone:** v2.6 Google Cloud Spot Deployment
+**Current milestone:** v2.7 Automated GCP Deployment
 
-v2.6 delivers one-command deployment of qm-nmr-calc to a cost-effective GCP Spot VM. The existing Docker Compose stack runs unchanged, wrapped by GCP-specific infrastructure scripts for provisioning, lifecycle management, and persistent data storage. Users can deploy for ~$0.10/hour spot pricing (80% discount vs on-demand) with manual start/stop control.
+v2.7 replaces v2.6's interactive deployment scripts with a fully automated, config-driven system that finds the cheapest spot instance across all GCP regions and deploys end-to-end without manual intervention. HTTP-only deployment pattern for fire-up-and-burn usage. Also fixes conformer progress tracking display bug.
 
 ## Phases
 
@@ -296,9 +297,8 @@ v2.6 delivers one-command deployment of qm-nmr-calc to a cost-effective GCP Spot
 
 </details>
 
-## v2.6 Google Cloud Spot Deployment (In Progress)
-
-**Milestone Goal:** One-command deployment of qm-nmr-calc to a cheap, high-core Google Cloud Spot VM with manual lifecycle management.
+<details>
+<summary>v2.6 Google Cloud Spot Deployment (Phases 45-48.1) - SHIPPED 2026-02-05</summary>
 
 ### Phase 45: GCP Infrastructure Setup
 **Goal**: GCP project configured with networking and storage prerequisites for Spot VM deployment.
@@ -363,10 +363,115 @@ Plans:
 Plans:
 - [x] 48-01-PLAN.md - GCP deployment documentation
 
+### Phase 48.1: Machine Info Display (INSERTED)
+**Goal**: Web UI displays machine information (type, CPU cores, memory) for debugging and user awareness.
+**Depends on**: Phase 48
+**Requirements**: INFO-01
+**Success Criteria** (what must be TRUE):
+  1. Results page shows machine type (if on GCP) or hostname
+  2. Results page shows number of CPU cores NWChem is configured to use
+  3. Results page shows memory allocation for NWChem
+**Plans**: 0 plans
+**Status**: Not started
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 48.1 to break down)
+
+</details>
+
+## v2.7 Automated GCP Deployment (In Progress)
+
+**Milestone Goal:** Fully non-interactive GCP deployment that reads config from a file, auto-discovers the cheapest spot instance across all regions, and deploys end-to-end without manual intervention. HTTP-only. Replaces v2.6 interactive scripts. Also fixes conformer progress tracking display bug.
+
+### Phase 49: Config Foundation and Pricing Query
+**Goal**: Non-interactive deployment foundation with reliable pricing data and validated configuration.
+**Depends on**: Nothing (first phase of v2.7)
+**Requirements**: CFG-01, CFG-02, CFG-03, CFG-04, CFG-05, PRC-01, PRC-03, PRC-04
+**Success Criteria** (what must be TRUE):
+  1. User creates TOML config file specifying CPU cores, RAM, GCP project, and disk size
+  2. Config validation catches errors before any GCP operations (missing project ID, impossible CPU/RAM combinations)
+  3. System queries CloudPrice.net API for spot pricing across all GCP regions
+  4. Pricing data cached with 24-hour TTL to avoid redundant queries
+  5. Hardcoded regional fallback rankings used when pricing API unavailable
+  6. All gcloud commands use --quiet and --format=json for non-interactive execution
+**Plans**: 2 plans
+**Status**: Not started
+
+Plans:
+- [ ] 49-01-PLAN.md -- TOML config validation with Pydantic (TDD)
+- [ ] 49-02-PLAN.md -- Spot pricing query with API, caching, and fallback (TDD)
+
+### Phase 50: Machine Selection and Resource Calculation
+**Goal**: Correct machine type mapping and dynamic Docker resource limit calculation.
+**Depends on**: Phase 49
+**Requirements**: PRC-02, MCH-01, MCH-02, MCH-03, MCH-04
+**Success Criteria** (what must be TRUE):
+  1. System maps CPU/RAM requirements to appropriate GCP machine types via gcloud filtering
+  2. Machine type availability validated in target zone before VM creation
+  3. System falls back to next-cheapest region if primary zone lacks capacity
+  4. Docker memory limit calculated dynamically from selected machine type (VM_RAM - 8GB for OS)
+  5. NWCHEM_NPROC calculated from actual CPU count on VM host (not inside container)
+  6. Startup script template generated with computed WORKER_MEMORY_LIMIT and NWCHEM_NPROC
+**Plans**: 0 plans
+**Status**: Not started
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 50 to break down)
+
+### Phase 51: Deployment Orchestration
+**Goal**: End-to-end automated deployment with progressive feedback and error handling.
+**Depends on**: Phase 50
+**Requirements**: PRC-05, DEP-01, DEP-02, DEP-03, DEP-04, DEP-05, DEP-07, DEP-08, DEP-09, RPL-01, RPL-02, RPL-03
+**Success Criteria** (what must be TRUE):
+  1. Single command deploys end-to-end with zero interactive prompts
+  2. Infrastructure operations are idempotent (create if missing, reuse if exists)
+  3. Deployment progress displayed with timestamped feedback
+  4. Cost estimate displayed before VM creation
+  5. Dry-run mode (--dry-run) shows planned actions without executing
+  6. Failed deployment cleans up orphaned resources automatically
+  7. deploy-auto.sh orchestrator replaces v2.6 interactive deploy-vm.sh
+**Plans**: 0 plans
+**Status**: Not started
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 51 to break down)
+
+### Phase 52: HTTP-Only Container Deployment
+**Goal**: Container deployment with HTTP-only configuration and correct resource limits.
+**Depends on**: Phase 51
+**Requirements**: DEP-06, LCY-01, LCY-02, RPL-04
+**Success Criteria** (what must be TRUE):
+  1. docker-compose.gcp.yml exposes HTTP on port 80 (no Caddy HTTPS configuration)
+  2. Dynamic .env file generated with computed WORKER_MEMORY_LIMIT and NWCHEM_NPROC
+  3. Container startup validated (health checks pass)
+  4. Existing lifecycle scripts (start, stop, delete, status, ssh, logs) continue to work
+  5. Teardown script removes all created resources cleanly
+  6. HTTPS/domain/Caddy TLS configuration removed from GCP deployment
+**Plans**: 0 plans
+**Status**: Not started
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 52 to break down)
+
+### Phase 53: Conformer Progress Bug Fix
+**Goal**: Conformer progress tracking displays correctly during processing.
+**Depends on**: Nothing (independent UI fix)
+**Requirements**: BUG-01, BUG-02
+**Success Criteria** (what must be TRUE):
+  1. Status bar shows accurate conformer count during processing (e.g., "1/2" not "0/2")
+  2. Conformer statuses update correctly as conformers complete
+  3. Progress bar reflects actual conformer completion state
+**Plans**: 0 plans
+**Status**: Not started
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 53 to break down)
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 45 -> 46 -> 47 -> 48
+Phases execute in numeric order: 49 -> 50 -> 51 -> 52 -> 53
+(Phase 53 can run in parallel with 49-52 as it's independent UI fix)
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -416,10 +521,16 @@ Phases execute in numeric order: 45 -> 46 -> 47 -> 48
 | 42. Local Validation | v2.5 | 1/1 | Complete | 2026-02-04 |
 | 43. CI/CD Integration | v2.5 | 1/1 | Complete | 2026-02-04 |
 | 44. Documentation | v2.5 | 1/1 | Complete | 2026-02-04 |
-| **45. GCP Infrastructure** | **v2.6** | **1/1** | **Complete** | 2026-02-04 |
-| **46. VM Deployment** | **v2.6** | **1/1** | **Complete** | 2026-02-04 |
-| **47. Lifecycle Scripts** | **v2.6** | **1/1** | **Complete** | 2026-02-05 |
-| **48. Documentation** | **v2.6** | **1/1** | **Complete** | 2026-02-05 |
+| 45. GCP Infrastructure | v2.6 | 1/1 | Complete | 2026-02-04 |
+| 46. VM Deployment | v2.6 | 1/1 | Complete | 2026-02-04 |
+| 47. Lifecycle Scripts | v2.6 | 1/1 | Complete | 2026-02-05 |
+| 48. Documentation | v2.6 | 1/1 | Complete | 2026-02-05 |
+| 48.1 Machine Info | v2.6 | 0/TBD | Not started | - |
+| **49. Config & Pricing** | **v2.7** | **0/TBD** | **Not started** | - |
+| **50. Machine Selection** | **v2.7** | **0/TBD** | **Not started** | - |
+| **51. Orchestration** | **v2.7** | **0/TBD** | **Not started** | - |
+| **52. HTTP Container** | **v2.7** | **0/TBD** | **Not started** | - |
+| **53. Conformer Bug Fix** | **v2.7** | **0/TBD** | **Not started** | - |
 
 ## Coverage (v2.6)
 
@@ -453,5 +564,45 @@ Phases execute in numeric order: 45 -> 46 -> 47 -> 48
 
 **Mapped: 23/23 (100%)**
 
+## Coverage (v2.7)
+
+**v2.7 Requirements: 31 total**
+
+| Requirement | Phase | Description |
+|-------------|-------|-------------|
+| CFG-01 | 49 | CPU/RAM in TOML config |
+| CFG-02 | 49 | GCP project and prefix in config |
+| CFG-03 | 49 | Persistent disk size in config |
+| CFG-04 | 49 | Config validation with Pydantic |
+| CFG-05 | 49 | Clear error messages for invalid config |
+| PRC-01 | 49 | Query spot pricing across all regions |
+| PRC-02 | 50 | Select cheapest region/zone for spec |
+| PRC-03 | 49 | Pricing data cached with TTL |
+| PRC-04 | 49 | Hardcoded fallback when API unavailable |
+| PRC-05 | 51 | Cost estimate before deployment |
+| MCH-01 | 50 | Map CPU/RAM to machine types |
+| MCH-02 | 50 | Validate machine type availability |
+| MCH-03 | 50 | Fallback to next-cheapest region |
+| MCH-04 | 50 | Dynamic Docker resource limits |
+| DEP-01 | 51 | Single command, zero prompts |
+| DEP-02 | 51 | Non-interactive gcloud commands |
+| DEP-03 | 51 | Idempotent infrastructure operations |
+| DEP-04 | 51 | VM created as Spot with correct config |
+| DEP-05 | 51 | Dynamic startup script generation |
+| DEP-06 | 52 | HTTP-only on port 80 |
+| DEP-07 | 51 | Timestamped progress feedback |
+| DEP-08 | 51 | Auto-cleanup on failed deployment |
+| DEP-09 | 51 | Dry-run mode |
+| LCY-01 | 52 | Existing lifecycle scripts work |
+| LCY-02 | 52 | Teardown script removes all resources |
+| RPL-01 | 51 | Replaces v2.6 interactive scripts |
+| RPL-02 | 51 | No interactive prompts |
+| RPL-03 | 51 | DNS check removed |
+| RPL-04 | 52 | HTTPS/Caddy removed |
+| BUG-01 | 53 | Conformer progress updates correctly |
+| BUG-02 | 53 | Status bar shows accurate count |
+
+**Mapped: 31/31 (100%)**
+
 ---
-*Last updated: 2026-02-05 - v2.6 milestone complete*
+*Last updated: 2026-02-06 - v2.7 phases 49-53 added*
