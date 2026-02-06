@@ -81,3 +81,8 @@ Thumbs.db
 
 # GCP deployment configuration (contains project-specific settings)
 gcp/config.sh
+gcp/config.toml
+gcp/.cache/
+
+# Allow gcp/lib/ (overrides Python lib/ pattern above)
+!gcp/lib/

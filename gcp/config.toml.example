@@ -1,0 +1,18 @@
+# GCP Deployment Configuration
+# Copy to config.toml and customize:
+#   cp config.toml.example config.toml
+
+[gcp]
+# Required: Your GCP project ID
+# Find at: GCP Console -> Project selector -> copy project ID
+project_id = "your-project-id"
+
+# Prefix for all resource names (IP, firewall rules, disk, VM)
+resource_prefix = "qm-nmr-calc"
+
+# Compute requirements
+cpu_cores = 8       # Min: 4, Max: 224
+ram_gb = 32         # Min: 8, Max: 896 (ratio: 0.5-8 GB per core)
+
+# Persistent disk size in GB (stores job data)
+disk_size_gb = 100  # Min: 10
