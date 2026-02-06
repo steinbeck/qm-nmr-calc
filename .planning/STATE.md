@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-06)
 ## Current Position
 
 Milestone: v2.7 Automated GCP Deployment
-Phase: Phase 52 - HTTP-Only Container Deployment (COMPLETE, VERIFIED)
-Plan: 2/2 complete, 14/14 must-haves verified
-Status: Phase 52 complete and verified, ready for Phase 53
-Last activity: 2026-02-06 — Phase 52 verified (14/14 must-haves, 4/4 requirements satisfied)
+Phase: Phase 53 - Conformer Progress Bug Fix (COMPLETE)
+Plan: 1/1 complete
+Status: Phase 53 complete, v2.7 milestone ready for final verification
+Last activity: 2026-02-06 — Completed 53-01-PLAN.md (conformer progress tracking bug fix)
 
-Progress: [#####################] 112 plans complete (v1.0-v2.6 + 49-01, 49-02, 50-01, 50-02, 51-01, 51-02, 52-01, 52-02)
+Progress: [#####################] 113 plans complete (v1.0-v2.6 + 49-01, 49-02, 50-01, 50-02, 51-01, 51-02, 52-01, 52-02, 53-01)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 112 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 8)
-- Average duration: ~6.4 min
-- Total execution time: ~715 min (~11.9 hours)
+- Total plans completed: 113 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9)
+- Average duration: ~6.3 min
+- Total execution time: ~719 min (~12.0 hours)
 
 **By Milestone:**
 
@@ -38,7 +38,7 @@ Progress: [#####################] 112 plans complete (v1.0-v2.6 + 49-01, 49-02, 
 | v2.4 Docker Deployment | 6 | 8 | ~2 hours | Shipped 2026-02-03 |
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
-| v2.7 Automated GCP Deployment | 5 | 8/TBD | In progress | Started 2026-02-06 |
+| v2.7 Automated GCP Deployment | 5 | 9/9 | ~32 min | Shipped 2026-02-06 |
 
 ## Accumulated Context
 
@@ -51,7 +51,7 @@ v2.6 decisions archived.
 - Docker nproc returns 1 inside containers — fixed with --oversubscribe
 - Worker memory limit too low for high-memory VMs — needed manual bumps
 - HTTPS/Caddy fails on bare IP — had to switch to HTTP
-- Conformer progress tracking display bug — still unfixed, addressed in v2.7 Phase 53
+- Conformer progress tracking display bug — FIXED in v2.7 Phase 53
 - macOS vs Linux memory detection differences
 - Missing httpx production dependency
 
@@ -89,6 +89,11 @@ v2.6 decisions archived.
 - Region derivation from zone: ${GCP_ZONE%-*} to strip zone suffix
 - Conditional cleanup: disk/IP deletion based on zone availability with fallback strategies
 
+**v2.7 Phase 53 (Conformer Progress Bug Fix) decisions:**
+- Added update_job_status() to on_progress callback to persist ensemble mutations
+- Maintained existing persistence pattern (lines 326, 332, 404)
+- Progress callbacks must persist mutated state to disk for frontend visibility
+
 ### Roadmap Evolution
 
 - v1.0: 6 phases (1-6), shipped 2026-01-20
@@ -124,10 +129,10 @@ None
 ## Session Continuity
 
 Last session: 2026-02-06
-Stopped at: Completed 52-02-PLAN.md (teardown infrastructure migration)
+Stopped at: Completed 53-01-PLAN.md (conformer progress bug fix)
 Resume file: None
-Next: Phase 53 (conformer progress bug fix)
+Next: v2.7 milestone complete, ready for verification
 Tests: 415 tests collected (377 pre-existing + 19 config + 19 pricing + 19 machine; pre-existing failures in NWChem integration unrelated)
 Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
 Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR
-GCP: Phase 52 complete - all 7 lifecycle/teardown scripts migrated to v2.7 TOML config + runtime zone detection, HTTP-only deployment verified
+GCP: v2.7 complete - TOML config, dynamic pricing/machine selection, HTTP-only deployment, conformer progress bug fixed
