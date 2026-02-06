@@ -10,13 +10,13 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 ## Current State
 
-**Last shipped:** v2.6 Google Cloud Spot Deployment (2026-02-05)
+**Last shipped:** v2.7 Automated GCP Deployment (2026-02-06)
 
-**Codebase:** ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~1,500 LOC GCP scripts
+**Codebase:** ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
 **Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Custom CSS, Docker, Caddy
-**Test suite:** 356 tests
+**Test suite:** 415 tests
 **Docker:** Worker 2.1GB, API ~733MB, Caddy reverse proxy, GHCR publishing
-**GCP:** Deployment scripts, lifecycle management, documentation
+**GCP:** Automated TOML-config deployment, dynamic pricing/machine selection, lifecycle management
 
 **What works today:**
 - Submit molecules (SMILES/MOL/SDF) via REST API or modern web UI
@@ -32,18 +32,14 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - Step tracker with conformer progress visualization
 - WCAG-compliant accessibility (keyboard nav, reduced motion, contrast)
 - Mobile-optimized responsive design
+- Automated GCP spot deployment from TOML config (zero prompts)
+- Dynamic spot pricing discovery across all GCP regions
+- Auto machine type selection matching CPU/RAM requirements
+- HTTP-only fire-up-and-burn cloud deployment pattern
 
-## Current Milestone: v2.7 Automated GCP Deployment
+## Current Milestone
 
-**Goal:** Fully non-interactive GCP deployment that reads config from a file, auto-discovers the cheapest spot instance across all regions, and deploys end-to-end without manual intervention.
-
-**Target features:**
-- Config file specifying compute requirements (core count, RAM)
-- Auto-query GCP pricing to find cheapest spot instance across all regions/zones
-- Auto-select machine type matching the requested spec
-- Fully non-interactive deployment (no prompts, no manual steps)
-- Replaces v2.6 interactive deployment scripts
-- Fix conformer progress tracking display bug (status bar stuck on 0/N)
+No active milestone. v2.7 shipped 2026-02-06.
 
 ## Future Considerations
 
@@ -108,6 +104,16 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - Auto-HTTPS via Caddy and Let's Encrypt -- v2.4
 - Pre-built images on GHCR with CI/CD publishing -- v2.4
 - Comprehensive deployment documentation -- v2.4
+- ARM64 Docker worker container via conda-forge -- v2.5
+- Multi-arch images on GHCR (amd64 + arm64) -- v2.5
+- GCP Spot VM deployment with lifecycle scripts -- v2.6
+- Persistent disk across VM lifecycle -- v2.6
+- TOML config-driven GCP deployment (zero prompts) -- v2.7
+- Auto-discover cheapest spot region via CloudPrice.net -- v2.7
+- Dynamic machine type selection and Docker resource limits -- v2.7
+- Dry-run mode for deployment preview -- v2.7
+- HTTP-only deployment (no HTTPS/domain needed) -- v2.7
+- Conformer progress tracking display fix -- v2.7
 
 ### Out of Scope
 
@@ -170,9 +176,11 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 | GITHUB_TOKEN for GHCR | No PAT management needed | Good -- automatic authentication |
 | Docker as primary install | Most users want easy deployment | Good -- 5-minute quick start |
 
-| Non-interactive GCP deploy | v2.6 scripts required manual intervention every time | — Pending |
-| Config-file-driven deployment | Replaces interactive prompts with declarative config | — Pending |
-| Auto-discover cheapest spot region | Queries GCP pricing API instead of hardcoded defaults | — Pending |
+| Non-interactive GCP deploy | v2.6 scripts required manual intervention every time | Good -- single command, zero prompts |
+| Config-file-driven deployment | Replaces interactive prompts with declarative config | Good -- TOML with Pydantic validation |
+| Auto-discover cheapest spot region | Queries GCP pricing API instead of hardcoded defaults | Good -- CloudPrice.net + fallback |
+| HTTP-only GCP deployment | Fire-up-and-burn pattern, no domain needed | Good -- simpler, faster setup |
+| Modular bash library architecture | Composable config/pricing/machine/infra libraries | Good -- clean, reusable |
 
 ---
-*Last updated: 2026-02-06 after v2.7 milestone started*
+*Last updated: 2026-02-06 after v2.7 milestone shipped*

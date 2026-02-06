@@ -16,9 +16,9 @@
 
 ## Overview
 
-**Current milestone:** v2.7 Automated GCP Deployment
+**Current milestone:** None (v2.7 shipped 2026-02-06)
 
-v2.7 replaces v2.6's interactive deployment scripts with a fully automated, config-driven system that finds the cheapest spot instance across all GCP regions and deploys end-to-end without manual intervention. HTTP-only deployment pattern for fire-up-and-burn usage. Also fixes conformer progress tracking display bug.
+All milestones complete. Run `/gsd:new-milestone` to start the next version.
 
 ## Phases
 
@@ -379,102 +379,37 @@ Plans:
 
 </details>
 
-## v2.7 Automated GCP Deployment (In Progress)
-
-**Milestone Goal:** Fully non-interactive GCP deployment that reads config from a file, auto-discovers the cheapest spot instance across all regions, and deploys end-to-end without manual intervention. HTTP-only. Replaces v2.6 interactive scripts. Also fixes conformer progress tracking display bug.
+<details>
+<summary>v2.7 Automated GCP Deployment (Phases 49-53) - SHIPPED 2026-02-06</summary>
 
 ### Phase 49: Config Foundation and Pricing Query
 **Goal**: Non-interactive deployment foundation with reliable pricing data and validated configuration.
-**Depends on**: Nothing (first phase of v2.7)
-**Requirements**: CFG-01, CFG-02, CFG-03, CFG-04, CFG-05, PRC-01, PRC-03, PRC-04
-**Success Criteria** (what must be TRUE):
-  1. User creates TOML config file specifying CPU cores, RAM, GCP project, and disk size
-  2. Config validation catches errors before any GCP operations (missing project ID, impossible CPU/RAM combinations)
-  3. System queries CloudPrice.net API for spot pricing across all GCP regions
-  4. Pricing data cached with 24-hour TTL to avoid redundant queries
-  5. Hardcoded regional fallback rankings used when pricing API unavailable
-  6. All gcloud commands use --quiet and --format=json for non-interactive execution
 **Plans**: 2 plans
-**Status**: Complete (2026-02-06)
-
-Plans:
-- [x] 49-01-PLAN.md -- TOML config validation with Pydantic (TDD)
-- [x] 49-02-PLAN.md -- Spot pricing query with API, caching, and fallback (TDD)
+**Status**: Complete
 
 ### Phase 50: Machine Selection and Resource Calculation
 **Goal**: Correct machine type mapping and dynamic Docker resource limit calculation.
-**Depends on**: Phase 49
-**Requirements**: PRC-02, MCH-01, MCH-02, MCH-03, MCH-04
-**Success Criteria** (what must be TRUE):
-  1. System maps CPU/RAM requirements to appropriate GCP machine types via gcloud filtering
-  2. Machine type availability validated in target zone before VM creation
-  3. System falls back to next-cheapest region if primary zone lacks capacity
-  4. Docker memory limit calculated dynamically from selected machine type (VM_RAM - 8GB for OS)
-  5. NWCHEM_NPROC calculated from actual CPU count on VM host (not inside container)
-  6. Startup script template generated with computed WORKER_MEMORY_LIMIT and NWCHEM_NPROC
 **Plans**: 2 plans
-**Status**: Complete (2026-02-06)
-
-Plans:
-- [x] 50-01-PLAN.md -- Machine type selection and resource calculation Python module (TDD)
-- [x] 50-02-PLAN.md -- Bash library wrapper for shell integration
+**Status**: Complete
 
 ### Phase 51: Deployment Orchestration
 **Goal**: End-to-end automated deployment with progressive feedback and error handling.
-**Depends on**: Phase 50
-**Requirements**: PRC-05, DEP-01, DEP-02, DEP-03, DEP-04, DEP-05, DEP-07, DEP-08, DEP-09, RPL-01, RPL-02, RPL-03
-**Success Criteria** (what must be TRUE):
-  1. Single command deploys end-to-end with zero interactive prompts
-  2. Infrastructure operations are idempotent (create if missing, reuse if exists)
-  3. Deployment progress displayed with timestamped feedback
-  4. Cost estimate displayed before VM creation
-  5. Dry-run mode (--dry-run) shows planned actions without executing
-  6. Failed deployment cleans up orphaned resources automatically
-  7. deploy-auto.sh orchestrator replaces v2.6 interactive deploy-vm.sh
 **Plans**: 2 plans
-**Status**: Complete (2026-02-06)
-
-Plans:
-- [x] 51-01-PLAN.md -- Infrastructure library (logging, dry-run, cleanup, idempotent operations)
-- [x] 51-02-PLAN.md -- Deployment orchestrator (deploy-auto.sh replacing deploy-vm.sh)
+**Status**: Complete
 
 ### Phase 52: HTTP-Only Container Deployment
-**Goal**: Migrate lifecycle and teardown scripts to v2.7 TOML config with runtime zone detection, removing all HTTPS/domain/Caddy references.
-**Depends on**: Phase 51
-**Requirements**: DEP-06, LCY-01, LCY-02, RPL-04
-**Success Criteria** (what must be TRUE):
-  1. docker-compose.gcp.yml exposes HTTP on port 80 (no Caddy HTTPS configuration)
-  2. Dynamic .env file generated with computed WORKER_MEMORY_LIMIT and NWCHEM_NPROC
-  3. Container startup validated (health checks pass)
-  4. Existing lifecycle scripts (start, stop, delete, status, ssh, logs) continue to work
-  5. Teardown script removes all created resources cleanly
-  6. HTTPS/domain/Caddy TLS configuration removed from GCP deployment
+**Goal**: Migrate lifecycle and teardown scripts to v2.7 TOML config with runtime zone detection.
 **Plans**: 2 plans
-**Status**: Complete (2026-02-06)
-
-Plans:
-- [x] 52-01-PLAN.md -- Migrate 6 lifecycle scripts to TOML config + runtime zone detection
-- [x] 52-02-PLAN.md -- Migrate teardown script to TOML config + runtime zone/region detection
+**Status**: Complete
 
 ### Phase 53: Conformer Progress Bug Fix
 **Goal**: Conformer progress tracking displays correctly during processing.
-**Depends on**: Nothing (independent UI fix)
-**Requirements**: BUG-01, BUG-02
-**Success Criteria** (what must be TRUE):
-  1. Status bar shows accurate conformer count during processing (e.g., "1/2" not "0/2")
-  2. Conformer statuses update correctly as conformers complete
-  3. Progress bar reflects actual conformer completion state
 **Plans**: 1 plan
-**Status**: Complete (2026-02-06)
+**Status**: Complete
 
-Plans:
-- [x] 53-01-PLAN.md -- Add ensemble persistence to on_progress callback (one-line fix in tasks.py)
+</details>
 
 ## Progress
-
-**Execution Order:**
-Phases execute in numeric order: 49 -> 50 -> 51 -> 52 -> 53
-(Phase 53 can run in parallel with 49-52 as it's independent UI fix)
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -608,4 +543,4 @@ Phases execute in numeric order: 49 -> 50 -> 51 -> 52 -> 53
 **Mapped: 31/31 (100%)**
 
 ---
-*Last updated: 2026-02-06 - Phase 53 complete (1/1 plans, 3/3 must-haves verified)*
+*Last updated: 2026-02-06 - v2.7 milestone archived*

@@ -5,17 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-06)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.7 Automated GCP Deployment
+**Current focus:** No active milestone
 
 ## Current Position
 
-Milestone: v2.7 Automated GCP Deployment
-Phase: Phase 53 - Conformer Progress Bug Fix (COMPLETE, VERIFIED)
-Plan: 1/1 complete, 3/3 must-haves verified
-Status: Phase 53 complete and verified, v2.7 milestone complete
-Last activity: 2026-02-06 — Phase 53 verified (3/3 must-haves, 2/2 requirements satisfied)
+Milestone: v2.7 Automated GCP Deployment — SHIPPED 2026-02-06
+Phase: All complete
+Status: Milestone archived, tagged v2.7
+Last activity: 2026-02-06 — v2.7 milestone completed and archived
 
-Progress: [#####################] 113 plans complete (v1.0-v2.6 + 49-01, 49-02, 50-01, 50-02, 51-01, 51-02, 52-01, 52-02, 53-01)
+Progress: [#####################] 113 plans complete across 11 milestones (v1.0-v2.7)
 
 ## Performance Metrics
 
@@ -38,61 +37,14 @@ Progress: [#####################] 113 plans complete (v1.0-v2.6 + 49-01, 49-02, 
 | v2.4 Docker Deployment | 6 | 8 | ~2 hours | Shipped 2026-02-03 |
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
-| v2.7 Automated GCP Deployment | 5 | 9/9 | ~32 min | Shipped 2026-02-06 |
+| v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
 
 ## Accumulated Context
 
 ### Decisions
 
 All prior decisions logged in PROJECT.md Key Decisions table.
-v2.6 decisions archived.
-
-**v2.6 Deployment Problems (see .planning/post-v2.6-problems.md):**
-- Docker nproc returns 1 inside containers — fixed with --oversubscribe
-- Worker memory limit too low for high-memory VMs — needed manual bumps
-- HTTPS/Caddy fails on bare IP — had to switch to HTTP
-- Conformer progress tracking display bug — FIXED in v2.7 Phase 53
-- macOS vs Linux memory detection differences
-- Missing httpx production dependency
-
-**v2.7 Approach (from research):**
-- TOML config (not YAML) for compute requirements
-- CloudPrice.net API with hardcoded fallback (not GCP Billing API directly)
-- Extend v2.6 bash scripts with automation libraries (not rewrite in Python/Terraform)
-- Dynamic Docker limit calculation on VM host (not inside containers)
-- HTTP-only deployment (no domain, no HTTPS)
-- Modular bash libraries (config.sh, pricing.sh, machine.sh, infra.sh)
-
-**v2.7 Phase 50 (Machine Selection) decisions:**
-- find_available_zone() calls get_ranked_regions() internally for simpler API
-- Docker worker memory = VM RAM - 8GB OS overhead (minimum 4GB)
-- Startup script uses runtime $(nproc) detection instead of hardcoded CPU count
-- HTTP-only docker-compose.gcp.yml override (no Caddy service)
-- --oversubscribe flag for MPI compatibility in containers (v2.6 fix)
-- Bash wrapper library pattern: source gcp/lib/machine.sh, call functions with args
-- Provide both JSON output (select_machine) and eval-friendly format (get_docker_resources)
-
-**v2.7 Phase 51 (Deployment Orchestration) decisions:**
-- Cleanup trap only deletes VMs, never disks or IPs (data preservation)
-- Trap registration deferred to orchestrator, not set in library (composability)
-- Existence checks always run, not wrapped in execute() (accurate dry-run reporting)
-- HTTP and SSH firewall rules only, no HTTPS (v2.7 HTTP-only per RPL-03)
-- Orchestrator script replaces v2.6 deploy-vm.sh completely
-- Startup script generated to temp file and cleaned up after VM creation
-
-**v2.7 Phase 52 (HTTP-Only Container Deployment) decisions:**
-- Runtime zone detection: Scripts query gcloud compute instances list to find VM zone dynamically
-- HTTP-only URLs: status-vm.sh shows http:// URL instead of domain/HTTPS
-- Config migration: All scripts now load TOML config via lib/config.sh
-- deploy-auto.sh references: All error messages updated to reference deploy-auto.sh
-- Teardown zone detection: try VM first, fallback to disk, handle neither existing gracefully
-- Region derivation from zone: ${GCP_ZONE%-*} to strip zone suffix
-- Conditional cleanup: disk/IP deletion based on zone availability with fallback strategies
-
-**v2.7 Phase 53 (Conformer Progress Bug Fix) decisions:**
-- Added update_job_status() to on_progress callback to persist ensemble mutations
-- Maintained existing persistence pattern (lines 326, 332, 404)
-- Progress callbacks must persist mutated state to disk for frontend visibility
+v2.7 decisions archived to .planning/milestones/v2.7-ROADMAP.md.
 
 ### Roadmap Evolution
 
@@ -106,7 +58,7 @@ v2.6 decisions archived.
 - v2.4: 6 phases (35-40), shipped 2026-02-03
 - v2.5: 4 phases (41-44), shipped 2026-02-04
 - v2.6: 5 phases (45-48.1), shipped 2026-02-05
-- v2.7: 5 phases (49-53), roadmap complete 2026-02-06
+- v2.7: 5 phases (49-53), shipped 2026-02-06
 
 ### Pending Todos
 
@@ -121,18 +73,13 @@ v2.6 decisions archived.
 **Active:**
 None
 
-**Resolved (v2.7 planning):**
-- Pricing strategy: Use CloudPrice.net API with hardcoded fallback
-- Config format: TOML selected over YAML
-- Implementation approach: Augment v2.6 bash scripts, don't rewrite
-
 ## Session Continuity
 
 Last session: 2026-02-06
-Stopped at: Completed 53-01-PLAN.md (conformer progress bug fix)
+Stopped at: v2.7 milestone completed and archived
 Resume file: None
-Next: v2.7 milestone complete, ready for verification
-Tests: 415 tests collected (377 pre-existing + 19 config + 19 pricing + 19 machine; pre-existing failures in NWChem integration unrelated)
+Next: No active milestone. Run /gsd:new-milestone to start next version.
+Tests: 415 tests (377 pre-existing + 19 config + 19 pricing + 19 machine)
 Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
 Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR
-GCP: v2.7 complete - TOML config, dynamic pricing/machine selection, HTTP-only deployment, conformer progress bug fixed
+GCP: v2.7 shipped - TOML config, dynamic pricing/machine selection, HTTP-only deployment
