@@ -413,11 +413,11 @@ Plans:
   5. NWCHEM_NPROC calculated from actual CPU count on VM host (not inside container)
   6. Startup script template generated with computed WORKER_MEMORY_LIMIT and NWCHEM_NPROC
 **Plans**: 2 plans
-**Status**: Not started
+**Status**: Complete (2026-02-06)
 
 Plans:
-- [ ] 50-01-PLAN.md -- Machine type selection and resource calculation Python module (TDD)
-- [ ] 50-02-PLAN.md -- Bash library wrapper for shell integration
+- [x] 50-01-PLAN.md -- Machine type selection and resource calculation Python module (TDD)
+- [x] 50-02-PLAN.md -- Bash library wrapper for shell integration
 
 ### Phase 51: Deployment Orchestration
 **Goal**: End-to-end automated deployment with progressive feedback and error handling.
@@ -431,11 +431,12 @@ Plans:
   5. Dry-run mode (--dry-run) shows planned actions without executing
   6. Failed deployment cleans up orphaned resources automatically
   7. deploy-auto.sh orchestrator replaces v2.6 interactive deploy-vm.sh
-**Plans**: 0 plans
+**Plans**: 2 plans
 **Status**: Not started
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 51 to break down)
+- [ ] 51-01-PLAN.md -- Infrastructure library (logging, dry-run, cleanup, idempotent operations)
+- [ ] 51-02-PLAN.md -- Deployment orchestrator (deploy-auto.sh replacing deploy-vm.sh)
 
 ### Phase 52: HTTP-Only Container Deployment
 **Goal**: Container deployment with HTTP-only configuration and correct resource limits.
@@ -528,8 +529,8 @@ Phases execute in numeric order: 49 -> 50 -> 51 -> 52 -> 53
 | 48. Documentation | v2.6 | 1/1 | Complete | 2026-02-05 |
 | 48.1 Machine Info | v2.6 | 0/TBD | Not started | - |
 | **49. Config & Pricing** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
-| **50. Machine Selection** | **v2.7** | **0/2** | **Not started** | - |
-| **51. Orchestration** | **v2.7** | **0/TBD** | **Not started** | - |
+| **50. Machine Selection** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
+| **51. Orchestration** | **v2.7** | **0/2** | **Not started** | - |
 | **52. HTTP Container** | **v2.7** | **0/TBD** | **Not started** | - |
 | **53. Conformer Bug Fix** | **v2.7** | **0/TBD** | **Not started** | - |
 
@@ -606,4 +607,4 @@ Phases execute in numeric order: 49 -> 50 -> 51 -> 52 -> 53
 **Mapped: 31/31 (100%)**
 
 ---
-*Last updated: 2026-02-06 - Phase 50 planned (2 plans in 2 waves)*
+*Last updated: 2026-02-06 - Phase 50 complete (2/2 plans, 10/10 must-haves verified)*
