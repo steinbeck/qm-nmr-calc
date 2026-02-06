@@ -2,18 +2,18 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-04)
+See: .planning/PROJECT.md (updated 2026-02-06)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.6 Google Cloud Spot Deployment - Complete
+**Current focus:** v2.7 Automated GCP Deployment
 
 ## Current Position
 
-Milestone: v2.6 Google Cloud Spot Deployment
-Phase: 48 of 48 (Documentation and Testing)
-Plan: 1 of 1 complete
-Status: Milestone complete
-Last activity: 2026-02-05 -- Completed 48-01-PLAN.md (GCP documentation)
+Milestone: v2.7 Automated GCP Deployment
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-06 — Milestone v2.7 started
 
 Progress: [####################] 104 plans complete (v1.0-v2.6)
 
@@ -37,24 +37,22 @@ Progress: [####################] 104 plans complete (v1.0-v2.6)
 | v2.3 NMReData Export | 3 | 3 | 1 day | Shipped 2026-02-01 |
 | v2.4 Docker Deployment | 6 | 8 | ~2 hours | Shipped 2026-02-03 |
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
-| v2.6 GCP Spot Deployment | 4 | 4 | ~1 day | Shipped 2026-02-05 |
+| v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
 
 ## Accumulated Context
 
 ### Decisions
 
 All prior decisions logged in PROJECT.md Key Decisions table.
-v2.5 decisions archived.
+v2.6 decisions archived.
 
-**v2.6 Decisions:**
-- Phase 45: Idempotent infrastructure scripts that check for existing resources
-- Phase 45: Teardown requires explicit "yes" confirmation for safety
-- Phase 46: Startup script downloads docker-compose.yml and Caddyfile from GitHub master branch
-- Phase 46: Shutdown script uses 25s timeout to stay within 30s preemption window
-- Phase 46: Default machine type is e2-standard-4 (4 vCPU, 16 GB, ~$30-50/month Spot)
-- Phase 47: delete-vm.sh preserves persistent disk and static IP, only removes VM instance
-- Phase 47: logs-vm.sh uses both compose files (base + gcp override) for proper configuration
-- Phase 48: GCP documentation added to deployment.md with DNS guides for Cloudflare/Namecheap
+**v2.6 Deployment Problems (see .planning/post-v2.6-problems.md):**
+- Docker nproc returns 1 inside containers — fixed with --oversubscribe
+- Worker memory limit too low for high-memory VMs — needed manual bumps
+- HTTPS/Caddy fails on bare IP — had to switch to HTTP
+- Conformer progress tracking display bug — still unfixed
+- macOS vs Linux memory detection differences
+- Missing httpx production dependency
 
 ### Roadmap Evolution
 
@@ -67,7 +65,7 @@ v2.5 decisions archived.
 - v2.3: 3 phases (32-34), shipped 2026-02-01
 - v2.4: 6 phases (35-40), shipped 2026-02-03
 - v2.5: 4 phases (41-44), shipped 2026-02-04
-- v2.6: 4 phases (45-48), shipped 2026-02-05
+- v2.6: 5 phases (45-48.1), shipped 2026-02-05
 
 ### Pending Todos
 
@@ -83,10 +81,10 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-05
-Stopped at: v2.6 milestone complete
+Last session: 2026-02-06
+Stopped at: v2.7 milestone initialization
 Resume file: None
-Next: Ready for next milestone planning
+Next: Defining requirements for v2.7
 Tests: All tests passing (356 tests)
 Codebase: ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~1,500 LOC GCP scripts
 Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR

@@ -10,12 +10,13 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 ## Current State
 
-**Last shipped:** v2.5 ARM64 Docker Support (2026-02-04)
+**Last shipped:** v2.6 Google Cloud Spot Deployment (2026-02-05)
 
-**Codebase:** ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,560 LOC docs
+**Codebase:** ~6,400 LOC Python, ~2,450 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~1,500 LOC GCP scripts
 **Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Custom CSS, Docker, Caddy
 **Test suite:** 356 tests
 **Docker:** Worker 2.1GB, API ~733MB, Caddy reverse proxy, GHCR publishing
+**GCP:** Deployment scripts, lifecycle management, documentation
 
 **What works today:**
 - Submit molecules (SMILES/MOL/SDF) via REST API or modern web UI
@@ -32,16 +33,17 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - WCAG-compliant accessibility (keyboard nav, reduced motion, contrast)
 - Mobile-optimized responsive design
 
-## Current Milestone: v2.6 Google Cloud Spot Deployment
+## Current Milestone: v2.7 Automated GCP Deployment
 
-**Goal:** One-command deployment of qm-nmr-calc to a cheap, high-core Google Cloud spot VM.
+**Goal:** Fully non-interactive GCP deployment that reads config from a file, auto-discovers the cheapest spot instance across all regions, and deploys end-to-end without manual intervention.
 
 **Target features:**
-- Script to provision a GCP spot instance (high CPU, high memory, preemptible)
-- Automated Docker deployment on the spot VM
-- HTTPS with domain support (using existing Caddy setup)
-- Simple start/stop commands for the VM
-- Manual lifecycle management (user starts/stops as needed)
+- Config file specifying compute requirements (core count, RAM)
+- Auto-query GCP pricing to find cheapest spot instance across all regions/zones
+- Auto-select machine type matching the requested spec
+- Fully non-interactive deployment (no prompts, no manual steps)
+- Replaces v2.6 interactive deployment scripts
+- Fix conformer progress tracking display bug (status bar stuck on 0/N)
 
 ## Future Considerations
 
@@ -168,5 +170,9 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 | GITHUB_TOKEN for GHCR | No PAT management needed | Good -- automatic authentication |
 | Docker as primary install | Most users want easy deployment | Good -- 5-minute quick start |
 
+| Non-interactive GCP deploy | v2.6 scripts required manual intervention every time | — Pending |
+| Config-file-driven deployment | Replaces interactive prompts with declarative config | — Pending |
+| Auto-discover cheapest spot region | Queries GCP pricing API instead of hardcoded defaults | — Pending |
+
 ---
-*Last updated: 2026-02-04 after v2.6 milestone started*
+*Last updated: 2026-02-06 after v2.7 milestone started*
