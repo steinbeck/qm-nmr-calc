@@ -329,6 +329,7 @@ def run_ensemble_nmr_task(job_id: str) -> dict:
     def on_progress(step: str, current: int, total: int):
         """Update job status with progress during conformer processing."""
         start_step(job_id, step, f"{step.replace('_', ' ').title()} ({current}/{total})")
+        update_job_status(job_id, conformer_ensemble=ensemble)
 
     # Step 2-4: DFT optimization + Post-DFT filter + NMR calculations
     start_step(job_id, "optimizing_conformers", f"Optimizing conformers (0/{len(ensemble.conformers)})")
