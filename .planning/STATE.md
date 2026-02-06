@@ -10,10 +10,10 @@ See: .planning/PROJECT.md (updated 2026-02-06)
 ## Current Position
 
 Milestone: v2.7 Automated GCP Deployment
-Phase: Phase 52 - HTTP-Only Container Deployment
-Plan: 2/6 complete
-Status: In progress
-Last activity: 2026-02-06 — Completed 52-02-PLAN.md (teardown infrastructure migration)
+Phase: Phase 52 - HTTP-Only Container Deployment (COMPLETE, VERIFIED)
+Plan: 2/2 complete, 14/14 must-haves verified
+Status: Phase 52 complete and verified, ready for Phase 53
+Last activity: 2026-02-06 — Phase 52 verified (14/14 must-haves, 4/4 requirements satisfied)
 
 Progress: [#####################] 112 plans complete (v1.0-v2.6 + 49-01, 49-02, 50-01, 50-02, 51-01, 51-02, 52-01, 52-02)
 
@@ -126,8 +126,8 @@ None
 Last session: 2026-02-06
 Stopped at: Completed 52-02-PLAN.md (teardown infrastructure migration)
 Resume file: None
-Next: Phase 52 remaining plans (stop, start, delete VM scripts)
+Next: Phase 53 (conformer progress bug fix)
 Tests: 415 tests collected (377 pre-existing + 19 config + 19 pricing + 19 machine; pre-existing failures in NWChem integration unrelated)
 Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
 Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR
-GCP: Phase 52: 2/6 complete - lifecycle scripts (status/ssh/logs) and teardown migrated to v2.7 TOML config with runtime zone detection
+GCP: Phase 52 complete - all 7 lifecycle/teardown scripts migrated to v2.7 TOML config + runtime zone detection, HTTP-only deployment verified

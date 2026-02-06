@@ -450,11 +450,11 @@ Plans:
   5. Teardown script removes all created resources cleanly
   6. HTTPS/domain/Caddy TLS configuration removed from GCP deployment
 **Plans**: 2 plans
-**Status**: Not started
+**Status**: Complete (2026-02-06)
 
 Plans:
-- [ ] 52-01-PLAN.md -- Migrate 6 lifecycle scripts to TOML config + runtime zone detection
-- [ ] 52-02-PLAN.md -- Migrate teardown script to TOML config + runtime zone/region detection
+- [x] 52-01-PLAN.md -- Migrate 6 lifecycle scripts to TOML config + runtime zone detection
+- [x] 52-02-PLAN.md -- Migrate teardown script to TOML config + runtime zone/region detection
 
 ### Phase 53: Conformer Progress Bug Fix
 **Goal**: Conformer progress tracking displays correctly during processing.
@@ -532,7 +532,7 @@ Phases execute in numeric order: 49 -> 50 -> 51 -> 52 -> 53
 | **49. Config & Pricing** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
 | **50. Machine Selection** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
 | **51. Orchestration** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
-| **52. HTTP Container** | **v2.7** | **0/2** | **Not started** | - |
+| **52. HTTP Container** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
 | **53. Conformer Bug Fix** | **v2.7** | **0/TBD** | **Not started** | - |
 
 ## Coverage (v2.6)
@@ -608,4 +608,4 @@ Phases execute in numeric order: 49 -> 50 -> 51 -> 52 -> 53
 **Mapped: 31/31 (100%)**
 
 ---
-*Last updated: 2026-02-06 - Phase 52 planned (2 plans in 1 wave)*
+*Last updated: 2026-02-06 - Phase 52 complete (2/2 plans, 14/14 must-haves verified)*

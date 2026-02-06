@@ -1,110 +1,136 @@
-# Requirements: qm-nmr-calc v2.6
+# Requirements: v2.7 Automated GCP Deployment
 
-**Defined:** 2026-02-04
-**Core Value:** Reliable async NMR predictions with full control over calculation parameters
+**Defined:** 2026-02-06
+**Core Value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
 
-## v2.6 Requirements
+## v2.7 Requirements
 
-Requirements for GCP Spot VM deployment. Enables cost-effective cloud deployment.
+Requirements for v2.7 milestone. Each maps to roadmap phases.
 
-### Infrastructure
+### Configuration
 
-- [x] **INFRA-01**: Script creates static external IP for stable DNS
-- [x] **INFRA-02**: Script creates firewall rules (HTTP 80, HTTPS 443, SSH 22)
-- [x] **INFRA-03**: Script creates persistent disk for job data and certificates
-- [x] **INFRA-04**: Persistent disk survives VM deletion/recreation
+- [x] **CFG-01**: User specifies compute requirements (CPU cores, RAM) in a TOML config file
+- [x] **CFG-02**: Config file specifies GCP project ID and resource prefix
+- [x] **CFG-03**: Config file specifies persistent disk size
+- [x] **CFG-04**: Config validated with clear error messages before any GCP operations (Pydantic)
+- [x] **CFG-05**: Invalid config (missing project, impossible CPU/RAM combos) rejected with actionable error messages
+
+### Pricing and Region Selection
+
+- [x] **PRC-01**: System queries spot pricing across all GCP regions automatically
+- [x] **PRC-02**: System selects cheapest region/zone for the requested machine spec
+- [x] **PRC-03**: Pricing data cached with TTL to avoid redundant API calls
+- [x] **PRC-04**: Hardcoded regional fallback rankings used when pricing API unavailable
+- [x] **PRC-05**: Cost estimate displayed before deployment begins
+
+### Machine Selection
+
+- [x] **MCH-01**: System maps CPU/RAM requirements to appropriate GCP machine type
+- [x] **MCH-02**: Machine type availability validated in target zone before creation
+- [x] **MCH-03**: System falls back to next-cheapest region if primary zone lacks capacity
+- [x] **MCH-04**: Docker resource limits (memory, CPU) calculated dynamically from selected machine type
 
 ### Deployment
 
-- [x] **DEPLOY-01**: One-command VM creation with Spot configuration
-- [x] **DEPLOY-02**: Startup script installs Docker and deploys containers
-- [x] **DEPLOY-03**: Startup script pulls images from GHCR
-- [x] **DEPLOY-04**: Graceful container shutdown during preemption (25s timeout)
-- [x] **DEPLOY-05**: Interactive prompts for region, zone, machine type with defaults
-- [x] **DEPLOY-06**: Cost estimation displayed before VM creation
-- [x] **DEPLOY-07**: docker-compose.gcp.yml override for GCP-specific settings
+- [x] **DEP-01**: Single command deploys end-to-end with zero interactive prompts
+- [x] **DEP-02**: Deployment uses `--quiet` and explicit parameters for all gcloud commands
+- [x] **DEP-03**: Infrastructure operations are idempotent (create if missing, reuse if exists)
+- [x] **DEP-04**: VM created as Spot instance with correct machine type and static IP
+- [x] **DEP-05**: Startup script dynamically generated with computed NWCHEM_NPROC and WORKER_MEMORY_LIMIT
+- [x] **DEP-06**: Deployment serves HTTP only on port 80 (no HTTPS, no domain, no certificates)
+- [x] **DEP-07**: Deployment progress displayed with timestamped feedback
+- [x] **DEP-08**: Failed deployment cleans up orphaned resources (VMs, disks)
+- [x] **DEP-09**: Dry-run mode (--dry-run) shows planned actions without executing
 
 ### Lifecycle
 
-- [x] **LIFE-01**: Stop command halts VM (preserves data, stops billing)
-- [x] **LIFE-02**: Start command resumes stopped VM
-- [x] **LIFE-03**: Delete command removes VM (preserves persistent disk)
-- [x] **LIFE-04**: Status command shows VM state and IP address
-- [x] **LIFE-05**: SSH command provides shell access to VM
-- [x] **LIFE-06**: Logs command streams container logs
-- [x] **LIFE-07**: Configuration persistence (remembers VM name, zone between commands)
+- [x] **LCY-01**: Existing lifecycle scripts (start, stop, delete, status, ssh, logs) continue to work
+- [x] **LCY-02**: Teardown script removes all created resources cleanly
 
-### Documentation
+### V2.6 Replacement
 
-- [x] **DOCS-01**: README section on GCP deployment option
-- [x] **DOCS-02**: Prerequisites documented (GCP account, gcloud CLI, domain)
-- [x] **DOCS-03**: Cost estimates documented (spot vs on-demand)
-- [x] **DOCS-04**: Preemption limitations documented (job loss on interrupt)
-- [x] **DOCS-05**: DNS configuration guide for common providers
+- [x] **RPL-01**: New automation replaces v2.6 interactive deploy-vm.sh
+- [x] **RPL-02**: No interactive prompts anywhere in deployment flow
+- [x] **RPL-03**: DNS check and domain requirement removed entirely
+- [x] **RPL-04**: HTTPS/Caddy TLS configuration removed from GCP deployment
 
-## Future Requirements
+### Bug Fix
 
-Deferred to later milestones.
+- [ ] **BUG-01**: Conformer progress tracking display updates correctly during processing
+- [ ] **BUG-02**: Status bar shows accurate conformer count (e.g., "1/2" not "0/2") as conformers complete
 
-### Preemption Resilience
+## Deferred Requirements
 
-- **PREEMPT-01**: NWChem restart file persistence to survive preemption
-- **PREEMPT-02**: Automatic job retry after preemption
-- **PREEMPT-03**: Managed Instance Group for auto-recreation
+Not in v2.7 scope. Tracked for future consideration.
 
-### Multi-Cloud
+### Auto-Recovery
 
-- **CLOUD-01**: AWS Spot Instance support
-- **CLOUD-02**: Azure Spot VM support
+- **REC-01**: Automatic VM restart after spot preemption
+- **REC-02**: Calculation checkpointing for resume after preemption
+
+### Monitoring
+
+- **MON-01**: Health checks for running containers
+- **MON-02**: Cost tracking and billing alerts
+
+### Security
+
+- **SEC-01**: HTTPS support with domain-based TLS certificates
+- **SEC-02**: Authentication for web UI access
 
 ## Out of Scope
 
-Explicitly excluded. Documented to prevent scope creep.
-
 | Feature | Reason |
 |---------|--------|
-| Terraform/IaC | Overkill for single VM, manual lifecycle |
-| Auto-scaling | Manual lifecycle, user controls when to run |
-| Load balancer | Single VM, Caddy handles HTTPS |
-| Cloud Monitoring integration | docker logs sufficient for this scope |
-| Custom VM images | Startup script is simpler to maintain |
-| Job checkpoint/restart | Complex, accept job loss for v2.6 |
+| Auto-scaling | Single-instance pattern, no horizontal scaling needed |
+| Terraform/IaC | Overkill for single VM deployment |
+| Kubernetes/Helm | Single VM, Docker Compose sufficient |
+| Auto-recovery on preemption | User controls lifecycle manually |
+| HTTPS/TLS | Fire-up-and-burn pattern, bare IP only |
+| Real-time billing | GCP billing lags 1-2 days, use estimates |
+| Multi-VM orchestration | Single VM design |
 
 ## Traceability
 
-Which phases cover which requirements. Updated during roadmap creation.
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 45 | Complete |
-| INFRA-02 | Phase 45 | Complete |
-| INFRA-03 | Phase 45 | Complete |
-| INFRA-04 | Phase 45 | Complete |
-| DEPLOY-01 | Phase 46 | Complete |
-| DEPLOY-02 | Phase 46 | Complete |
-| DEPLOY-03 | Phase 46 | Complete |
-| DEPLOY-04 | Phase 46 | Complete |
-| DEPLOY-05 | Phase 46 | Complete |
-| DEPLOY-06 | Phase 46 | Complete |
-| DEPLOY-07 | Phase 46 | Complete |
-| LIFE-01 | Phase 47 | Complete |
-| LIFE-02 | Phase 47 | Complete |
-| LIFE-03 | Phase 47 | Complete |
-| LIFE-04 | Phase 47 | Complete |
-| LIFE-05 | Phase 47 | Complete |
-| LIFE-06 | Phase 47 | Complete |
-| LIFE-07 | Phase 47 | Complete |
-| DOCS-01 | Phase 48 | Complete |
-| DOCS-02 | Phase 48 | Complete |
-| DOCS-03 | Phase 48 | Complete |
-| DOCS-04 | Phase 48 | Complete |
-| DOCS-05 | Phase 48 | Complete |
+| CFG-01 | 49 | Done |
+| CFG-02 | 49 | Done |
+| CFG-03 | 49 | Done |
+| CFG-04 | 49 | Done |
+| CFG-05 | 49 | Done |
+| PRC-01 | 49 | Done |
+| PRC-02 | 50 | Done |
+| PRC-03 | 49 | Done |
+| PRC-04 | 49 | Done |
+| PRC-05 | 51 | Done |
+| MCH-01 | 50 | Done |
+| MCH-02 | 50 | Done |
+| MCH-03 | 50 | Done |
+| MCH-04 | 50 | Done |
+| DEP-01 | 51 | Done |
+| DEP-02 | 51 | Done |
+| DEP-03 | 51 | Done |
+| DEP-04 | 51 | Done |
+| DEP-05 | 51 | Done |
+| DEP-06 | 52 | Done |
+| DEP-07 | 51 | Done |
+| DEP-08 | 51 | Done |
+| DEP-09 | 51 | Done |
+| LCY-01 | 52 | Done |
+| LCY-02 | 52 | Done |
+| RPL-01 | 51 | Done |
+| RPL-02 | 51 | Done |
+| RPL-03 | 51 | Done |
+| RPL-04 | 52 | Done |
+| BUG-01 | 53 | Pending |
+| BUG-02 | 53 | Pending |
 
 **Coverage:**
-- v2.6 requirements: 23 total
-- Mapped to phases: 23
+- v2.7 requirements: 31 total
+- Mapped to phases: 31
 - Unmapped: 0
 
 ---
-*Requirements defined: 2026-02-04*
-*Last updated: 2026-02-05 after Phase 48 complete (v2.6 milestone complete)*
+*Requirements defined: 2026-02-06*
+*Last updated: 2026-02-06 - Phase 52 requirements (DEP-06, LCY-01, LCY-02, RPL-04) marked Done*
