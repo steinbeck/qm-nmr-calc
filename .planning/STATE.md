@@ -11,18 +11,18 @@ See: .planning/PROJECT.md (updated 2026-02-06)
 
 Milestone: v2.7 Automated GCP Deployment
 Phase: Phase 52 - HTTP-Only Container Deployment
-Plan: 1/6 complete
+Plan: 2/6 complete
 Status: In progress
-Last activity: 2026-02-06 — Completed 52-01-PLAN.md (lifecycle scripts v2.7 migration)
+Last activity: 2026-02-06 — Completed 52-02-PLAN.md (teardown infrastructure migration)
 
-Progress: [#####################] 111 plans complete (v1.0-v2.6 + 49-01, 49-02, 50-01, 50-02, 51-01, 51-02, 52-01)
+Progress: [#####################] 112 plans complete (v1.0-v2.6 + 49-01, 49-02, 50-01, 50-02, 51-01, 51-02, 52-01, 52-02)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 111 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 7)
-- Average duration: ~6.5 min
-- Total execution time: ~714 min (~11.9 hours)
+- Total plans completed: 112 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 8)
+- Average duration: ~6.4 min
+- Total execution time: ~715 min (~11.9 hours)
 
 **By Milestone:**
 
@@ -38,7 +38,7 @@ Progress: [#####################] 111 plans complete (v1.0-v2.6 + 49-01, 49-02, 
 | v2.4 Docker Deployment | 6 | 8 | ~2 hours | Shipped 2026-02-03 |
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
-| v2.7 Automated GCP Deployment | 5 | 7/TBD | In progress | Started 2026-02-06 |
+| v2.7 Automated GCP Deployment | 5 | 8/TBD | In progress | Started 2026-02-06 |
 
 ## Accumulated Context
 
@@ -85,6 +85,9 @@ v2.6 decisions archived.
 - HTTP-only URLs: status-vm.sh shows http:// URL instead of domain/HTTPS
 - Config migration: All scripts now load TOML config via lib/config.sh
 - deploy-auto.sh references: All error messages updated to reference deploy-auto.sh
+- Teardown zone detection: try VM first, fallback to disk, handle neither existing gracefully
+- Region derivation from zone: ${GCP_ZONE%-*} to strip zone suffix
+- Conditional cleanup: disk/IP deletion based on zone availability with fallback strategies
 
 ### Roadmap Evolution
 
@@ -121,10 +124,10 @@ None
 ## Session Continuity
 
 Last session: 2026-02-06
-Stopped at: Completed 52-01-PLAN.md (lifecycle scripts v2.7 migration)
+Stopped at: Completed 52-02-PLAN.md (teardown infrastructure migration)
 Resume file: None
-Next: Phase 52-02 (teardown infrastructure migration)
+Next: Phase 52 remaining plans (stop, start, delete VM scripts)
 Tests: 415 tests collected (377 pre-existing + 19 config + 19 pricing + 19 machine; pre-existing failures in NWChem integration unrelated)
-Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,130 LOC GCP scripts
+Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
 Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR
-GCP: Phase 51 complete - deploy-auto.sh orchestrator ready (6-step pipeline: config → auth → machine → cost → infra → VM), single-command deployment with --dry-run support
+GCP: Phase 52: 2/6 complete - lifecycle scripts (status/ssh/logs) and teardown migrated to v2.7 TOML config with runtime zone detection
