@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-06)
 ## Current Position
 
 Milestone: v2.7 Automated GCP Deployment
-Phase: Phase 51 - Deployment Orchestration (IN PROGRESS)
-Plan: 1/2 complete
-Status: Infrastructure library complete, ready for orchestrator
-Last activity: 2026-02-06 — Completed 51-01-PLAN.md (infrastructure library)
+Phase: Phase 51 - Deployment Orchestration (COMPLETE)
+Plan: 2/2 complete
+Status: Phase complete - deploy-auto.sh orchestrator ready
+Last activity: 2026-02-06 — Completed 51-02-PLAN.md (deployment orchestrator)
 
-Progress: [####################-] 109 plans complete (v1.0-v2.6 + 49-01, 49-02, 50-01, 50-02, 51-01)
+Progress: [#####################] 110 plans complete (v1.0-v2.6 + 49-01, 49-02, 50-01, 50-02, 51-01, 51-02)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 109 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 5)
-- Average duration: ~7 min
-- Total execution time: ~711 min (~11.8 hours)
+- Total plans completed: 110 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 6)
+- Average duration: ~6.8 min
+- Total execution time: ~713 min (~11.9 hours)
 
 **By Milestone:**
 
@@ -38,7 +38,7 @@ Progress: [####################-] 109 plans complete (v1.0-v2.6 + 49-01, 49-02, 
 | v2.4 Docker Deployment | 6 | 8 | ~2 hours | Shipped 2026-02-03 |
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
-| v2.7 Automated GCP Deployment | 5 | 5/TBD | In progress | Started 2026-02-06 |
+| v2.7 Automated GCP Deployment | 5 | 6/TBD | In progress | Started 2026-02-06 |
 
 ## Accumulated Context
 
@@ -77,6 +77,8 @@ v2.6 decisions archived.
 - Trap registration deferred to orchestrator, not set in library (composability)
 - Existence checks always run, not wrapped in execute() (accurate dry-run reporting)
 - HTTP and SSH firewall rules only, no HTTPS (v2.7 HTTP-only per RPL-03)
+- Orchestrator script replaces v2.6 deploy-vm.sh completely
+- Startup script generated to temp file and cleaned up after VM creation
 
 ### Roadmap Evolution
 
@@ -113,10 +115,10 @@ None
 ## Session Continuity
 
 Last session: 2026-02-06
-Stopped at: Completed 51-01-PLAN.md (infrastructure library with idempotent operations)
+Stopped at: Completed 51-02-PLAN.md (deployment orchestrator)
 Resume file: None
-Next: 51-02 (deployment orchestrator)
+Next: Phase 52 (lifecycle scripts: status, ssh, logs, stop, start, delete)
 Tests: 415 tests collected (377 pre-existing + 19 config + 19 pricing + 19 machine; pre-existing failures in NWChem integration unrelated)
-Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~1,950 LOC GCP scripts
+Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,130 LOC GCP scripts
 Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR
-GCP: Infrastructure library complete (gcp/lib/infra.sh with 11 functions: logging, dry-run, cleanup, static IP, firewall, disk, cost display, VM creation), ready for orchestrator
+GCP: Phase 51 complete - deploy-auto.sh orchestrator ready (6-step pipeline: config → auth → machine → cost → infra → VM), single-command deployment with --dry-run support
