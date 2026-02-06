@@ -464,11 +464,11 @@ Plans:
   1. Status bar shows accurate conformer count during processing (e.g., "1/2" not "0/2")
   2. Conformer statuses update correctly as conformers complete
   3. Progress bar reflects actual conformer completion state
-**Plans**: 0 plans
+**Plans**: 1 plan
 **Status**: Not started
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 53 to break down)
+- [ ] 53-01-PLAN.md -- Add ensemble persistence to on_progress callback (one-line fix in tasks.py)
 
 ## Progress
 
@@ -533,7 +533,7 @@ Phases execute in numeric order: 49 -> 50 -> 51 -> 52 -> 53
 | **50. Machine Selection** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
 | **51. Orchestration** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
 | **52. HTTP Container** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
-| **53. Conformer Bug Fix** | **v2.7** | **0/TBD** | **Not started** | - |
+| **53. Conformer Bug Fix** | **v2.7** | **0/1** | **Planned** | - |
 
 ## Coverage (v2.6)
 
@@ -608,4 +608,4 @@ Phases execute in numeric order: 49 -> 50 -> 51 -> 52 -> 53
 **Mapped: 31/31 (100%)**
 
 ---
-*Last updated: 2026-02-06 - Phase 52 complete (2/2 plans, 14/14 must-haves verified)*
+*Last updated: 2026-02-06 - Phase 53 planned (1 plan, 1 wave)*
