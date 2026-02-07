@@ -9,18 +9,27 @@
 #   generate_startup 8 32 qm-nmr-calc 100 > startup.sh
 #   get_machine_info 8 32
 
+# Module-level path setup (computed once when sourced)
+_MACHINE_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+_MACHINE_PROJECT_ROOT="$(cd "$_MACHINE_SCRIPT_DIR/.." && pwd)"
+export PYTHONPATH="$_MACHINE_PROJECT_ROOT${PYTHONPATH:+:$PYTHONPATH}"
+
 select_machine() {
     local cpu_cores="${1:-8}"
     local ram_gb="${2:-32}"
-    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-    local machine_json
-    machine_json=$(python3 "$script_dir/select_machine.py" \
+    local machine_json stderr_tmp
+    stderr_tmp=$(mktemp)
+    machine_json=$(python3 "$_MACHINE_SCRIPT_DIR/select_machine.py" \
         --cpu-cores "$cpu_cores" \
-        --ram-gb "$ram_gb" 2>&1) || {
-        echo "ERROR: Machine selection failed: $machine_json" >&2
+        --ram-gb "$ram_gb" 2>"$stderr_tmp") || {
+        echo "ERROR: Machine selection failed: $(cat "$stderr_tmp")" >&2
+        rm -f "$stderr_tmp"
         return 1
     }
+    # Show warnings to user but keep them out of JSON
+    [[ -s "$stderr_tmp" ]] && cat "$stderr_tmp" >&2
+    rm -f "$stderr_tmp"
 
     echo "$machine_json"
 }
@@ -28,10 +37,9 @@ select_machine() {
 get_docker_resources() {
     local cpu_cores="${1:-8}"
     local ram_gb="${2:-32}"
-    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
     local machine_json
-    machine_json=$(python3 "$script_dir/select_machine.py" \
+    machine_json=$(python3 "$_MACHINE_SCRIPT_DIR/select_machine.py" \
         --cpu-cores "$cpu_cores" \
         --ram-gb "$ram_gb" 2>/dev/null) || {
         echo "ERROR: Machine selection failed" >&2
@@ -55,10 +63,9 @@ generate_startup() {
     local ram_gb="${2:-32}"
     local resource_prefix="${3:-qm-nmr-calc}"
     local disk_size_gb="${4:-100}"
-    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
     # Call Python CLI with --generate-startup-script flag
-    python3 "$script_dir/select_machine.py" \
+    python3 "$_MACHINE_SCRIPT_DIR/select_machine.py" \
         --cpu-cores "$cpu_cores" \
         --ram-gb "$ram_gb" \
         --resource-prefix "$resource_prefix" \
@@ -69,10 +76,9 @@ generate_startup() {
 get_machine_info() {
     local cpu_cores="${1:-8}"
     local ram_gb="${2:-32}"
-    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
     local machine_json
-    machine_json=$(python3 "$script_dir/select_machine.py" \
+    machine_json=$(python3 "$_MACHINE_SCRIPT_DIR/select_machine.py" \
         --cpu-cores "$cpu_cores" \
         --ram-gb "$ram_gb" 2>/dev/null) || {
         echo "ERROR: Machine selection failed" >&2

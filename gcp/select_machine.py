@@ -27,6 +27,15 @@ import sys
 
 from gcp.query_pricing import get_ranked_regions
 
+# General-purpose and compute-optimized families safe for NMR workloads.
+# Excludes exotic families: ultramem, hypermem, GPU-attached (a2/a3/g2), m1/m2/m3.
+ALLOWED_MACHINE_FAMILIES = {
+    "c2", "c3", "c3d", "c4",
+    "e2",
+    "n1", "n2", "n2d", "n4",
+    "t2d", "t2a",
+}
+
 
 # ---------------------------------------------------------------------------
 # Internal gcloud wrapper (single mock target for all tests)
@@ -86,19 +95,28 @@ def select_machine_type(cpu_cores: int, ram_gb: int, zone: str) -> str:
         f"--zones={zone}",
         f"--filter=guestCpus>={cpu_cores} AND memoryMb>={ram_mb}",
         "--format=json",
-        "--sort-by=memoryMb",
-        "--limit=1",
         "--quiet",
     ]
 
     output = _run_gcloud(args)
     machines = json.loads(output)
 
+    # Filter to general-purpose/compute-optimized families only
+    machines = [
+        m for m in machines
+        if m["name"].split("-")[0] in ALLOWED_MACHINE_FAMILIES
+    ]
+
     if not machines:
         raise ValueError(
             f"No machine types found matching {cpu_cores} CPU cores "
             f"and {ram_gb}GB RAM in zone {zone}"
         )
+
+    # Sort by estimated cost: CPUs + RAM_GB approximates spot pricing
+    # gcloud --sort-by sorts lexicographically, not numerically
+    # This avoids ultramem (high RAM, low CPU) and highcpu (high CPU, low RAM)
+    machines.sort(key=lambda m: m["guestCpus"] + m["memoryMb"] / 1024)
 
     return machines[0]["name"]
 

@@ -26,13 +26,13 @@ NC='\033[0m' # No Color
 log_info() {
     local timestamp
     timestamp=$(date +"%Y-%m-%d %H:%M:%S")
-    echo -e "${GREEN}[$timestamp] [INFO]${NC} $1"
+    echo -e "${GREEN}[$timestamp] [INFO]${NC} $1" >&2
 }
 
 log_warn() {
     local timestamp
     timestamp=$(date +"%Y-%m-%d %H:%M:%S")
-    echo -e "${YELLOW}[$timestamp] [WARN]${NC} $1"
+    echo -e "${YELLOW}[$timestamp] [WARN]${NC} $1" >&2
 }
 
 log_error() {
@@ -102,11 +102,11 @@ create_static_ip() {
         return 0
     fi
 
-    # Create new IP
+    # Redirect gcloud stdout to stderr so stdout is clean for capture
     execute "Creating static IP '$ip_name' in region $region" \
         gcloud compute addresses create "$ip_name" \
         --region="$region" \
-        --quiet
+        --quiet >&2
 
     # Get the created IP (always run, not wrapped in execute)
     existing_ip=$(gcloud compute addresses describe "$ip_name" --region="$region" --format="value(address)" --quiet 2>/dev/null || true)
@@ -248,4 +248,98 @@ create_vm() {
     # Register for cleanup on failure
     register_resource "vm:$vm_name:$zone"
     log_info "VM '$vm_name' created successfully"
+}
+
+# ============================================================================
+# VM error classification
+# ============================================================================
+
+is_retryable_vm_error() {
+    local error_msg="$1"
+    case "$error_msg" in
+        *ZONE_RESOURCE_POOL_EXHAUSTED*|*RESOURCE_POOL_EXHAUSTED*|*stockout*|*"does not have enough resources"*)
+            return 0  # retryable
+            ;;
+        *QUOTA_EXCEEDED*|*PERMISSION_DENIED*|*INVALID_PARAMETER*)
+            return 1  # fatal
+            ;;
+        *)
+            return 0  # unknown errors default to retryable
+            ;;
+    esac
+}
+
+try_create_vm() {
+    # Wrapper around create_vm that captures stderr and classifies errors.
+    # Returns: 0=success, 1=retryable error, 2=fatal error
+    # Exports TRY_CREATE_VM_STDERR with the error message on failure.
+    local vm_name="$1"
+    local zone="$2"
+    local machine_type="$3"
+    local static_ip="$4"
+    local disk_name="$5"
+    local startup_script_path="$6"
+    local shutdown_script_path="$7"
+    local resource_prefix="$8"
+
+    local stderr_tmp
+    stderr_tmp=$(mktemp)
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        create_vm "$vm_name" "$zone" "$machine_type" "$static_ip" "$disk_name" \
+            "$startup_script_path" "$shutdown_script_path" "$resource_prefix"
+        rm -f "$stderr_tmp"
+        return 0
+    fi
+
+    # Check if VM exists before attempting creation
+    if gcloud compute instances describe "$vm_name" --zone="$zone" --quiet &>/dev/null; then
+        log_error "VM '$vm_name' already exists in zone $zone"
+        rm -f "$stderr_tmp"
+        return 2  # fatal
+    fi
+
+    # Run gcloud directly (bypassing execute/create_vm) to capture stderr
+    log_info "Creating Spot VM '$vm_name' with machine type $machine_type"
+    if gcloud compute instances create "$vm_name" \
+        --zone="$zone" \
+        --machine-type="$machine_type" \
+        --provisioning-model=SPOT \
+        --instance-termination-action=STOP \
+        --tags="${resource_prefix}-vm" \
+        --network-interface="address=$static_ip" \
+        --boot-disk-size=20GB \
+        --boot-disk-type=pd-balanced \
+        --image-family=debian-12 \
+        --image-project=debian-cloud \
+        --disk="name=${disk_name},mode=rw,device-name=data-disk,boot=no,auto-delete=no" \
+        --metadata-from-file=startup-script="${startup_script_path}",shutdown-script="${shutdown_script_path}" \
+        --quiet 2>"$stderr_tmp"; then
+        register_resource "vm:$vm_name:$zone"
+        log_info "VM '$vm_name' created successfully"
+        rm -f "$stderr_tmp"
+        return 0
+    fi
+
+    # Creation failed — classify the error
+    TRY_CREATE_VM_STDERR=$(cat "$stderr_tmp")
+    rm -f "$stderr_tmp"
+
+    if is_retryable_vm_error "$TRY_CREATE_VM_STDERR"; then
+        log_warn "Retryable error in $zone: $TRY_CREATE_VM_STDERR"
+        return 1
+    else
+        log_error "Fatal error in $zone: $TRY_CREATE_VM_STDERR"
+        return 2
+    fi
+}
+
+delete_static_ip() {
+    local ip_name="$1"
+    local region="$2"
+
+    if gcloud compute addresses describe "$ip_name" --region="$region" --quiet &>/dev/null; then
+        log_info "Deleting static IP '$ip_name' in region $region"
+        gcloud compute addresses delete "$ip_name" --region="$region" --quiet 2>/dev/null || true
+    fi
 }

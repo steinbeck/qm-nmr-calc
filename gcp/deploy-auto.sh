@@ -92,19 +92,18 @@ main() {
     gcloud config set project "$GCP_PROJECT_ID" --quiet
     echo ""
 
-    # ── Step 3: Select machine and zone ──
-    log_info "Step 3/6: Finding cheapest machine type and zone..."
+    # ── Step 3: Get ranked zones for machine selection ──
+    log_info "Step 3/6: Finding machine type and ranked zones..."
     local machine_json
     machine_json=$(select_machine "$CPU_CORES" "$RAM_GB") || { log_error "Machine selection failed"; exit 1; }
 
-    local machine_type zone region
+    local machine_type first_zone first_region
     machine_type=$(echo "$machine_json" | jq -r '.machine_type')
-    zone=$(echo "$machine_json" | jq -r '.zone')
-    region=$(echo "$machine_json" | jq -r '.region')
+    first_zone=$(echo "$machine_json" | jq -r '.zone')
+    first_region=$(echo "$machine_json" | jq -r '.region')
 
     log_info "  Machine type: $machine_type"
-    log_info "  Zone:         $zone"
-    log_info "  Region:       $region"
+    log_info "  Primary zone: $first_zone"
     echo ""
 
     # Get spot pricing for cost estimate
@@ -117,26 +116,29 @@ main() {
     display_cost_estimate "$machine_type" "$spot_price_hourly" "$DISK_SIZE_GB"
     echo ""
 
-    # ── Step 5: Create infrastructure ──
+    # ── Step 5: Create shared infrastructure ──
     log_info "Step 5/6: Creating infrastructure..."
     local ip_name="${RESOURCE_PREFIX}-ip"
     local disk_name="${RESOURCE_PREFIX}-data"
     local vm_name="${RESOURCE_PREFIX}-vm"
 
-    local static_ip
-    static_ip=$(create_static_ip "$ip_name" "$region")
     create_firewall_rules "$RESOURCE_PREFIX"
-    create_persistent_disk "$disk_name" "$zone" "$DISK_SIZE_GB"
     echo ""
 
-    # ── Step 6: Generate startup script and create VM ──
+    # ── Step 6: Try zones until Spot VM succeeds ──
     log_info "Step 6/6: Creating Spot VM..."
 
-    # Generate dynamic startup script using Phase 50 library
-    local startup_tmp
-    startup_tmp=$(mktemp /tmp/startup-XXXXXX.sh)
-    generate_startup "$CPU_CORES" "$RAM_GB" "$RESOURCE_PREFIX" "$DISK_SIZE_GB" > "$startup_tmp"
-    log_info "  Startup script generated ($startup_tmp)"
+    # Build zone list from ranked regions (primary first, then alternatives)
+    local zones=()
+    local zone_entry
+    while IFS= read -r zone_entry; do
+        [[ -n "$zone_entry" ]] && zones+=("$zone_entry")
+    done < <(echo "$pricing_json" | jq -r '.[].zone' 2>/dev/null)
+
+    # Ensure primary zone is first
+    if [[ ${#zones[@]} -eq 0 ]]; then
+        zones=("$first_zone")
+    fi
 
     # Use existing shutdown.sh from gcp/
     local shutdown_script="$SCRIPT_DIR/shutdown.sh"
@@ -145,11 +147,71 @@ main() {
         exit 1
     fi
 
-    create_vm "$vm_name" "$zone" "$machine_type" "$static_ip" "$disk_name" \
-        "$startup_tmp" "$shutdown_script" "$RESOURCE_PREFIX"
+    local zone region static_ip vm_created=false
+    local prev_region=""
+    for zone in "${zones[@]}"; do
+        region="${zone%-*}"
 
-    # Clean up temp file
-    rm -f "$startup_tmp"
+        # Check machine type exists in this zone
+        if [[ "$DRY_RUN" != "true" ]]; then
+            if ! gcloud compute machine-types describe "$machine_type" --zone="$zone" --quiet &>/dev/null; then
+                log_warn "Machine type $machine_type not available in $zone, skipping..."
+                continue
+            fi
+        fi
+
+        log_info "Trying zone: $zone (region: $region)"
+
+        # Handle region change: static IPs are regional
+        if [[ -n "$prev_region" && "$region" != "$prev_region" ]]; then
+            log_info "Region changed ($prev_region → $region), migrating static IP..."
+            delete_static_ip "$ip_name" "$prev_region"
+        fi
+
+        # Create regional IP and zonal disk
+        static_ip=$(create_static_ip "$ip_name" "$region")
+        create_persistent_disk "$disk_name" "$zone" "$DISK_SIZE_GB"
+
+        # Generate dynamic startup script
+        local startup_tmp
+        startup_tmp=$(mktemp /tmp/qm-nmr-startup.XXXXXX)
+        generate_startup "$CPU_CORES" "$RAM_GB" "$RESOURCE_PREFIX" "$DISK_SIZE_GB" > "$startup_tmp"
+
+        # Try VM creation with error classification
+        local vm_rc=0
+        try_create_vm "$vm_name" "$zone" "$machine_type" "$static_ip" "$disk_name" \
+            "$startup_tmp" "$shutdown_script" "$RESOURCE_PREFIX" || vm_rc=$?
+        rm -f "$startup_tmp"
+
+        case $vm_rc in
+            0)
+                vm_created=true
+                break
+                ;;
+            1)
+                # Retryable — clean up zonal disk and continue
+                log_warn "Spot capacity exhausted in $zone, trying next zone..."
+                if gcloud compute disks describe "$disk_name" --zone="$zone" --quiet &>/dev/null; then
+                    log_info "Cleaning up disk in $zone for zone retry..."
+                    gcloud compute disks delete "$disk_name" --zone="$zone" --quiet 2>/dev/null || true
+                fi
+                prev_region="$region"
+                continue
+                ;;
+            2)
+                # Fatal — stop retrying
+                log_error "Fatal error creating VM — aborting zone retry"
+                exit 1
+                ;;
+        esac
+    done
+
+    if [[ "$vm_created" != "true" ]]; then
+        log_error "All zones exhausted — no Spot capacity for $machine_type"
+        log_error "Try again later or use a different machine spec"
+        exit 1
+    fi
+
     echo ""
 
     # ── Summary ──

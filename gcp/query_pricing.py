@@ -157,6 +157,12 @@ def query_cloudprice_api(cpu_cores: int, ram_gb: int) -> list | None:
             file=sys.stderr,
         )
         return None
+    except httpx.ConnectError as exc:
+        print(
+            f"WARNING: Cannot reach pricing API (DNS/network error): {exc}",
+            file=sys.stderr,
+        )
+        return None
     except httpx.HTTPError as exc:
         print(
             f"WARNING: Pricing API request failed: {exc}",
