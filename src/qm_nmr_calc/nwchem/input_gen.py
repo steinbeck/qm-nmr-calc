@@ -5,7 +5,7 @@ Input format follows ISiCLE conventions for compatibility and reliability.
 
 # Supported solvents for COSMO (NWChem recognizes these by name)
 # "vacuum" is special - no COSMO block will be generated for gas-phase calculations
-SUPPORTED_SOLVENTS = {"chcl3", "dmso", "water", "acetone", "methanol", "vacuum"}
+SUPPORTED_SOLVENTS = {"chcl3", "dmso", "water", "acetone", "methanol", "benzene", "vacuum"}
 
 
 def _validate_solvent(solvent: str) -> str:

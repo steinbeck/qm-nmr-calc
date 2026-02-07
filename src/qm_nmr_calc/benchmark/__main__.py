@@ -277,8 +277,8 @@ def main() -> int:
     run_parser.add_argument(
         "--solvents",
         nargs="+",
-        choices=["CHCl3", "DMSO"],
-        help="Solvents to test (default: CHCl3 DMSO)",
+        choices=["CHCl3", "DMSO", "Methanol", "Water", "Acetone", "Benzene"],
+        help="Solvents to test (default: CHCl3 DMSO Methanol Water Acetone Benzene)",
     )
     run_parser.add_argument(
         "--processes",

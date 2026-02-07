@@ -21,7 +21,7 @@ FAILURE_THRESHOLD = 5
 
 # Benchmark configuration
 FUNCTIONALS = ["B3LYP", "WP04"]
-SOLVENTS = ["CHCl3", "DMSO"]
+SOLVENTS = ["CHCl3", "DMSO", "Methanol", "Water", "Acetone", "Benzene"]
 
 # Preset configurations for benchmark (not using existing presets.py - need WP04)
 BENCHMARK_PRESETS = {
@@ -541,7 +541,7 @@ def show_status() -> None:
     results_dir = get_results_dir()
 
     # Count completed tasks
-    total_tasks = 50 * len(FUNCTIONALS) * len(SOLVENTS)  # 200
+    total_tasks = 50 * len(FUNCTIONALS) * len(SOLVENTS)
 
     completed = 0
     for mol_dir in results_dir.glob("compound_*"):
