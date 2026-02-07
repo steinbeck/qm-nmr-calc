@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-07)
 ## Current Position
 
 Milestone: v2.8 Expanded Solvent Support
-Phase: 54 of 58 (Benchmark Infrastructure) — ready to plan
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-02-07 — Roadmap created for v2.8 (5 phases, 17 requirements)
+Phase: 54 of 58 (Benchmark Infrastructure)
+Plan: 1 of 1 in current phase
+Status: Phase 54 complete
+Last activity: 2026-02-07 — Completed 54-01-PLAN.md
 
-Progress: [#####################.....] 113 plans complete across 11 milestones (v1.0-v2.7), v2.8 starting
+Progress: [#####################.....] 114 plans complete across 11 milestones (v1.0-v2.7) + v2.8 Phase 54
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 113 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9)
-- Average duration: ~6.3 min
-- Total execution time: ~719 min (~12.0 hours)
+- Total plans completed: 114 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 1)
+- Average duration: ~6.4 min
+- Total execution time: ~731 min (~12.2 hours)
 
 **By Milestone:**
 
@@ -39,7 +39,7 @@ Progress: [#####################.....] 113 plans complete across 11 milestones (
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
 | v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
-| v2.8 Expanded Solvent Support | 5 | TBD | - | In progress |
+| v2.8 Expanded Solvent Support | 5 | 1 | ~12 min | In progress |
 
 ## Accumulated Context
 
@@ -48,9 +48,15 @@ Progress: [#####################.....] 113 plans complete across 11 milestones (
 All prior decisions logged in PROJECT.md Key Decisions table.
 v2.7 decisions archived to .planning/milestones/v2.7-ROADMAP.md.
 
+| Decision | Phase | Rationale |
+|----------|-------|-----------|
+| Only benzene needed in input_gen SUPPORTED_SOLVENTS | 54-01 | Water, acetone, methanol already supported at NWChem layer |
+| Title-case solvent names in runner, lowercase for NWChem | 54-01 | Matches existing CHCl3/DMSO convention; runner.lower() handles conversion |
+
 ### Key Context for v2.8
 
-- NWChem COSMO already knows water, methanol, acetone by name. Benzene needs to be added to input_gen.py.
+- NWChem COSMO now knows water, methanol, acetone, benzene by name. All 7 solvents supported.
+- Benchmark CLI accepts all 6 solvents: CHCl3, DMSO, Methanol, Water, Acetone, Benzene.
 - Benchmark is compute-intensive: 50 molecules x 4 solvents = 200 NWChem calculations (hours of compute).
 - All 4 solvents use same experimental shifts from CDCl3 (Grimblat et al. 2023).
 - Only B3LYP functional needed (WP04 out of scope).
@@ -71,9 +77,9 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-07
-Stopped at: v2.8 roadmap created, ready to plan Phase 54
+Last session: 2026-02-07T20:31:31Z
+Stopped at: Completed 54-01-PLAN.md
 Resume file: None
-Next: Run /gsd:plan-phase 54 to plan Benchmark Infrastructure
-Tests: 415 tests
+Next: Plan and execute Phase 55 (Benchmark Calculations)
+Tests: 424 tests (399 passing, 5 pre-existing failures in NWChem integration/conformer ensemble)
 Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
