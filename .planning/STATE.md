@@ -2,17 +2,17 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-06)
+See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** No active milestone
+**Current focus:** v2.8 Expanded Solvent Support
 
 ## Current Position
 
-Milestone: v2.7 Automated GCP Deployment — SHIPPED 2026-02-06
-Phase: All complete
-Status: Milestone archived, tagged v2.7
-Last activity: 2026-02-06 — v2.7 milestone completed and archived
+Milestone: v2.8 Expanded Solvent Support
+Phase: Not started (defining requirements)
+Status: Defining requirements
+Last activity: 2026-02-07 — Milestone v2.8 started
 
 Progress: [#####################] 113 plans complete across 11 milestones (v1.0-v2.7)
 

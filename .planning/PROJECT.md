@@ -24,7 +24,7 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - RDKit KDG conformer generation, optional CREST/xTB for production quality
 - RMSD clustering + xTB ranking for efficient conformer pre-selection
 - NWChem DFT calculations with B3LYP/6-311+G(2d,p)
-- COSMO solvation for CHCl3, DMSO, or vacuum (gas phase)
+- COSMO solvation for CHCl3, DMSO, or vacuum (gas phase) — expanding to 7 solvents in v2.8
 - DELTA50-derived scaling factors (1H MAE: 0.12 ppm, 13C MAE: 2.0 ppm)
 - Modern glassmorphism UI with bento grid layouts
 - Interactive 3D molecule viewer with shift annotations
@@ -37,9 +37,16 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - Auto machine type selection matching CPU/RAM requirements
 - HTTP-only fire-up-and-burn cloud deployment pattern
 
-## Current Milestone
+## Current Milestone: v2.8 Expanded Solvent Support
 
-No active milestone. v2.7 shipped 2026-02-06.
+**Goal:** Add 4 new NMR solvents (Methanol-d4, D2O, Acetone-d6, Benzene-d6) with DELTA50-derived scaling factors for each.
+
+**Target features:**
+- COSMO solvation for methanol, water, acetone, and benzene
+- DELTA50 benchmark calculations for all 4 new solvents (50 molecules each)
+- OLS-derived scaling factors for 1H and 13C in each new solvent
+- Updated solvent selector in web UI and API
+- Benchmark automation tooling for running solvent-specific calculations
 
 ## Future Considerations
 
@@ -183,4 +190,4 @@ No active milestone. v2.7 shipped 2026-02-06.
 | Modular bash library architecture | Composable config/pricing/machine/infra libraries | Good -- clean, reusable |
 
 ---
-*Last updated: 2026-02-06 after v2.7 milestone shipped*
+*Last updated: 2026-02-07 after v2.8 milestone started*
