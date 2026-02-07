@@ -266,7 +266,7 @@ def generate_startup_script(
     - Creates HTTP-only docker-compose.gcp.yml override (port 80, no Caddy/HTTPS)
     - Writes .env with WORKER_MEMORY_LIMIT and NWCHEM_NPROC=$(nproc)
     - Starts services with docker compose
-    - Uses --oversubscribe for MPI compatibility (v2.6 fix)
+    - Disables Caddy for HTTP-only deployment (API serves port 80 directly)
 
     Args:
         worker_memory_limit: Docker memory limit (e.g., "24g").
@@ -418,43 +418,38 @@ echo_info "Creating docker-compose.gcp.yml with GCP-specific overrides..."
 
 cat > docker-compose.gcp.yml <<'EOF'
 # Docker Compose GCP overrides for {resource_prefix}
-# Uses persistent disk for data storage and HTTP-only deployment (no Caddy/HTTPS)
+# HTTP-only deployment with persistent disk storage (no Caddy/HTTPS)
+#
+# Usage: docker compose -f docker-compose.yml -f docker-compose.gcp.yml up -d
 
 services:
+  init:
+    volumes:
+      - /mnt/disks/data:/app/data
+
   api:
     volumes:
-      # Override to use mounted persistent disk instead of named volume
       - /mnt/disks/data:/app/data
     environment:
       - ENVIRONMENT=production
       - LOG_LEVEL=info
     ports:
-      # HTTP only (no HTTPS/Caddy on GCP spot instances)
       - "80:8000"
 
   worker:
     volumes:
-      # Override to use mounted persistent disk instead of named volume
       - /mnt/disks/data:/app/data
     environment:
       - ENVIRONMENT=production
       - LOG_LEVEL=info
-      # Use all CPUs (set dynamically in .env based on VM size)
       - NWCHEM_NPROC=${{NWCHEM_NPROC}}
-    # Override memory limit with computed value from .env
     deploy:
       resources:
         limits:
           memory: ${{WORKER_MEMORY_LIMIT}}
-    # Add --oversubscribe flag for MPI compatibility in Docker containers (v2.6 fix)
-    command: >
-      bash -c "
-        mpirun --allow-run-as-root --oversubscribe -np ${{NWCHEM_NPROC:-4}}
-        nwchem /app/data/${{INPUT_FILE:-job.nw}} > /app/data/${{OUTPUT_FILE:-job.out}} 2>&1
-      "
 
-# Remove Caddy service entirely for HTTP-only deployment
-# Named volumes (caddy_data, caddy_config) not needed
+  # Disable Caddy — HTTP-only deployment, API serves directly on port 80
+  caddy: null
 EOF
 
 echo_info "Created docker-compose.gcp.yml (HTTP-only, no Caddy)"

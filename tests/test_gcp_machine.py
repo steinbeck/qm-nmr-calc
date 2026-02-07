@@ -204,10 +204,10 @@ class TestGenerateStartupScript:
         script = generate_startup_script("24g", "qm-nmr-calc", 100)
         assert "set -euo pipefail" in script
 
-    def test_startup_script_uses_oversubscribe(self):
-        """Assert output contains '--oversubscribe' for MPI compatibility."""
+    def test_startup_script_disables_caddy(self):
+        """Assert docker-compose override disables Caddy service."""
         script = generate_startup_script("24g", "qm-nmr-calc", 100)
-        assert "--oversubscribe" in script
+        assert "caddy: null" in script
 
 
 # --- CLI tests ---
