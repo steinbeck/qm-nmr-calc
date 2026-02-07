@@ -9,7 +9,7 @@ Requirements for expanded solvent support. Each maps to roadmap phases.
 
 ### Benchmark Infrastructure
 
-- [ ] **BENCH-01**: Benchmark CLI accepts methanol, water, acetone, benzene as valid solvents
+- [x] **BENCH-01**: Benchmark CLI accepts methanol, water, acetone, benzene as valid solvents
 - [ ] **BENCH-02**: DELTA50 benchmark runs for all 50 molecules in methanol solvent
 - [ ] **BENCH-03**: DELTA50 benchmark runs for all 50 molecules in water solvent
 - [ ] **BENCH-04**: DELTA50 benchmark runs for all 50 molecules in acetone solvent
@@ -22,7 +22,7 @@ Requirements for expanded solvent support. Each maps to roadmap phases.
 - [ ] **INTG-02**: User can select water as solvent in web UI and API
 - [ ] **INTG-03**: User can select acetone as solvent in web UI and API
 - [ ] **INTG-04**: User can select benzene as solvent in web UI and API
-- [ ] **INTG-05**: NWChem COSMO generates correct solvation for all 4 new solvents
+- [x] **INTG-05**: NWChem COSMO generates correct solvation for all 4 new solvents
 - [ ] **INTG-06**: Scaling factors loaded and applied correctly for all new solvents
 
 ### Validation
@@ -58,7 +58,7 @@ Deferred to later milestones.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BENCH-01 | 54 | Pending |
+| BENCH-01 | 54 | Complete |
 | BENCH-02 | 55 | Pending |
 | BENCH-03 | 55 | Pending |
 | BENCH-04 | 55 | Pending |
@@ -68,7 +68,7 @@ Deferred to later milestones.
 | INTG-02 | 57 | Pending |
 | INTG-03 | 57 | Pending |
 | INTG-04 | 57 | Pending |
-| INTG-05 | 54 | Pending |
+| INTG-05 | 54 | Complete |
 | INTG-06 | 57 | Pending |
 | VALID-01 | 56 | Pending |
 | VALID-02 | 56 | Pending |
@@ -83,4 +83,4 @@ Deferred to later milestones.
 
 ---
 *Requirements defined: 2026-02-07*
-*Last updated: 2026-02-07 after roadmap creation*
+*Last updated: 2026-02-07 — BENCH-01 and INTG-05 complete (Phase 54)*

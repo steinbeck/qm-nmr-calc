@@ -21,7 +21,7 @@
 
 Add 4 new NMR solvents (methanol, water, acetone, benzene) with DELTA50-derived B3LYP scaling factors. This extends solvent coverage from 3 to 7, following the same benchmark-derive-integrate pipeline established in v1.1 but now applied to 4 solvents in parallel. The compute-intensive benchmark phase (200 NWChem calculations) dominates the timeline.
 
-- [ ] **Phase 54: Benchmark Infrastructure** - Extend CLI and input_gen to accept 4 new solvents
+- [x] **Phase 54: Benchmark Infrastructure** - Extend CLI and input_gen to accept 4 new solvents (2026-02-07)
 - [ ] **Phase 55: DELTA50 Benchmark Calculations** - Run 200 NWChem calculations (50 molecules x 4 solvents)
 - [ ] **Phase 56: Scaling Factor Derivation** - Derive OLS factors and validate quality gates
 - [ ] **Phase 57: Solvent Integration** - Wire all 4 solvents into solvents.py, shifts.py, and UI/API
@@ -380,7 +380,7 @@ Add 4 new NMR solvents (methanol, water, acetone, benzene) with DELTA50-derived 
 **Plans**: 1 plan
 
 Plans:
-- [ ] 54-01-PLAN.md -- Extend benchmark CLI and NWChem input generation for 4 new solvents
+- [x] 54-01-PLAN.md -- Extend benchmark CLI and NWChem input generation for 4 new solvents
 
 ### Phase 55: DELTA50 Benchmark Calculations
 **Goal**: All 200 NWChem benchmark calculations complete successfully (50 molecules x 4 solvents)
@@ -500,7 +500,7 @@ Plans:
 | 51. Orchestration | v2.7 | 2/2 | Complete | 2026-02-06 |
 | 52. HTTP Container | v2.7 | 2/2 | Complete | 2026-02-06 |
 | 53. Conformer Bug Fix | v2.7 | 1/1 | Complete | 2026-02-06 |
-| **54. Benchmark Infrastructure** | **v2.8** | **0/1** | **Not started** | **-** |
+| **54. Benchmark Infrastructure** | **v2.8** | **1/1** | **Complete** | **2026-02-07** |
 | **55. DELTA50 Calculations** | **v2.8** | **0/TBD** | **Not started** | **-** |
 | **56. Scaling Factor Derivation** | **v2.8** | **0/TBD** | **Not started** | **-** |
 | **57. Solvent Integration** | **v2.8** | **0/TBD** | **Not started** | **-** |
@@ -605,4 +605,4 @@ Plans:
 **Mapped: 17/17 (100%)**
 
 ---
-*Last updated: 2026-02-07 - Phase 54 planned (1 plan)*
+*Last updated: 2026-02-07 - Phase 54 complete*
