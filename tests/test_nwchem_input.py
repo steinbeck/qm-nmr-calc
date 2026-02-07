@@ -3,6 +3,7 @@
 import pytest
 
 from qm_nmr_calc.nwchem import generate_optimization_input, generate_shielding_input
+from qm_nmr_calc.nwchem.input_gen import SUPPORTED_SOLVENTS
 
 
 class TestGenerateOptimizationInput:
@@ -222,3 +223,59 @@ class TestInvalidSolvent:
         )
         assert "cosmo" in result_lower.lower()
         assert "solvent chcl3" in result_lower.lower()
+
+
+class TestBenzeneSolvent:
+    """Tests for benzene solvent support in NWChem COSMO."""
+
+    def test_benzene_optimization_has_cosmo(self):
+        """Generate optimization input with benzene, verify COSMO block."""
+        result = generate_optimization_input(
+            geometry_xyz="C 0.0 0.0 0.0",
+            functional="b3lyp",
+            basis_set="6-31G*",
+            solvent="benzene",
+        )
+
+        assert "cosmo" in result.lower()
+        assert "solvent benzene" in result
+
+    def test_benzene_shielding_has_cosmo(self):
+        """Generate shielding input with benzene, verify COSMO block."""
+        result = generate_shielding_input(
+            geometry_xyz="C 0.0 0.0 0.0",
+            functional="b3lyp",
+            basis_set="6-311+G(2d,p)",
+            solvent="benzene",
+        )
+
+        assert "cosmo" in result.lower()
+        assert "solvent benzene" in result
+
+    def test_benzene_case_insensitive(self):
+        """Benzene should work with any case."""
+        for benzene_str in ["benzene", "Benzene", "BENZENE"]:
+            result = generate_optimization_input(
+                geometry_xyz="C 0.0 0.0 0.0",
+                functional="b3lyp",
+                basis_set="6-31G*",
+                solvent=benzene_str,
+            )
+            assert "cosmo" in result.lower()
+            assert "solvent benzene" in result
+
+    @pytest.mark.parametrize(
+        "solvent",
+        sorted(SUPPORTED_SOLVENTS - {"vacuum"}),
+    )
+    def test_all_supported_solvents_accepted(self, solvent):
+        """All supported solvents should generate valid optimization input."""
+        result = generate_optimization_input(
+            geometry_xyz="C 0.0 0.0 0.0",
+            functional="b3lyp",
+            basis_set="6-31G*",
+            solvent=solvent,
+        )
+
+        assert "cosmo" in result.lower()
+        assert f"solvent {solvent}" in result

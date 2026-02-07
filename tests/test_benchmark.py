@@ -303,3 +303,61 @@ class TestStatusTracking:
         status_file = tmp_path / "status.json"
         assert status_file.exists()
         orjson.loads(status_file.read_bytes())  # Should not raise
+
+
+class TestExpandedSolvents:
+    """Tests for expanded solvent list in benchmark runner."""
+
+    def test_solvents_list_has_six_entries(self):
+        """SOLVENTS list should have exactly 6 entries."""
+        assert len(SOLVENTS) == 6, f"Expected 6 solvents, got {len(SOLVENTS)}"
+        expected = {"CHCl3", "DMSO", "Methanol", "Water", "Acetone", "Benzene"}
+        assert set(SOLVENTS) == expected
+
+    def test_solvents_include_new_entries(self):
+        """All 4 new solvents should be in SOLVENTS list."""
+        assert "Methanol" in SOLVENTS
+        assert "Water" in SOLVENTS
+        assert "Acetone" in SOLVENTS
+        assert "Benzene" in SOLVENTS
+
+    def test_solvents_retain_original_entries(self):
+        """Original CHCl3 and DMSO should still be present."""
+        assert "CHCl3" in SOLVENTS
+        assert "DMSO" in SOLVENTS
+
+    def test_build_task_matrix_with_new_solvent(self):
+        """Task matrix with single new solvent should produce correct tasks."""
+        tasks = build_task_matrix(
+            molecules=["compound_01"],
+            functionals=["B3LYP"],
+            solvents=["Benzene"],
+        )
+        assert len(tasks) == 1
+        assert tasks[0]["solvent"] == "Benzene"
+        assert tasks[0]["molecule_id"] == "compound_01"
+        assert tasks[0]["functional"] == "B3LYP"
+
+    def test_build_task_matrix_with_all_new_solvents(self):
+        """Task matrix with all new solvents should produce correct count."""
+        tasks = build_task_matrix(
+            molecules=["compound_01"],
+            functionals=["B3LYP"],
+            solvents=["Methanol", "Water", "Acetone", "Benzene"],
+        )
+        assert len(tasks) == 4
+        solvents_in_tasks = [t["solvent"] for t in tasks]
+        assert "Methanol" in solvents_in_tasks
+        assert "Water" in solvents_in_tasks
+        assert "Acetone" in solvents_in_tasks
+        assert "Benzene" in solvents_in_tasks
+
+    def test_build_task_matrix_default_includes_new_solvents(self):
+        """Default task matrix should include all 6 solvents."""
+        tasks = build_task_matrix(
+            molecules=["compound_01"],
+            functionals=["B3LYP"],
+        )
+        assert len(tasks) == 6
+        solvents_in_tasks = {t["solvent"] for t in tasks}
+        assert solvents_in_tasks == {"CHCl3", "DMSO", "Methanol", "Water", "Acetone", "Benzene"}
