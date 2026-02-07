@@ -377,10 +377,10 @@ Add 4 new NMR solvents (methanol, water, acetone, benzene) with DELTA50-derived 
   2. Running the benchmark CLI with Water, Acetone, and Benzene as solvents is also accepted
   3. NWChem COSMO input files generated for each new solvent contain correct solvent parameters (verified by inspecting a generated .nw file)
   4. Benzene is present in input_gen.py SUPPORTED_SOLVENTS (it needs to be added; methanol, water, acetone already exist there)
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 54-01-PLAN.md - Extend benchmark CLI and NWChem input generation for 4 new solvents
+- [ ] 54-01-PLAN.md -- Extend benchmark CLI and NWChem input generation for 4 new solvents
 
 ### Phase 55: DELTA50 Benchmark Calculations
 **Goal**: All 200 NWChem benchmark calculations complete successfully (50 molecules x 4 solvents)
@@ -500,7 +500,7 @@ Plans:
 | 51. Orchestration | v2.7 | 2/2 | Complete | 2026-02-06 |
 | 52. HTTP Container | v2.7 | 2/2 | Complete | 2026-02-06 |
 | 53. Conformer Bug Fix | v2.7 | 1/1 | Complete | 2026-02-06 |
-| **54. Benchmark Infrastructure** | **v2.8** | **0/TBD** | **Not started** | **-** |
+| **54. Benchmark Infrastructure** | **v2.8** | **0/1** | **Not started** | **-** |
 | **55. DELTA50 Calculations** | **v2.8** | **0/TBD** | **Not started** | **-** |
 | **56. Scaling Factor Derivation** | **v2.8** | **0/TBD** | **Not started** | **-** |
 | **57. Solvent Integration** | **v2.8** | **0/TBD** | **Not started** | **-** |
@@ -605,4 +605,4 @@ Plans:
 **Mapped: 17/17 (100%)**
 
 ---
-*Last updated: 2026-02-07 - v2.8 roadmap created*
+*Last updated: 2026-02-07 - Phase 54 planned (1 plan)*
