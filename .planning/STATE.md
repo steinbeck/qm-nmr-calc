@@ -10,11 +10,12 @@ See: .planning/PROJECT.md (updated 2026-02-07)
 ## Current Position
 
 Milestone: v2.8 Expanded Solvent Support
-Phase: Not started (defining requirements)
-Status: Defining requirements
-Last activity: 2026-02-07 — Milestone v2.8 started
+Phase: 54 of 58 (Benchmark Infrastructure) — ready to plan
+Plan: 0 of TBD in current phase
+Status: Ready to plan
+Last activity: 2026-02-07 — Roadmap created for v2.8 (5 phases, 17 requirements)
 
-Progress: [#####################] 113 plans complete across 11 milestones (v1.0-v2.7)
+Progress: [#####################.....] 113 plans complete across 11 milestones (v1.0-v2.7), v2.8 starting
 
 ## Performance Metrics
 
@@ -38,6 +39,7 @@ Progress: [#####################] 113 plans complete across 11 milestones (v1.0-
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
 | v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
+| v2.8 Expanded Solvent Support | 5 | TBD | - | In progress |
 
 ## Accumulated Context
 
@@ -46,19 +48,13 @@ Progress: [#####################] 113 plans complete across 11 milestones (v1.0-
 All prior decisions logged in PROJECT.md Key Decisions table.
 v2.7 decisions archived to .planning/milestones/v2.7-ROADMAP.md.
 
-### Roadmap Evolution
+### Key Context for v2.8
 
-- v1.0: 6 phases (1-6), shipped 2026-01-20
-- v1.1: 8 phases (7-11.2, including 3 inserted), shipped 2026-01-25
-- v2.0: 6 phases (12-17), shipped 2026-01-28
-- v2.0.1: 1 phase (24), shipped 2026-01-30
-- v2.1: 6 phases (18-23), shipped 2026-01-31
-- v2.2: 7 phases (25-31), shipped 2026-02-01
-- v2.3: 3 phases (32-34), shipped 2026-02-01
-- v2.4: 6 phases (35-40), shipped 2026-02-03
-- v2.5: 4 phases (41-44), shipped 2026-02-04
-- v2.6: 5 phases (45-48.1), shipped 2026-02-05
-- v2.7: 5 phases (49-53), shipped 2026-02-06
+- NWChem COSMO already knows water, methanol, acetone by name. Benzene needs to be added to input_gen.py.
+- Benchmark is compute-intensive: 50 molecules x 4 solvents = 200 NWChem calculations (hours of compute).
+- All 4 solvents use same experimental shifts from CDCl3 (Grimblat et al. 2023).
+- Only B3LYP functional needed (WP04 out of scope).
+- Pipeline per solvent: extend CLI -> run benchmark -> analyze -> copy factors -> add to solvents.py/shifts.py.
 
 ### Pending Todos
 
@@ -75,11 +71,9 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-06
-Stopped at: v2.7 milestone completed and archived
+Last session: 2026-02-07
+Stopped at: v2.8 roadmap created, ready to plan Phase 54
 Resume file: None
-Next: No active milestone. Run /gsd:new-milestone to start next version.
-Tests: 415 tests (377 pre-existing + 19 config + 19 pricing + 19 machine)
+Next: Run /gsd:plan-phase 54 to plan Benchmark Infrastructure
+Tests: 415 tests
 Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
-Docker: Worker image 2.1GB (amd64), API image ~733MB (multi-arch), ARM64 worker 2.1GB (arm64), multi-arch manifests on GHCR
-GCP: v2.7 shipped - TOML config, dynamic pricing/machine selection, HTTP-only deployment

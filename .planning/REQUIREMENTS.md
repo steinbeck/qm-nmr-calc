@@ -58,29 +58,29 @@ Deferred to later milestones.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BENCH-01 | TBD | Pending |
-| BENCH-02 | TBD | Pending |
-| BENCH-03 | TBD | Pending |
-| BENCH-04 | TBD | Pending |
-| BENCH-05 | TBD | Pending |
-| BENCH-06 | TBD | Pending |
-| INTG-01 | TBD | Pending |
-| INTG-02 | TBD | Pending |
-| INTG-03 | TBD | Pending |
-| INTG-04 | TBD | Pending |
-| INTG-05 | TBD | Pending |
-| INTG-06 | TBD | Pending |
-| VALID-01 | TBD | Pending |
-| VALID-02 | TBD | Pending |
-| VALID-03 | TBD | Pending |
-| DOCS-01 | TBD | Pending |
-| DOCS-02 | TBD | Pending |
+| BENCH-01 | 54 | Pending |
+| BENCH-02 | 55 | Pending |
+| BENCH-03 | 55 | Pending |
+| BENCH-04 | 55 | Pending |
+| BENCH-05 | 55 | Pending |
+| BENCH-06 | 56 | Pending |
+| INTG-01 | 57 | Pending |
+| INTG-02 | 57 | Pending |
+| INTG-03 | 57 | Pending |
+| INTG-04 | 57 | Pending |
+| INTG-05 | 54 | Pending |
+| INTG-06 | 57 | Pending |
+| VALID-01 | 56 | Pending |
+| VALID-02 | 56 | Pending |
+| VALID-03 | 56 | Pending |
+| DOCS-01 | 58 | Pending |
+| DOCS-02 | 58 | Pending |
 
 **Coverage:**
 - v2.8 requirements: 17 total
-- Mapped to phases: 0
-- Unmapped: 17
+- Mapped to phases: 17
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-07*
-*Last updated: 2026-02-07 after initial definition*
+*Last updated: 2026-02-07 after roadmap creation*

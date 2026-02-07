@@ -13,12 +13,19 @@
 - [x] **v2.5 ARM64 Docker Support** - Phases 41-44 (shipped 2026-02-04)
 - [x] **v2.6 Google Cloud Spot Deployment** - Phases 45-48.1 (shipped 2026-02-05)
 - [x] **v2.7 Automated GCP Deployment** - Phases 49-53 (shipped 2026-02-06)
+- [ ] **v2.8 Expanded Solvent Support** - Phases 54-58 (in progress)
 
 ## Overview
 
-**Current milestone:** None (v2.7 shipped 2026-02-06)
+**Current milestone:** v2.8 Expanded Solvent Support
 
-All milestones complete. Run `/gsd:new-milestone` to start the next version.
+Add 4 new NMR solvents (methanol, water, acetone, benzene) with DELTA50-derived B3LYP scaling factors. This extends solvent coverage from 3 to 7, following the same benchmark-derive-integrate pipeline established in v1.1 but now applied to 4 solvents in parallel. The compute-intensive benchmark phase (200 NWChem calculations) dominates the timeline.
+
+- [ ] **Phase 54: Benchmark Infrastructure** - Extend CLI and input_gen to accept 4 new solvents
+- [ ] **Phase 55: DELTA50 Benchmark Calculations** - Run 200 NWChem calculations (50 molecules x 4 solvents)
+- [ ] **Phase 56: Scaling Factor Derivation** - Derive OLS factors and validate quality gates
+- [ ] **Phase 57: Solvent Integration** - Wire all 4 solvents into solvents.py, shifts.py, and UI/API
+- [ ] **Phase 58: Documentation** - Update SCALING-FACTORS.md and README for 7-solvent support
 
 ## Phases
 
@@ -302,80 +309,28 @@ All milestones complete. Run `/gsd:new-milestone` to start the next version.
 
 ### Phase 45: GCP Infrastructure Setup
 **Goal**: GCP project configured with networking and storage prerequisites for Spot VM deployment.
-**Depends on**: Nothing (first phase of v2.6)
-**Requirements**: INFRA-01, INFRA-02, INFRA-03, INFRA-04
-**Success Criteria** (what must be TRUE):
-  1. Static external IP is reserved and can be used for DNS configuration
-  2. Firewall rules allow HTTP (80), HTTPS (443), and SSH (22) traffic
-  3. Persistent disk exists for job data and Let's Encrypt certificates
-  4. Persistent disk survives VM deletion (verified by delete/recreate cycle)
 **Plans**: 1 plan
 **Status**: Complete
-
-Plans:
-- [x] 45-01-PLAN.md - Infrastructure setup and teardown scripts
 
 ### Phase 46: VM Deployment Script
 **Goal**: Single script creates a fully-configured Spot VM running qm-nmr-calc with HTTPS.
-**Depends on**: Phase 45
-**Requirements**: DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04, DEPLOY-05, DEPLOY-06, DEPLOY-07
-**Success Criteria** (what must be TRUE):
-  1. User runs one command and gets a working qm-nmr-calc instance
-  2. Startup script installs Docker, pulls GHCR images, and starts containers
-  3. Containers shut down gracefully within 25 seconds during preemption
-  4. User can select region, zone, and machine type with sensible defaults
-  5. Cost estimate displayed before VM creation (user can cancel)
 **Plans**: 1 plan
 **Status**: Complete
-
-Plans:
-- [x] 46-01-PLAN.md - VM deployment with startup/shutdown scripts and Docker Compose override
 
 ### Phase 47: Lifecycle Management Scripts
 **Goal**: Users can stop, start, check status, and access their GCP VM without memorizing gcloud commands.
-**Depends on**: Phase 46
-**Requirements**: LIFE-01, LIFE-02, LIFE-03, LIFE-04, LIFE-05, LIFE-06, LIFE-07
-**Success Criteria** (what must be TRUE):
-  1. Stop command halts VM (stops compute billing, preserves data)
-  2. Start command resumes VM (services auto-start via startup script)
-  3. Delete command removes VM but preserves persistent disk
-  4. Status command shows VM state, IP address, and running containers
-  5. SSH and logs commands provide easy access for debugging
 **Plans**: 1 plan
 **Status**: Complete
-
-Plans:
-- [x] 47-01-PLAN.md - Lifecycle management scripts (stop, start, delete, status, ssh, logs)
 
 ### Phase 48: Documentation and Testing
 **Goal**: Users can deploy to GCP with clear guidance on prerequisites, costs, and limitations.
-**Depends on**: Phase 47
-**Requirements**: DOCS-01, DOCS-02, DOCS-03, DOCS-04, DOCS-05
-**Success Criteria** (what must be TRUE):
-  1. README includes GCP deployment as an option alongside Docker Compose
-  2. Prerequisites documented (GCP account, gcloud CLI, domain for HTTPS)
-  3. Cost estimates documented (spot vs on-demand, static IP charges)
-  4. Preemption behavior documented (jobs in progress will be lost)
-  5. DNS configuration guide covers common providers (Cloudflare, Namecheap)
 **Plans**: 1 plan
 **Status**: Complete
 
-Plans:
-- [x] 48-01-PLAN.md - GCP deployment documentation
-
 ### Phase 48.1: Machine Info Display (INSERTED)
 **Goal**: Web UI displays machine information (type, CPU cores, memory) for debugging and user awareness.
-**Depends on**: Phase 48
-**Requirements**: INFO-01
-**Success Criteria** (what must be TRUE):
-  1. Results page shows machine type (if on GCP) or hostname
-  2. Results page shows number of CPU cores NWChem is configured to use
-  3. Results page shows memory allocation for NWChem
 **Plans**: 0 plans
 **Status**: Not started
-
-Plans:
-- [ ] TBD (run /gsd:plan-phase 48.1 to break down)
 
 </details>
 
@@ -408,6 +363,82 @@ Plans:
 **Status**: Complete
 
 </details>
+
+## v2.8 Expanded Solvent Support (Phases 54-58)
+
+**Milestone Goal:** Add 4 new NMR solvents (methanol, water, acetone, benzene) with DELTA50-derived B3LYP scaling factors, extending supported solvents from 3 to 7.
+
+### Phase 54: Benchmark Infrastructure
+**Goal**: Benchmark tooling accepts all 4 new solvents so calculations can be dispatched
+**Depends on**: Nothing (first phase of v2.8)
+**Requirements**: BENCH-01, INTG-05
+**Success Criteria** (what must be TRUE):
+  1. Running `python -m qm_nmr_calc.benchmark run --solvents Methanol --functionals B3LYP --headless` is accepted by the CLI (no "invalid choice" error)
+  2. Running the benchmark CLI with Water, Acetone, and Benzene as solvents is also accepted
+  3. NWChem COSMO input files generated for each new solvent contain correct solvent parameters (verified by inspecting a generated .nw file)
+  4. Benzene is present in input_gen.py SUPPORTED_SOLVENTS (it needs to be added; methanol, water, acetone already exist there)
+**Plans**: TBD
+
+Plans:
+- [ ] 54-01-PLAN.md - Extend benchmark CLI and NWChem input generation for 4 new solvents
+
+### Phase 55: DELTA50 Benchmark Calculations
+**Goal**: All 200 NWChem benchmark calculations complete successfully (50 molecules x 4 solvents)
+**Depends on**: Phase 54
+**Requirements**: BENCH-02, BENCH-03, BENCH-04, BENCH-05
+**Success Criteria** (what must be TRUE):
+  1. Methanol benchmark data directory contains 50 completed NWChem output files with NMR shielding tensors
+  2. Water benchmark data directory contains 50 completed NWChem output files with NMR shielding tensors
+  3. Acetone benchmark data directory contains 50 completed NWChem output files with NMR shielding tensors
+  4. Benzene benchmark data directory contains 50 completed NWChem output files with NMR shielding tensors
+  5. No benchmark molecule fails with a COSMO convergence error (all 200 calculations parse cleanly)
+**Plans**: TBD
+
+Plans:
+- [ ] 55-01-PLAN.md - Run DELTA50 benchmarks for methanol and water solvents
+- [ ] 55-02-PLAN.md - Run DELTA50 benchmarks for acetone and benzene solvents
+
+### Phase 56: Scaling Factor Derivation
+**Goal**: OLS-derived scaling factors for all 4 new solvents pass quality gates and are stored in package data
+**Depends on**: Phase 55
+**Requirements**: BENCH-06, VALID-01, VALID-02, VALID-03
+**Success Criteria** (what must be TRUE):
+  1. `python -m qm_nmr_calc.benchmark analyze` produces scaling factors for all 4 new solvents (8 new factor sets: 4 solvents x 2 nuclei)
+  2. All 8 new factor sets have R-squared > 0.99
+  3. 1H MAE is below 0.2 ppm for each new solvent
+  4. 13C MAE is below 3.0 ppm for each new solvent
+  5. scaling_factors.json contains 14 total factor sets (6 existing + 8 new) with slope, intercept, R-squared, and MAE for each
+**Plans**: TBD
+
+Plans:
+- [ ] 56-01-PLAN.md - Run analysis, validate quality gates, update scaling_factors.json
+
+### Phase 57: Solvent Integration
+**Goal**: Users can select any of the 4 new solvents in the web UI and API and get accurate NMR predictions
+**Depends on**: Phase 56
+**Requirements**: INTG-01, INTG-02, INTG-03, INTG-04, INTG-06
+**Success Criteria** (what must be TRUE):
+  1. Submitting a molecule via API with `solvent=methanol` returns predicted shifts using methanol-specific scaling factors
+  2. Submitting a molecule via API with `solvent=water`, `solvent=acetone`, or `solvent=benzene` each returns predicted shifts using the correct solvent-specific scaling factors
+  3. Web UI solvent dropdown lists all 7 solvents (CHCl3, DMSO, Vacuum, Methanol, Water, Acetone, Benzene)
+  4. Existing CHCl3, DMSO, and vacuum calculations produce identical results to before (no regression)
+**Plans**: TBD
+
+Plans:
+- [ ] 57-01-PLAN.md - Add 4 solvents to solvents.py, shifts.py, and verify end-to-end
+
+### Phase 58: Documentation
+**Goal**: Documentation reflects 7-solvent support with accuracy statistics for each solvent
+**Depends on**: Phase 57
+**Requirements**: DOCS-01, DOCS-02
+**Success Criteria** (what must be TRUE):
+  1. SCALING-FACTORS.md lists all 14 factor sets with slope, intercept, R-squared, MAE, and outlier count for each
+  2. README states 7 supported solvents and lists them by name
+  3. Factor statistics in documentation match values in scaling_factors.json exactly
+**Plans**: TBD
+
+Plans:
+- [ ] 58-01-PLAN.md - Update SCALING-FACTORS.md and README for 7-solvent support
 
 ## Progress
 
@@ -464,11 +495,16 @@ Plans:
 | 47. Lifecycle Scripts | v2.6 | 1/1 | Complete | 2026-02-05 |
 | 48. Documentation | v2.6 | 1/1 | Complete | 2026-02-05 |
 | 48.1 Machine Info | v2.6 | 0/TBD | Not started | - |
-| **49. Config & Pricing** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
-| **50. Machine Selection** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
-| **51. Orchestration** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
-| **52. HTTP Container** | **v2.7** | **2/2** | **Complete** | **2026-02-06** |
-| **53. Conformer Bug Fix** | **v2.7** | **1/1** | **Complete** | **2026-02-06** |
+| 49. Config & Pricing | v2.7 | 2/2 | Complete | 2026-02-06 |
+| 50. Machine Selection | v2.7 | 2/2 | Complete | 2026-02-06 |
+| 51. Orchestration | v2.7 | 2/2 | Complete | 2026-02-06 |
+| 52. HTTP Container | v2.7 | 2/2 | Complete | 2026-02-06 |
+| 53. Conformer Bug Fix | v2.7 | 1/1 | Complete | 2026-02-06 |
+| **54. Benchmark Infrastructure** | **v2.8** | **0/TBD** | **Not started** | **-** |
+| **55. DELTA50 Calculations** | **v2.8** | **0/TBD** | **Not started** | **-** |
+| **56. Scaling Factor Derivation** | **v2.8** | **0/TBD** | **Not started** | **-** |
+| **57. Solvent Integration** | **v2.8** | **0/TBD** | **Not started** | **-** |
+| **58. Documentation** | **v2.8** | **0/TBD** | **Not started** | **-** |
 
 ## Coverage (v2.6)
 
@@ -542,5 +578,31 @@ Plans:
 
 **Mapped: 31/31 (100%)**
 
+## Coverage (v2.8)
+
+**v2.8 Requirements: 17 total**
+
+| Requirement | Phase | Description |
+|-------------|-------|-------------|
+| BENCH-01 | 54 | Benchmark CLI accepts 4 new solvents |
+| INTG-05 | 54 | NWChem COSMO correct for all 4 new solvents |
+| BENCH-02 | 55 | DELTA50 benchmark for methanol (50 molecules) |
+| BENCH-03 | 55 | DELTA50 benchmark for water (50 molecules) |
+| BENCH-04 | 55 | DELTA50 benchmark for acetone (50 molecules) |
+| BENCH-05 | 55 | DELTA50 benchmark for benzene (50 molecules) |
+| BENCH-06 | 56 | OLS scaling factors for 8 new factor sets |
+| VALID-01 | 56 | All 8 factor sets R-squared > 0.99 |
+| VALID-02 | 56 | 1H MAE below 0.2 ppm per solvent |
+| VALID-03 | 56 | 13C MAE below 3.0 ppm per solvent |
+| INTG-01 | 57 | Methanol selectable in UI and API |
+| INTG-02 | 57 | Water selectable in UI and API |
+| INTG-03 | 57 | Acetone selectable in UI and API |
+| INTG-04 | 57 | Benzene selectable in UI and API |
+| INTG-06 | 57 | Scaling factors loaded correctly for new solvents |
+| DOCS-01 | 58 | SCALING-FACTORS.md updated |
+| DOCS-02 | 58 | README updated for 7 solvents |
+
+**Mapped: 17/17 (100%)**
+
 ---
-*Last updated: 2026-02-06 - v2.7 milestone archived*
+*Last updated: 2026-02-07 - v2.8 roadmap created*
