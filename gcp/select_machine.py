@@ -448,8 +448,11 @@ services:
         limits:
           memory: ${{WORKER_MEMORY_LIMIT}}
 
-  # Disable Caddy — HTTP-only deployment, API serves directly on port 80
-  caddy: null
+  # Disable Caddy — move to inactive profile so it never starts
+  # (HTTP-only deployment, API serves directly on port 80)
+  caddy:
+    profiles:
+      - caddy-enabled
 EOF
 
 echo_info "Created docker-compose.gcp.yml (HTTP-only, no Caddy)"

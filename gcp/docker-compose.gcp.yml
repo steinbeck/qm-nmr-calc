@@ -34,5 +34,8 @@ services:
         limits:
           memory: ${WORKER_MEMORY_LIMIT:-120g}
 
-  # Disable Caddy — HTTP-only deployment, API serves directly on port 80
-  caddy: null
+  # Disable Caddy — move to inactive profile so it never starts
+  # (HTTP-only deployment, API serves directly on port 80)
+  caddy:
+    profiles:
+      - caddy-enabled

@@ -207,7 +207,7 @@ class TestGenerateStartupScript:
     def test_startup_script_disables_caddy(self):
         """Assert docker-compose override disables Caddy service."""
         script = generate_startup_script("24g", "qm-nmr-calc", 100)
-        assert "caddy: null" in script
+        assert "caddy-enabled" in script
 
 
 # --- CLI tests ---
