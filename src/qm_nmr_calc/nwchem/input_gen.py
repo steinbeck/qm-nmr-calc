@@ -107,6 +107,11 @@ def generate_shielding_input(
 
     Uses ISiCLE-compatible format. COSMO solvation is omitted for vacuum/gas-phase.
 
+    The DFT block includes 'direct' to force on-the-fly integral evaluation,
+    which is required for stable CPHF (coupled-perturbed Hartree-Fock) convergence
+    during NMR property calculations with COSMO solvation. Without 'direct',
+    NWChem may fail with 'cphf_solve2: SCF residual greater than 1d-2'.
+
     Args:
         geometry_xyz: XYZ-format geometry (atom lines only, no header)
         functional: DFT functional (e.g., 'b3lyp')
@@ -147,6 +152,7 @@ end
 
 dft
   xc {functional}
+  direct
 end
 {cosmo_block}
 property

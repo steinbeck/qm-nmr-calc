@@ -73,6 +73,12 @@ def run_nwchem(
     outfile = str(output_file.resolve())
     logfile = str(output_file.with_suffix(".log").resolve())
 
+    # Run NWChem in the input file's directory so scratch files (molecule.movecs,
+    # molecule.db, etc.) are isolated per-calculation. Without this, sequential
+    # calculations pollute each other's scratch files in the shared cwd, causing
+    # "could not read mo vectors" errors on subsequent runs.
+    scratch_cwd = str(input_file.resolve().parent)
+
     # Unset DISPLAY to prevent X11 errors in headless mode
     # --oversubscribe: Required for Docker containers where nproc detection is unreliable.
     #   Inside containers, nproc often returns 1 even when the container has access to
@@ -81,7 +87,7 @@ def run_nwchem(
     #   oversubscribe is safe here.
     cmd = f"unset DISPLAY; mpirun --oversubscribe --bind-to none -n {processes} nwchem {infile} > {outfile} 2> {logfile}"
 
-    result = subprocess.call(cmd, shell=True)
+    result = subprocess.call(cmd, shell=True, cwd=scratch_cwd)
 
     if result != 0:
         error_msg = f"NWChem failed with exit code {result}"
