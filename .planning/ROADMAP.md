@@ -22,7 +22,7 @@
 Add 4 new NMR solvents (methanol, water, acetone, benzene) with DELTA50-derived B3LYP scaling factors. This extends solvent coverage from 3 to 7, following the same benchmark-derive-integrate pipeline established in v1.1 but now applied to 4 solvents in parallel. The compute-intensive benchmark phase (200 NWChem calculations) dominates the timeline.
 
 - [x] **Phase 54: Benchmark Infrastructure** - Extend CLI and input_gen to accept 4 new solvents (2026-02-07)
-- [ ] **Phase 55: DELTA50 Benchmark Calculations** - Run 200 NWChem calculations (50 molecules x 4 solvents)
+- [x] **Phase 55: DELTA50 Benchmark Calculations** - Run 200 NWChem calculations (50 molecules x 4 solvents) (2026-02-08)
 - [ ] **Phase 56: Scaling Factor Derivation** - Derive OLS factors and validate quality gates
 - [ ] **Phase 57: Solvent Integration** - Wire all 4 solvents into solvents.py, shifts.py, and UI/API
 - [ ] **Phase 58: Documentation** - Update SCALING-FACTORS.md and README for 7-solvent support
@@ -395,8 +395,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 55-01-PLAN.md -- Run DELTA50 benchmarks for Methanol and Water solvents (100 calculations)
-- [ ] 55-02-PLAN.md -- Run DELTA50 benchmarks for Acetone and Benzene solvents (100 calculations)
+- [x] 55-01-PLAN.md -- Run DELTA50 benchmarks for Methanol and Water solvents (100 calculations)
+- [x] 55-02-PLAN.md -- Run DELTA50 benchmarks for Acetone and Benzene solvents (100 calculations)
 
 ### Phase 56: Scaling Factor Derivation
 **Goal**: OLS-derived scaling factors for all 4 new solvents pass quality gates and are stored in package data
@@ -501,7 +501,7 @@ Plans:
 | 52. HTTP Container | v2.7 | 2/2 | Complete | 2026-02-06 |
 | 53. Conformer Bug Fix | v2.7 | 1/1 | Complete | 2026-02-06 |
 | **54. Benchmark Infrastructure** | **v2.8** | **1/1** | **Complete** | **2026-02-07** |
-| **55. DELTA50 Calculations** | **v2.8** | **0/2** | **Not started** | **-** |
+| **55. DELTA50 Calculations** | **v2.8** | **2/2** | **Complete** | **2026-02-08** |
 | **56. Scaling Factor Derivation** | **v2.8** | **0/TBD** | **Not started** | **-** |
 | **57. Solvent Integration** | **v2.8** | **0/TBD** | **Not started** | **-** |
 | **58. Documentation** | **v2.8** | **0/TBD** | **Not started** | **-** |
@@ -605,4 +605,4 @@ Plans:
 **Mapped: 17/17 (100%)**
 
 ---
-*Last updated: 2026-02-07 - Phase 54 complete*
+*Last updated: 2026-02-08 - Phase 55 complete*

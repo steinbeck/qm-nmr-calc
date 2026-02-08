@@ -10,10 +10,10 @@ Requirements for expanded solvent support. Each maps to roadmap phases.
 ### Benchmark Infrastructure
 
 - [x] **BENCH-01**: Benchmark CLI accepts methanol, water, acetone, benzene as valid solvents
-- [ ] **BENCH-02**: DELTA50 benchmark runs for all 50 molecules in methanol solvent
-- [ ] **BENCH-03**: DELTA50 benchmark runs for all 50 molecules in water solvent
-- [ ] **BENCH-04**: DELTA50 benchmark runs for all 50 molecules in acetone solvent
-- [ ] **BENCH-05**: DELTA50 benchmark runs for all 50 molecules in benzene solvent
+- [x] **BENCH-02**: DELTA50 benchmark runs for all 50 molecules in methanol solvent
+- [x] **BENCH-03**: DELTA50 benchmark runs for all 50 molecules in water solvent
+- [x] **BENCH-04**: DELTA50 benchmark runs for all 50 molecules in acetone solvent
+- [x] **BENCH-05**: DELTA50 benchmark runs for all 50 molecules in benzene solvent
 - [ ] **BENCH-06**: OLS scaling factors derived for 1H and 13C in each new solvent (8 new factor sets)
 
 ### Code Integration
@@ -59,10 +59,10 @@ Deferred to later milestones.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | BENCH-01 | 54 | Complete |
-| BENCH-02 | 55 | Pending |
-| BENCH-03 | 55 | Pending |
-| BENCH-04 | 55 | Pending |
-| BENCH-05 | 55 | Pending |
+| BENCH-02 | 55 | Complete |
+| BENCH-03 | 55 | Complete |
+| BENCH-04 | 55 | Complete |
+| BENCH-05 | 55 | Complete |
 | BENCH-06 | 56 | Pending |
 | INTG-01 | 57 | Pending |
 | INTG-02 | 57 | Pending |
@@ -83,4 +83,4 @@ Deferred to later milestones.
 
 ---
 *Requirements defined: 2026-02-07*
-*Last updated: 2026-02-07 — BENCH-01 and INTG-05 complete (Phase 54)*
+*Last updated: 2026-02-08 — BENCH-02, BENCH-03, BENCH-04, BENCH-05 complete (Phase 55)*
