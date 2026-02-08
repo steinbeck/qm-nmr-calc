@@ -165,7 +165,7 @@ def test_conformer_dft_optimization_all_succeed():
                     side_effect=get_scratch_with_create,
                 ):
                     # Run optimization
-                    successful, failed = run_conformer_dft_optimization(
+                    successful, failed, runtime_info = run_conformer_dft_optimization(
                         ensemble=ensemble,
                         job_id="test_job",
                         preset=make_preset(),
@@ -241,7 +241,7 @@ def test_conformer_dft_optimization_partial_failure():
                     side_effect=get_scratch_with_create,
                 ):
                     # Run optimization
-                    successful, failed = run_conformer_dft_optimization(
+                    successful, failed, runtime_info = run_conformer_dft_optimization(
                         ensemble=ensemble,
                         job_id="test_job",
                         preset=make_preset(),
@@ -385,7 +385,7 @@ def test_conformer_dft_optimization_status_tracking():
                     side_effect=get_scratch_with_create,
                 ):
                     # Run optimization
-                    successful, failed = run_conformer_dft_optimization(
+                    successful, failed, runtime_info = run_conformer_dft_optimization(
                         ensemble=ensemble,
                         job_id="test_job",
                         preset=make_preset(),
@@ -452,7 +452,7 @@ def test_conformer_dft_optimization_stores_optimized_geometry_path():
                     side_effect=get_scratch_with_create,
                 ):
                     # Run optimization
-                    successful, failed = run_conformer_dft_optimization(
+                    successful, failed, runtime_info = run_conformer_dft_optimization(
                         ensemble=ensemble,
                         job_id="test_job",
                         preset=make_preset(),
@@ -1014,7 +1014,7 @@ def test_ensemble_full_pipeline():
         ]
 
         def mock_dft_opt(ensemble, *args, **kwargs):
-            return (optimized_conformers, [])
+            return (optimized_conformers, [], None)
 
         def mock_filter(conformers, **kwargs):
             return conformers  # All pass filter
@@ -1052,7 +1052,7 @@ def test_ensemble_full_pipeline():
                     side_effect=mock_nmr_calc,
                 ):
                     # Run full pipeline
-                    updated_ensemble, nmr_results = run_ensemble_dft_and_nmr(
+                    updated_ensemble, nmr_results, runtime_info = run_ensemble_dft_and_nmr(
                         ensemble=ensemble,
                         job_id="test_job",
                         preset=make_preset(),
@@ -1084,7 +1084,7 @@ def test_ensemble_pipeline_with_post_dft_filtering():
         ]
 
         def mock_dft_opt(ensemble, *args, **kwargs):
-            return (optimized_conformers, [])
+            return (optimized_conformers, [], None)
 
         def mock_filter(conformers, **kwargs):
             # Filter out the 4th conformer
@@ -1125,7 +1125,7 @@ def test_ensemble_pipeline_with_post_dft_filtering():
                     side_effect=mock_nmr_calc,
                 ):
                     # Run full pipeline
-                    updated_ensemble, nmr_results = run_ensemble_dft_and_nmr(
+                    updated_ensemble, nmr_results, runtime_info = run_ensemble_dft_and_nmr(
                         ensemble=ensemble,
                         job_id="test_job",
                         preset=make_preset(),
@@ -1161,7 +1161,7 @@ def test_ensemble_pipeline_with_dft_failures():
         )
 
         def mock_dft_opt(ensemble, *args, **kwargs):
-            return (optimized_conformers, [failed_conformer])
+            return (optimized_conformers, [failed_conformer], None)
 
         def mock_filter(conformers, **kwargs):
             return conformers  # All pass filter
@@ -1198,7 +1198,7 @@ def test_ensemble_pipeline_with_dft_failures():
                     side_effect=mock_nmr_calc,
                 ):
                     # Run full pipeline
-                    updated_ensemble, nmr_results = run_ensemble_dft_and_nmr(
+                    updated_ensemble, nmr_results, runtime_info = run_ensemble_dft_and_nmr(
                         ensemble=ensemble,
                         job_id="test_job",
                         preset=make_preset(),
@@ -1235,7 +1235,7 @@ def test_ensemble_pipeline_updates_ensemble_conformers():
                 conf.status = optimized_conformers[i].status
                 conf.energy = optimized_conformers[i].energy
                 conf.energy_unit = optimized_conformers[i].energy_unit
-            return (ensemble.conformers, [])
+            return (ensemble.conformers, [], None)
 
         def mock_filter(conformers, **kwargs):
             return conformers  # All pass filter
@@ -1276,7 +1276,7 @@ def test_ensemble_pipeline_updates_ensemble_conformers():
                     side_effect=mock_nmr_calc,
                 ):
                     # Run full pipeline
-                    updated_ensemble, nmr_results = run_ensemble_dft_and_nmr(
+                    updated_ensemble, nmr_results, runtime_info = run_ensemble_dft_and_nmr(
                         ensemble=ensemble,
                         job_id="test_job",
                         preset=make_preset(),

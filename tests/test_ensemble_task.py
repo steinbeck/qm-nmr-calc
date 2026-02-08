@@ -116,7 +116,7 @@ class TestEnsembleTaskFiltering:
             basis_set="6-311+g(2d,p)",
             solvent="chcl3"
         )
-        mock_dft.return_value = (ensemble, [nmr1, nmr2])
+        mock_dft.return_value = (ensemble, [nmr1, nmr2], None)
 
         # Mock avg_nmr return
         mock_avg.return_value = NMRResults(
@@ -266,7 +266,7 @@ class TestConformerMethodWarning:
             basis_set="6-311+g(2d,p)",
             solvent="chcl3"
         )
-        mock_dft.return_value = (ensemble, [nmr1])
+        mock_dft.return_value = (ensemble, [nmr1], None)
         mock_avg.return_value = nmr1
 
         # Run task
