@@ -392,11 +392,11 @@ Plans:
   3. Acetone benchmark data directory contains 50 completed NWChem output files with NMR shielding tensors
   4. Benzene benchmark data directory contains 50 completed NWChem output files with NMR shielding tensors
   5. No benchmark molecule fails with a COSMO convergence error (all 200 calculations parse cleanly)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 55-01-PLAN.md - Run DELTA50 benchmarks for methanol and water solvents
-- [ ] 55-02-PLAN.md - Run DELTA50 benchmarks for acetone and benzene solvents
+- [ ] 55-01-PLAN.md -- Run DELTA50 benchmarks for Methanol and Water solvents (100 calculations)
+- [ ] 55-02-PLAN.md -- Run DELTA50 benchmarks for Acetone and Benzene solvents (100 calculations)
 
 ### Phase 56: Scaling Factor Derivation
 **Goal**: OLS-derived scaling factors for all 4 new solvents pass quality gates and are stored in package data
@@ -501,7 +501,7 @@ Plans:
 | 52. HTTP Container | v2.7 | 2/2 | Complete | 2026-02-06 |
 | 53. Conformer Bug Fix | v2.7 | 1/1 | Complete | 2026-02-06 |
 | **54. Benchmark Infrastructure** | **v2.8** | **1/1** | **Complete** | **2026-02-07** |
-| **55. DELTA50 Calculations** | **v2.8** | **0/TBD** | **Not started** | **-** |
+| **55. DELTA50 Calculations** | **v2.8** | **0/2** | **Not started** | **-** |
 | **56. Scaling Factor Derivation** | **v2.8** | **0/TBD** | **Not started** | **-** |
 | **57. Solvent Integration** | **v2.8** | **0/TBD** | **Not started** | **-** |
 | **58. Documentation** | **v2.8** | **0/TBD** | **Not started** | **-** |
