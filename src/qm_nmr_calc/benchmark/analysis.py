@@ -202,7 +202,7 @@ def derive_all_factors(
 
     Args:
         functionals: List of functionals to process (default: ["B3LYP"])
-        solvents: List of solvents to process (default: ["CHCl3", "DMSO"])
+        solvents: List of solvents to process (default: all 6 supported solvents)
 
     Returns:
         Dict mapping "functional/basis_set/nucleus/solvent" to ScalingFactor
@@ -210,7 +210,7 @@ def derive_all_factors(
     if functionals is None:
         functionals = ["B3LYP"]  # WP04 not yet complete
     if solvents is None:
-        solvents = ["CHCl3", "DMSO"]
+        solvents = ["CHCl3", "DMSO", "Methanol", "Water", "Acetone", "Benzene"]
 
     nuclei = ["1H", "13C"]
     factors: dict[str, ScalingFactor] = {}

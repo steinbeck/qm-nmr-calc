@@ -25,12 +25,18 @@ experimentally assigned NMR spectra in CDCl3).
 
 | Nucleus | Solvent | Slope | Intercept | R^2 | MAE (ppm) | RMSD (ppm) | n |
 |---------|---------|-------|-----------|-----|-----------|------------|---|
+| 13C | Acetone | -0.9440 (-0.9503, -0.9376) | 171.91 (171.20, 172.62) | 0.9975 | 2.117 | 2.875 | 219 |
+| 13C | Benzene | -0.9573 (-0.9630, -0.9516) | 173.70 (173.07, 174.33) | 0.9980 | 1.761 | 2.538 | 219 |
 | 13C | CHCl3 | -0.9497 (-0.9557, -0.9438) | 172.69 (172.02, 173.36) | 0.9978 | 1.949 | 2.691 | 219 |
 | 13C | DMSO | -0.9429 (-0.9494, -0.9365) | 171.77 (171.05, 172.49) | 0.9974 | 2.152 | 2.916 | 219 |
-| 13C | vacuum | -0.9726 (-0.9784, -0.9668) | 175.71 (175.06, 176.36) | 0.9980 | 1.739 | 2.567 | 219 |
+| 13C | Methanol | -0.9433 (-0.9497, -0.9369) | 171.82 (171.10, 172.53) | 0.9974 | 2.139 | 2.901 | 219 |
+| 13C | Water | -0.9426 (-0.9490, -0.9361) | 171.72 (171.00, 172.44) | 0.9974 | 2.161 | 2.927 | 219 |
+| 1H | Acetone | -0.9332 (-0.9402, -0.9261) | 29.76 (29.56, 29.96) | 0.9951 | 0.126 | 0.165 | 335 |
+| 1H | Benzene | -0.9433 (-0.9505, -0.9361) | 30.12 (29.92, 30.33) | 0.9950 | 0.128 | 0.167 | 335 |
 | 1H | CHCl3 | -0.9375 (-0.9445, -0.9305) | 29.92 (29.72, 30.12) | 0.9952 | 0.124 | 0.163 | 335 |
 | 1H | DMSO | -0.9323 (-0.9394, -0.9253) | 29.73 (29.53, 29.94) | 0.9951 | 0.126 | 0.166 | 335 |
-| 1H | vacuum | -0.9554 (-0.9627, -0.9481) | 30.54 (30.33, 30.75) | 0.9934 | 0.148 | 0.195 | 336 |
+| 1H | Methanol | -0.9326 (-0.9397, -0.9256) | 29.74 (29.54, 29.95) | 0.9951 | 0.126 | 0.166 | 335 |
+| 1H | Water | -0.9321 (-0.9392, -0.9250) | 29.73 (29.53, 29.93) | 0.9951 | 0.127 | 0.166 | 335 |
 
 *Values in parentheses are 95% confidence intervals.*
 
@@ -268,121 +274,469 @@ compound_17, compound_10, compound_07, compound_30
 **Note:** Compounds with mean error > 2x MAE (4.304 ppm):
 compound_48, compound_10
 
-### 1H B3LYP (vacuum)
+### 1H B3LYP (Methanol)
 
 | Compound | Mean Error (ppm) | Max Error (ppm) | Atoms |
 |----------|------------------|-----------------|-------|
-| compound_10 | 0.567 | 1.502 | 7 |
-| compound_17 | 0.509 | 1.820 | 9 |
-| compound_15 | 0.358 | 0.555 | 9 |
-| compound_49 | 0.314 | 0.314 | 2 |
-| compound_30 | 0.298 | 0.568 | 11 |
-| compound_40 | 0.217 | 0.461 | 13 |
-| compound_27 | 0.213 | 0.716 | 10 |
-| compound_37 | 0.213 | 0.327 | 12 |
-| compound_32 | 0.208 | 0.373 | 9 |
-| compound_02 | 0.204 | 0.538 | 5 |
-| compound_38 | 0.204 | 0.348 | 10 |
-| compound_26 | 0.201 | 0.332 | 10 |
-| compound_01 | 0.191 | 0.252 | 3 |
-| compound_22 | 0.188 | 0.424 | 4 |
-| compound_19 | 0.185 | 0.286 | 6 |
-| compound_25 | 0.183 | 0.349 | 4 |
-| compound_29 | 0.182 | 0.287 | 10 |
-| compound_28 | 0.181 | 0.436 | 12 |
-| compound_05 | 0.180 | 0.180 | 3 |
-| compound_20 | 0.175 | 0.238 | 7 |
-| compound_12 | 0.167 | 0.217 | 3 |
-| compound_45 | 0.164 | 0.165 | 4 |
-| compound_47 | 0.152 | 0.255 | 8 |
-| compound_04 | 0.152 | 0.152 | 4 |
-| compound_50 | 0.150 | 0.214 | 6 |
-| compound_44 | 0.140 | 0.266 | 5 |
-| compound_09 | 0.128 | 0.302 | 6 |
-| compound_13 | 0.122 | 0.207 | 8 |
-| compound_07 | 0.116 | 0.236 | 6 |
-| compound_03 | 0.113 | 0.237 | 4 |
-| compound_31 | 0.112 | 0.153 | 8 |
-| compound_41 | 0.106 | 0.240 | 10 |
-| compound_11 | 0.105 | 0.170 | 5 |
-| compound_14 | 0.101 | 0.101 | 6 |
-| compound_48 | 0.100 | 0.200 | 8 |
-| compound_35 | 0.099 | 0.119 | 5 |
-| compound_23 | 0.097 | 0.217 | 4 |
-| compound_36 | 0.096 | 0.177 | 12 |
-| compound_16 | 0.090 | 0.246 | 8 |
-| compound_34 | 0.087 | 0.122 | 7 |
-| compound_46 | 0.080 | 0.285 | 8 |
-| compound_06 | 0.063 | 0.064 | 6 |
-| compound_33 | 0.051 | 0.106 | 6 |
-| compound_42 | 0.043 | 0.107 | 8 |
-| compound_39 | 0.039 | 0.060 | 6 |
-| compound_18 | 0.039 | 0.041 | 6 |
-| compound_08 | 0.039 | 0.063 | 6 |
-| compound_21 | 0.035 | 0.052 | 4 |
-| compound_24 | 0.030 | 0.030 | 4 |
-| compound_43 | 0.012 | 0.016 | 5 |
+| compound_17 | 0.495 | 1.271 | 9 |
+| compound_10 | 0.468 | 1.012 | 7 |
+| compound_07 | 0.348 | 0.456 | 6 |
+| compound_30 | 0.268 | 0.581 | 11 |
+| compound_03 | 0.240 | 0.377 | 4 |
+| compound_22 | 0.225 | 0.262 | 4 |
+| compound_40 | 0.219 | 0.490 | 13 |
+| compound_15 | 0.195 | 0.341 | 9 |
+| compound_37 | 0.188 | 0.219 | 12 |
+| compound_28 | 0.182 | 0.449 | 12 |
+| compound_27 | 0.177 | 0.678 | 10 |
+| compound_09 | 0.171 | 0.317 | 6 |
+| compound_26 | 0.161 | 0.229 | 10 |
+| compound_23 | 0.153 | 0.295 | 4 |
+| compound_41 | 0.145 | 0.243 | 10 |
+| compound_32 | 0.135 | 0.218 | 9 |
+| compound_33 | 0.126 | 0.271 | 6 |
+| compound_42 | 0.123 | 0.305 | 8 |
+| compound_25 | 0.121 | 0.194 | 4 |
+| compound_20 | 0.120 | 0.156 | 7 |
+| compound_45 | 0.119 | 0.120 | 4 |
+| compound_29 | 0.112 | 0.248 | 10 |
+| compound_02 | 0.110 | 0.352 | 5 |
+| compound_24 | 0.110 | 0.110 | 4 |
+| compound_50 | 0.107 | 0.133 | 6 |
+| compound_01 | 0.103 | 0.128 | 3 |
+| compound_38 | 0.099 | 0.168 | 10 |
+| compound_49 | 0.098 | 0.098 | 2 |
+| compound_12 | 0.098 | 0.120 | 3 |
+| compound_16 | 0.096 | 0.156 | 8 |
+| compound_47 | 0.095 | 0.130 | 8 |
+| compound_36 | 0.094 | 0.201 | 12 |
+| compound_35 | 0.088 | 0.169 | 5 |
+| compound_14 | 0.087 | 0.088 | 6 |
+| compound_19 | 0.085 | 0.173 | 6 |
+| compound_13 | 0.074 | 0.150 | 8 |
+| compound_21 | 0.072 | 0.093 | 4 |
+| compound_31 | 0.064 | 0.128 | 8 |
+| compound_46 | 0.063 | 0.200 | 8 |
+| compound_48 | 0.063 | 0.118 | 8 |
+| compound_11 | 0.061 | 0.116 | 5 |
+| compound_44 | 0.057 | 0.095 | 5 |
+| compound_34 | 0.055 | 0.102 | 7 |
+| compound_06 | 0.049 | 0.055 | 6 |
+| compound_18 | 0.048 | 0.069 | 6 |
+| compound_05 | 0.043 | 0.046 | 3 |
+| compound_43 | 0.031 | 0.042 | 5 |
+| compound_08 | 0.030 | 0.035 | 6 |
+| compound_39 | 0.024 | 0.031 | 6 |
+| compound_04 | 0.018 | 0.018 | 4 |
 
-**Note:** Compounds with mean error > 2x MAE (0.296 ppm):
-compound_10, compound_17, compound_15, compound_49, compound_30
+**Note:** Compounds with mean error > 2x MAE (0.252 ppm):
+compound_17, compound_10, compound_07, compound_30
 
-### 13C B3LYP (vacuum)
+### 13C B3LYP (Methanol)
 
 | Compound | Mean Error (ppm) | Max Error (ppm) | Atoms |
 |----------|------------------|-----------------|-------|
-| compound_48 | 21.205 | 52.277 | 7 |
-| compound_10 | 5.120 | 8.956 | 3 |
-| compound_17 | 3.586 | 5.019 | 4 |
-| compound_47 | 3.370 | 3.565 | 7 |
-| compound_28 | 2.961 | 4.618 | 5 |
-| compound_07 | 2.495 | 2.496 | 3 |
-| compound_05 | 2.466 | 2.886 | 2 |
-| compound_26 | 2.320 | 3.783 | 5 |
-| compound_36 | 2.300 | 5.707 | 6 |
-| compound_41 | 2.026 | 3.003 | 6 |
-| compound_25 | 1.883 | 3.660 | 4 |
-| compound_42 | 1.860 | 3.449 | 6 |
-| compound_01 | 1.856 | 1.856 | 1 |
-| compound_13 | 1.801 | 5.393 | 4 |
-| compound_38 | 1.727 | 3.069 | 6 |
-| compound_33 | 1.726 | 4.594 | 5 |
-| compound_50 | 1.724 | 1.817 | 4 |
-| compound_27 | 1.718 | 3.604 | 5 |
-| compound_19 | 1.702 | 2.564 | 4 |
-| compound_04 | 1.636 | 1.636 | 2 |
-| compound_16 | 1.621 | 2.677 | 4 |
-| compound_02 | 1.573 | 2.186 | 2 |
-| compound_37 | 1.539 | 1.539 | 6 |
-| compound_15 | 1.535 | 3.332 | 4 |
-| compound_34 | 1.528 | 2.199 | 5 |
-| compound_35 | 1.506 | 1.687 | 5 |
-| compound_40 | 1.457 | 1.869 | 6 |
-| compound_31 | 1.456 | 2.351 | 5 |
-| compound_32 | 1.432 | 2.801 | 5 |
-| compound_49 | 1.407 | 2.787 | 4 |
-| compound_03 | 1.407 | 2.611 | 2 |
-| compound_45 | 1.383 | 2.292 | 6 |
-| compound_20 | 1.181 | 2.743 | 4 |
-| compound_09 | 1.131 | 1.673 | 3 |
-| compound_29 | 1.108 | 1.922 | 5 |
-| compound_12 | 1.085 | 2.214 | 3 |
-| compound_23 | 1.071 | 2.627 | 4 |
-| compound_22 | 1.057 | 2.062 | 4 |
-| compound_11 | 1.036 | 1.658 | 3 |
-| compound_30 | 0.997 | 2.600 | 5 |
-| compound_44 | 0.986 | 1.253 | 6 |
-| compound_43 | 0.958 | 3.779 | 6 |
-| compound_08 | 0.742 | 0.750 | 3 |
-| compound_14 | 0.673 | 1.318 | 4 |
-| compound_24 | 0.662 | 0.662 | 4 |
-| compound_46 | 0.584 | 1.569 | 7 |
-| compound_18 | 0.383 | 0.642 | 4 |
-| compound_06 | 0.321 | 0.323 | 3 |
-| compound_39 | 0.276 | 0.418 | 6 |
-| compound_21 | 0.157 | 0.285 | 4 |
+| compound_48 | 20.861 | 52.556 | 7 |
+| compound_10 | 5.024 | 8.695 | 3 |
+| compound_05 | 3.192 | 4.376 | 2 |
+| compound_17 | 3.122 | 5.044 | 4 |
+| compound_33 | 3.116 | 6.120 | 5 |
+| compound_13 | 3.007 | 6.071 | 4 |
+| compound_28 | 2.951 | 4.581 | 5 |
+| compound_18 | 2.942 | 7.934 | 4 |
+| compound_42 | 2.935 | 6.489 | 6 |
+| compound_36 | 2.900 | 5.710 | 6 |
+| compound_41 | 2.884 | 3.949 | 6 |
+| compound_31 | 2.748 | 4.330 | 5 |
+| compound_34 | 2.663 | 3.352 | 5 |
+| compound_15 | 2.641 | 6.030 | 4 |
+| compound_03 | 2.581 | 3.522 | 2 |
+| compound_22 | 2.381 | 2.879 | 4 |
+| compound_32 | 2.325 | 4.228 | 5 |
+| compound_26 | 2.266 | 3.690 | 5 |
+| compound_39 | 2.218 | 2.354 | 6 |
+| compound_40 | 2.061 | 2.635 | 6 |
+| compound_46 | 2.031 | 2.848 | 7 |
+| compound_47 | 1.964 | 3.483 | 7 |
+| compound_38 | 1.955 | 3.553 | 6 |
+| compound_11 | 1.945 | 3.622 | 3 |
+| compound_20 | 1.926 | 3.502 | 4 |
+| compound_19 | 1.843 | 3.008 | 4 |
+| compound_07 | 1.693 | 3.719 | 3 |
+| compound_35 | 1.688 | 1.895 | 5 |
+| compound_43 | 1.687 | 2.055 | 6 |
+| compound_21 | 1.670 | 1.892 | 4 |
+| compound_02 | 1.656 | 1.904 | 2 |
+| compound_29 | 1.501 | 1.968 | 5 |
+| compound_37 | 1.497 | 1.517 | 6 |
+| compound_45 | 1.472 | 1.562 | 6 |
+| compound_44 | 1.374 | 2.084 | 6 |
+| compound_23 | 1.369 | 1.463 | 4 |
+| compound_49 | 1.328 | 2.640 | 4 |
+| compound_16 | 1.314 | 2.616 | 4 |
+| compound_24 | 1.309 | 1.309 | 4 |
+| compound_30 | 1.269 | 3.222 | 5 |
+| compound_04 | 1.084 | 1.084 | 2 |
+| compound_01 | 0.988 | 0.988 | 1 |
+| compound_25 | 0.975 | 0.982 | 4 |
+| compound_09 | 0.949 | 1.487 | 3 |
+| compound_27 | 0.918 | 2.609 | 5 |
+| compound_12 | 0.743 | 1.642 | 3 |
+| compound_14 | 0.707 | 1.307 | 4 |
+| compound_50 | 0.643 | 0.837 | 4 |
+| compound_06 | 0.151 | 0.196 | 3 |
+| compound_08 | 0.006 | 0.009 | 3 |
 
-**Note:** Compounds with mean error > 2x MAE (3.478 ppm):
-compound_48, compound_10, compound_17
+**Note:** Compounds with mean error > 2x MAE (4.279 ppm):
+compound_48, compound_10
+
+### 1H B3LYP (Water)
+
+| Compound | Mean Error (ppm) | Max Error (ppm) | Atoms |
+|----------|------------------|-----------------|-------|
+| compound_17 | 0.495 | 1.256 | 9 |
+| compound_10 | 0.465 | 0.999 | 7 |
+| compound_07 | 0.355 | 0.463 | 6 |
+| compound_30 | 0.268 | 0.581 | 11 |
+| compound_03 | 0.246 | 0.383 | 4 |
+| compound_22 | 0.231 | 0.267 | 4 |
+| compound_40 | 0.219 | 0.490 | 13 |
+| compound_15 | 0.191 | 0.335 | 9 |
+| compound_37 | 0.188 | 0.216 | 12 |
+| compound_28 | 0.184 | 0.450 | 12 |
+| compound_27 | 0.177 | 0.677 | 10 |
+| compound_09 | 0.173 | 0.319 | 6 |
+| compound_26 | 0.160 | 0.227 | 10 |
+| compound_23 | 0.158 | 0.304 | 4 |
+| compound_41 | 0.147 | 0.244 | 10 |
+| compound_32 | 0.132 | 0.213 | 9 |
+| compound_33 | 0.129 | 0.280 | 6 |
+| compound_25 | 0.129 | 0.199 | 4 |
+| compound_42 | 0.127 | 0.315 | 8 |
+| compound_20 | 0.120 | 0.154 | 7 |
+| compound_45 | 0.119 | 0.120 | 4 |
+| compound_02 | 0.112 | 0.347 | 5 |
+| compound_24 | 0.112 | 0.112 | 4 |
+| compound_29 | 0.110 | 0.246 | 10 |
+| compound_50 | 0.106 | 0.131 | 6 |
+| compound_01 | 0.102 | 0.133 | 3 |
+| compound_12 | 0.099 | 0.118 | 3 |
+| compound_38 | 0.097 | 0.166 | 10 |
+| compound_16 | 0.096 | 0.153 | 8 |
+| compound_36 | 0.094 | 0.204 | 12 |
+| compound_47 | 0.094 | 0.127 | 8 |
+| compound_49 | 0.093 | 0.093 | 2 |
+| compound_35 | 0.093 | 0.176 | 5 |
+| compound_14 | 0.087 | 0.087 | 6 |
+| compound_19 | 0.084 | 0.170 | 6 |
+| compound_13 | 0.075 | 0.148 | 8 |
+| compound_21 | 0.073 | 0.095 | 4 |
+| compound_31 | 0.065 | 0.128 | 8 |
+| compound_11 | 0.064 | 0.122 | 5 |
+| compound_48 | 0.063 | 0.116 | 8 |
+| compound_46 | 0.063 | 0.198 | 8 |
+| compound_44 | 0.056 | 0.099 | 5 |
+| compound_34 | 0.056 | 0.104 | 7 |
+| compound_05 | 0.049 | 0.052 | 3 |
+| compound_06 | 0.048 | 0.054 | 6 |
+| compound_18 | 0.048 | 0.070 | 6 |
+| compound_43 | 0.031 | 0.043 | 5 |
+| compound_08 | 0.030 | 0.035 | 6 |
+| compound_39 | 0.023 | 0.030 | 6 |
+| compound_04 | 0.015 | 0.015 | 4 |
+
+**Note:** Compounds with mean error > 2x MAE (0.253 ppm):
+compound_17, compound_10, compound_07, compound_30
+
+### 13C B3LYP (Water)
+
+| Compound | Mean Error (ppm) | Max Error (ppm) | Atoms |
+|----------|------------------|-----------------|-------|
+| compound_48 | 20.853 | 52.560 | 7 |
+| compound_10 | 5.027 | 8.689 | 3 |
+| compound_05 | 3.254 | 4.526 | 2 |
+| compound_33 | 3.178 | 6.281 | 5 |
+| compound_17 | 3.129 | 5.045 | 4 |
+| compound_13 | 3.035 | 6.083 | 4 |
+| compound_18 | 3.007 | 8.125 | 4 |
+| compound_42 | 2.988 | 6.677 | 6 |
+| compound_28 | 2.950 | 4.579 | 5 |
+| compound_41 | 2.924 | 4.098 | 6 |
+| compound_36 | 2.913 | 5.709 | 6 |
+| compound_31 | 2.802 | 4.482 | 5 |
+| compound_34 | 2.708 | 3.458 | 5 |
+| compound_15 | 2.671 | 6.111 | 4 |
+| compound_03 | 2.670 | 3.661 | 2 |
+| compound_22 | 2.442 | 2.905 | 4 |
+| compound_32 | 2.356 | 4.262 | 5 |
+| compound_39 | 2.267 | 2.403 | 6 |
+| compound_26 | 2.265 | 3.688 | 5 |
+| compound_40 | 2.075 | 2.651 | 6 |
+| compound_46 | 2.066 | 2.913 | 7 |
+| compound_11 | 1.994 | 3.747 | 3 |
+| compound_38 | 1.960 | 3.563 | 6 |
+| compound_20 | 1.959 | 3.522 | 4 |
+| compound_47 | 1.929 | 3.480 | 7 |
+| compound_19 | 1.875 | 3.029 | 4 |
+| compound_43 | 1.736 | 2.091 | 6 |
+| compound_35 | 1.720 | 1.985 | 5 |
+| compound_07 | 1.710 | 3.864 | 3 |
+| compound_21 | 1.709 | 1.945 | 4 |
+| compound_02 | 1.680 | 1.972 | 2 |
+| compound_29 | 1.511 | 1.975 | 5 |
+| compound_37 | 1.496 | 1.516 | 6 |
+| compound_45 | 1.475 | 1.582 | 6 |
+| compound_44 | 1.416 | 2.101 | 6 |
+| compound_23 | 1.410 | 1.499 | 4 |
+| compound_24 | 1.358 | 1.358 | 4 |
+| compound_49 | 1.322 | 2.631 | 4 |
+| compound_16 | 1.320 | 2.616 | 4 |
+| compound_30 | 1.281 | 3.236 | 5 |
+| compound_04 | 1.069 | 1.069 | 2 |
+| compound_01 | 1.056 | 1.056 | 1 |
+| compound_25 | 0.946 | 0.988 | 4 |
+| compound_09 | 0.942 | 1.504 | 3 |
+| compound_27 | 0.897 | 2.584 | 5 |
+| compound_12 | 0.740 | 1.622 | 3 |
+| compound_14 | 0.708 | 1.303 | 4 |
+| compound_50 | 0.661 | 0.818 | 4 |
+| compound_06 | 0.143 | 0.189 | 3 |
+| compound_08 | 0.026 | 0.029 | 3 |
+
+**Note:** Compounds with mean error > 2x MAE (4.323 ppm):
+compound_48, compound_10
+
+### 1H B3LYP (Acetone)
+
+| Compound | Mean Error (ppm) | Max Error (ppm) | Atoms |
+|----------|------------------|-----------------|-------|
+| compound_17 | 0.495 | 1.285 | 9 |
+| compound_10 | 0.470 | 1.024 | 7 |
+| compound_07 | 0.342 | 0.450 | 6 |
+| compound_30 | 0.269 | 0.582 | 11 |
+| compound_03 | 0.234 | 0.372 | 4 |
+| compound_40 | 0.219 | 0.490 | 13 |
+| compound_22 | 0.219 | 0.257 | 4 |
+| compound_15 | 0.199 | 0.347 | 9 |
+| compound_37 | 0.189 | 0.221 | 12 |
+| compound_28 | 0.181 | 0.448 | 12 |
+| compound_27 | 0.178 | 0.679 | 10 |
+| compound_09 | 0.169 | 0.316 | 6 |
+| compound_26 | 0.162 | 0.231 | 10 |
+| compound_23 | 0.148 | 0.286 | 4 |
+| compound_41 | 0.142 | 0.242 | 10 |
+| compound_32 | 0.137 | 0.222 | 9 |
+| compound_33 | 0.122 | 0.262 | 6 |
+| compound_20 | 0.121 | 0.158 | 7 |
+| compound_45 | 0.120 | 0.120 | 4 |
+| compound_42 | 0.119 | 0.295 | 8 |
+| compound_29 | 0.114 | 0.249 | 10 |
+| compound_25 | 0.113 | 0.189 | 4 |
+| compound_50 | 0.108 | 0.135 | 6 |
+| compound_24 | 0.108 | 0.108 | 4 |
+| compound_02 | 0.108 | 0.358 | 5 |
+| compound_01 | 0.104 | 0.124 | 3 |
+| compound_49 | 0.102 | 0.102 | 2 |
+| compound_38 | 0.102 | 0.170 | 10 |
+| compound_47 | 0.096 | 0.133 | 8 |
+| compound_12 | 0.096 | 0.122 | 3 |
+| compound_16 | 0.096 | 0.158 | 8 |
+| compound_36 | 0.093 | 0.197 | 12 |
+| compound_14 | 0.087 | 0.088 | 6 |
+| compound_19 | 0.086 | 0.176 | 6 |
+| compound_35 | 0.083 | 0.162 | 5 |
+| compound_13 | 0.074 | 0.152 | 8 |
+| compound_21 | 0.071 | 0.092 | 4 |
+| compound_31 | 0.064 | 0.128 | 8 |
+| compound_46 | 0.063 | 0.202 | 8 |
+| compound_48 | 0.063 | 0.119 | 8 |
+| compound_44 | 0.059 | 0.093 | 5 |
+| compound_11 | 0.058 | 0.109 | 5 |
+| compound_34 | 0.055 | 0.100 | 7 |
+| compound_06 | 0.049 | 0.055 | 6 |
+| compound_18 | 0.048 | 0.068 | 6 |
+| compound_05 | 0.037 | 0.040 | 3 |
+| compound_43 | 0.032 | 0.042 | 5 |
+| compound_08 | 0.030 | 0.035 | 6 |
+| compound_39 | 0.025 | 0.032 | 6 |
+| compound_04 | 0.021 | 0.021 | 4 |
+
+**Note:** Compounds with mean error > 2x MAE (0.252 ppm):
+compound_17, compound_10, compound_07, compound_30
+
+### 13C B3LYP (Acetone)
+
+| Compound | Mean Error (ppm) | Max Error (ppm) | Atoms |
+|----------|------------------|-----------------|-------|
+| compound_48 | 20.869 | 52.551 | 7 |
+| compound_10 | 5.017 | 8.695 | 3 |
+| compound_05 | 3.129 | 4.226 | 2 |
+| compound_17 | 3.116 | 5.043 | 4 |
+| compound_33 | 3.054 | 5.959 | 5 |
+| compound_13 | 2.980 | 6.058 | 4 |
+| compound_28 | 2.952 | 4.583 | 5 |
+| compound_36 | 2.887 | 5.712 | 6 |
+| compound_42 | 2.883 | 6.303 | 6 |
+| compound_18 | 2.878 | 7.742 | 4 |
+| compound_41 | 2.843 | 3.803 | 6 |
+| compound_31 | 2.694 | 4.177 | 5 |
+| compound_34 | 2.618 | 3.245 | 5 |
+| compound_15 | 2.610 | 5.948 | 4 |
+| compound_03 | 2.491 | 3.381 | 2 |
+| compound_22 | 2.320 | 2.854 | 4 |
+| compound_32 | 2.293 | 4.192 | 5 |
+| compound_26 | 2.267 | 3.691 | 5 |
+| compound_39 | 2.170 | 2.305 | 6 |
+| compound_40 | 2.046 | 2.618 | 6 |
+| compound_47 | 1.999 | 3.486 | 7 |
+| compound_46 | 1.996 | 2.784 | 7 |
+| compound_38 | 1.949 | 3.543 | 6 |
+| compound_11 | 1.895 | 3.498 | 3 |
+| compound_20 | 1.893 | 3.481 | 4 |
+| compound_19 | 1.810 | 2.988 | 4 |
+| compound_07 | 1.676 | 3.573 | 3 |
+| compound_35 | 1.657 | 1.805 | 5 |
+| compound_43 | 1.637 | 2.019 | 6 |
+| compound_02 | 1.632 | 1.835 | 2 |
+| compound_21 | 1.630 | 1.840 | 4 |
+| compound_37 | 1.498 | 1.517 | 6 |
+| compound_29 | 1.492 | 1.961 | 5 |
+| compound_45 | 1.468 | 1.543 | 6 |
+| compound_49 | 1.333 | 2.649 | 4 |
+| compound_44 | 1.332 | 2.067 | 6 |
+| compound_23 | 1.328 | 1.475 | 4 |
+| compound_16 | 1.308 | 2.615 | 4 |
+| compound_24 | 1.261 | 1.261 | 4 |
+| compound_30 | 1.257 | 3.208 | 5 |
+| compound_04 | 1.100 | 1.100 | 2 |
+| compound_25 | 1.003 | 1.059 | 4 |
+| compound_09 | 0.955 | 1.469 | 3 |
+| compound_27 | 0.938 | 2.635 | 5 |
+| compound_01 | 0.920 | 0.920 | 1 |
+| compound_12 | 0.746 | 1.662 | 3 |
+| compound_14 | 0.707 | 1.310 | 4 |
+| compound_50 | 0.624 | 0.857 | 4 |
+| compound_06 | 0.158 | 0.203 | 3 |
+| compound_08 | 0.013 | 0.019 | 3 |
+
+**Note:** Compounds with mean error > 2x MAE (4.235 ppm):
+compound_48, compound_10
+
+### 1H B3LYP (Benzene)
+
+| Compound | Mean Error (ppm) | Max Error (ppm) | Atoms |
+|----------|------------------|-----------------|-------|
+| compound_10 | 0.522 | 1.263 | 7 |
+| compound_17 | 0.497 | 1.552 | 9 |
+| compound_30 | 0.283 | 0.586 | 11 |
+| compound_15 | 0.277 | 0.454 | 9 |
+| compound_07 | 0.224 | 0.336 | 6 |
+| compound_40 | 0.213 | 0.484 | 13 |
+| compound_37 | 0.200 | 0.272 | 12 |
+| compound_49 | 0.198 | 0.198 | 2 |
+| compound_27 | 0.194 | 0.699 | 10 |
+| compound_32 | 0.177 | 0.303 | 9 |
+| compound_26 | 0.176 | 0.280 | 10 |
+| compound_22 | 0.168 | 0.218 | 4 |
+| compound_28 | 0.165 | 0.437 | 12 |
+| compound_03 | 0.158 | 0.272 | 4 |
+| compound_38 | 0.153 | 0.209 | 10 |
+| compound_29 | 0.151 | 0.271 | 10 |
+| compound_09 | 0.136 | 0.287 | 6 |
+| compound_20 | 0.132 | 0.196 | 7 |
+| compound_45 | 0.132 | 0.132 | 4 |
+| compound_50 | 0.130 | 0.174 | 6 |
+| compound_19 | 0.127 | 0.230 | 6 |
+| compound_01 | 0.123 | 0.168 | 3 |
+| compound_47 | 0.123 | 0.189 | 8 |
+| compound_25 | 0.121 | 0.153 | 4 |
+| compound_02 | 0.120 | 0.450 | 5 |
+| compound_23 | 0.108 | 0.120 | 4 |
+| compound_41 | 0.105 | 0.234 | 10 |
+| compound_12 | 0.104 | 0.162 | 3 |
+| compound_13 | 0.098 | 0.183 | 8 |
+| compound_14 | 0.095 | 0.096 | 6 |
+| compound_36 | 0.093 | 0.182 | 12 |
+| compound_16 | 0.093 | 0.204 | 8 |
+| compound_44 | 0.092 | 0.182 | 5 |
+| compound_31 | 0.082 | 0.134 | 8 |
+| compound_48 | 0.080 | 0.144 | 8 |
+| compound_04 | 0.080 | 0.080 | 4 |
+| compound_05 | 0.071 | 0.073 | 3 |
+| compound_46 | 0.069 | 0.241 | 8 |
+| compound_24 | 0.069 | 0.069 | 4 |
+| compound_33 | 0.067 | 0.101 | 6 |
+| compound_06 | 0.059 | 0.062 | 6 |
+| compound_42 | 0.054 | 0.127 | 8 |
+| compound_21 | 0.052 | 0.061 | 4 |
+| compound_34 | 0.051 | 0.091 | 7 |
+| compound_18 | 0.046 | 0.055 | 6 |
+| compound_35 | 0.039 | 0.054 | 5 |
+| compound_11 | 0.038 | 0.122 | 5 |
+| compound_39 | 0.037 | 0.046 | 6 |
+| compound_08 | 0.036 | 0.046 | 6 |
+| compound_43 | 0.027 | 0.031 | 5 |
+
+**Note:** Compounds with mean error > 2x MAE (0.256 ppm):
+compound_10, compound_17, compound_30, compound_15
+
+### 13C B3LYP (Benzene)
+
+| Compound | Mean Error (ppm) | Max Error (ppm) | Atoms |
+|----------|------------------|-----------------|-------|
+| compound_48 | 21.027 | 52.446 | 7 |
+| compound_10 | 5.017 | 8.815 | 3 |
+| compound_17 | 3.221 | 5.025 | 4 |
+| compound_28 | 2.962 | 4.612 | 5 |
+| compound_47 | 2.661 | 3.540 | 7 |
+| compound_36 | 2.628 | 5.722 | 6 |
+| compound_13 | 2.442 | 5.782 | 4 |
+| compound_26 | 2.290 | 3.732 | 5 |
+| compound_41 | 2.073 | 3.293 | 6 |
+| compound_15 | 2.034 | 4.367 | 4 |
+| compound_42 | 1.978 | 3.033 | 6 |
+| compound_33 | 1.975 | 3.159 | 5 |
+| compound_05 | 1.898 | 2.475 | 2 |
+| compound_38 | 1.843 | 3.340 | 6 |
+| compound_34 | 1.768 | 2.175 | 5 |
+| compound_40 | 1.766 | 2.274 | 6 |
+| compound_32 | 1.680 | 3.584 | 5 |
+| compound_31 | 1.662 | 2.139 | 5 |
+| compound_18 | 1.626 | 3.981 | 4 |
+| compound_37 | 1.516 | 1.528 | 6 |
+| compound_25 | 1.483 | 2.412 | 4 |
+| compound_16 | 1.438 | 2.626 | 4 |
+| compound_45 | 1.418 | 1.833 | 6 |
+| compound_49 | 1.396 | 2.765 | 4 |
+| compound_04 | 1.375 | 1.375 | 2 |
+| compound_46 | 1.330 | 1.599 | 7 |
+| compound_27 | 1.316 | 3.106 | 5 |
+| compound_07 | 1.313 | 1.603 | 3 |
+| compound_29 | 1.312 | 1.851 | 5 |
+| compound_19 | 1.312 | 2.631 | 4 |
+| compound_43 | 1.297 | 1.777 | 6 |
+| compound_20 | 1.258 | 3.139 | 4 |
+| compound_39 | 1.256 | 1.386 | 6 |
+| compound_22 | 1.176 | 2.413 | 4 |
+| compound_02 | 1.159 | 1.804 | 2 |
+| compound_09 | 1.057 | 1.151 | 3 |
+| compound_35 | 1.047 | 1.674 | 5 |
+| compound_30 | 1.032 | 2.933 | 5 |
+| compound_11 | 0.961 | 1.176 | 3 |
+| compound_50 | 0.945 | 1.224 | 4 |
+| compound_21 | 0.896 | 0.900 | 4 |
+| compound_23 | 0.880 | 1.615 | 4 |
+| compound_12 | 0.859 | 1.987 | 3 |
+| compound_03 | 0.746 | 0.884 | 2 |
+| compound_44 | 0.709 | 1.686 | 6 |
+| compound_14 | 0.682 | 1.356 | 4 |
+| compound_01 | 0.387 | 0.387 | 1 |
+| compound_08 | 0.371 | 0.376 | 3 |
+| compound_24 | 0.339 | 0.339 | 4 |
+| compound_06 | 0.273 | 0.299 | 3 |
+
+**Note:** Compounds with mean error > 2x MAE (3.522 ppm):
+compound_48, compound_10
 
 ## Plots
 
@@ -396,9 +750,21 @@ compound_48, compound_10, compound_17
 
 ![13C B3LYP (DMSO) Regression](plots/B3LYP_DMSO_13C_regression.png)
 
-![1H B3LYP (vacuum) Regression](plots/B3LYP_vacuum_1H_regression.png)
+![1H B3LYP (Methanol) Regression](plots/B3LYP_Methanol_1H_regression.png)
 
-![13C B3LYP (vacuum) Regression](plots/B3LYP_vacuum_13C_regression.png)
+![13C B3LYP (Methanol) Regression](plots/B3LYP_Methanol_13C_regression.png)
+
+![1H B3LYP (Water) Regression](plots/B3LYP_Water_1H_regression.png)
+
+![13C B3LYP (Water) Regression](plots/B3LYP_Water_13C_regression.png)
+
+![1H B3LYP (Acetone) Regression](plots/B3LYP_Acetone_1H_regression.png)
+
+![13C B3LYP (Acetone) Regression](plots/B3LYP_Acetone_13C_regression.png)
+
+![1H B3LYP (Benzene) Regression](plots/B3LYP_Benzene_1H_regression.png)
+
+![13C B3LYP (Benzene) Regression](plots/B3LYP_Benzene_13C_regression.png)
 
 ### Residual Distributions
 
@@ -410,9 +776,21 @@ compound_48, compound_10, compound_17
 
 ![13C B3LYP (DMSO) Residuals](plots/B3LYP_DMSO_13C_residuals.png)
 
-![1H B3LYP (vacuum) Residuals](plots/B3LYP_vacuum_1H_residuals.png)
+![1H B3LYP (Methanol) Residuals](plots/B3LYP_Methanol_1H_residuals.png)
 
-![13C B3LYP (vacuum) Residuals](plots/B3LYP_vacuum_13C_residuals.png)
+![13C B3LYP (Methanol) Residuals](plots/B3LYP_Methanol_13C_residuals.png)
+
+![1H B3LYP (Water) Residuals](plots/B3LYP_Water_1H_residuals.png)
+
+![13C B3LYP (Water) Residuals](plots/B3LYP_Water_13C_residuals.png)
+
+![1H B3LYP (Acetone) Residuals](plots/B3LYP_Acetone_1H_residuals.png)
+
+![13C B3LYP (Acetone) Residuals](plots/B3LYP_Acetone_13C_residuals.png)
+
+![1H B3LYP (Benzene) Residuals](plots/B3LYP_Benzene_1H_residuals.png)
+
+![13C B3LYP (Benzene) Residuals](plots/B3LYP_Benzene_13C_residuals.png)
 
 ## Usage
 
@@ -451,9 +829,6 @@ shift = factor['slope'] * shielding + factor['intercept']
 - **WP04 factors:** Not yet available (benchmark calculations incomplete)
 - **DMSO solvent:** Uses same experimental data as CHCl3 (from DELTA50 paper)
   with COSMO solvent model applied during calculation
-- **Vacuum (gas-phase):** Uses same experimental data as CHCl3 with no COSMO
-  solvent model (gas-phase DFT calculations). Slightly higher MAE than solvated,
-  but still excellent R^2 > 0.99.
 - **Outlier removal:** Applied 3-sigma threshold; number removed varies by factor set
 
 ---
