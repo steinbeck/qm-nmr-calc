@@ -422,10 +422,10 @@ Plans:
   2. Submitting a molecule via API with `solvent=water`, `solvent=acetone`, or `solvent=benzene` each returns predicted shifts using the correct solvent-specific scaling factors
   3. Web UI solvent dropdown lists all 7 solvents (CHCl3, DMSO, Vacuum, Methanol, Water, Acetone, Benzene)
   4. Existing CHCl3, DMSO, and vacuum calculations produce identical results to before (no regression)
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 57-01-PLAN.md - Add 4 solvents to solvents.py, shifts.py, and verify end-to-end
+- [ ] 57-01-PLAN.md -- Add 4 solvents to solvents.py, shifts.py, nmredata.py, and update tests
 
 ### Phase 58: Documentation
 **Goal**: Documentation reflects 7-solvent support with accuracy statistics for each solvent
