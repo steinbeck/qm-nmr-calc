@@ -18,12 +18,12 @@ Requirements for expanded solvent support. Each maps to roadmap phases.
 
 ### Code Integration
 
-- [ ] **INTG-01**: User can select methanol as solvent in web UI and API
-- [ ] **INTG-02**: User can select water as solvent in web UI and API
-- [ ] **INTG-03**: User can select acetone as solvent in web UI and API
-- [ ] **INTG-04**: User can select benzene as solvent in web UI and API
+- [x] **INTG-01**: User can select methanol as solvent in web UI and API
+- [x] **INTG-02**: User can select water as solvent in web UI and API
+- [x] **INTG-03**: User can select acetone as solvent in web UI and API
+- [x] **INTG-04**: User can select benzene as solvent in web UI and API
 - [x] **INTG-05**: NWChem COSMO generates correct solvation for all 4 new solvents
-- [ ] **INTG-06**: Scaling factors loaded and applied correctly for all new solvents
+- [x] **INTG-06**: Scaling factors loaded and applied correctly for all new solvents
 
 ### Validation
 
@@ -64,12 +64,12 @@ Deferred to later milestones.
 | BENCH-04 | 55 | Complete |
 | BENCH-05 | 55 | Complete |
 | BENCH-06 | 56 | Complete |
-| INTG-01 | 57 | Pending |
-| INTG-02 | 57 | Pending |
-| INTG-03 | 57 | Pending |
-| INTG-04 | 57 | Pending |
+| INTG-01 | 57 | Complete |
+| INTG-02 | 57 | Complete |
+| INTG-03 | 57 | Complete |
+| INTG-04 | 57 | Complete |
 | INTG-05 | 54 | Complete |
-| INTG-06 | 57 | Pending |
+| INTG-06 | 57 | Complete |
 | VALID-01 | 56 | Complete |
 | VALID-02 | 56 | Complete |
 | VALID-03 | 56 | Complete |
@@ -83,4 +83,4 @@ Deferred to later milestones.
 
 ---
 *Requirements defined: 2026-02-07*
-*Last updated: 2026-02-09 — BENCH-06, VALID-01, VALID-02, VALID-03 complete (Phase 56)*
+*Last updated: 2026-02-09 — INTG-01, INTG-02, INTG-03, INTG-04, INTG-06 complete (Phase 57)*
