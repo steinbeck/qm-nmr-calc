@@ -11,7 +11,7 @@ Built for chemists and researchers who need NMR predictions without managing com
 
 - **NMR chemical shift predictions** using DFT calculations with linear scaling calibration
 - **Conformer ensembles** with Boltzmann-weighted averaging (via optional CREST)
-- **Multiple solvents** including CHCl3, DMSO, and gas phase
+- **7 NMR solvents** including chloroform, DMSO, methanol, water, acetone, benzene, and gas phase
 - **Web interface** for chemists - no command line required
 - **REST API** for automated workflows and integrations
 - **Interactive results** with spectrum plots and 3D viewer with shift labels
@@ -105,6 +105,11 @@ curl http://localhost:8000/api/v1/jobs/{job_id}/spectrum/1H.svg -o spectrum.svg
 |------|---------|----------|
 | `chcl3` | Chloroform (CDCl3) | Standard organic chemistry |
 | `dmso` | DMSO (DMSO-d6) | Polar compounds |
+| `vacuum` | Gas phase (no solvent) | Reference calculations |
+| `methanol` | Methanol (Methanol-d4) | Protic polar solvent |
+| `water` | Water (D2O) | Aqueous samples |
+| `acetone` | Acetone (Acetone-d6) | Medium polarity |
+| `benzene` | Benzene (Benzene-d6) | Aromatic/nonpolar compounds |
 
 ## Calculation Presets
 
