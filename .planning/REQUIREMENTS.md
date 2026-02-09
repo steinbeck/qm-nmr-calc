@@ -14,7 +14,7 @@ Requirements for expanded solvent support. Each maps to roadmap phases.
 - [x] **BENCH-03**: DELTA50 benchmark runs for all 50 molecules in water solvent
 - [x] **BENCH-04**: DELTA50 benchmark runs for all 50 molecules in acetone solvent
 - [x] **BENCH-05**: DELTA50 benchmark runs for all 50 molecules in benzene solvent
-- [ ] **BENCH-06**: OLS scaling factors derived for 1H and 13C in each new solvent (8 new factor sets)
+- [x] **BENCH-06**: OLS scaling factors derived for 1H and 13C in each new solvent (8 new factor sets)
 
 ### Code Integration
 
@@ -27,9 +27,9 @@ Requirements for expanded solvent support. Each maps to roadmap phases.
 
 ### Validation
 
-- [ ] **VALID-01**: All 8 new scaling factor sets have R² > 0.99
-- [ ] **VALID-02**: 1H MAE is below 0.2 ppm for each new solvent
-- [ ] **VALID-03**: 13C MAE is below 3.0 ppm for each new solvent
+- [x] **VALID-01**: All 8 new scaling factor sets have R² > 0.99
+- [x] **VALID-02**: 1H MAE is below 0.2 ppm for each new solvent
+- [x] **VALID-03**: 13C MAE is below 3.0 ppm for each new solvent
 
 ### Documentation
 
@@ -63,16 +63,16 @@ Deferred to later milestones.
 | BENCH-03 | 55 | Complete |
 | BENCH-04 | 55 | Complete |
 | BENCH-05 | 55 | Complete |
-| BENCH-06 | 56 | Pending |
+| BENCH-06 | 56 | Complete |
 | INTG-01 | 57 | Pending |
 | INTG-02 | 57 | Pending |
 | INTG-03 | 57 | Pending |
 | INTG-04 | 57 | Pending |
 | INTG-05 | 54 | Complete |
 | INTG-06 | 57 | Pending |
-| VALID-01 | 56 | Pending |
-| VALID-02 | 56 | Pending |
-| VALID-03 | 56 | Pending |
+| VALID-01 | 56 | Complete |
+| VALID-02 | 56 | Complete |
+| VALID-03 | 56 | Complete |
 | DOCS-01 | 58 | Pending |
 | DOCS-02 | 58 | Pending |
 
@@ -83,4 +83,4 @@ Deferred to later milestones.
 
 ---
 *Requirements defined: 2026-02-07*
-*Last updated: 2026-02-08 — BENCH-02, BENCH-03, BENCH-04, BENCH-05 complete (Phase 55)*
+*Last updated: 2026-02-09 — BENCH-06, VALID-01, VALID-02, VALID-03 complete (Phase 56)*
