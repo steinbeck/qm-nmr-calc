@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-07)
 ## Current Position
 
 Milestone: v2.8 Expanded Solvent Support
-Phase: 57 of 58 (Solvent Integration)
+Phase: 58 of 58 (Documentation)
 Plan: 1 of 1 in current phase
-Status: Phase 57 complete
-Last activity: 2026-02-09 — Completed 57-01-PLAN.md (Solvent integration)
+Status: Phase 58 complete
+Last activity: 2026-02-09 — Completed 58-01-PLAN.md (Documentation update)
 
-Progress: [#######################...] 119 plans complete across 11 milestones (v1.0-v2.7) + v2.8 Phases 54-57
+Progress: [########################] 120 plans complete across 11 milestones (v1.0-v2.7) + v2.8 complete (Phases 54-58)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 119 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 5)
+- Total plans completed: 120 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 6)
 - Average duration: ~6.5 min (excluding benchmark compute time)
-- Total execution time: ~771 min (~12.9 hours) + ~17 hours benchmark compute
+- Total execution time: ~784 min (~13.1 hours) + ~17 hours benchmark compute
 
 **By Milestone:**
 
@@ -39,7 +39,7 @@ Progress: [#######################...] 119 plans complete across 11 milestones (
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
 | v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
-| v2.8 Expanded Solvent Support | 5 | 5 | ~17h compute + 40min | In progress |
+| v2.8 Expanded Solvent Support | 5 | 6 | ~17h compute + 53min | Complete 2026-02-09 |
 
 ## Accumulated Context
 
@@ -58,6 +58,8 @@ v2.7 decisions archived to .planning/milestones/v2.7-ROADMAP.md.
 | Merge strategy: 12 new + 2 vacuum factors | 56-01 | Ensures consistency in derived factors while preserving Phase 11.2 vacuum factors |
 | Deuterated display names follow NMR convention | 57-01 | Methanol-d4, D2O, Acetone-d6, Benzene-d6 for UI display |
 | NMReData solvent names use standard forms | 57-01 | CD3OD, D2O, (CD3)2CO, C6D6 match NMReData spec |
+| Vacuum displayed as "gas phase" in user docs | 58-01 | Clearer for users; internal code uses "vacuum" |
+| COSMO methodology documented in Notes | 58-01 | Explains all solvents use same experimental CDCl3 reference data |
 
 ### Key Context for v2.8
 
@@ -76,6 +78,7 @@ v2.7 decisions archived to .planning/milestones/v2.7-ROADMAP.md.
 - Quality metrics: 1H MAE 0.126-0.128 ppm, 13C MAE 1.761-2.161 ppm for new solvents.
 - Solvent integration complete: All 7 solvents wired through solvents.py, shifts.py, nmredata.py.
 - API and web UI now support all 7 solvents (CHCl3, DMSO, Vacuum, Methanol, Water, Acetone, Benzene).
+- Documentation complete: SCALING-FACTORS.md has all 14 factor sets, README lists all 7 solvents.
 
 ### Pending Todos
 
@@ -93,8 +96,8 @@ None
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Phase 57 complete
+Stopped at: v2.8 complete (Phase 58 documentation finished)
 Resume file: None
-Next: Plan and execute Phase 58 (Documentation and release notes)
-Tests: 434 tests (430 + 4 new solvent tests, all passing)
+Next: v2.8 release preparation or new milestone planning
+Tests: 434 tests (all passing)
 Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
