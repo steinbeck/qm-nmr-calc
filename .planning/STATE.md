@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-07)
 ## Current Position
 
 Milestone: v2.8 Expanded Solvent Support
-Phase: 55 of 58 (DELTA50 Benchmark Calculations)
-Plan: 2 of 2 in current phase
-Status: Phase 55 complete
-Last activity: 2026-02-08 — Completed 55-02-PLAN.md (Acetone & Benzene benchmarks)
+Phase: 56 of 58 (Scaling Factor Derivation)
+Plan: 1 of 1 in current phase
+Status: Phase 56 complete
+Last activity: 2026-02-09 — Completed 56-01-PLAN.md (Scaling factor derivation)
 
-Progress: [######################....] 117 plans complete across 11 milestones (v1.0-v2.7) + v2.8 Phases 54-55
+Progress: [######################....] 118 plans complete across 11 milestones (v1.0-v2.7) + v2.8 Phases 54-56
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 117 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 3)
-- Average duration: ~6.4 min (excluding benchmark compute time)
-- Total execution time: ~731 min (~12.2 hours) + ~17 hours benchmark compute
+- Total plans completed: 118 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 4)
+- Average duration: ~6.5 min (excluding benchmark compute time)
+- Total execution time: ~745 min (~12.4 hours) + ~17 hours benchmark compute
 
 **By Milestone:**
 
@@ -39,7 +39,7 @@ Progress: [######################....] 117 plans complete across 11 milestones (
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
 | v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
-| v2.8 Expanded Solvent Support | 5 | 3 | ~17h compute | In progress |
+| v2.8 Expanded Solvent Support | 5 | 4 | ~17h compute + 14min | In progress |
 
 ## Accumulated Context
 
@@ -54,6 +54,8 @@ v2.7 decisions archived to .planning/milestones/v2.7-ROADMAP.md.
 | Title-case solvent names in runner, lowercase for NWChem | 54-01 | Matches existing CHCl3/DMSO convention; runner.lower() handles conversion |
 | Added 'direct' to DFT shielding input for CPHF convergence | 55-01 | Required for NMR property calcs with COSMO; without it all calcs fail |
 | Set NWChem cwd to scratch dir for file isolation | 55-01 | Prevents molecule.movecs cross-contamination between sequential runs |
+| Updated default solvents in analysis.py to all 6 solvents | 56-01 | Makes analyze command process all benchmark data by default |
+| Merge strategy: 12 new + 2 vacuum factors | 56-01 | Ensures consistency in derived factors while preserving Phase 11.2 vacuum factors |
 
 ### Key Context for v2.8
 
@@ -67,6 +69,9 @@ v2.7 decisions archived to .planning/milestones/v2.7-ROADMAP.md.
 - Methanol + Water benchmarks: 100/100 complete, 0 failures. 342 H + 221 C data points per solvent.
 - Acetone + Benzene benchmarks: 100/100 complete, 0 failures. 342 H + 221 C data points per solvent.
 - All 200 benchmark calculations across 4 new solvents verified complete with 0 COSMO failures.
+- Scaling factors derived: 12 factors (6 solvents x 2 nuclei) all pass quality gates (R² > 0.99).
+- Package data updated: 14 total factors (12 derived + 2 vacuum from Phase 11.2).
+- Quality metrics: 1H MAE 0.126-0.128 ppm, 13C MAE 1.761-2.161 ppm for new solvents.
 
 ### Pending Todos
 
@@ -83,9 +88,9 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-08
-Stopped at: Phase 55 complete, wrap-up done
+Last session: 2026-02-09
+Stopped at: Phase 56 complete
 Resume file: None
-Next: Plan and execute Phase 56 (Scaling Factor Derivation)
-Tests: 430 tests (15 new solvent tests added in Phase 54)
+Next: Plan and execute Phase 57 (Solvent Integration)
+Tests: 430 tests (verified 80 tests passing after scaling factor integration)
 Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
