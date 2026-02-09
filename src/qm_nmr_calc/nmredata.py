@@ -41,6 +41,10 @@ def map_solvent_to_nmredata(solvent: str) -> str:
         "chcl3": "CDCl3",
         "dmso": "(CD3)2SO",  # NMReData convention for deuterated DMSO
         "vacuum": "vacuum",  # Gas phase - no solvent
+        "methanol": "CD3OD",
+        "water": "D2O",
+        "acetone": "(CD3)2CO",
+        "benzene": "C6D6",
     }
 
     normalized = solvent.lower().strip()

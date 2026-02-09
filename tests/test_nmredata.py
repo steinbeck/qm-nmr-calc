@@ -48,10 +48,26 @@ class TestSolventMapping:
         """Gas phase calculation uses 'vacuum' (no solvent)."""
         assert map_solvent_to_nmredata("vacuum") == "vacuum"
 
+    def test_methanol_maps_to_cd3od(self):
+        """Methanol maps to deuterated form CD3OD."""
+        assert map_solvent_to_nmredata("methanol") == "CD3OD"
+
+    def test_water_maps_to_d2o(self):
+        """Water maps to D2O."""
+        assert map_solvent_to_nmredata("water") == "D2O"
+
+    def test_acetone_maps_to_deuterated_form(self):
+        """Acetone maps to NMReData convention (CD3)2CO."""
+        assert map_solvent_to_nmredata("acetone") == "(CD3)2CO"
+
+    def test_benzene_maps_to_c6d6(self):
+        """Benzene maps to deuterated form C6D6."""
+        assert map_solvent_to_nmredata("benzene") == "C6D6"
+
     def test_unknown_solvent_raises_error(self):
         """Unknown solvent should raise ValueError."""
         with pytest.raises(ValueError, match="Unknown solvent"):
-            map_solvent_to_nmredata("benzene")
+            map_solvent_to_nmredata("toluene")
 
     def test_case_insensitive(self):
         """Solvent mapping should be case-insensitive."""
