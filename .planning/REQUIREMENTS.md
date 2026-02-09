@@ -33,8 +33,8 @@ Requirements for expanded solvent support. Each maps to roadmap phases.
 
 ### Documentation
 
-- [ ] **DOCS-01**: SCALING-FACTORS.md updated with new solvent factor statistics
-- [ ] **DOCS-02**: README updated to list 7 supported solvents
+- [x] **DOCS-01**: SCALING-FACTORS.md updated with new solvent factor statistics
+- [x] **DOCS-02**: README updated to list 7 supported solvents
 
 ## Future Requirements
 
@@ -73,8 +73,8 @@ Deferred to later milestones.
 | VALID-01 | 56 | Complete |
 | VALID-02 | 56 | Complete |
 | VALID-03 | 56 | Complete |
-| DOCS-01 | 58 | Pending |
-| DOCS-02 | 58 | Pending |
+| DOCS-01 | 58 | Complete |
+| DOCS-02 | 58 | Complete |
 
 **Coverage:**
 - v2.8 requirements: 17 total
@@ -83,4 +83,4 @@ Deferred to later milestones.
 
 ---
 *Requirements defined: 2026-02-07*
-*Last updated: 2026-02-09 — INTG-01, INTG-02, INTG-03, INTG-04, INTG-06 complete (Phase 57)*
+*Last updated: 2026-02-09 — DOCS-01, DOCS-02 complete (Phase 58). All v2.8 requirements complete.*

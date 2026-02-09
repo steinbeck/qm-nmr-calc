@@ -13,7 +13,7 @@
 - [x] **v2.5 ARM64 Docker Support** - Phases 41-44 (shipped 2026-02-04)
 - [x] **v2.6 Google Cloud Spot Deployment** - Phases 45-48.1 (shipped 2026-02-05)
 - [x] **v2.7 Automated GCP Deployment** - Phases 49-53 (shipped 2026-02-06)
-- [ ] **v2.8 Expanded Solvent Support** - Phases 54-58 (in progress)
+- [x] **v2.8 Expanded Solvent Support** - Phases 54-58 (shipped 2026-02-09)
 
 ## Overview
 
@@ -25,7 +25,7 @@ Add 4 new NMR solvents (methanol, water, acetone, benzene) with DELTA50-derived 
 - [x] **Phase 55: DELTA50 Benchmark Calculations** - Run 200 NWChem calculations (50 molecules x 4 solvents) (2026-02-08)
 - [x] **Phase 56: Scaling Factor Derivation** - Derive OLS factors and validate quality gates (2026-02-09)
 - [x] **Phase 57: Solvent Integration** - Wire all 4 solvents into solvents.py, shifts.py, and UI/API (2026-02-09)
-- [ ] **Phase 58: Documentation** - Update SCALING-FACTORS.md and README for 7-solvent support
+- [x] **Phase 58: Documentation** - Update SCALING-FACTORS.md and README for 7-solvent support (2026-02-09)
 
 ## Phases
 
@@ -438,7 +438,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 58-01-PLAN.md -- Update SCALING-FACTORS.md and README for 7-solvent support
+- [x] 58-01-PLAN.md -- Update SCALING-FACTORS.md and README for 7-solvent support
 
 ## Progress
 
@@ -504,7 +504,7 @@ Plans:
 | **55. DELTA50 Calculations** | **v2.8** | **2/2** | **Complete** | **2026-02-08** |
 | **56. Scaling Factor Derivation** | **v2.8** | **1/1** | **Complete** | **2026-02-09** |
 | **57. Solvent Integration** | **v2.8** | **1/1** | **Complete** | **2026-02-09** |
-| **58. Documentation** | **v2.8** | **0/1** | **Planned** | **-** |
+| **58. Documentation** | **v2.8** | **1/1** | **Complete** | **2026-02-09** |
 
 ## Coverage (v2.6)
 
@@ -605,4 +605,4 @@ Plans:
 **Mapped: 17/17 (100%)**
 
 ---
-*Last updated: 2026-02-09 - Phase 58 planned*
+*Last updated: 2026-02-09 - Phase 58 complete, v2.8 shipped*
