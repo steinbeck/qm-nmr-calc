@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-07)
 ## Current Position
 
 Milestone: v2.8 Expanded Solvent Support
-Phase: 56 of 58 (Scaling Factor Derivation)
+Phase: 57 of 58 (Solvent Integration)
 Plan: 1 of 1 in current phase
-Status: Phase 56 complete
-Last activity: 2026-02-09 — Completed 56-01-PLAN.md (Scaling factor derivation)
+Status: Phase 57 complete
+Last activity: 2026-02-09 — Completed 57-01-PLAN.md (Solvent integration)
 
-Progress: [######################....] 118 plans complete across 11 milestones (v1.0-v2.7) + v2.8 Phases 54-56
+Progress: [#######################...] 119 plans complete across 11 milestones (v1.0-v2.7) + v2.8 Phases 54-57
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 118 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 4)
+- Total plans completed: 119 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 5)
 - Average duration: ~6.5 min (excluding benchmark compute time)
-- Total execution time: ~745 min (~12.4 hours) + ~17 hours benchmark compute
+- Total execution time: ~771 min (~12.9 hours) + ~17 hours benchmark compute
 
 **By Milestone:**
 
@@ -39,7 +39,7 @@ Progress: [######################....] 118 plans complete across 11 milestones (
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
 | v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
-| v2.8 Expanded Solvent Support | 5 | 4 | ~17h compute + 14min | In progress |
+| v2.8 Expanded Solvent Support | 5 | 5 | ~17h compute + 40min | In progress |
 
 ## Accumulated Context
 
@@ -56,6 +56,8 @@ v2.7 decisions archived to .planning/milestones/v2.7-ROADMAP.md.
 | Set NWChem cwd to scratch dir for file isolation | 55-01 | Prevents molecule.movecs cross-contamination between sequential runs |
 | Updated default solvents in analysis.py to all 6 solvents | 56-01 | Makes analyze command process all benchmark data by default |
 | Merge strategy: 12 new + 2 vacuum factors | 56-01 | Ensures consistency in derived factors while preserving Phase 11.2 vacuum factors |
+| Deuterated display names follow NMR convention | 57-01 | Methanol-d4, D2O, Acetone-d6, Benzene-d6 for UI display |
+| NMReData solvent names use standard forms | 57-01 | CD3OD, D2O, (CD3)2CO, C6D6 match NMReData spec |
 
 ### Key Context for v2.8
 
@@ -72,6 +74,8 @@ v2.7 decisions archived to .planning/milestones/v2.7-ROADMAP.md.
 - Scaling factors derived: 12 factors (6 solvents x 2 nuclei) all pass quality gates (R² > 0.99).
 - Package data updated: 14 total factors (12 derived + 2 vacuum from Phase 11.2).
 - Quality metrics: 1H MAE 0.126-0.128 ppm, 13C MAE 1.761-2.161 ppm for new solvents.
+- Solvent integration complete: All 7 solvents wired through solvents.py, shifts.py, nmredata.py.
+- API and web UI now support all 7 solvents (CHCl3, DMSO, Vacuum, Methanol, Water, Acetone, Benzene).
 
 ### Pending Todos
 
@@ -89,8 +93,8 @@ None
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Phase 56 complete
+Stopped at: Phase 57 complete
 Resume file: None
-Next: Plan and execute Phase 57 (Solvent Integration)
-Tests: 430 tests (verified 80 tests passing after scaling factor integration)
+Next: Plan and execute Phase 58 (Documentation and release notes)
+Tests: 434 tests (430 + 4 new solvent tests, all passing)
 Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
