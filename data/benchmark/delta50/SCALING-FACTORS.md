@@ -30,12 +30,14 @@ experimentally assigned NMR spectra in CDCl3).
 | 13C | CHCl3 | -0.9497 (-0.9557, -0.9438) | 172.69 (172.02, 173.36) | 0.9978 | 1.949 | 2.691 | 219 |
 | 13C | DMSO | -0.9429 (-0.9494, -0.9365) | 171.77 (171.05, 172.49) | 0.9974 | 2.152 | 2.916 | 219 |
 | 13C | Methanol | -0.9433 (-0.9497, -0.9369) | 171.82 (171.10, 172.53) | 0.9974 | 2.139 | 2.901 | 219 |
+| 13C | vacuum | -0.9726 (-0.9785, -0.9668) | 175.71 (175.06, 176.36) | 0.9980 | 1.739 | 2.565 | 219 |
 | 13C | Water | -0.9426 (-0.9490, -0.9361) | 171.72 (171.00, 172.44) | 0.9974 | 2.161 | 2.927 | 219 |
 | 1H | Acetone | -0.9332 (-0.9402, -0.9261) | 29.76 (29.56, 29.96) | 0.9951 | 0.126 | 0.165 | 335 |
 | 1H | Benzene | -0.9433 (-0.9505, -0.9361) | 30.12 (29.92, 30.33) | 0.9950 | 0.128 | 0.167 | 335 |
 | 1H | CHCl3 | -0.9375 (-0.9445, -0.9305) | 29.92 (29.72, 30.12) | 0.9952 | 0.124 | 0.163 | 335 |
 | 1H | DMSO | -0.9323 (-0.9394, -0.9253) | 29.73 (29.53, 29.94) | 0.9951 | 0.126 | 0.166 | 335 |
 | 1H | Methanol | -0.9326 (-0.9397, -0.9256) | 29.74 (29.54, 29.95) | 0.9951 | 0.126 | 0.166 | 335 |
+| 1H | vacuum | -0.9554 (-0.9638, -0.9470) | 30.54 (30.30, 30.79) | 0.9934 | 0.148 | 0.193 | 336 |
 | 1H | Water | -0.9321 (-0.9392, -0.9250) | 29.73 (29.53, 29.93) | 0.9951 | 0.127 | 0.166 | 335 |
 
 *Values in parentheses are 95% confidence intervals.*
@@ -827,9 +829,14 @@ shift = factor['slope'] * shielding + factor['intercept']
 ## Notes
 
 - **WP04 factors:** Not yet available (benchmark calculations incomplete)
-- **DMSO solvent:** Uses same experimental data as CHCl3 (from DELTA50 paper)
-  with COSMO solvent model applied during calculation
-- **Outlier removal:** Applied 3-sigma threshold; number removed varies by factor set
+- **Solvent models:** All solvents use the same experimental chemical shift data
+  from the DELTA50 paper (CDCl3 measurements by Grimblat et al. 2023). Solvent
+  effects are captured through the COSMO solvation model applied during the DFT
+  shielding calculation, not through different experimental references.
+- **Vacuum (gas phase):** Calculated without COSMO solvation model. Same
+  experimental CDCl3 reference data.
+- **Outlier removal:** Applied 3-sigma threshold; number removed varies by
+  factor set (typically 7 for 1H, 2 for 13C)
 
 ---
 
