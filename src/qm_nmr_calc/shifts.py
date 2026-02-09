@@ -47,7 +47,15 @@ def get_scaling_factor(
         ValueError: If no factor exists for this combination
     """
     # Normalize solvent name to match scaling factors format
-    solvent_map = {"chcl3": "CHCl3", "dmso": "DMSO", "vacuum": "vacuum"}
+    solvent_map = {
+        "chcl3": "CHCl3",
+        "dmso": "DMSO",
+        "vacuum": "vacuum",
+        "methanol": "Methanol",
+        "water": "Water",
+        "acetone": "Acetone",
+        "benzene": "Benzene",
+    }
     normalized_solvent = solvent_map.get(solvent.lower(), solvent)
 
     # Normalize functional name to uppercase (e.g., "b3lyp" -> "B3LYP")

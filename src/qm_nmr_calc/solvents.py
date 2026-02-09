@@ -7,6 +7,10 @@ SUPPORTED_SOLVENTS: dict[str, str] = {
     "chcl3": "Chloroform (CDCl3)",
     "dmso": "Dimethylsulfoxide (DMSO-d6)",
     "vacuum": "Gas phase (no solvent)",
+    "methanol": "Methanol (Methanol-d4)",
+    "water": "Water (D2O)",
+    "acetone": "Acetone (Acetone-d6)",
+    "benzene": "Benzene (Benzene-d6)",
 }
 
 
