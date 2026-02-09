@@ -435,10 +435,10 @@ Plans:
   1. SCALING-FACTORS.md lists all 14 factor sets with slope, intercept, R-squared, MAE, and outlier count for each
   2. README states 7 supported solvents and lists them by name
   3. Factor statistics in documentation match values in scaling_factors.json exactly
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 58-01-PLAN.md - Update SCALING-FACTORS.md and README for 7-solvent support
+- [ ] 58-01-PLAN.md -- Update SCALING-FACTORS.md and README for 7-solvent support
 
 ## Progress
 
@@ -504,7 +504,7 @@ Plans:
 | **55. DELTA50 Calculations** | **v2.8** | **2/2** | **Complete** | **2026-02-08** |
 | **56. Scaling Factor Derivation** | **v2.8** | **1/1** | **Complete** | **2026-02-09** |
 | **57. Solvent Integration** | **v2.8** | **1/1** | **Complete** | **2026-02-09** |
-| **58. Documentation** | **v2.8** | **0/TBD** | **Not started** | **-** |
+| **58. Documentation** | **v2.8** | **0/1** | **Planned** | **-** |
 
 ## Coverage (v2.6)
 
@@ -605,4 +605,4 @@ Plans:
 **Mapped: 17/17 (100%)**
 
 ---
-*Last updated: 2026-02-09 - Phase 57 complete*
+*Last updated: 2026-02-09 - Phase 58 planned*
