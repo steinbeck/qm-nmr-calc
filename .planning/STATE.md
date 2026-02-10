@@ -2,20 +2,20 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-07)
+See: .planning/PROJECT.md (updated 2026-02-10)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.8 Expanded Solvent Support
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Milestone: v2.8 Expanded Solvent Support
-Phase: 58 of 58 (Documentation)
-Plan: 1 of 1 in current phase
-Status: Phase 58 complete
-Last activity: 2026-02-09 — Completed 58-01-PLAN.md (Documentation update)
+Milestone: v2.8 Expanded Solvent Support (SHIPPED)
+Phase: Complete
+Plan: N/A
+Status: Milestone archived
+Last activity: 2026-02-10 — v2.8 milestone completion
 
-Progress: [########################] 120 plans complete across 11 milestones (v1.0-v2.7) + v2.8 complete (Phases 54-58)
+Progress: [########################] 120 plans complete across 12 milestones (v1.0-v2.8)
 
 ## Performance Metrics
 
@@ -39,46 +39,14 @@ Progress: [########################] 120 plans complete across 11 milestones (v1
 | v2.5 ARM64 Docker Support | 4 | 4 | ~1 day | Shipped 2026-02-04 |
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
 | v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
-| v2.8 Expanded Solvent Support | 5 | 6 | ~17h compute + 53min | Complete 2026-02-09 |
+| v2.8 Expanded Solvent Support | 5 | 6 | ~17h compute + 53min | Shipped 2026-02-09 |
 
 ## Accumulated Context
 
 ### Decisions
 
-All prior decisions logged in PROJECT.md Key Decisions table.
-v2.7 decisions archived to .planning/milestones/v2.7-ROADMAP.md.
-
-| Decision | Phase | Rationale |
-|----------|-------|-----------|
-| Only benzene needed in input_gen SUPPORTED_SOLVENTS | 54-01 | Water, acetone, methanol already supported at NWChem layer |
-| Title-case solvent names in runner, lowercase for NWChem | 54-01 | Matches existing CHCl3/DMSO convention; runner.lower() handles conversion |
-| Added 'direct' to DFT shielding input for CPHF convergence | 55-01 | Required for NMR property calcs with COSMO; without it all calcs fail |
-| Set NWChem cwd to scratch dir for file isolation | 55-01 | Prevents molecule.movecs cross-contamination between sequential runs |
-| Updated default solvents in analysis.py to all 6 solvents | 56-01 | Makes analyze command process all benchmark data by default |
-| Merge strategy: 12 new + 2 vacuum factors | 56-01 | Ensures consistency in derived factors while preserving Phase 11.2 vacuum factors |
-| Deuterated display names follow NMR convention | 57-01 | Methanol-d4, D2O, Acetone-d6, Benzene-d6 for UI display |
-| NMReData solvent names use standard forms | 57-01 | CD3OD, D2O, (CD3)2CO, C6D6 match NMReData spec |
-| Vacuum displayed as "gas phase" in user docs | 58-01 | Clearer for users; internal code uses "vacuum" |
-| COSMO methodology documented in Notes | 58-01 | Explains all solvents use same experimental CDCl3 reference data |
-
-### Key Context for v2.8
-
-- NWChem COSMO now knows water, methanol, acetone, benzene by name. All 7 solvents supported.
-- Benchmark CLI accepts all 6 solvents: CHCl3, DMSO, Methanol, Water, Acetone, Benzene.
-- Benchmark is compute-intensive: 50 molecules x 4 solvents = 200 NWChem calculations (hours of compute).
-- All 4 solvents use same experimental shifts from CDCl3 (Grimblat et al. 2023).
-- Only B3LYP functional needed (WP04 out of scope).
-- Pipeline per solvent: extend CLI -> run benchmark -> analyze -> copy factors -> add to solvents.py/shifts.py.
-- NMR shielding + COSMO requires 'direct' in DFT block for CPHF convergence.
-- Methanol + Water benchmarks: 100/100 complete, 0 failures. 342 H + 221 C data points per solvent.
-- Acetone + Benzene benchmarks: 100/100 complete, 0 failures. 342 H + 221 C data points per solvent.
-- All 200 benchmark calculations across 4 new solvents verified complete with 0 COSMO failures.
-- Scaling factors derived: 12 factors (6 solvents x 2 nuclei) all pass quality gates (R² > 0.99).
-- Package data updated: 14 total factors (12 derived + 2 vacuum from Phase 11.2).
-- Quality metrics: 1H MAE 0.126-0.128 ppm, 13C MAE 1.761-2.161 ppm for new solvents.
-- Solvent integration complete: All 7 solvents wired through solvents.py, shifts.py, nmredata.py.
-- API and web UI now support all 7 solvents (CHCl3, DMSO, Vacuum, Methanol, Water, Acetone, Benzene).
-- Documentation complete: SCALING-FACTORS.md has all 14 factor sets, README lists all 7 solvents.
+All decisions logged in PROJECT.md Key Decisions table.
+v2.8 decisions archived to .planning/milestones/v2.8-ROADMAP.md.
 
 ### Pending Todos
 
@@ -87,6 +55,7 @@ v2.7 decisions archived to .planning/milestones/v2.7-ROADMAP.md.
 - User accounts and calculation history
 - NMReData enhancements: INCHI tag, 1D pseudo-spectrum tags, J-coupling
 - Phase 48.1 implementation (machine info display - v2.6)
+- Additional solvents: pyridine-d5, THF-d8, toluene-d8
 
 ### Blockers/Concerns
 
@@ -95,9 +64,9 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-09
-Stopped at: v2.8 complete (Phase 58 documentation finished)
+Last session: 2026-02-10
+Stopped at: v2.8 milestone archived
 Resume file: None
-Next: v2.8 release preparation or new milestone planning
-Tests: 434 tests (all passing)
+Next: /gsd:new-milestone to define next focus area
+Tests: 434 tests (375 passing, 2 skipped)
 Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts

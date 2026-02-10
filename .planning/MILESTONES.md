@@ -1,5 +1,31 @@
 # Project Milestones: qm-nmr-calc
 
+## v2.8 Expanded Solvent Support (Shipped: 2026-02-09)
+
+**Delivered:** Extended NMR solvent support from 3 to 7 solvents with DELTA50-derived scaling factors for methanol, water, acetone, and benzene.
+
+**Phases completed:** 54-58 (5 phases, 6 plans total)
+
+**Key accomplishments:**
+
+- Extended NMR solvent support from 3 to 7 (methanol, water, acetone, benzene added)
+- Completed 200 NWChem DELTA50 benchmark calculations across 4 new solvents with 0 failures
+- Derived 8 new OLS scaling factor sets, all passing R² > 0.99, 1H MAE < 0.13 ppm, 13C MAE < 2.2 ppm
+- Fixed critical CPHF convergence bug requiring `direct` keyword for NMR+COSMO calculations
+- Wired all 7 solvents through 3 gatekeeper modules (solvents.py, shifts.py, nmredata.py)
+
+**Stats:**
+
+- 54 files changed (+4,520 / -254 lines)
+- 5 phases, 6 plans
+- 3 days (2026-02-07 to 2026-02-09), ~17 hours NWChem compute + 53 min active work
+
+**Git range:** `9277f78` → `be38761`
+
+**What's next:** Publication about the DELTA50 benchmark dataset and scaling factors.
+
+---
+
 ## v2.4 Docker Deployment (Shipped: 2026-02-03)
 
 **Delivered:** Production-ready Docker deployment with `docker compose up`, pre-built GHCR images, auto-HTTPS via Caddy, and comprehensive deployment documentation.

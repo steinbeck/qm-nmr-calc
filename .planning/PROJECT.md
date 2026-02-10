@@ -10,11 +10,11 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 ## Current State
 
-**Last shipped:** v2.7 Automated GCP Deployment (2026-02-06)
+**Last shipped:** v2.8 Expanded Solvent Support (2026-02-09)
 
 **Codebase:** ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
 **Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Custom CSS, Docker, Caddy
-**Test suite:** 415 tests
+**Test suite:** 434 tests (375 passing, 2 skipped)
 **Docker:** Worker 2.1GB, API ~733MB, Caddy reverse proxy, GHCR publishing
 **GCP:** Automated TOML-config deployment, dynamic pricing/machine selection, lifecycle management
 
@@ -24,8 +24,8 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - RDKit KDG conformer generation, optional CREST/xTB for production quality
 - RMSD clustering + xTB ranking for efficient conformer pre-selection
 - NWChem DFT calculations with B3LYP/6-311+G(2d,p)
-- COSMO solvation for CHCl3, DMSO, or vacuum (gas phase) — expanding to 7 solvents in v2.8
-- DELTA50-derived scaling factors (1H MAE: 0.12 ppm, 13C MAE: 2.0 ppm)
+- COSMO solvation for 7 solvents: CHCl3, DMSO, vacuum, methanol, water, acetone, benzene
+- DELTA50-derived scaling factors (1H MAE: 0.12-0.13 ppm, 13C MAE: 1.7-2.2 ppm across all solvents)
 - Modern glassmorphism UI with bento grid layouts
 - Interactive 3D molecule viewer with shift annotations
 - Spectrum plots, annotated structure drawings, file downloads
@@ -36,17 +36,6 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - Dynamic spot pricing discovery across all GCP regions
 - Auto machine type selection matching CPU/RAM requirements
 - HTTP-only fire-up-and-burn cloud deployment pattern
-
-## Current Milestone: v2.8 Expanded Solvent Support
-
-**Goal:** Add 4 new NMR solvents (Methanol-d4, D2O, Acetone-d6, Benzene-d6) with DELTA50-derived scaling factors for each.
-
-**Target features:**
-- COSMO solvation for methanol, water, acetone, and benzene
-- DELTA50 benchmark calculations for all 4 new solvents (50 molecules each)
-- OLS-derived scaling factors for 1H and 13C in each new solvent
-- Updated solvent selector in web UI and API
-- Benchmark automation tooling for running solvent-specific calculations
 
 ## Future Considerations
 
@@ -121,6 +110,9 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - Dry-run mode for deployment preview -- v2.7
 - HTTP-only deployment (no HTTPS/domain needed) -- v2.7
 - Conformer progress tracking display fix -- v2.7
+- 7-solvent COSMO support (CHCl3, DMSO, vacuum, methanol, water, acetone, benzene) -- v2.8
+- DELTA50 scaling factors for all 7 solvents (14 factor sets, R² > 0.99) -- v2.8
+- NMReData export for all 7 solvents with deuterated names -- v2.8
 
 ### Out of Scope
 
@@ -188,6 +180,10 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 | Auto-discover cheapest spot region | Queries GCP pricing API instead of hardcoded defaults | Good -- CloudPrice.net + fallback |
 | HTTP-only GCP deployment | Fire-up-and-burn pattern, no domain needed | Good -- simpler, faster setup |
 | Modular bash library architecture | Composable config/pricing/machine/infra libraries | Good -- clean, reusable |
+| DFT `direct` for NMR+COSMO | CPHF convergence requires direct integral evaluation | Good -- fixed 100% failure rate |
+| NWChem cwd isolation | Prevent scratch file cross-contamination between calcs | Good -- enables sequential benchmarks |
+| Same experimental data all solvents | CDCl3 reference set for all COSMO solvents | Good -- standard practice, consistent methodology |
+| 3-module solvent gatekeeper | solvents.py validates, shifts.py maps, nmredata.py exports | Good -- clear separation of concerns |
 
 ---
-*Last updated: 2026-02-07 after v2.8 milestone started*
+*Last updated: 2026-02-10 after v2.8 milestone*
