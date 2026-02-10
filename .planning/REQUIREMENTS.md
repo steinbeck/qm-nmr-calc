@@ -61,12 +61,33 @@ Deferred to later milestones.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
+| BENCH-01 | Phase 59 | Pending |
+| BENCH-02 | Phase 60 | Pending |
+| BENCH-03 | Phase 60 | Pending |
+| BENCH-04 | Phase 61 | Pending |
+| BENCH-05 | Phase 61 | Pending |
+| BENCH-06 | Phase 62 | Pending |
+| BENCH-07 | Phase 62 | Pending |
+| BENCH-08 | Phase 63 | Pending |
+| VALID-01 | Phase 63 | Pending |
+| VALID-02 | Phase 63 | Pending |
+| VALID-03 | Phase 63 | Pending |
+| INTG-01 | Phase 64 | Pending |
+| INTG-02 | Phase 64 | Pending |
+| INTG-03 | Phase 64 | Pending |
+| INTG-04 | Phase 64 | Pending |
+| INTG-05 | Phase 64 | Pending |
+| INTG-06 | Phase 64 | Pending |
+| INTG-07 | Phase 64 | Pending |
+| INTG-08 | Phase 64 | Pending |
+| DOCS-01 | Phase 65 | Pending |
+| DOCS-02 | Phase 65 | Pending |
 
 **Coverage:**
 - v2.9 requirements: 22 total
-- Mapped to phases: 0
-- Unmapped: 22
+- Mapped to phases: 22
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-10*
-*Last updated: 2026-02-10 after initial definition*
+*Last updated: 2026-02-10 after roadmap creation*
