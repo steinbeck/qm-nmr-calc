@@ -574,7 +574,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 59-01: Extend CLI validation and add COSMO name mapping layer
+- [ ] 59-01-PLAN.md -- Add 6 solvents to input_gen + CLI with COSMO name mapping for acetonitrile
 
 #### Phase 60: DELTA50 Pyridine + THF
 **Goal**: Complete 100 benchmark calculations for pyridine and THF
