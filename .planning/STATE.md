@@ -11,18 +11,18 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 
 Milestone: v2.9 Extended Solvent Coverage
 Phase: Phase 59 - Benchmark Infrastructure
-Plan: Not started
-Status: Roadmap created, ready to plan Phase 59
-Last activity: 2026-02-10 — Roadmap created for v2.9
+Plan: 59-01 of 1 complete (Phase 59 complete)
+Status: In progress - Phase 59 complete
+Last activity: 2026-02-10 — Completed 59-01-PLAN.md
 
-Progress: [#########################] 120 plans complete across 12 milestones (v1.0-v2.8), 7 plans pending (v2.9)
+Progress: [##########################] 121 plans complete across 12 milestones (v1.0-v2.8, v2.9-partial), 6 plans pending (v2.9)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 120 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 6)
-- Average duration: ~6.5 min (excluding benchmark compute time)
-- Total execution time: ~784 min (~13.1 hours) + ~17 hours benchmark compute
+- Total plans completed: 121 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 6, v2.9: 1)
+- Average duration: ~6.6 min (excluding benchmark compute time)
+- Total execution time: ~801 min (~13.4 hours) + ~17 hours benchmark compute
 
 **By Milestone:**
 
@@ -40,7 +40,7 @@ Progress: [#########################] 120 plans complete across 12 milestones (v
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
 | v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
 | v2.8 Expanded Solvent Support | 5 | 6 | ~17h compute + 53min | Shipped 2026-02-09 |
-| v2.9 Extended Solvent Coverage | 7 | 7 | In progress | Started 2026-02-10 |
+| v2.9 Extended Solvent Coverage | 7 | 7 | In progress | Started 2026-02-10 (1/7 complete) |
 
 ## Accumulated Context
 
@@ -48,6 +48,13 @@ Progress: [#########################] 120 plans complete across 12 milestones (v
 
 All decisions logged in PROJECT.md Key Decisions table.
 v2.8 decisions archived to .planning/milestones/v2.8-ROADMAP.md.
+
+Recent decisions (v2.9):
+
+| ID | Phase | Decision | Impact |
+|----|-------|----------|--------|
+| COSMO-NAME-MAPPING | 59-01 | Map user-friendly solvent names to NWChem COSMO names | Acetonitrile accepted in CLI/code, mapped to "acetntrl" for NWChem COSMO |
+| OPT-IN-NEW-SOLVENTS | 59-01 | New solvents opt-in only via --solvents flag | Users must explicitly request pyridine/thf/toluene/dcm/acetonitrile/dmf until scaling factors exist |
 
 ### Pending Todos
 
@@ -65,9 +72,9 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-10
-Stopped at: v2.9 roadmap created
+Last session: 2026-02-10 13:50 UTC
+Stopped at: Completed 59-01-PLAN.md
 Resume file: None
-Next: /gsd:plan-phase 59
-Tests: 434 tests (375 passing, 2 skipped)
-Codebase: ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
+Next: /gsd:plan-phase 60
+Tests: 441 tests (382 passing, 2 skipped) - 7 new tests added
+Codebase: ~7,320 LOC Python, ~3,115 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
