@@ -587,7 +587,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 60-01: Run pyridine (50 molecules) + THF (50 molecules) benchmark calculations
+- [ ] 60-01-PLAN.md — Run Pyridine (50 molecules) + THF (50 molecules) benchmark calculations
 
 #### Phase 61: DELTA50 Toluene + DCM
 **Goal**: Complete 100 benchmark calculations for toluene and DCM
