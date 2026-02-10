@@ -574,7 +574,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 59-01-PLAN.md -- Add 6 solvents to input_gen + CLI with COSMO name mapping for acetonitrile
+- [x] 59-01: Add 6 solvents to input_gen + CLI with COSMO name mapping for acetonitrile
 
 #### Phase 60: DELTA50 Pyridine + THF
 **Goal**: Complete 100 benchmark calculations for pyridine and THF
@@ -725,7 +725,7 @@ Phases execute in numeric order: 59 → 60 → 61 → 62 → 63 → 64 → 65
 | 56. Scaling Factor Derivation | v2.8 | 1/1 | Complete | 2026-02-08 |
 | 57. Solvent Integration | v2.8 | 1/1 | Complete | 2026-02-09 |
 | 58. Documentation | v2.8 | 1/1 | Complete | 2026-02-09 |
-| 59. Benchmark Infrastructure | v2.9 | 0/1 | Not started | - |
+| 59. Benchmark Infrastructure | v2.9 | 1/1 | Complete | 2026-02-10 |
 | 60. DELTA50 Pyridine + THF | v2.9 | 0/1 | Not started | - |
 | 61. DELTA50 Toluene + DCM | v2.9 | 0/1 | Not started | - |
 | 62. DELTA50 Acetonitrile + DMF | v2.9 | 0/1 | Not started | - |
