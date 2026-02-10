@@ -5,7 +5,28 @@ Input format follows ISiCLE conventions for compatibility and reliability.
 
 # Supported solvents for COSMO (NWChem recognizes these by name)
 # "vacuum" is special - no COSMO block will be generated for gas-phase calculations
-SUPPORTED_SOLVENTS = {"chcl3", "dmso", "water", "acetone", "methanol", "benzene", "vacuum"}
+SUPPORTED_SOLVENTS = {"chcl3", "dmso", "water", "acetone", "methanol", "benzene", "vacuum", "pyridine", "thf", "toluene", "dcm", "acetonitrile", "dmf"}
+
+# Map user-friendly solvent names to NWChem COSMO names.
+# Most solvents use the same name; acetonitrile is the exception.
+COSMO_NAME_MAP: dict[str, str] = {
+    "acetonitrile": "acetntrl",  # NWChem uses abbreviated name
+}
+
+
+def _get_cosmo_solvent_name(solvent: str) -> str:
+    """Map user-friendly solvent name to NWChem COSMO name.
+
+    Most solvents pass through unchanged. Acetonitrile maps to 'acetntrl'
+    which is the name NWChem recognizes in its COSMO parameter tables.
+
+    Args:
+        solvent: Normalized solvent name (lowercase).
+
+    Returns:
+        NWChem COSMO solvent name.
+    """
+    return COSMO_NAME_MAP.get(solvent, solvent)
 
 
 def _validate_solvent(solvent: str) -> str:
@@ -64,10 +85,11 @@ def generate_optimization_input(
     if solvent_name == "vacuum":
         cosmo_block = ""
     else:
+        cosmo_name = _get_cosmo_solvent_name(solvent_name)
         cosmo_block = f"""
 cosmo
   do_gasphase False
-  solvent {solvent_name}
+  solvent {cosmo_name}
 end
 """
 
@@ -130,10 +152,11 @@ def generate_shielding_input(
     if solvent_name == "vacuum":
         cosmo_block = ""
     else:
+        cosmo_name = _get_cosmo_solvent_name(solvent_name)
         cosmo_block = f"""
 cosmo
   do_gasphase False
-  solvent {solvent_name}
+  solvent {cosmo_name}
 end
 """
 
