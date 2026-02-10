@@ -3,7 +3,7 @@
 import pytest
 
 from qm_nmr_calc.nwchem import generate_optimization_input, generate_shielding_input
-from qm_nmr_calc.nwchem.input_gen import SUPPORTED_SOLVENTS
+from qm_nmr_calc.nwchem.input_gen import SUPPORTED_SOLVENTS, COSMO_NAME_MAP, _get_cosmo_solvent_name
 
 
 class TestGenerateOptimizationInput:
@@ -278,4 +278,68 @@ class TestBenzeneSolvent:
         )
 
         assert "cosmo" in result.lower()
+        expected_cosmo_name = _get_cosmo_solvent_name(solvent)
+        assert f"solvent {expected_cosmo_name}" in result
+
+
+class TestCOSMONameMapping:
+    """Tests for NWChem COSMO solvent name mapping."""
+
+    def test_acetonitrile_maps_to_acetntrl(self):
+        """Acetonitrile should use 'acetntrl' in COSMO block."""
+        result = generate_optimization_input(
+            geometry_xyz="C 0.0 0.0 0.0",
+            functional="b3lyp",
+            basis_set="6-31G*",
+            solvent="acetonitrile",
+        )
+        assert "cosmo" in result.lower()
+        assert "solvent acetntrl" in result
+        assert "acetonitrile" not in result
+
+    def test_acetonitrile_shielding_maps_to_acetntrl(self):
+        """Acetonitrile mapping should work for shielding input too."""
+        result = generate_shielding_input(
+            geometry_xyz="C 0.0 0.0 0.0",
+            functional="b3lyp",
+            basis_set="6-311+G(2d,p)",
+            solvent="acetonitrile",
+        )
+        assert "solvent acetntrl" in result
+        assert "acetonitrile" not in result
+
+    def test_acetonitrile_case_insensitive(self):
+        """COSMO mapping should work with any case input."""
+        for name in ["acetonitrile", "Acetonitrile", "ACETONITRILE"]:
+            result = generate_optimization_input(
+                geometry_xyz="C 0.0 0.0 0.0",
+                functional="b3lyp",
+                basis_set="6-31G*",
+                solvent=name,
+            )
+            assert "solvent acetntrl" in result
+
+    @pytest.mark.parametrize(
+        "solvent",
+        ["pyridine", "thf", "toluene", "dcm", "dmf"],
+    )
+    def test_direct_name_solvents(self, solvent):
+        """Non-mapped solvents should use their name directly in COSMO block."""
+        result = generate_optimization_input(
+            geometry_xyz="C 0.0 0.0 0.0",
+            functional="b3lyp",
+            basis_set="6-31G*",
+            solvent=solvent,
+        )
         assert f"solvent {solvent}" in result
+
+    def test_get_cosmo_solvent_name_mapping(self):
+        """_get_cosmo_solvent_name should map acetonitrile, pass others through."""
+        assert _get_cosmo_solvent_name("acetonitrile") == "acetntrl"
+        assert _get_cosmo_solvent_name("pyridine") == "pyridine"
+        assert _get_cosmo_solvent_name("chcl3") == "chcl3"
+
+    def test_cosmo_name_map_only_has_acetonitrile(self):
+        """Only acetonitrile should need mapping (others are direct)."""
+        assert len(COSMO_NAME_MAP) == 1
+        assert "acetonitrile" in COSMO_NAME_MAP
