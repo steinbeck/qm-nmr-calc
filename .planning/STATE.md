@@ -5,15 +5,15 @@
 See: .planning/PROJECT.md (updated 2026-02-10)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** Planning next milestone
+**Current focus:** v2.9 Extended Solvent Coverage
 
 ## Current Position
 
-Milestone: v2.8 Expanded Solvent Support (SHIPPED)
-Phase: Complete
-Plan: N/A
-Status: Milestone archived
-Last activity: 2026-02-10 — v2.8 milestone completion
+Milestone: v2.9 Extended Solvent Coverage
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-10 — Milestone v2.9 started
 
 Progress: [########################] 120 plans complete across 12 milestones (v1.0-v2.8)
 

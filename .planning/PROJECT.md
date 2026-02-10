@@ -37,6 +37,17 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - Auto machine type selection matching CPU/RAM requirements
 - HTTP-only fire-up-and-burn cloud deployment pattern
 
+## Current Milestone: v2.9 Extended Solvent Coverage
+
+**Goal:** Add 6 more NMR solvents (pyridine, THF, toluene, DCM, acetonitrile, DMF) with DELTA50-derived scaling factors, extending from 7 to 13 solvents.
+
+**Target features:**
+- COSMO solvation for pyridine, THF, toluene, DCM, acetonitrile, and DMF
+- DELTA50 benchmark calculations for all 6 new solvents (50 molecules each)
+- OLS-derived scaling factors for 1H and 13C in each new solvent
+- Updated solvent selector in web UI and API
+- NWChem COSMO name mapping (e.g. acetonitrile → acetntrl)
+
 ## Future Considerations
 
 - Dark mode (color scheme, system preference detection)
@@ -186,4 +197,4 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 | 3-module solvent gatekeeper | solvents.py validates, shifts.py maps, nmredata.py exports | Good -- clear separation of concerns |
 
 ---
-*Last updated: 2026-02-10 after v2.8 milestone*
+*Last updated: 2026-02-10 after v2.9 milestone started*
