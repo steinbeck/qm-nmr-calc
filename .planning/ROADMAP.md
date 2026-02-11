@@ -620,9 +620,15 @@ Plans:
 **Goal**: DELTA50 dataset ready for repository upload with FAIR-compliant metadata
 **Dependencies**: None (starts milestone)
 **Requirements**: DATA-01, DATA-02, DATA-03, DATA-04, DATA-05, DATA-06, DATA-07, DATA-08, DATA-09
+**Plans**: 3 plans
+
+Plans:
+- [ ] 66-01-PLAN.md -- Build archive: organize 610 calculations + processed data exports (molecules, scaling factors, shielding tensors, timing)
+- [ ] 66-02-PLAN.md -- Documentation + metadata: README.md, PROVENANCE.md, LICENSE, DataCite metadata.json
+- [ ] 66-03-PLAN.md -- Integrity: SHA-256 checksums, file manifest, finalize metadata with molecule identifiers
 
 **Success Criteria**:
-1. User can navigate publications/dataset/ directory and find all 650 NWChem calculations organized by molecule/solvent hierarchy with .nw inputs and .out outputs
+1. User can navigate publications/dataset/ directory and find all 610 NWChem calculations organized by molecule/solvent hierarchy with .nw inputs and .out outputs
 2. User can open processed data exports (CSV for scaling factors, JSON for shielding tensors) and verify molecule metadata completeness
 3. User can read README.md and understand dataset scope, citation format, usage instructions without external documentation
 4. User can examine metadata.json and verify all DataCite 4.6 mandatory fields plus chemistry extensions (SMILES/InChI/InChIKey for 50 molecules) are complete
@@ -694,7 +700,7 @@ Plans:
 | v2.7 Automated GCP Deployment | 5 | 9 | Shipped 2026-02-06 |
 | v2.8 Expanded Solvent Support | 5 | 6 | Shipped 2026-02-09 |
 | v2.9 Extended Solvent Coverage | 7 | 7 | Shipped 2026-02-11 |
-| **v3.0 Publication & Dataset Release** | **5** | **0** | **In Progress** |
+| **v3.0 Publication & Dataset Release** | **5** | **3** | **In Progress** |
 
 ---
 *Last updated: 2026-02-11*
