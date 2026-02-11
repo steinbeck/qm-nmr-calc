@@ -37,6 +37,7 @@ experimentally assigned NMR spectra in CDCl3).
 | 13C | THF | -0.9471 (-0.9532, -0.9410) | 172.34 (171.65, 173.02) | 0.9977 | 2.023 | 2.766 | 219 |
 | 13C | Toluene | -0.9567 (-0.9624, -0.9510) | 173.62 (172.99, 174.26) | 0.9980 | 1.774 | 2.546 | 219 |
 | 13C | Water | -0.9426 (-0.9490, -0.9361) | 171.72 (171.00, 172.44) | 0.9974 | 2.161 | 2.927 | 219 |
+| 13C | vacuum | -0.9726 (-0.9785, -0.9668) | 175.71 (175.06, 176.36) | 0.9980 | 1.739 | 2.565 | 219 |
 | 1H | Acetone | -0.9332 (-0.9402, -0.9261) | 29.76 (29.56, 29.96) | 0.9951 | 0.126 | 0.165 | 335 |
 | 1H | Acetonitrile | -0.9326 (-0.9396, -0.9255) | 29.74 (29.54, 29.94) | 0.9951 | 0.126 | 0.166 | 335 |
 | 1H | Benzene | -0.9433 (-0.9505, -0.9361) | 30.12 (29.92, 30.33) | 0.9950 | 0.128 | 0.167 | 335 |
@@ -49,6 +50,7 @@ experimentally assigned NMR spectra in CDCl3).
 | 1H | THF | -0.9356 (-0.9426, -0.9286) | 29.85 (29.65, 30.05) | 0.9952 | 0.124 | 0.163 | 335 |
 | 1H | Toluene | -0.9429 (-0.9500, -0.9357) | 30.11 (29.90, 30.31) | 0.9951 | 0.128 | 0.166 | 335 |
 | 1H | Water | -0.9321 (-0.9392, -0.9250) | 29.73 (29.53, 29.93) | 0.9951 | 0.127 | 0.166 | 335 |
+| 1H | vacuum | -0.9554 (-0.9638, -0.9470) | 30.54 (30.30, 30.79) | 0.9934 | 0.148 | 0.193 | 336 |
 
 *Values in parentheses are 95% confidence intervals.*
 
@@ -1583,8 +1585,10 @@ shift = factor['slope'] * shielding + factor['intercept']
 ## Notes
 
 - **WP04 factors:** Not yet available (benchmark calculations incomplete)
-- **DMSO solvent:** Uses same experimental data as CHCl3 (from DELTA50 paper)
-  with COSMO solvent model applied during calculation
+- **All solvents:** All 13 solvent factor sets use the same DELTA50 experimental
+  reference data (measured in CDCl3). COSMO solvent model is applied during DFT
+  calculation to simulate the solvent environment. Vacuum factors are calculated
+  without COSMO (gas phase).
 - **Outlier removal:** Applied 3-sigma threshold; number removed varies by factor set
 
 ---
