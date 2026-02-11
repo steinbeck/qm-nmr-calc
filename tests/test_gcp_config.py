@@ -1,9 +1,16 @@
 """Tests for GCP TOML config validation (Phase 49, Plan 01)."""
 
+import sys
+from pathlib import Path
+
 import pytest
 from pydantic import ValidationError
 
-from gcp.validate_config import GCPConfig, format_exports, load_config
+# Add gcp directory to path for imports
+gcp_path = Path(__file__).parent.parent / "gcp"
+sys.path.insert(0, str(gcp_path))
+
+from validate_config import GCPConfig, format_exports, load_config
 
 
 # --- GCPConfig model validation ---

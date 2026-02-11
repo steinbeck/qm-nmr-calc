@@ -1,12 +1,18 @@
 """Tests for GCP machine selection and resource calculation (Phase 50, Plan 01)."""
 
 import json
+import sys
 from io import StringIO
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 
-from gcp.select_machine import (
+# Add gcp directory to path for imports
+gcp_path = Path(__file__).parent.parent / "gcp"
+sys.path.insert(0, str(gcp_path))
+
+from select_machine import (
     calculate_docker_resources,
     find_available_zone,
     generate_startup_script,
