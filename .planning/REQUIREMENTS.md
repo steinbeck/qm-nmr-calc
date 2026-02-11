@@ -16,13 +16,13 @@ Requirements for extended solvent coverage. Same benchmark-derive-integrate pipe
 - [x] **BENCH-05**: DELTA50 benchmark runs for all 50 molecules in DCM solvent
 - [x] **BENCH-06**: DELTA50 benchmark runs for all 50 molecules in acetonitrile solvent
 - [x] **BENCH-07**: DELTA50 benchmark runs for all 50 molecules in DMF solvent
-- [ ] **BENCH-08**: OLS scaling factors derived for 1H and 13C in each new solvent (12 new factor sets)
+- [x] **BENCH-08**: OLS scaling factors derived for 1H and 13C in each new solvent (12 new factor sets)
 
 ### Validation
 
-- [ ] **VALID-01**: All 12 new scaling factor sets have R² > 0.99
-- [ ] **VALID-02**: 1H MAE is below 0.2 ppm for each new solvent
-- [ ] **VALID-03**: 13C MAE is below 3.0 ppm for each new solvent
+- [x] **VALID-01**: All 12 new scaling factor sets have R² > 0.99
+- [x] **VALID-02**: 1H MAE is below 0.2 ppm for each new solvent
+- [x] **VALID-03**: 13C MAE is below 3.0 ppm for each new solvent
 
 ### Code Integration
 
@@ -68,10 +68,10 @@ Deferred to later milestones.
 | BENCH-05 | Phase 61 | Complete |
 | BENCH-06 | Phase 62 | Complete |
 | BENCH-07 | Phase 62 | Complete |
-| BENCH-08 | Phase 63 | Pending |
-| VALID-01 | Phase 63 | Pending |
-| VALID-02 | Phase 63 | Pending |
-| VALID-03 | Phase 63 | Pending |
+| BENCH-08 | Phase 63 | Complete |
+| VALID-01 | Phase 63 | Complete |
+| VALID-02 | Phase 63 | Complete |
+| VALID-03 | Phase 63 | Complete |
 | INTG-01 | Phase 64 | Pending |
 | INTG-02 | Phase 64 | Pending |
 | INTG-03 | Phase 64 | Pending |
