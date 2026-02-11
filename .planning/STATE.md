@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Milestone: v2.9 Extended Solvent Coverage
-Phase: Phase 63 - Scaling Factor Derivation (Complete)
-Plan: 63-01 complete (1/1)
-Status: Phase 63 complete, ready for Phase 64
-Last activity: 2026-02-11 — Completed 63-01-PLAN.md (26 scaling factors derived and merged)
+Phase: Phase 64 - Solvent Integration (In progress)
+Plan: 64-01 complete (1/1)
+Status: Phase 64 complete, ready for Phase 65
+Last activity: 2026-02-11 — Completed 64-01-PLAN.md (6 new solvents integrated)
 
-Progress: [#############################] 125 plans complete across 12 milestones (v1.0-v2.8, v2.9-partial), 2 plans pending (v2.9)
+Progress: [##############################] 126 plans complete across 12 milestones (v1.0-v2.8, v2.9-partial), 1 plan pending (v2.9)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 125 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 6, v2.9: 5)
+- Total plans completed: 126 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 6, v2.9: 6)
 - Average duration: ~6.6 min (excluding benchmark compute time)
-- Total execution time: ~837 min (~13.9 hours) + ~27.5 hours benchmark compute
+- Total execution time: ~846 min (~14.1 hours) + ~27.5 hours benchmark compute
 
 **By Milestone:**
 
@@ -40,7 +40,7 @@ Progress: [#############################] 125 plans complete across 12 milestone
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
 | v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
 | v2.8 Expanded Solvent Support | 5 | 6 | ~17h compute + 53min | Shipped 2026-02-09 |
-| v2.9 Extended Solvent Coverage | 7 | 7 | In progress | Started 2026-02-10 (5/7 complete) |
+| v2.9 Extended Solvent Coverage | 7 | 7 | In progress | Started 2026-02-10 (6/7 complete) |
 
 ## Accumulated Context
 
@@ -67,7 +67,6 @@ Recent decisions (v2.9):
 - User accounts and calculation history
 - NMReData enhancements: INCHI tag, 1D pseudo-spectrum tags, J-coupling
 - Phase 48.1 implementation (machine info display - v2.6)
-- Additional solvents: pyridine-d5, THF-d8, toluene-d8
 
 ### Blockers/Concerns
 
@@ -76,10 +75,10 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-11 08:10 UTC
-Stopped at: Completed 63-01-PLAN.md
+Last session: 2026-02-11 09:03 UTC
+Stopped at: Completed 64-01-PLAN.md
 Resume file: None
-Next: /gsd:plan-phase 64
-Tests: 448 tests (446 passing, 2 skipped)
+Next: /gsd:plan-phase 65
+Tests: 456 tests (454 passing, 2 skipped)
 Codebase: ~7,320 LOC Python, ~3,115 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
 Benchmark data: 300 calculations with shielding tensors + 26 quality-validated scaling factors (13 solvents x 2 nuclei)
