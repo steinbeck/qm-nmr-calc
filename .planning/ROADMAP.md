@@ -656,7 +656,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 65-01: Update SCALING-FACTORS.md and README
+- [ ] 65-01-PLAN.md -- Add vacuum to SCALING-FACTORS.md (26 total), update README to 13 solvents, fix stale cross-references in docs/
 
 ## Progress
 
