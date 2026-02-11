@@ -45,6 +45,12 @@ def map_solvent_to_nmredata(solvent: str) -> str:
         "water": "D2O",
         "acetone": "(CD3)2CO",
         "benzene": "C6D6",
+        "pyridine": "C5D5N",
+        "thf": "C4D8O",
+        "toluene": "C7D8",
+        "dcm": "CD2Cl2",
+        "acetonitrile": "CD3CN",
+        "dmf": "(CD3)2NCDO",
     }
 
     normalized = solvent.lower().strip()

@@ -64,10 +64,34 @@ class TestSolventMapping:
         """Benzene maps to deuterated form C6D6."""
         assert map_solvent_to_nmredata("benzene") == "C6D6"
 
+    def test_pyridine_maps_to_c5d5n(self):
+        """Pyridine maps to deuterated form C5D5N."""
+        assert map_solvent_to_nmredata("pyridine") == "C5D5N"
+
+    def test_thf_maps_to_c4d8o(self):
+        """THF maps to deuterated form C4D8O."""
+        assert map_solvent_to_nmredata("thf") == "C4D8O"
+
+    def test_toluene_maps_to_c7d8(self):
+        """Toluene maps to deuterated form C7D8."""
+        assert map_solvent_to_nmredata("toluene") == "C7D8"
+
+    def test_dcm_maps_to_cd2cl2(self):
+        """DCM maps to deuterated form CD2Cl2."""
+        assert map_solvent_to_nmredata("dcm") == "CD2Cl2"
+
+    def test_acetonitrile_maps_to_cd3cn(self):
+        """Acetonitrile maps to deuterated form CD3CN."""
+        assert map_solvent_to_nmredata("acetonitrile") == "CD3CN"
+
+    def test_dmf_maps_to_deuterated_form(self):
+        """DMF maps to NMReData convention (CD3)2NCDO."""
+        assert map_solvent_to_nmredata("dmf") == "(CD3)2NCDO"
+
     def test_unknown_solvent_raises_error(self):
         """Unknown solvent should raise ValueError."""
         with pytest.raises(ValueError, match="Unknown solvent"):
-            map_solvent_to_nmredata("toluene")
+            map_solvent_to_nmredata("ethanol")
 
     def test_case_insensitive(self):
         """Solvent mapping should be case-insensitive."""
