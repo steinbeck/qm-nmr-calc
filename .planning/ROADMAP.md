@@ -613,7 +613,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 62-01: Run acetonitrile (50 molecules) + DMF (50 molecules) benchmark calculations
+- [ ] 62-01: Verify pre-existing Acetonitrile + DMF results and generate BENCHMARK-RESULTS-AD.md
 
 #### Phase 63: Scaling Factor Derivation
 **Goal**: Derive and validate 12 new OLS scaling factor sets for all 6 solvents
