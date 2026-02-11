@@ -10,11 +10,11 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 
 ## Current State
 
-**Last shipped:** v2.8 Expanded Solvent Support (2026-02-09)
+**Last shipped:** v2.9 Extended Solvent Coverage (2026-02-11)
 
-**Codebase:** ~7,300 LOC Python, ~3,050 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
+**Codebase:** ~7,320 LOC Python, ~3,115 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
 **Tech stack:** FastAPI, Huey (SQLite), NWChem, RDKit, 3Dmol.js, Custom CSS, Docker, Caddy
-**Test suite:** 434 tests (375 passing, 2 skipped)
+**Test suite:** 456 tests (454 passing, 2 skipped)
 **Docker:** Worker 2.1GB, API ~733MB, Caddy reverse proxy, GHCR publishing
 **GCP:** Automated TOML-config deployment, dynamic pricing/machine selection, lifecycle management
 
@@ -24,8 +24,8 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - RDKit KDG conformer generation, optional CREST/xTB for production quality
 - RMSD clustering + xTB ranking for efficient conformer pre-selection
 - NWChem DFT calculations with B3LYP/6-311+G(2d,p)
-- COSMO solvation for 7 solvents: CHCl3, DMSO, vacuum, methanol, water, acetone, benzene
-- DELTA50-derived scaling factors (1H MAE: 0.12-0.13 ppm, 13C MAE: 1.7-2.2 ppm across all solvents)
+- COSMO solvation for 13 solvents: CHCl3, DMSO, vacuum, methanol, water, acetone, benzene, pyridine, THF, toluene, DCM, acetonitrile, DMF
+- DELTA50-derived scaling factors for all 13 solvents (26 factor sets, 1H MAE: 0.12-0.13 ppm, 13C MAE: 1.7-2.2 ppm)
 - Modern glassmorphism UI with bento grid layouts
 - Interactive 3D molecule viewer with shift annotations
 - Spectrum plots, annotated structure drawings, file downloads
@@ -37,16 +37,9 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - Auto machine type selection matching CPU/RAM requirements
 - HTTP-only fire-up-and-burn cloud deployment pattern
 
-## Current Milestone: v2.9 Extended Solvent Coverage
+## Current Milestone: None
 
-**Goal:** Add 6 more NMR solvents (pyridine, THF, toluene, DCM, acetonitrile, DMF) with DELTA50-derived scaling factors, extending from 7 to 13 solvents.
-
-**Target features:**
-- COSMO solvation for pyridine, THF, toluene, DCM, acetonitrile, and DMF
-- DELTA50 benchmark calculations for all 6 new solvents (50 molecules each)
-- OLS-derived scaling factors for 1H and 13C in each new solvent
-- Updated solvent selector in web UI and API
-- NWChem COSMO name mapping (e.g. acetonitrile → acetntrl)
+Run `/gsd:new-milestone` to define next focus area.
 
 ## Future Considerations
 
@@ -124,6 +117,10 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - 7-solvent COSMO support (CHCl3, DMSO, vacuum, methanol, water, acetone, benzene) -- v2.8
 - DELTA50 scaling factors for all 7 solvents (14 factor sets, R² > 0.99) -- v2.8
 - NMReData export for all 7 solvents with deuterated names -- v2.8
+- 13-solvent COSMO support (added pyridine, THF, toluene, DCM, acetonitrile, DMF) -- v2.9
+- DELTA50 scaling factors for all 13 solvents (26 factor sets, R² > 0.99) -- v2.9
+- NMReData export for all 13 solvents with deuterated names -- v2.9
+- COSMO name mapping (acetonitrile → acetntrl) for NWChem compatibility -- v2.9
 
 ### Out of Scope
 
@@ -195,6 +192,8 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 | NWChem cwd isolation | Prevent scratch file cross-contamination between calcs | Good -- enables sequential benchmarks |
 | Same experimental data all solvents | CDCl3 reference set for all COSMO solvents | Good -- standard practice, consistent methodology |
 | 3-module solvent gatekeeper | solvents.py validates, shifts.py maps, nmredata.py exports | Good -- clear separation of concerns |
+| COSMO name mapping | NWChem uses non-standard names (acetntrl) | Good -- transparent mapping in input_gen |
+| Pilot-before-full benchmarks | Run 10 calc pilot before committing 90 more | Good -- validates convergence cheaply |
 
 ---
-*Last updated: 2026-02-10 after v2.9 milestone started*
+*Last updated: 2026-02-11 after v2.9 milestone shipped*

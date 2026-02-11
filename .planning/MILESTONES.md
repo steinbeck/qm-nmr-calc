@@ -1,5 +1,32 @@
 # Project Milestones: qm-nmr-calc
 
+## v2.9 Extended Solvent Coverage (Shipped: 2026-02-11)
+
+**Delivered:** Extended NMR solvent support from 7 to 13 solvents with DELTA50-derived scaling factors for pyridine, THF, toluene, DCM, acetonitrile, and DMF.
+
+**Phases completed:** 59-65 (7 phases, 7 plans total)
+
+**Key accomplishments:**
+
+- Extended NMR solvent support from 7 to 13 (pyridine, THF, toluene, DCM, acetonitrile, DMF added)
+- Completed 300 NWChem DELTA50 benchmark calculations across 6 new solvents with 0 failures
+- Derived 12 new OLS scaling factor sets, all passing R² > 0.99, 1H MAE 0.124-0.128 ppm, 13C MAE 1.774-2.144 ppm
+- Implemented COSMO name mapping for acetonitrile → acetntrl (NWChem internal convention)
+- Wired all 13 solvents through 3 gatekeeper modules with 456 tests passing
+- Updated all documentation (SCALING-FACTORS.md with 26 factor sets, README with 13 solvents)
+
+**Stats:**
+
+- 78 files changed (+9,940 lines)
+- 7 phases, 7 plans
+- 2 days (2026-02-10 to 2026-02-11), ~27.5 hours NWChem compute + ~1 hour active work
+
+**Git range:** `c98724c` → `5878215`
+
+**What's next:** TBD — run `/gsd:new-milestone` to define next focus area.
+
+---
+
 ## v2.8 Expanded Solvent Support (Shipped: 2026-02-09)
 
 **Delivered:** Extended NMR solvent support from 3 to 7 solvents with DELTA50-derived scaling factors for methanol, water, acetone, and benzene.

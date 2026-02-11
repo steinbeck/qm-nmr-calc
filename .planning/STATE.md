@@ -2,20 +2,20 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-10)
+See: .planning/PROJECT.md (updated 2026-02-11)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** v2.9 Extended Solvent Coverage
+**Current focus:** None — run `/gsd:new-milestone` to define next focus area
 
 ## Current Position
 
-Milestone: v2.9 Extended Solvent Coverage
-Phase: Phase 65 - Documentation (Complete)
-Plan: 65-01 complete (1/1)
-Status: Phase 65 complete, v2.9 milestone complete
-Last activity: 2026-02-11 — Completed 65-01-PLAN.md (documentation updated for 13 solvents)
+Milestone: None (v2.9 shipped)
+Phase: N/A
+Plan: N/A
+Status: Between milestones
+Last activity: 2026-02-11 — v2.9 Extended Solvent Coverage shipped and archived
 
-Progress: [##############################] 127 plans complete across 12 milestones (v1.0-v2.8, v2.9 complete)
+Progress: [##############################] 127 plans complete across 13 milestones (v1.0-v2.9)
 
 ## Performance Metrics
 
@@ -40,25 +40,14 @@ Progress: [##############################] 127 plans complete across 12 mileston
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
 | v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
 | v2.8 Expanded Solvent Support | 5 | 6 | ~17h compute + 53min | Shipped 2026-02-09 |
-| v2.9 Extended Solvent Coverage | 7 | 7 | ~13 min | Shipped 2026-02-11 |
+| v2.9 Extended Solvent Coverage | 7 | 7 | ~27.5h compute + ~1h | Shipped 2026-02-11 |
 
 ## Accumulated Context
 
 ### Decisions
 
 All decisions logged in PROJECT.md Key Decisions table.
-v2.8 decisions archived to .planning/milestones/v2.8-ROADMAP.md.
-
-Recent decisions (v2.9):
-
-| ID | Phase | Decision | Impact |
-|----|-------|----------|--------|
-| COSMO-NAME-MAPPING | 59-01 | Map user-friendly solvent names to NWChem COSMO names | Acetonitrile accepted in CLI/code, mapped to "acetntrl" for NWChem COSMO |
-| OPT-IN-NEW-SOLVENTS | 59-01 | New solvents opt-in only via --solvents flag | Users must explicitly request pyridine/thf/toluene/dcm/acetonitrile/dmf until scaling factors exist |
-| PILOT-BEFORE-FULL | 60-01 | Run pilot (10 calc) before full benchmark (90 calc) | Validates COSMO convergence before committing ~10 hours compute |
-| CHECKPOINT-VERIFICATION | 60-01 | Human verification at pilot and full completion checkpoints | Ensures calculations actually completed before marking phase done |
-| MERGE-STRATEGY | 63-01 | Start from newly generated analysis (24 entries), add vacuum (2 entries) | Ensures all solvent factors from same analysis run (consistency) |
-| QUALITY-GATES | 63-01 | All 6 new solvents pass R² > 0.99, 1H MAE < 0.2 ppm, 13C MAE < 3.0 ppm | Validates factors suitable for production NMR prediction |
+v2.9 decisions archived to .planning/milestones/v2.9-ROADMAP.md.
 
 ### Pending Todos
 
@@ -75,10 +64,10 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-11 11:01 UTC
-Stopped at: Completed 65-01-PLAN.md (v2.9 milestone complete)
+Last session: 2026-02-11
+Stopped at: v2.9 milestone shipped and archived
 Resume file: None
-Next: v2.9 milestone shipped
+Next: Run `/gsd:new-milestone` to define next focus area
 Tests: 456 tests (454 passing, 2 skipped)
 Codebase: ~7,320 LOC Python, ~3,115 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
-Benchmark data: 300 calculations with shielding tensors + 26 quality-validated scaling factors (13 solvents x 2 nuclei)
+Benchmark data: 650 calculations with shielding tensors + 26 quality-validated scaling factors (13 solvents x 2 nuclei)
