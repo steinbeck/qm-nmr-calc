@@ -10,10 +10,10 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 ## Current Position
 
 Milestone: v3.0 Publication & Dataset Release
-Phase: Not started (defining requirements)
+Phase: Phase 66 - Dataset Archive Preparation
 Plan: —
-Status: Defining requirements
-Last activity: 2026-02-11 — Milestone v3.0 started
+Status: Ready for planning
+Last activity: 2026-02-11 — Roadmap created for v3.0 (5 phases, 37 requirements)
 
 Progress: [##############################] 127 plans complete across 13 milestones (v1.0-v2.9)
 
@@ -41,6 +41,7 @@ Progress: [##############################] 127 plans complete across 13 mileston
 | v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
 | v2.8 Expanded Solvent Support | 5 | 6 | ~17h compute + 53min | Shipped 2026-02-09 |
 | v2.9 Extended Solvent Coverage | 7 | 7 | ~27.5h compute + ~1h | Shipped 2026-02-11 |
+| v3.0 Publication & Dataset Release | 5 | 0 | In progress | Started 2026-02-11 |
 
 ## Accumulated Context
 
@@ -65,9 +66,9 @@ None
 ## Session Continuity
 
 Last session: 2026-02-11
-Stopped at: Defining v3.0 requirements
+Stopped at: Roadmap creation complete
 Resume file: None
-Next: Complete requirements and roadmap for v3.0
+Next: `/gsd:plan-phase 66`
 Tests: 456 tests (454 passing, 2 skipped)
 Codebase: ~7,320 LOC Python, ~3,115 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
 Benchmark data: 650 calculations with shielding tensors + 26 quality-validated scaling factors (13 solvents x 2 nuclei)

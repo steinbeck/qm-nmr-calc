@@ -15,6 +15,7 @@
 - ✅ **v2.7 Automated GCP Deployment** - Phases 50-53 (shipped 2026-02-06)
 - ✅ **v2.8 Expanded Solvent Support** - Phases 54-58 (shipped 2026-02-09)
 - ✅ **v2.9 Extended Solvent Coverage** - Phases 59-65 (shipped 2026-02-11)
+- 🚧 **v3.0 Publication & Dataset Release** - Phases 66-70 (in progress)
 
 ## Phases
 
@@ -612,3 +613,88 @@ Plans:
 - [x] 65-01: Add vacuum to SCALING-FACTORS.md (26 total), update README to 13 solvents, fix stale cross-references in docs/
 
 </details>
+
+---
+
+### Phase 66: Dataset Archive Preparation
+**Goal**: DELTA50 dataset ready for repository upload with FAIR-compliant metadata
+**Dependencies**: None (starts milestone)
+**Requirements**: DATA-01, DATA-02, DATA-03, DATA-04, DATA-05, DATA-06, DATA-07, DATA-08, DATA-09
+
+**Success Criteria**:
+1. User can navigate publications/dataset/ directory and find all 650 NWChem calculations organized by molecule/solvent hierarchy with .nw inputs and .out outputs
+2. User can open processed data exports (CSV for scaling factors, JSON for shielding tensors) and verify molecule metadata completeness
+3. User can read README.md and understand dataset scope, citation format, usage instructions without external documentation
+4. User can examine metadata.json and verify all DataCite 4.6 mandatory fields plus chemistry extensions (SMILES/InChI/InChIKey for 50 molecules) are complete
+5. User can verify computational provenance checklist documents all non-default parameters (NWChem version with patch, COSMO grid settings, compiler info, all settings)
+
+### Phase 67: Repository Upload + DOI
+**Goal**: Dataset uploaded to Radar4Chem with reserved DOI before manuscript writing
+**Dependencies**: Phase 66 (requires complete archive)
+**Requirements**: REPO-01, REPO-02, REPO-03, REPO-04
+
+**Success Criteria**:
+1. User can access dataset on Radar4Chem (or Zenodo/Figshare fallback) and see immediate publication status (no embargo, open science)
+2. User can copy reserved DOI from repository page and verify it resolves to live dataset
+3. User can examine repository metadata form and confirm all DataCite mandatory fields plus chemistry-specific extensions are populated
+4. User can cite dataset DOI in manuscript drafts from day one
+
+### Phase 68: Data Descriptor Manuscript
+**Goal**: Nature Scientific Data manuscript submission-ready describing DELTA50 dataset
+**Dependencies**: Phase 67 (needs dataset DOI for citation)
+**Requirements**: DESC-01, DESC-02, DESC-03, DESC-04, DESC-05, DESC-06, DESC-07, DESC-08, DESC-09, DESC-10
+
+**Success Criteria**:
+1. User can read Background & Summary section and immediately understand dataset motivation, scope, and reuse value in 2-3 paragraphs
+2. User can follow Methods section step-by-step to reproduce calculations (DFT functional, basis set, COSMO params with grid settings, SCF criteria documented)
+3. User can examine Technical Validation section and find quantitative metrics for all 13 solvents (RMSE, R², MAE per solvent/nucleus, outlier analysis, literature comparison)
+4. User can review 5-6 publication-quality figures and understand molecule diversity, workflow, cross-solvent accuracy patterns without reading main text
+5. User can open submission/ directory and find flattened structure ready for journal upload portal
+
+### Phase 69: Application Note Manuscript
+**Goal**: Journal of Cheminformatics manuscript submission-ready describing qm-nmr-calc tool
+**Dependencies**: Phase 67 (needs dataset DOI for citation)
+**Requirements**: APP-01, APP-02, APP-03, APP-04, APP-05, APP-06, APP-07, APP-08, APP-09
+
+**Success Criteria**:
+1. User can read Background section and understand problem context (why DELTA50 scaling factors are needed for NMR structure elucidation)
+2. User can follow Operation section and successfully submit test job via web UI or API using provided examples
+3. User can examine Use Cases section and find 3-5 practical examples showing real-world applications (structure elucidation, diastereomer assignment, solvent selection)
+4. User can review benchmarking section and see qm-nmr-calc compared against 4-6 state-of-the-art methods with quantitative metrics (accuracy, computational cost)
+5. User can open submission/ directory and find flattened structure ready for journal upload
+
+### Phase 70: AI Writing Validation
+**Goal**: Both manuscripts pass audit for AI writing patterns and demonstrate authorial voice
+**Dependencies**: Phase 68, Phase 69 (requires completed manuscripts)
+**Requirements**: VALID-01, VALID-02, VALID-03, VALID-04, VALID-05
+
+**Success Criteria**:
+1. User can search both manuscripts for formulaic transitions (Moreover/Additionally/Furthermore) and find varied, natural language instead
+2. User can verify all citations resolve to real papers with correct DOIs (no phantom references, all metadata accurate)
+3. User can read both manuscripts and hear distinct authorial voice with domain-specific insights and critical analysis (not generic descriptions)
+4. User can examine paragraph openings across each paper and find natural variation in sentence structure (no rigid patterns)
+5. User can compare technical terminology usage across both papers and find consistent, correct application throughout
+
+---
+
+## Progress
+
+| Milestone | Phases | Plans | Status |
+|-----------|--------|-------|--------|
+| v1.0 Core NMR Service | 6 | 16 | Shipped 2026-01-20 |
+| v1.1 Accurate Chemical Shifts | 8 | 21 | Shipped 2026-01-25 |
+| v2.0 Conformational Sampling | 6 | 18 | Shipped 2026-01-28 |
+| v2.0.1 Conformer Pre-selection | 1 | 3 | Shipped 2026-01-30 |
+| v2.1 UI Redesign | 6 | 17 | Shipped 2026-01-31 |
+| v2.2 Documentation | 7 | 10 | Shipped 2026-02-01 |
+| v2.3 NMReData Export | 3 | 3 | Shipped 2026-02-01 |
+| v2.4 Docker Deployment | 6 | 8 | Shipped 2026-02-03 |
+| v2.5 ARM64 Docker Support | 4 | 4 | Shipped 2026-02-04 |
+| v2.6 GCP Spot Deployment | 5 | 4 | Shipped 2026-02-05 |
+| v2.7 Automated GCP Deployment | 5 | 9 | Shipped 2026-02-06 |
+| v2.8 Expanded Solvent Support | 5 | 6 | Shipped 2026-02-09 |
+| v2.9 Extended Solvent Coverage | 7 | 7 | Shipped 2026-02-11 |
+| **v3.0 Publication & Dataset Release** | **5** | **0** | **In Progress** |
+
+---
+*Last updated: 2026-02-11*

@@ -84,49 +84,51 @@ Deferred to post-acceptance workflow (not in this milestone).
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | TBD | Pending |
-| DATA-02 | TBD | Pending |
-| DATA-03 | TBD | Pending |
-| DATA-04 | TBD | Pending |
-| DATA-05 | TBD | Pending |
-| DATA-06 | TBD | Pending |
-| DATA-07 | TBD | Pending |
-| DATA-08 | TBD | Pending |
-| DATA-09 | TBD | Pending |
-| REPO-01 | TBD | Pending |
-| REPO-02 | TBD | Pending |
-| REPO-03 | TBD | Pending |
-| REPO-04 | TBD | Pending |
-| DESC-01 | TBD | Pending |
-| DESC-02 | TBD | Pending |
-| DESC-03 | TBD | Pending |
-| DESC-04 | TBD | Pending |
-| DESC-05 | TBD | Pending |
-| DESC-06 | TBD | Pending |
-| DESC-07 | TBD | Pending |
-| DESC-08 | TBD | Pending |
-| DESC-09 | TBD | Pending |
-| DESC-10 | TBD | Pending |
-| APP-01 | TBD | Pending |
-| APP-02 | TBD | Pending |
-| APP-03 | TBD | Pending |
-| APP-04 | TBD | Pending |
-| APP-05 | TBD | Pending |
-| APP-06 | TBD | Pending |
-| APP-07 | TBD | Pending |
-| APP-08 | TBD | Pending |
-| APP-09 | TBD | Pending |
-| VALID-01 | TBD | Pending |
-| VALID-02 | TBD | Pending |
-| VALID-03 | TBD | Pending |
-| VALID-04 | TBD | Pending |
-| VALID-05 | TBD | Pending |
+| DATA-01 | Phase 66 | Pending |
+| DATA-02 | Phase 66 | Pending |
+| DATA-03 | Phase 66 | Pending |
+| DATA-04 | Phase 66 | Pending |
+| DATA-05 | Phase 66 | Pending |
+| DATA-06 | Phase 66 | Pending |
+| DATA-07 | Phase 66 | Pending |
+| DATA-08 | Phase 66 | Pending |
+| DATA-09 | Phase 66 | Pending |
+| REPO-01 | Phase 67 | Pending |
+| REPO-02 | Phase 67 | Pending |
+| REPO-03 | Phase 67 | Pending |
+| REPO-04 | Phase 67 | Pending |
+| DESC-01 | Phase 68 | Pending |
+| DESC-02 | Phase 68 | Pending |
+| DESC-03 | Phase 68 | Pending |
+| DESC-04 | Phase 68 | Pending |
+| DESC-05 | Phase 68 | Pending |
+| DESC-06 | Phase 68 | Pending |
+| DESC-07 | Phase 68 | Pending |
+| DESC-08 | Phase 68 | Pending |
+| DESC-09 | Phase 68 | Pending |
+| DESC-10 | Phase 68 | Pending |
+| APP-01 | Phase 69 | Pending |
+| APP-02 | Phase 69 | Pending |
+| APP-03 | Phase 69 | Pending |
+| APP-04 | Phase 69 | Pending |
+| APP-05 | Phase 69 | Pending |
+| APP-06 | Phase 69 | Pending |
+| APP-07 | Phase 69 | Pending |
+| APP-08 | Phase 69 | Pending |
+| APP-09 | Phase 69 | Pending |
+| VALID-01 | Phase 70 | Pending |
+| VALID-02 | Phase 70 | Pending |
+| VALID-03 | Phase 70 | Pending |
+| VALID-04 | Phase 70 | Pending |
+| VALID-05 | Phase 70 | Pending |
 
 **Coverage:**
 - v3.0 requirements: 37 total
-- Mapped to phases: 0 (awaiting roadmap)
-- Unmapped: 37
+- Mapped to phases: 37
+- Unmapped: 0
+
+**Coverage validation:** 100% ✓
 
 ---
 *Requirements defined: 2026-02-11*
-*Last updated: 2026-02-11 after initial definition*
+*Last updated: 2026-02-11 after roadmap creation*
