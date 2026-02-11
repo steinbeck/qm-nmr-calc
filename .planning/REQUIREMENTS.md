@@ -10,8 +10,8 @@ Requirements for extended solvent coverage. Same benchmark-derive-integrate pipe
 ### Benchmark Infrastructure
 
 - [x] **BENCH-01**: Benchmark CLI accepts pyridine, thf, toluene, dcm, acetonitrile, dmf as valid solvents
-- [ ] **BENCH-02**: DELTA50 benchmark runs for all 50 molecules in pyridine solvent
-- [ ] **BENCH-03**: DELTA50 benchmark runs for all 50 molecules in THF solvent
+- [x] **BENCH-02**: DELTA50 benchmark runs for all 50 molecules in pyridine solvent
+- [x] **BENCH-03**: DELTA50 benchmark runs for all 50 molecules in THF solvent
 - [ ] **BENCH-04**: DELTA50 benchmark runs for all 50 molecules in toluene solvent
 - [ ] **BENCH-05**: DELTA50 benchmark runs for all 50 molecules in DCM solvent
 - [ ] **BENCH-06**: DELTA50 benchmark runs for all 50 molecules in acetonitrile solvent
@@ -62,8 +62,8 @@ Deferred to later milestones.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | BENCH-01 | Phase 59 | Complete |
-| BENCH-02 | Phase 60 | Pending |
-| BENCH-03 | Phase 60 | Pending |
+| BENCH-02 | Phase 60 | Complete |
+| BENCH-03 | Phase 60 | Complete |
 | BENCH-04 | Phase 61 | Pending |
 | BENCH-05 | Phase 61 | Pending |
 | BENCH-06 | Phase 62 | Pending |
