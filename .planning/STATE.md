@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Milestone: v2.9 Extended Solvent Coverage
-Phase: Phase 60 - DELTA50 Pyridine & THF (Complete)
-Plan: 60-01 complete (1/1)
-Status: Phase 60 complete, ready for Phase 61
-Last activity: 2026-02-11 — Completed 60-01-PLAN.md (100 benchmark calculations, 100% success)
+Phase: Phase 61 - DELTA50 Toluene & DCM (Complete)
+Plan: 61-01 complete (1/1)
+Status: Phase 61 complete, ready for Phase 62
+Last activity: 2026-02-11 — Completed 61-01-PLAN.md (100 benchmark verifications, 100% success)
 
-Progress: [###########################] 122 plans complete across 12 milestones (v1.0-v2.8, v2.9-partial), 5 plans pending (v2.9)
+Progress: [###########################] 123 plans complete across 12 milestones (v1.0-v2.8, v2.9-partial), 4 plans pending (v2.9)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 122 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 6, v2.9: 2)
-- Average duration: ~6.6 min (excluding benchmark compute time)
-- Total execution time: ~816 min (~13.6 hours) + ~27.5 hours benchmark compute
+- Total plans completed: 123 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 6, v2.9: 3)
+- Average duration: ~6.5 min (excluding benchmark compute time)
+- Total execution time: ~817 min (~13.6 hours) + ~27.5 hours benchmark compute
 
 **By Milestone:**
 
@@ -40,7 +40,7 @@ Progress: [###########################] 122 plans complete across 12 milestones 
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
 | v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
 | v2.8 Expanded Solvent Support | 5 | 6 | ~17h compute + 53min | Shipped 2026-02-09 |
-| v2.9 Extended Solvent Coverage | 7 | 7 | In progress | Started 2026-02-10 (2/7 complete) |
+| v2.9 Extended Solvent Coverage | 7 | 7 | In progress | Started 2026-02-10 (3/7 complete) |
 
 ## Accumulated Context
 
@@ -74,10 +74,10 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-11 02:20 UTC
-Stopped at: Completed 60-01-PLAN.md
+Last session: 2026-02-11 06:51 UTC
+Stopped at: Completed 61-01-PLAN.md
 Resume file: None
-Next: /gsd:plan-phase 61
+Next: /gsd:plan-phase 62
 Tests: 441 tests (382 passing, 2 skipped)
 Codebase: ~7,320 LOC Python, ~3,115 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
-Benchmark data: 200 calculations (50 benzene × 4 solvents + 50 pyridine + 50 thf) with shielding tensors
+Benchmark data: 300 calculations (50 benzene × 4 solvents + 50 pyridine + 50 thf + 50 toluene + 50 dcm) with shielding tensors
