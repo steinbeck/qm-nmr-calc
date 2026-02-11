@@ -26,14 +26,14 @@ Requirements for extended solvent coverage. Same benchmark-derive-integrate pipe
 
 ### Code Integration
 
-- [ ] **INTG-01**: User can select pyridine as solvent in web UI and API
-- [ ] **INTG-02**: User can select THF as solvent in web UI and API
-- [ ] **INTG-03**: User can select toluene as solvent in web UI and API
-- [ ] **INTG-04**: User can select DCM as solvent in web UI and API
-- [ ] **INTG-05**: User can select acetonitrile as solvent in web UI and API
-- [ ] **INTG-06**: User can select DMF as solvent in web UI and API
-- [ ] **INTG-07**: NWChem COSMO generates correct solvation for all 6 new solvents (including acetntrl mapping)
-- [ ] **INTG-08**: Scaling factors loaded and applied correctly for all new solvents
+- [x] **INTG-01**: User can select pyridine as solvent in web UI and API
+- [x] **INTG-02**: User can select THF as solvent in web UI and API
+- [x] **INTG-03**: User can select toluene as solvent in web UI and API
+- [x] **INTG-04**: User can select DCM as solvent in web UI and API
+- [x] **INTG-05**: User can select acetonitrile as solvent in web UI and API
+- [x] **INTG-06**: User can select DMF as solvent in web UI and API
+- [x] **INTG-07**: NWChem COSMO generates correct solvation for all 6 new solvents (including acetntrl mapping)
+- [x] **INTG-08**: Scaling factors loaded and applied correctly for all new solvents
 
 ### Documentation
 
@@ -72,14 +72,14 @@ Deferred to later milestones.
 | VALID-01 | Phase 63 | Complete |
 | VALID-02 | Phase 63 | Complete |
 | VALID-03 | Phase 63 | Complete |
-| INTG-01 | Phase 64 | Pending |
-| INTG-02 | Phase 64 | Pending |
-| INTG-03 | Phase 64 | Pending |
-| INTG-04 | Phase 64 | Pending |
-| INTG-05 | Phase 64 | Pending |
-| INTG-06 | Phase 64 | Pending |
-| INTG-07 | Phase 64 | Pending |
-| INTG-08 | Phase 64 | Pending |
+| INTG-01 | Phase 64 | Complete |
+| INTG-02 | Phase 64 | Complete |
+| INTG-03 | Phase 64 | Complete |
+| INTG-04 | Phase 64 | Complete |
+| INTG-05 | Phase 64 | Complete |
+| INTG-06 | Phase 64 | Complete |
+| INTG-07 | Phase 64 | Complete |
+| INTG-08 | Phase 64 | Complete |
 | DOCS-01 | Phase 65 | Pending |
 | DOCS-02 | Phase 65 | Pending |
 
@@ -90,4 +90,4 @@ Deferred to later milestones.
 
 ---
 *Requirements defined: 2026-02-10*
-*Last updated: 2026-02-10 after roadmap creation*
+*Last updated: 2026-02-11 after Phase 64 completion*

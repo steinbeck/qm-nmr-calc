@@ -643,7 +643,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 64-01: Update solvents.py, shifts.py, nmredata.py, and UI/API for 6 new solvents
+- [x] 64-01: Update solvents.py, shifts.py, nmredata.py, and UI/API for 6 new solvents
 
 #### Phase 65: Documentation
 **Goal**: Update documentation to reflect 13-solvent support
@@ -730,7 +730,7 @@ Phases execute in numeric order: 59 → 60 → 61 → 62 → 63 → 64 → 65
 | 61. DELTA50 Toluene + DCM | v2.9 | 1/1 | Complete | 2026-02-11 |
 | 62. DELTA50 Acetonitrile + DMF | v2.9 | 1/1 | Complete | 2026-02-11 |
 | 63. Scaling Factor Derivation | v2.9 | 1/1 | Complete | 2026-02-11 |
-| 64. Solvent Integration | v2.9 | 0/1 | Not started | - |
+| 64. Solvent Integration | v2.9 | 1/1 | Complete | 2026-02-11 |
 | 65. Documentation | v2.9 | 0/1 | Not started | - |
 
 ## Coverage
