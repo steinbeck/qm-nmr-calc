@@ -600,7 +600,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 61-01: Run toluene (50 molecules) + DCM (50 molecules) benchmark calculations
+- [ ] 61-01-PLAN.md — Verify pre-existing Toluene + DCM results and generate BENCHMARK-RESULTS-TD.md
 
 #### Phase 62: DELTA50 Acetonitrile + DMF
 **Goal**: Complete 100 benchmark calculations for acetonitrile and DMF
