@@ -210,7 +210,10 @@ def derive_all_factors(
     if functionals is None:
         functionals = ["B3LYP"]  # WP04 not yet complete
     if solvents is None:
-        solvents = ["CHCl3", "DMSO", "Methanol", "Water", "Acetone", "Benzene"]
+        solvents = [
+            "CHCl3", "DMSO", "Methanol", "Water", "Acetone", "Benzene",
+            "Pyridine", "THF", "Toluene", "DCM", "Acetonitrile", "DMF",
+        ]
 
     nuclei = ["1H", "13C"]
     factors: dict[str, ScalingFactor] = {}
