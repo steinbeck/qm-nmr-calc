@@ -11,6 +11,12 @@ SUPPORTED_SOLVENTS: dict[str, str] = {
     "water": "Water (D2O)",
     "acetone": "Acetone (Acetone-d6)",
     "benzene": "Benzene (Benzene-d6)",
+    "pyridine": "Pyridine (Pyridine-d5)",
+    "thf": "Tetrahydrofuran (THF-d8)",
+    "toluene": "Toluene (Toluene-d8)",
+    "dcm": "Dichloromethane (CD2Cl2)",
+    "acetonitrile": "Acetonitrile (CD3CN)",
+    "dmf": "N,N-Dimethylformamide (DMF-d7)",
 }
 
 

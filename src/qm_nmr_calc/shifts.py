@@ -55,6 +55,12 @@ def get_scaling_factor(
         "water": "Water",
         "acetone": "Acetone",
         "benzene": "Benzene",
+        "pyridine": "Pyridine",
+        "thf": "THF",
+        "toluene": "Toluene",
+        "dcm": "DCM",
+        "acetonitrile": "Acetonitrile",
+        "dmf": "DMF",
     }
     normalized_solvent = solvent_map.get(solvent.lower(), solvent)
 
