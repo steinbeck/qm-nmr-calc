@@ -14,8 +14,8 @@ Requirements for extended solvent coverage. Same benchmark-derive-integrate pipe
 - [x] **BENCH-03**: DELTA50 benchmark runs for all 50 molecules in THF solvent
 - [x] **BENCH-04**: DELTA50 benchmark runs for all 50 molecules in toluene solvent
 - [x] **BENCH-05**: DELTA50 benchmark runs for all 50 molecules in DCM solvent
-- [ ] **BENCH-06**: DELTA50 benchmark runs for all 50 molecules in acetonitrile solvent
-- [ ] **BENCH-07**: DELTA50 benchmark runs for all 50 molecules in DMF solvent
+- [x] **BENCH-06**: DELTA50 benchmark runs for all 50 molecules in acetonitrile solvent
+- [x] **BENCH-07**: DELTA50 benchmark runs for all 50 molecules in DMF solvent
 - [ ] **BENCH-08**: OLS scaling factors derived for 1H and 13C in each new solvent (12 new factor sets)
 
 ### Validation
@@ -66,8 +66,8 @@ Deferred to later milestones.
 | BENCH-03 | Phase 60 | Complete |
 | BENCH-04 | Phase 61 | Complete |
 | BENCH-05 | Phase 61 | Complete |
-| BENCH-06 | Phase 62 | Pending |
-| BENCH-07 | Phase 62 | Pending |
+| BENCH-06 | Phase 62 | Complete |
+| BENCH-07 | Phase 62 | Complete |
 | BENCH-08 | Phase 63 | Pending |
 | VALID-01 | Phase 63 | Pending |
 | VALID-02 | Phase 63 | Pending |
