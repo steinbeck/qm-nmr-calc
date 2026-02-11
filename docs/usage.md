@@ -432,7 +432,7 @@ Request body fields:
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `smiles` | string | Yes | SMILES representation of molecule |
-| `solvent` | string | Yes | NMR solvent: `chcl3`, `dmso`, or `vacuum` |
+| `solvent` | string | Yes | NMR solvent (see [README](../README.md#supported-solvents) for all 13 codes, e.g., `chcl3`, `dmso`, `acetonitrile`) |
 | `preset` | string | No | `draft` or `production` (default: `production`) |
 | `name` | string | No | Optional molecule label (max 100 chars) |
 | `conformer_mode` | string | No | `single` or `ensemble` (default: `single`) |
@@ -478,7 +478,7 @@ curl http://localhost:8000/api/v1/jobs/solvents
 
 Response:
 ```json
-["chcl3", "dmso", "vacuum"]
+["acetone", "acetonitrile", "benzene", "chcl3", "dcm", "dmf", "dmso", "methanol", "pyridine", "thf", "toluene", "vacuum", "water"]
 ```
 
 ### Job Status

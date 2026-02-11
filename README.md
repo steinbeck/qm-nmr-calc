@@ -11,7 +11,7 @@ Built for chemists and researchers who need NMR predictions without managing com
 
 - **NMR chemical shift predictions** using DFT calculations with linear scaling calibration
 - **Conformer ensembles** with Boltzmann-weighted averaging (via optional CREST)
-- **7 NMR solvents** including chloroform, DMSO, methanol, water, acetone, benzene, and gas phase
+- **13 NMR solvents** including chloroform, DMSO, methanol, water, acetone, benzene, pyridine, THF, toluene, DCM, acetonitrile, DMF, and gas phase
 - **Web interface** for chemists - no command line required
 - **REST API** for automated workflows and integrations
 - **Interactive results** with spectrum plots and 3D viewer with shift labels
@@ -103,13 +103,19 @@ curl http://localhost:8000/api/v1/jobs/{job_id}/spectrum/1H.svg -o spectrum.svg
 
 | Code | Solvent | Use Case |
 |------|---------|----------|
-| `chcl3` | Chloroform (CDCl3) | Standard organic chemistry |
-| `dmso` | DMSO (DMSO-d6) | Polar compounds |
-| `vacuum` | Gas phase (no solvent) | Reference calculations |
-| `methanol` | Methanol (Methanol-d4) | Protic polar solvent |
-| `water` | Water (D2O) | Aqueous samples |
 | `acetone` | Acetone (Acetone-d6) | Medium polarity |
+| `acetonitrile` | Acetonitrile (CD3CN) | Polar aprotic |
 | `benzene` | Benzene (Benzene-d6) | Aromatic/nonpolar compounds |
+| `chcl3` | Chloroform (CDCl3) | Standard organic chemistry |
+| `dcm` | Dichloromethane (CD2Cl2) | Halogenated solvent |
+| `dmf` | N,N-Dimethylformamide (DMF-d7) | High-boiling polar aprotic |
+| `dmso` | DMSO (DMSO-d6) | Polar compounds |
+| `methanol` | Methanol (Methanol-d4) | Protic polar solvent |
+| `pyridine` | Pyridine (Pyridine-d5) | Basic aromatic solvent |
+| `thf` | Tetrahydrofuran (THF-d8) | Ethereal solvent |
+| `toluene` | Toluene (Toluene-d8) | Aromatic nonpolar |
+| `vacuum` | Gas phase (no solvent) | Reference calculations |
+| `water` | Water (D2O) | Aqueous samples |
 
 ## Calculation Presets
 

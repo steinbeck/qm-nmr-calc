@@ -244,7 +244,7 @@ task dft optimize
 - `driver` - Optimization control with iteration limit
 - `cosmo` - Implicit solvation block (omitted for vacuum/gas-phase)
 
-**COSMO solvation:** The COSMO block is only included for non-vacuum solvents. Supported solvents: `chcl3`, `dmso`, `water`, `acetone`, `methanol`, `vacuum`.
+**COSMO solvation:** The COSMO block is only included for non-vacuum solvents. Supported solvents: `acetone`, `acetonitrile`, `benzene`, `chcl3`, `dcm`, `dmf`, `dmso`, `methanol`, `pyridine`, `thf`, `toluene`, `vacuum`, `water`.
 
 ### Output Parsing
 

@@ -275,20 +275,13 @@ The dielectric constant determines the strength of solvation effects:
 
 Higher $\varepsilon$ means stronger screening of electrostatic interactions. Polar solvents stabilize polar/charged groups more, which can shift electron density and thus change NMR shielding.
 
-**Important:** The solvent used in calculations should match experimental conditions. Our scaling factors are derived separately for each solvent (CHCl3, DMSO, vacuum) to account for solvent-specific systematic errors.
+**Important:** The solvent used in calculations should match experimental conditions. Our scaling factors are derived separately for each of the 13 supported solvents (see README for full list) to account for solvent-specific systematic errors.
 
 ### Solvents Supported in This Project
 
-The QM NMR Calculator supports the following solvents via NWChem's COSMO implementation:
+The QM NMR Calculator supports 13 solvents via NWChem's COSMO implementation. See the [README Supported Solvents table](../README.md#supported-solvents) for the full list with codes and use cases.
 
-- **chcl3** - Chloroform (CDCl3 is the common NMR solvent)
-- **dmso** - Dimethyl sulfoxide (DMSO-d6)
-- **water** - For aqueous NMR
-- **acetone** - Acetone-d6
-- **methanol** - Methanol-d4
-- **vacuum** - Gas-phase calculation (no solvation)
-
-Scaling factors are currently available for **CHCl3**, **DMSO**, and **vacuum**.
+Scaling factors are available for all 13 solvents, derived from DELTA50 benchmark data with COSMO solvation applied during DFT calculations.
 
 ---
 
@@ -395,7 +388,9 @@ The scaling factors used in this project were derived as follows:
 
 ### Project Scaling Factors
 
-The following scaling factors are used in this project, stored in [`scaling_factors.json`](../src/qm_nmr_calc/data/scaling_factors.json):
+The following scaling factors are used in this project, stored in [`scaling_factors.json`](../src/qm_nmr_calc/data/scaling_factors.json).
+
+**Example factors (CHCl3, DMSO, vacuum):**
 
 | Parameter | 1H (CHCl3) | 13C (CHCl3) | 1H (DMSO) | 13C (DMSO) | 1H (vacuum) | 13C (vacuum) |
 |-----------|------------|-------------|-----------|------------|-------------|--------------|
@@ -407,6 +402,8 @@ The following scaling factors are used in this project, stored in [`scaling_fact
 | N points | 335 | 219 | 335 | 219 | 336 | 219 |
 | Outliers removed | 7 | 2 | 7 | 2 | 6 | 2 |
 
+Full scaling factors for all 13 solvents are documented in [SCALING-FACTORS.md](../data/benchmark/delta50/SCALING-FACTORS.md).
+
 **Interpreting the table:**
 
 - **High R-squared (>0.99):** Indicates excellent linear correlation between calculated and experimental values
@@ -415,12 +412,13 @@ The following scaling factors are used in this project, stored in [`scaling_fact
 
 ### Comparison Across Solvents
 
-The scaling factors vary slightly between solvents:
+The scaling factors vary slightly across all 13 supported solvents:
 
 - **Vacuum vs solvated:** Vacuum calculations show steeper slopes (closer to -1.0) and larger intercepts, reflecting the absence of solvation screening
-- **CHCl3 vs DMSO:** Small differences (<1%) in slope, with DMSO showing slightly larger MAE (expected for the more polar solvent with stronger solute-solvent interactions)
+- **Nonpolar (benzene, toluene) vs polar solvents:** Nonpolar aromatic solvents show slightly steeper 13C slopes (-0.957) compared to polar solvents like DMSO, methanol, acetonitrile (-0.943)
+- **Solvent polarity:** More polar solvents (DMSO, DMF, acetonitrile) show similar factor patterns with slightly larger MAE, reflecting stronger solute-solvent interactions
 
-**Important:** Always use scaling factors that match your calculation conditions. Using CHCl3 factors for a DMSO calculation will introduce systematic errors.
+**Important:** Always use scaling factors that match your calculation conditions. Using CHCl3 factors for a DMSO calculation will introduce systematic errors. The QM NMR Calculator automatically selects the correct factors based on the solvent specified in your job.
 
 ---
 
