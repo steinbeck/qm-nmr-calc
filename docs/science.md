@@ -367,7 +367,7 @@ The **DELTA50 benchmark** is a curated dataset of 50 organic molecules with dive
 
 **Key characteristics:**
 - **50 molecules** spanning alcohols, ethers, ketones, amines, aromatics, and heterocycles
-- **Known experimental shifts** in CDCl3 and DMSO-d6 solvents
+- **Known experimental shifts** in CDCl3 and DMSO-d6 (same reference data used for all 13 solvent scaling factor derivations)
 - **~335 1H data points** and **~219 13C data points** per solvent
 - **Source:** Grimblat et al. *Molecules* **2023**, 28, 2449
 - **DOI:** [10.3390/molecules28062449](https://doi.org/10.3390/molecules28062449)
@@ -378,7 +378,7 @@ The dataset was designed to be representative of typical organic chemistry, avoi
 
 The scaling factors used in this project were derived as follows:
 
-1. **DFT calculations:** All 50 molecules computed with B3LYP/6-311+G(2d,p) and COSMO solvation (CHCl3 or DMSO)
+1. **DFT calculations:** All 50 molecules computed with B3LYP/6-311+G(2d,p) and COSMO solvation for each of the 13 supported solvents
 
 2. **Linear regression:** Calculated shieldings regressed against experimental shifts for each nucleus type (1H, 13C) and each solvent
 
@@ -390,7 +390,7 @@ The scaling factors used in this project were derived as follows:
 
 The following scaling factors are used in this project, stored in [`scaling_factors.json`](../src/qm_nmr_calc/data/scaling_factors.json).
 
-**Example factors (CHCl3, DMSO, vacuum):**
+**Example factors (3 of 13 solvents — CHCl3, DMSO, vacuum):**
 
 | Parameter | 1H (CHCl3) | 13C (CHCl3) | 1H (DMSO) | 13C (DMSO) | 1H (vacuum) | 13C (vacuum) |
 |-----------|------------|-------------|-----------|------------|-------------|--------------|
@@ -602,12 +602,32 @@ Based on the DELTA50 benchmark and this project's scaling factors, expected pred
 |---------|---------|-----|------|----------------|
 | 1H | CHCl3 | 0.12 ppm | 0.16 ppm | Excellent |
 | 1H | DMSO | 0.13 ppm | 0.17 ppm | Excellent |
+| 1H | Acetone | 0.13 ppm | 0.17 ppm | Excellent |
+| 1H | Acetonitrile | 0.13 ppm | 0.17 ppm | Excellent |
+| 1H | Benzene | 0.13 ppm | 0.17 ppm | Excellent |
+| 1H | DCM | 0.12 ppm | 0.16 ppm | Excellent |
+| 1H | DMF | 0.13 ppm | 0.17 ppm | Excellent |
+| 1H | Methanol | 0.13 ppm | 0.17 ppm | Excellent |
+| 1H | Pyridine | 0.13 ppm | 0.16 ppm | Excellent |
+| 1H | THF | 0.12 ppm | 0.16 ppm | Excellent |
+| 1H | Toluene | 0.13 ppm | 0.17 ppm | Excellent |
+| 1H | Water | 0.13 ppm | 0.17 ppm | Excellent |
 | 1H | vacuum | 0.15 ppm | 0.19 ppm | Very good |
 | 13C | CHCl3 | 1.95 ppm | 2.69 ppm | Good |
 | 13C | DMSO | 2.15 ppm | 2.92 ppm | Good |
+| 13C | Acetone | 2.12 ppm | 2.88 ppm | Good |
+| 13C | Acetonitrile | 2.14 ppm | 2.91 ppm | Good |
+| 13C | Benzene | 1.76 ppm | 2.54 ppm | Good |
+| 13C | DCM | 2.05 ppm | 2.79 ppm | Good |
+| 13C | DMF | 2.14 ppm | 2.91 ppm | Good |
+| 13C | Methanol | 2.14 ppm | 2.90 ppm | Good |
+| 13C | Pyridine | 2.09 ppm | 2.84 ppm | Good |
+| 13C | THF | 2.02 ppm | 2.77 ppm | Good |
+| 13C | Toluene | 1.77 ppm | 2.55 ppm | Good |
+| 13C | Water | 2.16 ppm | 2.93 ppm | Good |
 | 13C | vacuum | 1.74 ppm | 2.56 ppm | Good |
 
-**Context:** For comparison, ISiCLE (a similar NMR prediction framework) reports typical accuracies of ~0.2 ppm for 1H and ~2.5 ppm for 13C. Our results are competitive with or better than literature values.
+**Context:** For comparison, ISiCLE (a similar NMR prediction framework) reports typical accuracies of ~0.2 ppm for 1H and ~2.5 ppm for 13C. Our results are competitive with or better than literature values across all 13 solvents.
 
 ### Factors Affecting Accuracy
 

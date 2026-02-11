@@ -242,11 +242,21 @@ Solvent environment affects both geometry optimization and NMR shielding calcula
 
 ### Available Solvents
 
-| Solvent | Display Name | Dielectric Constant | Common Use |
-|---------|--------------|---------------------|------------|
-| `chcl3` | CDCl3 | 4.81 | Most common NMR solvent |
-| `dmso` | DMSO-d6 | 46.7 | Polar/ionic molecules, biomolecules |
-| `vacuum` | Gas phase | 1.0 | Reference calculations, gas-phase comparisons |
+| Solvent | Display Name | Common Use |
+|---------|--------------|------------|
+| `acetone` | Acetone (Acetone-d6) | Medium polarity |
+| `acetonitrile` | Acetonitrile (CD3CN) | Polar aprotic |
+| `benzene` | Benzene (Benzene-d6) | Aromatic/nonpolar compounds |
+| `chcl3` | Chloroform (CDCl3) | Standard organic chemistry |
+| `dcm` | Dichloromethane (CD2Cl2) | Halogenated solvent |
+| `dmf` | N,N-Dimethylformamide (DMF-d7) | High-boiling polar aprotic |
+| `dmso` | DMSO (DMSO-d6) | Polar compounds |
+| `methanol` | Methanol (Methanol-d4) | Protic polar solvent |
+| `pyridine` | Pyridine (Pyridine-d5) | Basic aromatic solvent |
+| `thf` | Tetrahydrofuran (THF-d8) | Ethereal solvent |
+| `toluene` | Toluene (Toluene-d8) | Aromatic nonpolar |
+| `vacuum` | Gas phase (no solvent) | Reference calculations |
+| `water` | Water (D2O) | Aqueous samples |
 
 ### COSMO Solvation Model
 
