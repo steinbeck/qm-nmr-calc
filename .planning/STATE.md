@@ -5,15 +5,15 @@
 See: .planning/PROJECT.md (updated 2026-02-11)
 
 **Core value:** Reliable async NMR predictions with full control over calculation parameters -- submit a molecule, get back accurate 1H/13C shifts without babysitting long-running calculations.
-**Current focus:** None — run `/gsd:new-milestone` to define next focus area
+**Current focus:** v3.0 Publication & Dataset Release
 
 ## Current Position
 
-Milestone: None (v2.9 shipped)
-Phase: N/A
-Plan: N/A
-Status: Between milestones
-Last activity: 2026-02-11 — v2.9 Extended Solvent Coverage shipped and archived
+Milestone: v3.0 Publication & Dataset Release
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-11 — Milestone v3.0 started
 
 Progress: [##############################] 127 plans complete across 13 milestones (v1.0-v2.9)
 
@@ -65,9 +65,9 @@ None
 ## Session Continuity
 
 Last session: 2026-02-11
-Stopped at: v2.9 milestone shipped and archived
+Stopped at: Defining v3.0 requirements
 Resume file: None
-Next: Run `/gsd:new-milestone` to define next focus area
+Next: Complete requirements and roadmap for v3.0
 Tests: 456 tests (454 passing, 2 skipped)
 Codebase: ~7,320 LOC Python, ~3,115 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
 Benchmark data: 650 calculations with shielding tensors + 26 quality-validated scaling factors (13 solvents x 2 nuclei)

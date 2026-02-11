@@ -37,9 +37,14 @@ Reliable async NMR predictions with full control over calculation parameters -- 
 - Auto machine type selection matching CPU/RAM requirements
 - HTTP-only fire-up-and-burn cloud deployment pattern
 
-## Current Milestone: None
+## Current Milestone: v3.0 Publication & Dataset Release
 
-Run `/gsd:new-milestone` to define next focus area.
+**Goal:** Publish the DELTA50 benchmark dataset on Radar4Chem with DOI, write a data descriptor for Nature Scientific Data, and write an application note for J. Cheminformatics.
+
+**Target deliverables:**
+- DELTA50 dataset on Radar4Chem (NWChem inputs + outputs + processed data for 650 calculations across 13 solvents)
+- Data descriptor paper for Nature Scientific Data (DELTA50 benchmark methodology and dataset)
+- Application note for J. Cheminformatics (qm-nmr-calc as a tool)
 
 ## Future Considerations
 
@@ -196,4 +201,4 @@ Run `/gsd:new-milestone` to define next focus area.
 | Pilot-before-full benchmarks | Run 10 calc pilot before committing 90 more | Good -- validates convergence cheaply |
 
 ---
-*Last updated: 2026-02-11 after v2.9 milestone shipped*
+*Last updated: 2026-02-11 after v3.0 milestone started*
