@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Milestone: v2.9 Extended Solvent Coverage
-Phase: Phase 59 - Benchmark Infrastructure (Complete, Verified)
-Plan: 59-01 complete (1/1)
-Status: Phase 59 verified, ready for Phase 60
-Last activity: 2026-02-10 — Phase 59 verified (5/5 must-haves passed)
+Phase: Phase 60 - DELTA50 Pyridine & THF (Complete)
+Plan: 60-01 complete (1/1)
+Status: Phase 60 complete, ready for Phase 61
+Last activity: 2026-02-11 — Completed 60-01-PLAN.md (100 benchmark calculations, 100% success)
 
-Progress: [##########################] 121 plans complete across 12 milestones (v1.0-v2.8, v2.9-partial), 6 plans pending (v2.9)
+Progress: [###########################] 122 plans complete across 12 milestones (v1.0-v2.8, v2.9-partial), 5 plans pending (v2.9)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 121 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 6, v2.9: 1)
+- Total plans completed: 122 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 6, v2.9: 2)
 - Average duration: ~6.6 min (excluding benchmark compute time)
-- Total execution time: ~801 min (~13.4 hours) + ~17 hours benchmark compute
+- Total execution time: ~816 min (~13.6 hours) + ~27.5 hours benchmark compute
 
 **By Milestone:**
 
@@ -40,7 +40,7 @@ Progress: [##########################] 121 plans complete across 12 milestones (
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
 | v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
 | v2.8 Expanded Solvent Support | 5 | 6 | ~17h compute + 53min | Shipped 2026-02-09 |
-| v2.9 Extended Solvent Coverage | 7 | 7 | In progress | Started 2026-02-10 (1/7 complete) |
+| v2.9 Extended Solvent Coverage | 7 | 7 | In progress | Started 2026-02-10 (2/7 complete) |
 
 ## Accumulated Context
 
@@ -55,6 +55,8 @@ Recent decisions (v2.9):
 |----|-------|----------|--------|
 | COSMO-NAME-MAPPING | 59-01 | Map user-friendly solvent names to NWChem COSMO names | Acetonitrile accepted in CLI/code, mapped to "acetntrl" for NWChem COSMO |
 | OPT-IN-NEW-SOLVENTS | 59-01 | New solvents opt-in only via --solvents flag | Users must explicitly request pyridine/thf/toluene/dcm/acetonitrile/dmf until scaling factors exist |
+| PILOT-BEFORE-FULL | 60-01 | Run pilot (10 calc) before full benchmark (90 calc) | Validates COSMO convergence before committing ~10 hours compute |
+| CHECKPOINT-VERIFICATION | 60-01 | Human verification at pilot and full completion checkpoints | Ensures calculations actually completed before marking phase done |
 
 ### Pending Todos
 
@@ -72,9 +74,10 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-10 13:50 UTC
-Stopped at: Completed 59-01-PLAN.md
+Last session: 2026-02-11 02:20 UTC
+Stopped at: Completed 60-01-PLAN.md
 Resume file: None
-Next: /gsd:plan-phase 60
-Tests: 441 tests (382 passing, 2 skipped) - 7 new tests added
+Next: /gsd:plan-phase 61
+Tests: 441 tests (382 passing, 2 skipped)
 Codebase: ~7,320 LOC Python, ~3,115 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
+Benchmark data: 200 calculations (50 benzene × 4 solvents + 50 pyridine + 50 thf) with shielding tensors
