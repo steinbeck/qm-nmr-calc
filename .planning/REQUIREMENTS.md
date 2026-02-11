@@ -37,8 +37,8 @@ Requirements for extended solvent coverage. Same benchmark-derive-integrate pipe
 
 ### Documentation
 
-- [ ] **DOCS-01**: SCALING-FACTORS.md updated with all 26 factor sets (13 solvents x 2 nuclei)
-- [ ] **DOCS-02**: README updated to list 13 supported solvents
+- [x] **DOCS-01**: SCALING-FACTORS.md updated with all 26 factor sets (13 solvents x 2 nuclei)
+- [x] **DOCS-02**: README updated to list 13 supported solvents
 
 ## Future Requirements
 
@@ -80,8 +80,8 @@ Deferred to later milestones.
 | INTG-06 | Phase 64 | Complete |
 | INTG-07 | Phase 64 | Complete |
 | INTG-08 | Phase 64 | Complete |
-| DOCS-01 | Phase 65 | Pending |
-| DOCS-02 | Phase 65 | Pending |
+| DOCS-01 | Phase 65 | Complete |
+| DOCS-02 | Phase 65 | Complete |
 
 **Coverage:**
 - v2.9 requirements: 22 total
@@ -90,4 +90,4 @@ Deferred to later milestones.
 
 ---
 *Requirements defined: 2026-02-10*
-*Last updated: 2026-02-11 after Phase 64 completion*
+*Last updated: 2026-02-11 after Phase 65 completion (all v2.9 requirements satisfied)*

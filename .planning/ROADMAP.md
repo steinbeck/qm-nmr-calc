@@ -14,7 +14,7 @@
 - ✅ **v2.6 GCP Spot Deployment** - Phases 45-49 (shipped 2026-02-05)
 - ✅ **v2.7 Automated GCP Deployment** - Phases 50-53 (shipped 2026-02-06)
 - ✅ **v2.8 Expanded Solvent Support** - Phases 54-58 (shipped 2026-02-09)
-- 🚧 **v2.9 Extended Solvent Coverage** - Phases 59-63 (in progress)
+- 🚧 **v2.9 Extended Solvent Coverage** - Phases 59-65 (in progress)
 
 ## Phases
 
@@ -656,7 +656,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 65-01-PLAN.md -- Add vacuum to SCALING-FACTORS.md (26 total), update README to 13 solvents, fix stale cross-references in docs/
+- [x] 65-01: Add vacuum to SCALING-FACTORS.md (26 total), update README to 13 solvents, fix stale cross-references in docs/
 
 ## Progress
 
@@ -731,7 +731,7 @@ Phases execute in numeric order: 59 → 60 → 61 → 62 → 63 → 64 → 65
 | 62. DELTA50 Acetonitrile + DMF | v2.9 | 1/1 | Complete | 2026-02-11 |
 | 63. Scaling Factor Derivation | v2.9 | 1/1 | Complete | 2026-02-11 |
 | 64. Solvent Integration | v2.9 | 1/1 | Complete | 2026-02-11 |
-| 65. Documentation | v2.9 | 0/1 | Not started | - |
+| 65. Documentation | v2.9 | 1/1 | Complete | 2026-02-11 |
 
 ## Coverage
 
