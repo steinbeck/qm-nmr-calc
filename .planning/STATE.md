@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Milestone: v2.9 Extended Solvent Coverage
-Phase: Phase 62 - DELTA50 Acetonitrile & DMF (Complete)
-Plan: 62-01 complete (1/1)
-Status: Phase 62 complete, ready for Phase 63
-Last activity: 2026-02-11 — Completed 62-01-PLAN.md (100 benchmark verifications, 100% success)
+Phase: Phase 63 - Scaling Factor Derivation (Complete)
+Plan: 63-01 complete (1/1)
+Status: Phase 63 complete, ready for Phase 64
+Last activity: 2026-02-11 — Completed 63-01-PLAN.md (26 scaling factors derived and merged)
 
-Progress: [############################] 124 plans complete across 12 milestones (v1.0-v2.8, v2.9-partial), 3 plans pending (v2.9)
+Progress: [#############################] 125 plans complete across 12 milestones (v1.0-v2.8, v2.9-partial), 2 plans pending (v2.9)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 124 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 6, v2.9: 4)
-- Average duration: ~6.5 min (excluding benchmark compute time)
-- Total execution time: ~818 min (~13.6 hours) + ~27.5 hours benchmark compute
+- Total plans completed: 125 (v1.0: 16, v1.1: 21, v2.0: 18, v2.0.1: 3, v2.1: 17, v2.2: 10, v2.3: 3, v2.4: 8, v2.5: 4, v2.6: 4, v2.7: 9, v2.8: 6, v2.9: 5)
+- Average duration: ~6.6 min (excluding benchmark compute time)
+- Total execution time: ~837 min (~13.9 hours) + ~27.5 hours benchmark compute
 
 **By Milestone:**
 
@@ -40,7 +40,7 @@ Progress: [############################] 124 plans complete across 12 milestones
 | v2.6 GCP Spot Deployment | 5 | 4 | ~1 day | Shipped 2026-02-05 |
 | v2.7 Automated GCP Deployment | 5 | 9 | ~32 min | Shipped 2026-02-06 |
 | v2.8 Expanded Solvent Support | 5 | 6 | ~17h compute + 53min | Shipped 2026-02-09 |
-| v2.9 Extended Solvent Coverage | 7 | 7 | In progress | Started 2026-02-10 (4/7 complete) |
+| v2.9 Extended Solvent Coverage | 7 | 7 | In progress | Started 2026-02-10 (5/7 complete) |
 
 ## Accumulated Context
 
@@ -57,6 +57,8 @@ Recent decisions (v2.9):
 | OPT-IN-NEW-SOLVENTS | 59-01 | New solvents opt-in only via --solvents flag | Users must explicitly request pyridine/thf/toluene/dcm/acetonitrile/dmf until scaling factors exist |
 | PILOT-BEFORE-FULL | 60-01 | Run pilot (10 calc) before full benchmark (90 calc) | Validates COSMO convergence before committing ~10 hours compute |
 | CHECKPOINT-VERIFICATION | 60-01 | Human verification at pilot and full completion checkpoints | Ensures calculations actually completed before marking phase done |
+| MERGE-STRATEGY | 63-01 | Start from newly generated analysis (24 entries), add vacuum (2 entries) | Ensures all solvent factors from same analysis run (consistency) |
+| QUALITY-GATES | 63-01 | All 6 new solvents pass R² > 0.99, 1H MAE < 0.2 ppm, 13C MAE < 3.0 ppm | Validates factors suitable for production NMR prediction |
 
 ### Pending Todos
 
@@ -74,10 +76,10 @@ None
 
 ## Session Continuity
 
-Last session: 2026-02-11 07:17 UTC
-Stopped at: Completed 62-01-PLAN.md
+Last session: 2026-02-11 08:10 UTC
+Stopped at: Completed 63-01-PLAN.md
 Resume file: None
-Next: /gsd:plan-phase 63
-Tests: 441 tests (382 passing, 2 skipped)
+Next: /gsd:plan-phase 64
+Tests: 448 tests (446 passing, 2 skipped)
 Codebase: ~7,320 LOC Python, ~3,115 LOC tests, ~950 LOC templates, ~2,400 LOC CSS, ~4,800 LOC docs, ~2,170 LOC GCP scripts
-Benchmark data: 300 calculations (50 benzene × 4 solvents + 50 pyridine + 50 thf + 50 toluene + 50 dcm + 50 acetonitrile + 50 dmf) with shielding tensors
+Benchmark data: 300 calculations with shielding tensors + 26 quality-validated scaling factors (13 solvents x 2 nuclei)
